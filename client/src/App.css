@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --neon-red: #e9366e;
+  --neon-orange: #ee8834;
+  --neon-yellow: #cbfd50;
+  --neon-sky-blue: #7dede1;
+  --neon-blue: #5aa1f1;
+  --gray: #484848;
+}
