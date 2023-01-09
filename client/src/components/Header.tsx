@@ -82,15 +82,20 @@ const Button = styled(Link)`
 const Board = styled.nav`
   color: white;
   display: flex;
-  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
   a {
     text-decoration: none;
-    text-shadow: white 0 0 15px;
-    margin: 2px 10px;
+    // text-shadow: white 0 0 15px;
     color: white;
     font-size: 16px;
     transition: 0.2s ease-in-out;
+    width: auto;
+    height: 25px;
+    margin: 0 9px;
     white-space: nowrap;
+    display: flex;
+    align-items: flex-start;
     &:hover {
       color: var(--neon-yellow);
       text-shadow: white 0 0 20px;
@@ -109,7 +114,7 @@ const Header = () => {
           HEART
         </Logo>
         <Board>
-          <Link to="/freeboards">자유게시판</Link>
+          <Link to="/freeboard">자유게시판</Link>
           <Link to="/recruits">자유게시판 태그</Link>
           <Link to="/recruits">모집게시판</Link>
           <Link to="/recruits">모집게시판 태그</Link>
