@@ -1,8 +1,8 @@
+import styled from 'styled-components';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import styled from 'styled-components';
 
-const MainContainer = styled.div`
+const MainContainer = styled.main`
   background-color: grey;
   color: white;
   display: flex;
@@ -10,14 +10,13 @@ const MainContainer = styled.div`
   margin-top: 100px;
   height: 100%;
 `;
-const Main = () => {
-  return (
-    <>
-      <Header />
-      <MainContainer>Main</MainContainer>
-      <Footer />
-    </>
-  );
-};
+
+const Main = () => (
+  <>
+    <Header />
+    <MainContainer>Main</MainContainer>
+    <Footer />
+  </>
+);
 
 export default Main;

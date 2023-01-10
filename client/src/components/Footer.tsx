@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -30,43 +29,55 @@ const HeartContainer = styled(Link)`
       margin-right: 3px;
       padding-bottom: 10px;
       font-family: 'Rubik Bubbles', cursive;
-
     }
   }
 `;
+
 const TeamInfo = styled.div`
-  text-shadow: white 0 0 20px;
   color: white;
   font-size: 16px;
-  /* font-family: 'Rubik Bubbles', cursive; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  > div:nth-child(2) {
+    margin: 10px 0px;
+  }
 `;
 
-const Footer = () => {
-  return (
-    <FooterContainer>
-      <HeartContainer to="/">
-        <div>
-          <span>H</span>ealthy
-        </div>
-        <div>
-          <span>E</span>xercise
-        </div>
-        <div>
-          <span>A</span>round
-        </div>
-        <div>
-          <span>R</span>esidance
-        </div>
-        <div>
-          <span>T</span>ogether
-        </div>
-      </HeartContainer>
+const Footer = () => (
+  <FooterContainer>
+    <HeartContainer to="/">
+      <div>
+        <span>H</span>
+        <span>ealthy</span>
+      </div>
+      <div>
+        <span>E</span>
+        <span>xercise</span>
+      </div>
+      <div>
+        <span>A</span>
+        <span>round</span>
+      </div>
+      <div>
+        <span>R</span>
+        <span>esidances</span>
+      </div>
+      <div>
+        <span>T</span>
+        <span>ogether</span>
+      </div>
+    </HeartContainer>
+    <TeamInfo>
+      <div>By Heart Number 1</div>
+      <div>FE: 민인애, 우하늘, 조유지</div>
+      <div>BE: 변찬중, 윤인수, 정의현</div>
+    </TeamInfo>
+  </FooterContainer>
+);
 
-      <TeamInfo>
-        By Heart Number 1<br />
-        FE: 민인애, 우하늘, 조유지<br></br>BE: 변찬중, 윤인수, 정의현
-      </TeamInfo>
-    </FooterContainer>
-  );
-};
 export default Footer;
+
+// const BREAK_POINT_TABLET = 768;
+// const BREAK_POINT_PC = 1200;

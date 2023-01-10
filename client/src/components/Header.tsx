@@ -37,13 +37,12 @@ const ButtonContainer = styled.div`
     color: var(--gray);
     transition: 0.2s ease-in-out;
     i {
-      margin-right: 5px;
+      margin-right: 10px;
       font-size: 25px;
     }
     input {
       width: 250px;
       padding: 10px;
-      margin: 0 5px;
       background-color: rgba(1, 1, 1, 0);
       outline: none;
       border: none;
@@ -51,7 +50,6 @@ const ButtonContainer = styled.div`
       color: white;
       font-size: 16px;
     }
-
     &:focus-within {
       color: white;
       input {
@@ -67,10 +65,11 @@ const Button = styled(Link)`
   background-color: var(--gray);
   color: white;
   border-radius: 5px;
-  margin: 5px;
+  margin-left: 10px;
   padding: 8px 14px;
   transition: 0.2s ease-in-out;
   font-size: 16px;
+  white-space: nowrap;
   &:hover {
     cursor: pointer;
     background-color: var(--neon-yellow);
@@ -86,7 +85,6 @@ const Board = styled.nav`
   margin-top: 10px;
   a {
     text-decoration: none;
-    // text-shadow: white 0 0 15px;
     color: white;
     font-size: 16px;
     transition: 0.2s ease-in-out;
@@ -105,31 +103,29 @@ const Board = styled.nav`
   }
 `;
 
-const Header = () => {
-  return (
-    <HeaderContainer>
-      <div>
-        <Logo to="/">
-          <i className="fa-solid fa-heart-pulse"></i>
-          HEART
-        </Logo>
-        <Board>
-          <Link to="/freeboard">자유게시판</Link>
-          <Link to="/recruits">자유게시판 태그</Link>
-          <Link to="/recruits">모집게시판</Link>
-          <Link to="/recruits">모집게시판 태그</Link>
-        </Board>
-      </div>
-      <ButtonContainer>
-        <form>
-          <i className="fa-solid fa-magnifying-glass"></i>
-          <input placeholder="Search here..." />
-        </form>
-        <Button to="/login">로그인</Button>
-        <Button to="/signup">회원가입</Button>
-      </ButtonContainer>
-    </HeaderContainer>
-  );
-};
+const Header = () => (
+  <HeaderContainer>
+    <div>
+      <Logo to="/">
+        <i className="fa-solid fa-heart-pulse" />
+        HEART
+      </Logo>
+      <Board>
+        <Link to="/freeboard">자유게시판</Link>
+        <Link to="/recruits">자유게시판 태그</Link>
+        <Link to="/recruits">모집게시판</Link>
+        <Link to="/recruits">모집게시판 태그</Link>
+      </Board>
+    </div>
+    <ButtonContainer>
+      <form>
+        <i className="fa-solid fa-magnifying-glass" />
+        <input placeholder="Search here..." />
+      </form>
+      <Button to="/login">로그인</Button>
+      <Button to="/signup">회원가입</Button>
+    </ButtonContainer>
+  </HeaderContainer>
+);
 
 export default Header;
