@@ -1,5 +1,3 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
 import { useForm } from 'react-hook-form';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
