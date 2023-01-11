@@ -7,6 +7,10 @@ import MyPage from './pages/MyPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import EditUser from './pages/EditUser';
+import LogIn from './pages/LogIn';
+import SignUp from './pages/SignUp';
+import CreateRecruit from './pages/CreateRecruit';
+import EditRecruit from './pages/EditRecruit';
 
 const App = () => (
   // const [login, setLogin] = useState(false);
@@ -18,6 +22,10 @@ const App = () => (
         <Route path="/members/mypage/:id" element={<MyPage />} />
         <Route path="/members/withdrawl/:id" element={<Withdrawl />} />
         <Route path="/members/edit/:id" element={<EditUser />} />
+        <Route path="/login" element={<LogIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/create-recruit" element={<CreateRecruit />} />
+        <Route path="/edit-recruit" element={<EditRecruit />} />
       </Routes>
       <Footer />
     </Router>
