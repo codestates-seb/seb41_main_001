@@ -1,9 +1,8 @@
 import styled from 'styled-components';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import MyPage from './MyPage';
 
 const MainContainer = styled.main`
-  background-color: grey;
+  background-color: var(--gray);
   color: white;
   display: flex;
   justify-content: center;
@@ -13,9 +12,8 @@ const MainContainer = styled.main`
 
 const Main = () => (
   <>
-    <Header />
+    <MyPage />
     <MainContainer>Main</MainContainer>
-    <Footer />
   </>
 );
 

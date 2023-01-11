@@ -103,6 +103,10 @@ const Board = styled.nav`
   }
 `;
 
+// interface CheckLogin {
+//   login: boolean;
+// }
+
 const Header = () => (
   <HeaderContainer>
     <div>
@@ -122,8 +126,10 @@ const Header = () => (
         <i className="fa-solid fa-magnifying-glass" />
         <input placeholder="Search here..." />
       </form>
-      <Button to="/login">로그인</Button>
-      <Button to="/signup">회원가입</Button>
+      <div>
+        <Button to="/login">로그인</Button>
+        <Button to="/signup">회원가입</Button>
+      </div>
     </ButtonContainer>
   </HeaderContainer>
 );
