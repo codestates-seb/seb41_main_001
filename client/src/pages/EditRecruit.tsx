@@ -7,13 +7,12 @@ interface IFormInput {
   title: string;
   content: string;
   date: string;
-  quota: number;
   location: string;
   image: string;
 }
 
 const ERContainer = styled.div`
-  background-color: grey;
+  background-color: var(--gray);
   color: white;
   display: flex;
   justify-content: center;
@@ -30,9 +29,33 @@ const ERForm = styled.form`
   margin: 30px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
-  input {
-    margin-bottom: 20px;
+  label,
+  input,
+  textarea {
+    width: 400px;
+    height: 30px;
+    border-radius: 5px;
+    border: none;
+  }
+
+  input,
+  textarea,
+  .warn {
+    margin-bottom: 10px;
+  }
+
+  input:nth-child(1) {
+    height: 100px;
+  }
+
+  .length {
+    height: 100px;
+  }
+
+  .warn {
+    color: var(--neon-yellow);
   }
 `;
 
@@ -49,18 +72,22 @@ const EditRecruit = () => {
           <label>제목</label>
           <input type="text" {...register('title', { required: true })} />
           <label>내용</label>
-          <input type="text" {...register('content', { required: true })} />
+          <textarea
+            className="length"
+            {...register('content', { required: true })}
+          />
           <label>모임 일시</label>
           <input
             type="datetime-local"
             {...register('date', { required: true })}
           />
-          <label>모임 인원</label>
-          <input type="number" {...register('quota', { required: true })} />
           <label>모임 장소</label>
           <input type="text" {...register('location', { required: true })} />
           <label>이미지</label>
           <input type="file" {...register('image')} />
+          <div className="warn">
+            모임 일시, 모임 장소는 모임원들과 충분한 상의 후 변경하세요
+          </div>
           <button type="submit">수정하기</button>
         </ERForm>
       </ERContainer>

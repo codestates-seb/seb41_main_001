@@ -1,7 +1,9 @@
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+// import GPSCheck from '../utils/GPSCheck';
 import styled from 'styled-components';
+import Tag from '../components/Tag';
 
 enum GenderEnum {
   female = '여성',
@@ -17,12 +19,12 @@ interface IFormInput {
   phone: string;
   password: string;
   passwordRetype: string;
-  tags: string;
+  tags: string; //문자열이 담긴 배열
   profile: string;
 }
 
 const SignUpContainer = styled.div`
-  background-color: grey;
+  background-color: var(--gray);
   color: white;
   display: flex;
   justify-content: center;
@@ -43,24 +45,6 @@ const SignUpForm = styled.form`
   border: 1px solid white;
   border-radius: 10px;
 
-  button {
-    width: 200px;
-    text-decoration: none;
-    background-color: var(--gray);
-    color: white;
-    border-radius: 5px;
-    margin: 5px;
-    padding: 8px 14px;
-    transition: 0.2s ease-in-out;
-    font-size: 16px;
-    &:hover {
-      cursor: pointer;
-      background-color: var(--neon-yellow);
-      color: black;
-      transition: 0.2s ease-in-out;
-    }
-  }
-
   label,
   input,
   select,
@@ -71,7 +55,8 @@ const SignUpForm = styled.form`
     border: none;
   }
 
-  input {
+  input,
+  select {
     margin-bottom: 10px;
   }
 
@@ -84,31 +69,12 @@ const SignUpForm = styled.form`
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      span {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        border: 1px solid white;
-        border-radius: 5px;
-        width: auto;
-        margin: 5px;
-        padding: 5px;
-
-        input {
-          width: 20px;
-          height: 20px;
-          margin-top: 5px;
-        }
-
-        label {
-          width: 100px;
-          height: 20px;
-          font-size: 13px;
-          margin-bottom: 5px;
-        }
-      }
     }
+  }
+
+  #map {
+    width: 500px;
+    height: 400px;
   }
 `;
 
@@ -149,138 +115,35 @@ const SignUp = () => {
             type="password"
             {...register('passwordRetype', { required: true })}
           />
+          {/* {GPSCheck()}
+          <div id="map"></div>
+          <button type="button" onClick={getCurrentPosBtn()}>
+            내 위치 가져오기
+          </button> */}
           <fieldset>
             <legend>관심 운동 태그</legend>
             <div>
-              <span>
-                <input
-                  type="checkbox"
-                  id="축구/풋살"
-                  name="tags"
-                  value="축구/풋살"
-                />
-                <label htmlFor="축구/풋살">축구/풋살⚽️</label>
-              </span>
-              <span>
-                <input type="checkbox" id="농구" name="tags" value="농구" />
-                <label htmlFor="농구">농구🏀</label>
-              </span>
-              <span>
-                <input type="checkbox" id="야구" name="tags" value="야구" />
-                <label htmlFor="야구">야구⚾️</label>
-              </span>
-              <span>
-                <input type="checkbox" id="배구" name="tags" value="배구" />
-                <label htmlFor="배구">배구🏐</label>
-              </span>
-              <span>
-                <input type="checkbox" id="복싱" name="tags" value="복싱" />
-                <label htmlFor="복싱">복싱🥊</label>
-              </span>
-              <span>
-                <input type="checkbox" id="탁구" name="tags" value="탁구" />
-                <label htmlFor="탁구">탁구🏓</label>
-              </span>
-              <span>
-                <input
-                  type="checkbox"
-                  id="배드민턴"
-                  name="tags"
-                  value="배드민턴"
-                />
-                <label htmlFor="배드민턴">배드민턴🏸</label>
-              </span>
-              <span>
-                <input
-                  type="checkbox"
-                  id="테니스/스쿼시"
-                  name="tags"
-                  value="테니스/스쿼시"
-                />
-                <label htmlFor="테니스/스쿼시">테니스/스쿼시🎾</label>
-              </span>
-              <span>
-                <input
-                  type="checkbox"
-                  id="태권도/유도"
-                  name="tags"
-                  value="태권도/유도"
-                />
-                <label htmlFor="태권도/유도">태권도/유도🥋</label>
-              </span>
-              <span>
-                <input type="checkbox" id="검도" name="tags" value="검도" />
-                <label htmlFor="검도">검도⚔️</label>
-              </span>
-              <span>
-                <input
-                  type="checkbox"
-                  id="무술/주짓수"
-                  name="tags"
-                  value="무술/주짓수"
-                />
-                <label htmlFor="무술/주짓수">무술/주짓수🥋</label>
-              </span>
-              <span>
-                <input type="checkbox" id="족구" name="tags" value="족구" />
-                <label htmlFor="족구">족구⚽️</label>
-              </span>
-              <span>
-                <input type="checkbox" id="러닝" name="tags" value="러닝" />
-                <label htmlFor="러닝">러닝🏃</label>
-              </span>
-              <span>
-                <input type="checkbox" id="자전거" name="tags" value="자전거" />
-                <label htmlFor="자전거">자전거🚴</label>
-              </span>
-              <span>
-                <input type="checkbox" id="등산" name="tags" value="등산" />
-                <label htmlFor="등산">등산🏔️</label>
-              </span>
-              <span>
-                <input
-                  type="checkbox"
-                  id="클라이밍"
-                  name="tags"
-                  value="클라이밍"
-                />
-                <label htmlFor="클라이밍">클라이밍🧗‍♀️</label>
-              </span>
-              <span>
-                <input type="checkbox" id="수영" name="tags" value="수영" />
-                <label htmlFor="수영">수영🏊‍♀️</label>
-              </span>
-              <span>
-                <input type="checkbox" id="골프" name="tags" value="골프" />
-                <label htmlFor="골프">골프⛳️</label>
-              </span>
-              <span>
-                <input
-                  type="checkbox"
-                  id="요가/필라테스"
-                  name="tags"
-                  value="요가/필라테스"
-                />
-                <label htmlFor="요가/필라테스">요가/필라테스🧘</label>
-              </span>
-              <span>
-                <input
-                  type="checkbox"
-                  id="헬스/크로스핏"
-                  name="tags"
-                  value="헬스/크로스핏"
-                />
-                <label htmlFor="헬스/크로스핏">헬스/크로스핏🏋️</label>
-              </span>
-              <span>
-                <input
-                  type="checkbox"
-                  id="스케이트/인라인"
-                  name="tags"
-                  value="스케이트/인라인"
-                />
-                <label htmlFor="스케이트/인라인">스케이트/인라인⛸️</label>
-              </span>
+              <Tag name="축구/풋살" emoji="⚽️" />
+              <Tag name="농구" emoji="🏀" />
+              <Tag name="야구" emoji="⚾️" />
+              <Tag name="배구" emoji="🏐" />
+              <Tag name="복싱" emoji="🥊" />
+              <Tag name="탁구" emoji="🏓" />
+              <Tag name="배드민턴" emoji="🏸" />
+              <Tag name="테니스/스쿼시" emoji="🎾" />
+              <Tag name="태권도/유도" emoji="🥋" />
+              <Tag name="검도" emoji="⚔️" />
+              <Tag name="무술/주짓수" emoji="🥋" />
+              <Tag name="족구" emoji="⚽️" />
+              <Tag name="러닝" emoji="🏃" />
+              <Tag name="자전거" emoji="🚴" />
+              <Tag name="등산" emoji="🏔️" />
+              <Tag name="클라이밍" emoji="🧗‍♀️" />
+              <Tag name="수영" emoji="🏊‍♀️" />
+              <Tag name="골프" emoji="⛳️" />
+              <Tag name="요가/필라테스" emoji="🧘" />
+              <Tag name="헬스/크로스핏" emoji="🏋️" />
+              <Tag name="스케이트/인라인" emoji="⛸️" />
             </div>
           </fieldset>
           <label>프로필 사진</label>

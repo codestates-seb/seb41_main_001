@@ -28,7 +28,7 @@ const Logo = styled(Link)`
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   form {
@@ -120,14 +120,14 @@ const Header = () => {
           <Link to="/recruits">모집게시판 태그</Link>
         </Board>
       </div>
-      <ButtonContainer>
+      <ButtonsContainer>
         <form>
           <i className="fa-solid fa-magnifying-glass"></i>
           <input placeholder="Search here..." />
         </form>
         <Button to="/login">로그인</Button>
         <Button to="/signup">회원가입</Button>
-      </ButtonContainer>
+      </ButtonsContainer>
     </HeaderContainer>
   );
 };

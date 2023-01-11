@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 const LogInContainer = styled.div`
-  background-color: grey;
+  background-color: var(--gray);
   color: white;
   display: flex;
   justify-content: center;
@@ -30,7 +30,7 @@ const LogInForm = styled.form`
     width: 400px;
     height: 30px;
     border-radius: 5px;
-    border: gray;
+    border: none;
   }
   input {
     margin-bottom: 10px;
@@ -89,13 +89,15 @@ const LogIn = () => {
           />
           {errors.email && <div>이메일을 입력하세요</div>}
           <label>Password</label>
-          <input {...register('password', { required: true, maxLength: 10 })} />
+          <input
+            type="password"
+            {...register('password', { required: true, maxLength: 10 })}
+          />
           {errors.password && <div>비밀번호를 입력하세요</div>}
           <ButtonContainer>
             <Link to="/search-password">
               <button>비밀번호 찾기</button>
             </Link>
-            {/* <input type="submit" /> */}
             <button type="submit">로그인</button>
             <Link to="/signup">
               <button>회원가입</button>

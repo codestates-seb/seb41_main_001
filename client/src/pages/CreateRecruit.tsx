@@ -31,7 +31,7 @@ interface IFormInput {
 }
 
 const CRContainer = styled.div`
-  background-color: grey;
+  background-color: var(--gray);
   color: white;
   display: flex;
   justify-content: center;
@@ -51,13 +51,24 @@ const CRForm = styled.form`
   justify-content: center;
   align-items: center;
 
+  label,
   input,
+  textarea,
   select {
-    margin-bottom: 10px;
     border-radius: 5px;
     border: none;
     width: 400px;
     height: 30px;
+  }
+
+  input,
+  textarea,
+  select {
+    margin-bottom: 10px;
+  }
+
+  .length {
+    height: 100px;
   }
 `;
 
@@ -76,7 +87,10 @@ const CreateRecruit = () => {
           <label>제목</label>
           <input type="text" {...register('title', { required: true })} />
           <label>내용</label>
-          <input type="text" {...register('content', { required: true })} />
+          <textarea
+            className="length"
+            {...register('content', { required: true })}
+          />
           <label>모임 일시</label>
           <input
             type="datetime-local"

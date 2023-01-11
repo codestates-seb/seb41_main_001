@@ -10,6 +10,7 @@ const MainContainer = styled.div`
   margin-top: 100px;
   height: 100%;
 `;
+
 const Main = () => {
   return (
     <>
