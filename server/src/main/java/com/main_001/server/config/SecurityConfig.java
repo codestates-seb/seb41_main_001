@@ -46,10 +46,10 @@ public class SecurityConfig {
 //                .apply(new CustomFilterConfigurer())
 //                .and()
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers(HttpMethod.POST, "/members/login").permitAll()
-                        .antMatchers(HttpMethod.POST, "/members/logout").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.PATCH, "/members/my-page/*").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.GET, "/members/my-page").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.POST, "/members/login").permitAll()
+//                        .antMatchers(HttpMethod.POST, "/members/logout").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.PATCH, "/members/my-page/*").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.GET, "/members/my-page").hasAuthority("ROLE_USER")
                         .anyRequest().permitAll() // 권한 설정 필요!
                 );
         return http.build();
