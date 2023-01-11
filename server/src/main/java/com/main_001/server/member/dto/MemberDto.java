@@ -1,10 +1,13 @@
 package com.main_001.server.member.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import javax.validation.constraints.Email;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class MemberDto {
 
@@ -53,7 +56,8 @@ public class MemberDto {
 
     @AllArgsConstructor
     @Getter
-    public static class Response {
+    @Builder
+    public static class MyResponse {
         private long memberId;
 
         private String name;
@@ -68,8 +72,28 @@ public class MemberDto {
 
         private String sex;
 
-        private Timestamp createdAt;
+        private LocalDateTime createdAt;
 
         private int heart;
+
+        // Recruit, FreeBoard response 추가
+
     }
+
+    @AllArgsConstructor
+    @Getter
+    @Builder
+    public static class OtherResponse {
+        private long memberId;
+
+        private String nickname;
+
+        private String sex;
+
+        private int heart;
+
+        // Recruit, FreeBoard response 추가
+
+    }
+
 }
