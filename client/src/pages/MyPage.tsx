@@ -1,191 +1,202 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import MyRecruitItem from '../components/MyRecruitItem';
 import Badge from '../components/Badge';
+import Loading from './Loading';
 
 const Background = styled.div`
-    padding-top: 100px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    background-color: var(--gray);
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--gray);
 `;
 
 const MyPageWrapper = styled.div`
-    margin-top: 100px 100px 100px 0;
-    padding: 50px 430px;
-    background-color: var(--gray);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100%;
+  margin-top: 100px 100px 100px 0;
+  padding: 50px 430px;
+  background-color: var(--gray);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
 `;
 
 const MyPageHeader = styled.div`
-    display:flex;
-    flex-direction:row;
-    justify-content: space-between;
-    width:100%;
-    margin-bottom: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 50px;
 `;
 const Pfp = styled.div`
-    margin: 10px;
-    border: 2px solid white;
-    border-radius: 100px;
-    background-color: blue;
-    width: 100px;
-    height:100px;
+  margin: 10px;
+  border: 2px solid white;
+  border-radius: 100px;
+  background-color: blue;
+  width: 130px;
+  height: 130px;
 `;
 
 const Info = styled.div`
-    margin: 10px;
-    font-size:18px;
-    display: flex;
-    flex-direction: column;
+  margin: 10px;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  > div {
     padding: 5px;
-    > div {
-        padding: 5px;
-        i {
-            padding: 0 10px;
-        }
+    i {
+      padding: 0 10px;
     }
-    > div:first-child {
-        color: var(--neon-yellow);
-        font-size: 24px;
-        padding: 10px 15px;
-      text-shadow: white 0 0 3px;
-    }
+  }
+  > div:first-child {
+    color: var(--neon-yellow);
+    font-size: 28px;
+    padding: 10px 15px;
+    text-shadow: white 0 0 3px;
+    font-weight: bold;
+  }
 `;
 
 const HeadInfo = styled.div`
-    display:flex;
-    flex-direction:row;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 const Button = styled(Link)`
-    border: 1px solid white;
-    border-radius:10px;
-    align-items: center;
-    padding: 15px;
-    margin: 20px;
-    font-size: 16px;
-    height: 50px;
-    text-align: center;
-    display:flex;
-    text-decoration:none;
-    color: white;
-    justify-content: center;
-    i {
-        padding-right: 10px;
-    }
-    &:hover {
-        background-color:black;
-        text-shadow: white 0 0 5px;
-    }
+  border: 1px solid white;
+  border-radius: 10px;
+  align-items: center;
+  padding: 15px;
+  margin: 20px;
+  font-size: 16px;
+  height: 50px;
+  text-align: center;
+  display: flex;
+  text-decoration: none;
+  color: white;
+  justify-content: center;
+  i {
+    padding-right: 10px;
+  }
+  &:hover {
+    background-color: black;
+    transition: 0.2s ease-in-out;
+    text-shadow: white 0 0 5px;
+  }
 `;
 const MyPageBody = styled.div`
-    width:100%;
-    display:flex;
-    flex-direction:row;
-    justify-content:space-between;
-    > div {
-        display:flex;
-        flex-direction: column;
-        span {
-            display:flex;
-            flex-direction:row;
-        }
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  > div {
+    display: flex;
+    flex-direction: column;
+    span {
+      display: flex;
+      flex-direction: row;
     }
+  }
 `;
 const Container = styled.div`
-    margin: 10px;
-    display:flex;
-    flex-direction: column;
-    > div:first-child {
-      text-shadow: white 0 0 3px;
-      font-size:18px;
-      margin: 2px 8px;
-      padding: 5px;
-    }
-    > span {
-      width: 100%;
-      display: flex;
-      justify-content: flex-end;
-    }
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  > div:first-child {
+    text-shadow: white 0 0 3px;
+    font-size: 18px;
+    margin: 2px 8px;
+    padding: 5px;
+  }
+  > span {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
 `;
 
 const MyBoard = styled.div`
-    border: 2px solid white;
-    border-radius: 20px;
-    margin: 10px;
-    padding: 10px;
-    width: 760px;
+  border: 2px solid white;
+  border-radius: 20px;
+  margin: 10px;
+  padding: 10px;
+  padding-bottom: 25px;
+  width: 760px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  > span {
+    font-size: 15px;
     display: flex;
-    flex-direction:column;
-    justify-content: center;
-    align-items: center;
-    > span {
-      font-size:15px;
-      display:flex;
-      flex-direction: row;
-      width:100%;
-      justify-content: flex-start;
-      span {
-        margin: 5px 10px;
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-start;
+    span {
+      margin: 5px 10px;
+      &:hover {
+        color: var(--neon-yellow);
+        text-shadow: white 0 0 3px;
       }
     }
-    > div {
-      margin: 20px;
-    }
+  }
+  > div {
+    margin: 15px;
+  }
 `;
 
 const RegisteredBoard = styled.div`
-    border: 2px solid white;
-    width: 760px;
-    border-radius: 20px;
-    margin: 10px;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction:column;
-    > div {
-      margin: 20px;
-    }
+  border: 2px solid white;
+  width: 760px;
+  border-radius: 20px;
+  margin: 10px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  > div {
+    margin: 20px;
+  }
 `;
 const Badges = styled.div`
-    border: 2px solid white;
-    margin: 10px;
-    padding: 10px;
-    width:330px;
-    border-radius:10px;
+  border: 2px solid white;
+  margin: 10px;
+  padding: 10px;
+  width: 330px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
 `;
 const Tags = styled.div`
-    border: 2px solid white;
-    padding: 10px;
-    margin: 10px;
-    width: 160px;
-    height: 120px;
-    border-radius:10px;
-    > span {
-      margin: 5px;
-      padding: 3px 0;
-    }
+  border: 2px solid white;
+  padding: 10px;
+  margin: 10px;
+  width: 160px;
+  height: 120px;
+  border-radius: 10px;
+  > span {
+    margin: 5px;
+    padding: 3px 0;
+  }
 `;
 const PersonalInfo = styled.div`
-    border: 2px solid white;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 20px;
-    padding: 20px;
+  border: 2px solid white;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 20px;
+  padding: 20px;
 `;
 
 const InfoBlock = styled.div`
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   padding: 5px;
   > div:first-child {
     width: 120px;
@@ -201,116 +212,164 @@ const InfoBlock = styled.div`
   }
 `;
 
-const MyPage = () => (
-  <div>
-    <Background>
-      <MyPageWrapper>
-        <MyPageHeader>
-          <HeadInfo>
-            <Pfp />
-            <Info>
-              <div>NickName</div>
-              <div>
-                <i className="fa-solid fa-heart" />
-                87
-              </div>
-              <div>
-                <i className="fa-regular fa-calendar" />
-                Member for 1 Months
-              </div>
-            </Info>
-          </HeadInfo>
-          <Button to="/members/edit">
-            <i className="fa-solid fa-pen" />
-            프로필 수정
-          </Button>
-        </MyPageHeader>
-        <MyPageBody>
-          <div>
-            <Container>
-              <div>작성 게시글</div>
-              <MyBoard>
-                <span>
-                  <span>모집게시판</span>
-                  <span>자유게시판</span>
-                </span>
-                <MyRecruitItem title="title" quota="quota" dueDate="dueDate" tags={['tags']} />
-                <MyRecruitItem title="같이 농구할 사람 구해요~" quota="2/5" dueDate="2023.01.30" tags={['#농구']} />
-              </MyBoard>
-            </Container>
-            <Container>
-              <div>좋아요한 게시글</div>
-              <MyBoard>
-                <span>
-                  <span>모집게시판</span>
-                  <span>자유게시판</span>
-                </span>
-                <MyRecruitItem title="좋아요한 게시글" quota="2/3" dueDate="2023.01.17" tags={['#좋아요']} />
-              </MyBoard>
-            </Container>
-            <Container>
-              <div>신청한 모집글</div>
-              <RegisteredBoard>
-                <div>글이 아직 없습니다.</div>
-              </RegisteredBoard>
-            </Container>
-          </div>
-          <div>
-            <span>
-              <Container>
-                <div>뱃지</div>
-                <Badges>
-                  <Badge />
-                </Badges>
-              </Container>
-              <Container>
-                <div>관심 태그</div>
-                <Tags>
-                  <span># 스쿠버다이빙</span>
-                  <span># 헬스/크로스핏</span>
-                  <span># 축구</span>
-                </Tags>
-              </Container>
-            </span>
-            <Container>
-              <div>개인정보</div>
-              <PersonalInfo>
-                <InfoBlock>
-                  <div>이름</div>
-                  <div>우인유</div>
-                </InfoBlock>
-                <InfoBlock>
-                  <div>생년월일</div>
-                  <div>980217</div>
-                </InfoBlock>
-                <InfoBlock>
-                  <div>성별</div>
-                  <div>여성</div>
-                </InfoBlock>
-                <InfoBlock>
-                  <div>이메일</div>
-                  <div>kellycho1031@gmail.com</div>
-                </InfoBlock>
-                <InfoBlock>
-                  <div>휴대폰 번호</div>
-                  <div>010-1234-5678</div>
-                </InfoBlock>
-                <InfoBlock>
-                  <div>등록 지역</div>
+const MyPage = () => {
+  const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [oneUser, setOneUsers] = useState({
+    // "userId": 1,
+    nickname: 'NickName hey',
+    reputation: 87,
+    // heartbeat
+    memberSince: '1 Months',
+    email: 'kellycho1031@gmail.com',
+  });
+
+  useEffect(() => {
+    const getOneUser = () => {
+      fetch(
+        `http://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080/users/${id}`,
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          setOneUsers(data.data);
+          setIsLoading(false);
+        });
+    };
+    getOneUser();
+  }, []);
+
+  return (
+    <div>
+      <Background>
+        {!isLoading ? (
+          <MyPageWrapper>
+            <MyPageHeader>
+              <HeadInfo>
+                <Pfp />
+                <Info>
+                  <div>{oneUser.nickname}</div>
                   <div>
-                    <div>서울시 강서구</div>
-                    <div>수원시</div>
+                    <i className="fa-solid fa-heart" />
+                    {oneUser.reputation}
                   </div>
-                </InfoBlock>
-              </PersonalInfo>
-              <span>
-                <Button to="/members/withdrawl">회원 탈퇴</Button>
-              </span>
-            </Container>
-          </div>
-        </MyPageBody>
-      </MyPageWrapper>
-    </Background>
-  </div>
-);
+                  <div>
+                    <i className="fa-regular fa-calendar" />
+                    Member for
+                    {oneUser.memberSince}
+                  </div>
+                </Info>
+              </HeadInfo>
+              <Button to={`/members/edit/${id}`}>
+                <i className="fa-solid fa-pen" />
+                프로필 수정
+              </Button>
+            </MyPageHeader>
+            <MyPageBody>
+              <div>
+                <Container>
+                  <div>작성 게시글</div>
+                  <MyBoard>
+                    <span>
+                      <span>모집게시판</span>
+                      <span>자유게시판</span>
+                    </span>
+                    <MyRecruitItem
+                      title="title"
+                      quota="quota"
+                      dueDate="dueDate"
+                      tags={['tags']}
+                    />
+                    <MyRecruitItem
+                      title="같이 농구할 사람 구해요~"
+                      quota="2/5"
+                      dueDate="2023.01.30"
+                      tags={['#농구']}
+                    />
+                  </MyBoard>
+                </Container>
+                <Container>
+                  <div>좋아요한 게시글</div>
+                  <MyBoard>
+                    <span>
+                      <span>모집게시판</span>
+                      <span>자유게시판</span>
+                    </span>
+                    <MyRecruitItem
+                      title="좋아요한 게시글"
+                      quota="2/3"
+                      dueDate="2023.01.17"
+                      tags={['#좋아요']}
+                    />
+                  </MyBoard>
+                </Container>
+                <Container>
+                  <div>신청한 모집글</div>
+                  <RegisteredBoard>
+                    <div>글이 아직 없습니다.</div>
+                  </RegisteredBoard>
+                </Container>
+              </div>
+              <div>
+                <span>
+                  <Container>
+                    <div>뱃지</div>
+                    <Badges>
+                      <Badge title="writer" icon="fa-solid fa-pen" />
+                      <Badge title="starter" icon="fa-solid fa-star" />
+                    </Badges>
+                  </Container>
+                  <Container>
+                    <div>관심 태그</div>
+                    <Tags>
+                      <span># 스쿠버다이빙</span>
+                      <span># 헬스/크로스핏</span>
+                      <span># 축구</span>
+                    </Tags>
+                  </Container>
+                </span>
+                <Container>
+                  <div>개인정보</div>
+                  <PersonalInfo>
+                    <InfoBlock>
+                      <div>이름</div>
+                      <div>우인유</div>
+                    </InfoBlock>
+                    <InfoBlock>
+                      <div>생년월일</div>
+                      <div>980217</div>
+                    </InfoBlock>
+                    <InfoBlock>
+                      <div>성별</div>
+                      <div>여성</div>
+                    </InfoBlock>
+                    <InfoBlock>
+                      <div>이메일</div>
+                      <div>{oneUser.email}</div>
+                    </InfoBlock>
+                    <InfoBlock>
+                      <div>휴대폰 번호</div>
+                      <div>010-1234-5678</div>
+                    </InfoBlock>
+                    <InfoBlock>
+                      <div>등록 지역</div>
+                      <div>
+                        <div>서울시 강서구</div>
+                        <div>수원시</div>
+                      </div>
+                    </InfoBlock>
+                  </PersonalInfo>
+                  <span>
+                    <Button to={`/members/withdrawl/${id}`}>회원 탈퇴</Button>
+                  </span>
+                </Container>
+              </div>
+            </MyPageBody>
+          </MyPageWrapper>
+        ) : (
+          <Loading />
+        )}
+      </Background>
+    </div>
+  );
+};
 export default MyPage;

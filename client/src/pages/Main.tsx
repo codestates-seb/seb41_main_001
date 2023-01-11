@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import MyPage from './MyPage';
 
 const MainContainer = styled.main`
   background-color: var(--gray);
@@ -11,10 +10,7 @@ const MainContainer = styled.main`
 `;
 
 const Main = () => (
-  <>
-    <MyPage />
-    <MainContainer>Main</MainContainer>
-  </>
+  <MainContainer>Main</MainContainer>
 );
 
 export default Main;

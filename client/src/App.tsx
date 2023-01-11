@@ -15,9 +15,9 @@ const App = () => (
       <Header />
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/members/mypage" element={<MyPage />} />
-        <Route path="/members/withdrawl" element={<Withdrawl />} />
-        <Route path="/members/edit" element={<EditUser />} />
+        <Route path="/members/mypage/:id" element={<MyPage />} />
+        <Route path="/members/withdrawl/:id" element={<Withdrawl />} />
+        <Route path="/members/edit/:id" element={<EditUser />} />
       </Routes>
       <Footer />
     </Router>

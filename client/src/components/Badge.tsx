@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
 const BadgeWrapper = styled.div`
-  padding: 5px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  width: 100px;
   justify-content: center;
   align-items: center;
   > div:first-child {
@@ -14,23 +13,27 @@ const BadgeWrapper = styled.div`
     border-radius: 50px;
     width: 50px;
     height: 50px;
+    margin-bottom: 8px;
   }
   > div {
-    margin: 5px;
     text-align: center;
     display: flex;
     justify-content: center;
   }
 `;
+interface BadgeItem {
+  title: string;
+  icon: string;
+}
 
-const Badge = () => (
+const Badge = ({ title, icon }:BadgeItem) => (
   <div>
     <BadgeWrapper>
       <div>
-        <i className="fa-solid fa-star" />
+        <i className={icon} />
       </div>
       <div>
-        Writer
+        {title}
       </div>
     </BadgeWrapper>
   </div>
