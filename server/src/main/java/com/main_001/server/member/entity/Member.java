@@ -9,13 +9,12 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AuditingEntityListener.class) // 생성 날짜 자동화
 @Setter
 @Getter
 @Entity
@@ -52,6 +51,7 @@ public class Member {
     private int heart;
 
     // member의 권한 정보 테이블과 매핑
+    // TODO 개발 완료 후 봉인 해제
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
