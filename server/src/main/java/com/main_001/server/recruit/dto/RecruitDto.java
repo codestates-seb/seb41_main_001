@@ -1,6 +1,7 @@
 package com.main_001.server.recruit.dto;
 
 import com.main_001.server.recruit.entity.Recruit;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,11 @@ public class RecruitDto {
 
         private int minRequire;
 
+        private int heart;
+
         private List<Integer> ages;
+
+        private List<RecruitTagDto> recruitTagDtos;
     }
 
     @Getter
@@ -38,6 +43,7 @@ public class RecruitDto {
     }
 
     @Getter
+    @Builder
     public static class Response{
         private long recruitId;
         private String title;
@@ -50,7 +56,7 @@ public class RecruitDto {
         private double star;
         private int views;
         private int heart;
-        private List<Integer> ageGroup;
+        private List<String> ageGroup;
         private long memberId;
         private String nickname;
         private List<ResponseDto.Apply> applies;
