@@ -14,8 +14,8 @@ public class ResponseDto {
 //        private long applyId;
         private long memberId;
         //필요하면 아래항목 추가
-//        private String nickname;
-//        private int heart;
+        private String nickname;
+        private int heart;
     }
 
     @Builder
