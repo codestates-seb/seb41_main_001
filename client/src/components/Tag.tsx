@@ -2,24 +2,28 @@ import styled from 'styled-components';
 
 const TagContainer = styled.span`
   display: flex;
+  flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   text-align: center;
   border: 1px solid white;
   border-radius: 5px;
   width: 140px;
   margin: 5px;
-  padding: 5px;
 
-  input {
-    width: 20px;
-    height: 20px;
+  input[type="checkbox"] {
+    width: 17px;
+    border: 10px solid red;
+    bottom: 10px;
+    position:relative;
+    top:5px;
   }
 
   label {
-    width: 110px;
-    height: 20px;
+    width: 107px;
     font-size: 13px;
+    padding: 5px;
+    height:100%;
   }
 `;
 

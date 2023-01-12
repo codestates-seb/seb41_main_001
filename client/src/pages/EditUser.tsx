@@ -1,5 +1,14 @@
 import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import Tag from '../components/Tag';
+
+declare global {
+  interface Window {
+    kakao: any;
+  }
+  const kakao: any;
+}
 
 const EditContainer = styled.main`
   background-color: var(--gray);
@@ -11,53 +20,53 @@ const EditContainer = styled.main`
 `;
 
 const Container = styled.div`
-    margin: 10px;
-    display:flex;
-    flex-direction: column;
-    > div:first-child {
-      text-shadow: white 0 0 3px;
-      font-size:24px;
-      margin: 20px;
-      text-align: center;
-    }
-    > span {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  > div:first-child {
+    text-shadow: white 0 0 3px;
+    font-size: 24px;
+    margin: 20px;
+    text-align: center;
+  }
+  > span {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const PersonalInfo = styled.div`
-    border: 2px solid white;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 20px;
-    padding: 40px 50px 40px 20px;
+  border: 2px solid white;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 20px;
+  padding: 40px 50px 40px 20px;
 `;
 
 const InfoBlock = styled.label`
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   padding: 5px;
   margin: 8px;
   > div:first-child {
     width: 120px;
     display: flex;
     justify-content: flex-start;
-    align-items:flex-end;
+    align-items: flex-end;
     text-shadow: white 0 0 5px;
     margin-right: 10px;
     margin-top: 5px;
-    margin-left: 20px;
+    margin-left: 70px;
   }
   input {
     margin-bottom: 15px;
     background-color: var(--gray);
     padding: 5px;
     font-size: 16px;
-    border:none;
+    border: none;
     border-bottom: 2px solid gray;
-    width: 250px;
+    width: 300px;
     outline: none;
     color: white;
     &:focus-within {
@@ -66,7 +75,8 @@ const InfoBlock = styled.label`
     }
     &:-webkit-autofill {
       box-shadow: 0 0 0 20px var(--gray) inset;
-      -webkit-text-fill-color: white;
+      -webkit-text-fill-color: var(--gray);
+      color:white
     }
   }
   > div {
@@ -81,7 +91,7 @@ const InfoBlock = styled.label`
         font-size: 16px;
         margin-left: 15px;
         &:hover {
-        color: var(--neon-blue);
+          color: var(--neon-blue);
           transition: 0.2s ease-in-out;
         }
       }
@@ -89,64 +99,227 @@ const InfoBlock = styled.label`
   }
 `;
 
-const Pfp = styled.div`
+const Pfp = styled.img<PreviewPfp>`
   width: 150px;
   height: 150px;
-  background-color: pink;
   border: 2px solid white;
   border-radius: 100px;
   margin: 0 10px;
 `;
 
 const Button = styled(Link)`
-    border: 1px solid white;
-    border-radius:10px;
-    align-items: center;
-    padding: 15px;
-    margin: 15px 30px;
-    font-size: 20px;
-    height: 50px;
-    text-align: center;
-    display:flex;
-    text-decoration:none;
-    color: white;
-    justify-content: center;
-    i {
-        padding-right: 10px;
-    }
-    &:hover {
-        background-color:black;
-        text-shadow: white 0 0 5px;
-        transition: 0.2s ease-in-out;
-    }
+  border: 1px solid white;
+  border-radius: 10px;
+  align-items: center;
+  padding: 15px;
+  margin: 15px 30px;
+  font-size: 20px;
+  height: 50px;
+  text-align: center;
+  display: flex;
+  text-decoration: none;
+  color: white;
+  justify-content: center;
+  i {
+    padding-right: 10px;
+  }
+  &:hover {
+    background-color: black;
+    text-shadow: white 0 0 5px;
+    transition: 0.2s ease-in-out;
+  }
 `;
 
 const NoLinkButton = styled.button`
-    border: 1px solid white;
-    border-radius:10px;
-    align-items: center;
-    margin: 3px 0px 15px 20px;
-    font-size: 14px;
-    text-align: center;
-    display:flex;
-    color: white;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    background-color: var(--gray);
-    padding: 5px 10px;
-    i {
-      padding-right: 5px;
-    }
-    &:hover {
-        background-color:black;
-        text-shadow: white 0 0 5px;
-        transition: 0.2s ease-in-out;
-    }
+  border: 1px solid white;
+  border-radius: 10px;
+  align-items: center;
+  margin: 3px 0px 15px 20px;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 35px;
+  background-color: var(--gray);
+  padding: 5px 10px;
+  i {
+    padding-right: 5px;
+  }
+  &:hover {
+    background-color: black;
+    text-shadow: white 0 0 5px;
+    transition: 0.2s ease-in-out;
+  }
 `;
+
+const InputButton = styled.label`
+  border: 1px solid white;
+  border-radius: 10px;
+  align-items: center;
+  margin: 3px 0px 15px 20px;
+  font-size: 14px;
+  height: 35px;
+  text-align: center;
+  display: flex;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: var(--gray);
+  padding: 5px 10px;
+  cursor: pointer;
+  > input {
+      display: none;
+  }
+  i {
+    padding-right: 5px;
+  }
+  &:hover {
+    background-color: black;
+    text-shadow: white 0 0 5px;
+    transition: 0.2s ease-in-out;
+  }
+`;
+
+const TagContainer = styled.div`
+  form {
+    display: flex;
+    flex-direction: row;
+    width: 500px;
+    flex-wrap: wrap;
+  }
+`;
+
+const Map = styled.div`
+  border: 1px solid white;
+  width: 280px;
+  height: 280px;
+`;
+
+interface PreviewPfp {
+  src: string;
+}
+
+interface Location {
+  coords: any;
+  timestamp: any;
+}
+
+interface Coordinates {
+  latitude: number;
+  longitude: number;
+  timestamp: number;
+}
+interface MapOption {
+  center: any;
+  level: number;
+}
 
 const EditUser = () => {
   const { id } = useParams();
+  const [coordinate, setCoordinate] = useState<Coordinates>({
+    latitude: 126,
+    longitude: 126,
+    timestamp: 1,
+  });
+  const [option, setOption] = useState<MapOption>({
+    center: null,
+    level: 3,
+  });
+  const [img, setImg] = useState<any>(
+    'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
+  );
+  // const imgRef = useRef<any>();
+  // function readImage(input: any) {
+  //   // 인풋 태그에 파일이 있는 경우
+  //   if (input.files && input.files[0]) {
+  //     // FileReader 인스턴스 생성
+  //     const reader = new FileReader();
+
+  //     // 이미지가 로드가 된 경우
+  //     reader.onload = (e: any) => {
+  //       const previewImage = document.getElementById(
+  //         'preview-image',
+  //       ) as PreviewPfp & HTMLImageElement;
+  //       previewImage.src = e.target.result;
+  //     };
+
+  //     // reader가 이미지 읽도록 하기
+  //     reader.readAsDataURL(input.files[0]);
+  //   }
+  // }
+
+  // // input file에 change 이벤트 부여
+  // const saveImgFile = () => {
+  //   const file = (imgRef:any).(current:any).files[0];
+  //   const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     reader.onloadend = () => {
+  //         setImg(reader.result);
+  //      };
+  // };
+  const changeImg = () => {
+    const inputImage = document.getElementById('changeFile') as HTMLInputElement;
+    setImg(
+      inputImage.value,
+    );
+    console.log(img);
+  };
+  const deleteImg = () => {
+    setImg(
+      'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
+    );
+  };
+  // inputImage.addEventListener('change', (e) => {
+  //   readImage(e.target);
+  // });
+  function success({ coords, timestamp }: Location) {
+    const { latitude, longitude } = coords;
+    setCoordinate({
+      latitude,
+      longitude,
+      timestamp,
+    });
+    console.log('actually, yeah', latitude, longitude);
+    console.log(
+      'this is what u get',
+      coordinate.latitude,
+      coordinate.longitude,
+    );
+    alert(
+      `위도: ${coordinate.latitude}, 경도: ${coordinate.longitude}, 위치 반환 시간: ${coordinate.timestamp},`,
+    );
+    setOption({
+      center: new kakao.maps.LatLng(latitude, longitude),
+      level: 3,
+    });
+    // location.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+  }
+
+  const getUserLocation = () => {
+    if (!navigator.geolocation) {
+      throw Object.assign(new Error('위치 정보가 지원되지 않습니다.'));
+    }
+    navigator.geolocation.getCurrentPosition(success);
+  };
+
+  const loadMap = () => {
+    getUserLocation();
+    const container = document.getElementById('map');
+    const map = new kakao.maps.Map(container, option);
+    console.log(map);
+  };
+
+  useEffect(() => {
+    getUserLocation();
+    const script = document.createElement('script');
+    script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=2a51fcab7ce5015f76fc7c20fc68714c';
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
 
   return (
     <EditContainer>
@@ -156,14 +329,23 @@ const EditUser = () => {
           <InfoBlock htmlFor="pfp">
             <div>프로필 사진</div>
             <div>
-              <Pfp />
+              <Pfp
+                id="preview-image"
+                src={img}
+              />
             </div>
             <div>
-              <NoLinkButton>
+              <InputButton htmlFor="changeFile" onClick={changeImg}>
                 <i className="fa-solid fa-arrows-rotate" />
                 변경
-              </NoLinkButton>
-              <NoLinkButton>
+                <input
+                  type="file"
+                  name="changeFile"
+                  id="changeFile"
+                  accept="image/jpeg,image/jpg, image/png, image/svg"
+                />
+              </InputButton>
+              <NoLinkButton onClick={deleteImg}>
                 <i className="fa-solid fa-trash" />
                 삭제
               </NoLinkButton>
@@ -194,7 +376,7 @@ const EditUser = () => {
           <InfoBlock htmlFor="location">
             <div>등록 지역 변경</div>
             <div>
-              <input type="string" name="location" placeholder="location" />
+              <Map>지도</Map>
               <div>
                 서울시 강서구
                 <i className="fa-solid fa-xmark" />
@@ -204,20 +386,35 @@ const EditUser = () => {
                 <i className="fa-solid fa-xmark" />
               </div>
             </div>
+            <NoLinkButton onClick={loadMap}>위치 가져오기</NoLinkButton>
           </InfoBlock>
           <InfoBlock htmlFor="tags">
             <div>등록 태그 변경</div>
-            <div>
-              <input type="string" name="tags" placeholder="tags" />
-              <div>
-                스케이트/인라인
-                <i className="fa-solid fa-xmark" />
-              </div>
-              <div>
-                축구
-                <i className="fa-solid fa-xmark" />
-              </div>
-            </div>
+            <TagContainer>
+              <form>
+                <Tag name="축구/풋살" emoji="⚽️" />
+                <Tag name="농구" emoji="🏀" />
+                <Tag name="야구" emoji="⚾️" />
+                <Tag name="배구" emoji="🏐" />
+                <Tag name="복싱" emoji="🥊" />
+                <Tag name="탁구" emoji="🏓" />
+                <Tag name="배드민턴" emoji="🏸" />
+                <Tag name="테니스/스쿼시" emoji="🎾" />
+                <Tag name="태권도/유도" emoji="🥋" />
+                <Tag name="검도" emoji="⚔️" />
+                <Tag name="무술/주짓수" emoji="🥋" />
+                <Tag name="족구" emoji="⚽️" />
+                <Tag name="러닝" emoji="🏃" />
+                <Tag name="자전거" emoji="🚴" />
+                <Tag name="등산" emoji="🏔️" />
+                <Tag name="클라이밍" emoji="🧗‍♀️" />
+                <Tag name="수영" emoji="🏊‍♀️" />
+                <Tag name="골프" emoji="⛳️" />
+                <Tag name="요가/필라테스" emoji="🧘" />
+                <Tag name="헬스/크로스핏" emoji="🏋️" />
+                <Tag name="스케이트/인라인" emoji="⛸️" />
+              </form>
+            </TagContainer>
           </InfoBlock>
         </PersonalInfo>
         <span>
