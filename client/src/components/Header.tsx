@@ -28,7 +28,7 @@ const Logo = styled(Link)`
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   form {
@@ -103,6 +103,10 @@ const Board = styled.nav`
   }
 `;
 
+// interface CheckLogin {
+//   login: boolean;
+// }
+
 const Header = () => (
   <HeaderContainer>
     <div>
@@ -117,14 +121,16 @@ const Header = () => (
         <Link to="/recruits/tags">모집게시판 태그</Link>
       </Board>
     </div>
-    <ButtonContainer>
+    <ButtonsContainer>
       <form>
         <i className="fa-solid fa-magnifying-glass" />
         <input placeholder="Search here..." />
       </form>
-      <Button to="/login">로그인</Button>
-      <Button to="/signup">회원가입</Button>
-    </ButtonContainer>
+      <div>
+        <Button to="/login">로그인</Button>
+        <Button to="/signup">회원가입</Button>
+      </div>
+    </ButtonsContainer>
   </HeaderContainer>
 );
 

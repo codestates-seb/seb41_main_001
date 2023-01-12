@@ -1,14 +1,19 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// import { useState } from 'react';
+import Main from './pages/Main';
+import Withdrawl from './pages/Withdrawl';
+import MyPage from './pages/MyPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Main from './pages/Main';
+import EditUser from './pages/EditUser';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
 import CreateRecruit from './pages/CreateRecruit';
 import EditRecruit from './pages/EditRecruit';
 
 const App = () => (
+  // const [login, setLogin] = useState(false);
   <div className="App">
     <Router>
       <Header />
@@ -18,6 +23,9 @@ const App = () => (
         <Route path="/signup" element={<SignUp />} />
         <Route path="/recruit/new" element={<CreateRecruit />} />
         <Route path="/recruit/1/edit" element={<EditRecruit />} />
+        <Route path="/members/mypage/:id" element={<MyPage />} />
+        <Route path="/members/withdrawl/:id" element={<Withdrawl />} />
+        <Route path="/members/edit/:id" element={<EditUser />} />
       </Routes>
       <Footer />
     </Router>
