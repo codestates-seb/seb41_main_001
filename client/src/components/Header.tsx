@@ -12,6 +12,7 @@ const HeaderContainer = styled.header`
   height: 100px;
   position: fixed;
   top: 0;
+  z-index: 99;
 `;
 
 const Logo = styled(Link)`

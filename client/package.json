@@ -55,13 +55,7 @@
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.11",
-<<<<<<< HEAD
     "eslint-plugin-react-hooks": "^4.6.0",
     "kakao.maps.d.ts": "^0.1.33"
   }
-=======
-    "eslint-plugin-react-hooks": "^4.6.0"
-  },
-  "proxy": "http://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080/"
->>>>>>> b7c9e0dbcb477dd573a53d48cba89e4160bb1d17
 }
