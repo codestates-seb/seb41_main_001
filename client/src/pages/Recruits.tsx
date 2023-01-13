@@ -7,7 +7,7 @@ import RecruitList from '../components/RecruitList';
 import ButtonLink from '../components/ButtonLink';
 
 const MainContainer = styled.main`
-  background-color: var(--gray);
+  width: 1200px;
   color: white;
   display: flex;
   justify-content: center;
