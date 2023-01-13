@@ -23,19 +23,38 @@ const LogInForm = styled.form`
   border: 1px solid white;
   border-radius: 10px;
 
-  label,
-  input {
-    width: 400px;
-    height: 30px;
-    border-radius: 5px;
-    border: none;
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    label {
+      width: 80px;
+    }
+
+    input {
+      width: 200px;
+      margin: 10px;
+      outline: none;
+      border: none;
+      background-color: rgba(1, 1, 1, 0);
+      border-bottom: 2px solid grey;
+      color: white;
+      &:focus-within {
+        border-bottom: 2px solid white;
+      }
+    }
   }
-  input {
-    margin-bottom: 10px;
+
+  div:first-child {
+    margin-bottom: 20px;
+    font-weight: bold;
   }
 `;
 
 const ButtonContainer = styled.div`
+  margin-top: 20px;
+
   button {
     width: 130px;
     text-decoration: none;
@@ -78,20 +97,24 @@ const LogIn = () => {
         })}
       >
         <div>로그인</div>
-        <label htmlFor="email">이메일</label>
-        <input
-          id="email"
-          {...register('email', { required: true })}
-          defaultValue="abc@gmail.com"
-        />
-        {errors.email && <div>이메일을 입력하세요</div>}
-        <label htmlFor="password">비밀번호</label>
-        <input
-          id="password"
-          type="password"
-          {...register('password', { required: true, maxLength: 10 })}
-        />
-        {errors.password && <div>비밀번호를 입력하세요</div>}
+        <div>
+          <label htmlFor="email">이메일</label>
+          <input
+            id="email"
+            {...register('email', { required: true })}
+            defaultValue="abc@gmail.com"
+          />
+          {errors.email && <div>이메일을 입력하세요</div>}
+        </div>
+        <div>
+          <label htmlFor="password">비밀번호</label>
+          <input
+            id="password"
+            type="password"
+            {...register('password', { required: true, maxLength: 10 })}
+          />
+          {errors.password && <div>비밀번호를 입력하세요</div>}
+        </div>
         <ButtonContainer>
           <Link to="/search-password">
             <button type="button">비밀번호 찾기</button>

@@ -2,13 +2,14 @@ import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import Tag from '../components/Tag';
+import KakaoMap from '../components/KakaoMap';
 
-declare global {
-  interface Window {
-    kakao: any;
-  }
-  const kakao: any;
-}
+// declare global {
+//   interface Window {
+//     kakao: any;
+//   }
+//   const kakao: any;
+// }
 
 const EditContainer = styled.main`
   background-color: var(--gray);
@@ -79,6 +80,19 @@ const InfoBlock = styled.label`
       color:white
     }
   }
+  > button {
+    border: 1px solid white;
+    color: white;
+    border-radius: 5px;
+    width: 100px;
+    height: 40px;
+    background-color: var(--gray);
+    margin-left: 15px;
+  }
+  #map {
+      width: 250px;
+      height: 250px;
+    }
   > div {
     display: flex;
     flex-direction: column;
@@ -193,12 +207,6 @@ const TagContainer = styled.div`
   }
 `;
 
-const Map = styled.div`
-  border: 1px solid white;
-  width: 280px;
-  height: 280px;
-`;
-
 interface PreviewPfp {
   src: string;
 }
@@ -213,10 +221,6 @@ interface Coordinates {
   longitude: number;
   timestamp: number;
 }
-interface MapOption {
-  center: any;
-  level: number;
-}
 
 const EditUser = () => {
   const { id } = useParams();
@@ -224,10 +228,6 @@ const EditUser = () => {
     latitude: 126,
     longitude: 126,
     timestamp: 1,
-  });
-  const [option, setOption] = useState<MapOption>({
-    center: null,
-    level: 3,
   });
   const [img, setImg] = useState<any>(
     'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
@@ -292,10 +292,6 @@ const EditUser = () => {
     alert(
       `위도: ${coordinate.latitude}, 경도: ${coordinate.longitude}, 위치 반환 시간: ${coordinate.timestamp},`,
     );
-    setOption({
-      center: new kakao.maps.LatLng(latitude, longitude),
-      level: 3,
-    });
     // location.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
   }
 
@@ -304,13 +300,6 @@ const EditUser = () => {
       throw Object.assign(new Error('위치 정보가 지원되지 않습니다.'));
     }
     navigator.geolocation.getCurrentPosition(success);
-  };
-
-  const loadMap = () => {
-    getUserLocation();
-    const container = document.getElementById('map');
-    const map = new kakao.maps.Map(container, option);
-    console.log(map);
   };
 
   useEffect(() => {
@@ -354,7 +343,7 @@ const EditUser = () => {
           <InfoBlock htmlFor="nickname">
             <div>닉네임</div>
             <input type="text" name="nickname" placeholder="NickName" />
-            <NoLinkButton>중복 확인</NoLinkButton>
+            <button type="button">중복 확인</button>
           </InfoBlock>
           <InfoBlock htmlFor="formerPassword">
             <div>기존 비밀번호</div>
@@ -371,12 +360,12 @@ const EditUser = () => {
           <InfoBlock htmlFor="phone">
             <div>휴대폰 번호</div>
             <input type="tel" name="phone" placeholder="010-1234-5678" />
-            <NoLinkButton>중복 확인</NoLinkButton>
+            <button type="button">중복 확인</button>
           </InfoBlock>
           <InfoBlock htmlFor="location">
             <div>등록 지역 변경</div>
+            <KakaoMap />
             <div>
-              <Map>지도</Map>
               <div>
                 서울시 강서구
                 <i className="fa-solid fa-xmark" />
@@ -386,7 +375,6 @@ const EditUser = () => {
                 <i className="fa-solid fa-xmark" />
               </div>
             </div>
-            <NoLinkButton onClick={loadMap}>위치 가져오기</NoLinkButton>
           </InfoBlock>
           <InfoBlock htmlFor="tags">
             <div>등록 태그 변경</div>

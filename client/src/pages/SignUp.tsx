@@ -1,3 +1,4 @@
+// import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Tag from '../components/Tag';
@@ -31,7 +32,7 @@ const SignUpContainer = styled.div`
 `;
 
 const SignUpForm = styled.form`
-  width: 600px;
+  width: 800px;
   height: auto;
   padding: 20px;
   margin-top: 30px;
@@ -43,35 +44,37 @@ const SignUpForm = styled.form`
   border: 1px solid white;
   border-radius: 10px;
 
-  label,
-  input,
-  select,
-  .tagLabel {
-    width: 400px;
-    height: 30px;
-    border-radius: 5px;
-    border: none;
+  div:first-child {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-weight: bold;
   }
 
-  input,
-  select {
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 10px;
-  }
 
-  fieldset {
-    width: 100%;
-    height: auto;
-    div {
-      /* width: 500px; */
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
+    label,
+    p {
+      width: 120px;
     }
-  }
 
-  #map {
-    width: 500px;
-    height: 400px;
+    input,
+    select {
+      margin-bottom: 10px;
+      width: 400px;
+      margin: 10px;
+      outline: none;
+      border: none;
+      background-color: rgba(1, 1, 1, 0);
+      border-bottom: 2px solid grey;
+      color: white;
+      &:focus-within {
+        border-bottom: 2px solid white;
+      }
+    }
   }
 
   button {
@@ -93,60 +96,98 @@ const SignUpForm = styled.form`
   }
 `;
 
+const TagList = styled.div`
+  width: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px;
+`;
+
 const SignUp = () => {
   const { register, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
+
+  // const [checkedTags, setCheckedTags] = useState(new Set());
+
+  // const checkedTagHandler = (id, isChecked) => {
+  //   if (isChecked) {
+  //     checkedTags.add(id);
+  //     setCheckedTags(checkedTags);
+  //   } else if (!isChecked && checkedTags.has(id)) {
+  //     checkedTags.delete(id);
+  //     setCheckedTags(checkedTags);
+  //   }
+  // };
 
   return (
     <SignUpContainer>
       <SignUpForm onSubmit={handleSubmit(onSubmit)}>
         <div>회원가입</div>
-        <label htmlFor="name">이름</label>
-        <input id="name" {...register('name', { required: true })} />
-        <label htmlFor="nickname">닉네임</label>
-        <input id="nickname" {...register('nickname', { required: true })} />
-        <label htmlFor="birth">생년월일</label>
-        <input
-          id="birth"
-          type="date"
-          {...register('birth', { required: true })}
-        />
-        <label htmlFor="gender">성별</label>
-        <select id="gender" {...register('gender')}>
-          <option value="female">여성</option>
-          <option value="male">남성</option>
-        </select>
-        <label htmlFor="email">이메일</label>
-        <input
-          id="email"
-          type="email"
-          {...register('email', { required: true })}
-        />
-        <label htmlFor="phone">휴대폰 번호</label>
-        <input
-          id="phone"
-          type="tel"
-          {...register('phone', { required: true })}
-        />
-        <label htmlFor="password">비밀번호</label>
-        <input
-          id="password"
-          type="password"
-          {...register('password', {
-            required: true,
-          })}
-        />
-        <label htmlFor="passwordRetype">비밀번호 확인</label>
-        <input
-          id="passwordRetype"
-          type="password"
-          {...register('passwordRetype', { required: true })}
-        />
-        <label htmlFor="location">지역</label>
-        <KakaoMap />
-        <fieldset>
-          <legend className="tagLabel">관심 운동 태그</legend>
-          <div>
+        <div>
+          <label htmlFor="name">이름</label>
+          <input id="name" {...register('name', { required: true })} />
+        </div>
+        <div>
+          <label htmlFor="nickname">닉네임</label>
+          <input id="nickname" {...register('nickname', { required: true })} />
+        </div>
+        <div>
+          <label htmlFor="birth">생년월일</label>
+          <input
+            id="birth"
+            type="date"
+            {...register('birth', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="gender">성별</label>
+          <select id="gender" {...register('gender')}>
+            <option value="female">여성</option>
+            <option value="male">남성</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="email">이메일</label>
+          <input
+            id="email"
+            type="email"
+            {...register('email', { required: true })}
+          />
+        </div>
+        <div />
+        <div>
+          <label htmlFor="phone">휴대폰 번호</label>
+          <input
+            id="phone"
+            type="tel"
+            {...register('phone', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="password">비밀번호</label>
+          <input
+            id="password"
+            type="password"
+            {...register('password', {
+              required: true,
+            })}
+          />
+        </div>
+        <div>
+          <label htmlFor="passwordRetype">비밀번호 확인</label>
+          <input
+            id="passwordRetype"
+            type="password"
+            {...register('passwordRetype', { required: true })}
+          />
+        </div>
+        <div>
+          <p>지역</p>
+          <KakaoMap />
+        </div>
+        <div>
+          <p>관심 태그</p>
+          <TagList>
             <Tag name="축구/풋살" emoji="⚽️" />
             <Tag name="농구" emoji="🏀" />
             <Tag name="야구" emoji="⚾️" />
@@ -168,10 +209,12 @@ const SignUp = () => {
             <Tag name="요가/필라테스" emoji="🧘" />
             <Tag name="헬스/크로스핏" emoji="🏋️" />
             <Tag name="스케이트/인라인" emoji="⛸️" />
-          </div>
-        </fieldset>
-        <label htmlFor="profile">프로필 사진</label>
-        <input id="profile" type="file" {...register('profile')} />
+          </TagList>
+        </div>
+        <div>
+          <label htmlFor="profile">프로필 사진</label>
+          <input id="profile" type="file" {...register('profile')} />
+        </div>
         <button type="submit">건강한 삶 시작하기</button>
       </SignUpForm>
     </SignUpContainer>

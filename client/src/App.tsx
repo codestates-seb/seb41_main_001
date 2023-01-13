@@ -19,13 +19,13 @@ const App = () => (
       <Header />
       <Routes>
         <Route path="/" element={<Main />} />
+        <Route path="/members/mypage/:id" element={<MyPage />} />
+        <Route path="/members/withdrawl/:id" element={<Withdrawl />} />
+        <Route path="/members/edit/:id" element={<EditUser />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/recruit/new" element={<CreateRecruit />} />
         <Route path="/recruit/1/edit" element={<EditRecruit />} />
-        <Route path="/members/mypage/:id" element={<MyPage />} />
-        <Route path="/members/withdrawl/:id" element={<Withdrawl />} />
-        <Route path="/members/edit/:id" element={<EditUser />} />
       </Routes>
       <Footer />
     </Router>

@@ -1,29 +1,33 @@
 import styled from 'styled-components';
+// import { useState } from 'react';
 
 const TagContainer = styled.span`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   text-align: center;
   border: 1px solid white;
   border-radius: 5px;
-  width: 140px;
-  margin: 5px;
+  width: 131px;
+  height: 50px;
+  margin: 1px;
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     width: 17px;
-    border: 10px solid red;
     bottom: 10px;
-    position:relative;
-    top:5px;
+    top: 5px;
+    margin-top: 15px;
   }
 
   label {
-    width: 107px;
-    font-size: 13px;
+    width: 100px;
+    font-size: 10px;
     padding: 5px;
-    height:100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
@@ -32,11 +36,18 @@ interface PropsType {
   emoji: string;
 }
 
+// const [bChecked, setChecked] = useState(false);
+// const checkHandler: any({target}) => {
+//   setChecked(!bChecked);
+//   checkTagHandler(tag.id, target.checked);
+// }
+
 const Tag = ({ name, emoji }: PropsType) => (
   <TagContainer>
     <input type="checkbox" id={name} name="tags" value={name} />
     <label htmlFor={name}>
       {name}
+      <br />
       {emoji}
     </label>
   </TagContainer>

@@ -19,7 +19,7 @@ const ERContainer = styled.div`
 `;
 
 const ERForm = styled.form`
-  width: auto;
+  width: 800px;
   height: auto;
   border: 1px solid white;
   border-radius: 5px;
@@ -27,33 +27,64 @@ const ERForm = styled.form`
   margin: 30px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
 
-  label,
-  input,
-  textarea {
-    width: 400px;
-    height: 30px;
-    border-radius: 5px;
-    border: none;
+  div:first-child {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-weight: bold;
   }
 
-  input,
-  textarea,
-  .warn {
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 10px;
-  }
 
-  input:nth-child(1) {
-    height: 100px;
-  }
+    input,
+    textarea {
+      width: 300px;
+      margin: 10px;
+      outline: none;
+      border: none;
+      background-color: rgba(1, 1, 1, 0);
+      border-bottom: 2px solid grey;
+      color: white;
+      &:focus-within {
+        border-bottom: 2px solid white;
+      }
+    }
 
-  .length {
-    height: 100px;
+    label {
+      width: 100px;
+    }
+
+    .length {
+      height: 100px;
+    }
   }
 
   .warn {
     color: var(--neon-yellow);
+  }
+
+  button {
+    width: 130px;
+    text-decoration: none;
+    background-color: var(--gray);
+    color: white;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 8px 14px;
+    transition: 0.2s ease-in-out;
+    font-size: 16px;
+    &:hover {
+      cursor: pointer;
+      background-color: var(--neon-yellow);
+      color: black;
+      transition: 0.2s ease-in-out;
+    }
   }
 `;
 
@@ -65,32 +96,42 @@ const EditRecruit = () => {
     <ERContainer>
       <ERForm onSubmit={handleSubmit(onSubmit)}>
         <div>모집 게시글 수정</div>
-        <label htmlFor="title">제목</label>
-        <input
-          id="title"
-          type="text"
-          {...register('title', { required: true })}
-        />
-        <label htmlFor="content">내용</label>
-        <textarea
-          id="content"
-          className="length"
-          {...register('content', { required: true })}
-        />
-        <label htmlFor="date">모임 일시</label>
-        <input
-          id="date"
-          type="datetime-local"
-          {...register('date', { required: true })}
-        />
-        <label htmlFor="location">모임 장소</label>
-        <input
-          id="location"
-          type="text"
-          {...register('location', { required: true })}
-        />
-        <label htmlFor="image">이미지</label>
-        <input id="image" type="file" {...register('image')} />
+        <div>
+          <label htmlFor="title">제목</label>
+          <input
+            id="title"
+            type="text"
+            {...register('title', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="content">내용</label>
+          <textarea
+            id="content"
+            className="length"
+            {...register('content', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="date">모임 일시</label>
+          <input
+            id="date"
+            type="datetime-local"
+            {...register('date', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="location">모임 장소</label>
+          <input
+            id="location"
+            type="text"
+            {...register('location', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="image">이미지</label>
+          <input id="image" type="file" {...register('image')} />
+        </div>
         <div className="warn">
           모임 일시, 모임 장소는 모임원들과 충분한 상의 후 변경하세요
         </div>

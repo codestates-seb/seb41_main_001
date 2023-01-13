@@ -38,7 +38,7 @@ const CRContainer = styled.div`
 `;
 
 const CRForm = styled.form`
-  width: auto;
+  width: 800px;
   height: auto;
   border: 1px solid white;
   border-radius: 5px;
@@ -49,24 +49,68 @@ const CRForm = styled.form`
   justify-content: center;
   align-items: center;
 
-  label,
-  input,
-  textarea,
-  select {
-    border-radius: 5px;
-    border: none;
-    width: 400px;
-    height: 30px;
+  div:first-child {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-weight: bold;
   }
 
-  input,
-  textarea,
-  select {
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 10px;
+
+    label {
+      width: 100px;
+    }
+
+    input,
+    textarea,
+    select {
+      margin-bottom: 10px;
+    }
+
+    .length {
+      height: 100px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 300px;
+      margin: 10px;
+      outline: none;
+      border: none;
+      background-color: rgba(1, 1, 1, 0);
+      border-bottom: 2px solid grey;
+      color: white;
+      &:focus-within {
+        border-bottom: 2px solid white;
+      }
+    }
+
+    label {
+      width: 100px;
+    }
   }
 
-  .length {
-    height: 100px;
+  button {
+    width: 130px;
+    text-decoration: none;
+    background-color: var(--gray);
+    color: white;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 8px 14px;
+    transition: 0.2s ease-in-out;
+    font-size: 16px;
+    &:hover {
+      cursor: pointer;
+      background-color: var(--neon-yellow);
+      color: black;
+      transition: 0.2s ease-in-out;
+    }
   }
 `;
 
@@ -78,61 +122,81 @@ const CreateRecruit = () => {
     <CRContainer>
       <CRForm onSubmit={handleSubmit(onSubmit)}>
         <div>모집 게시글 생성</div>
-        <label htmlFor="tag">태그</label>
-        <input id="tag" {...register('tag', { required: true })} />
-        <label htmlFor="title">제목</label>
-        <input
-          id="title"
-          type="text"
-          {...register('title', { required: true })}
-        />
-        <label htmlFor="content">내용</label>
-        <textarea
-          id="content"
-          className="length"
-          {...register('content', { required: true })}
-        />
-        <label htmlFor="date">모임 일시</label>
-        <input
-          id="date"
-          type="datetime-local"
-          {...register('date', { required: true })}
-        />
-        <label htmlFor="quota">모임 인원</label>
-        <input
-          id="quota"
-          type="number"
-          {...register('quota', { required: true })}
-        />
-        <label htmlFor="location">모임 장소</label>
-        <input
-          id="location"
-          type="text"
-          {...register('location', { required: true })}
-        />
-        <label htmlFor="genderCondition">성별 조건</label>
-        <select id="genderCondition" {...register('genderCondition')}>
-          <option value="female">여성</option>
-          <option value="male">남성</option>
-        </select>
-        <label htmlFor="ageCondition">나이대 조건</label>
-        <input
-          type="range"
-          name="age"
-          id="ageCondition"
-          min="10"
-          max="60"
-          step="10"
-        />
-        <output name="x" htmlFor="ageCondition" />
-        <label htmlFor="heartRateCondition">심박수 조건</label>
-        <input
-          id="heartRateCondition"
-          type="range"
-          {...register('heartRateCondition')}
-        />
-        <label htmlFor="image">이미지</label>
-        <input id="image" type="file" {...register('image')} />
+        <div>
+          <label htmlFor="tag">태그</label>
+          <input id="tag" {...register('tag', { required: true })} />
+        </div>
+        <div>
+          <label htmlFor="title">제목</label>
+          <input
+            id="title"
+            type="text"
+            {...register('title', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="content">내용</label>
+          <textarea
+            id="content"
+            className="length"
+            {...register('content', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="date">모임 일시</label>
+          <input
+            id="date"
+            type="datetime-local"
+            {...register('date', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="quota">모임 인원</label>
+          <input
+            id="quota"
+            type="number"
+            {...register('quota', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="location">모임 장소</label>
+          <input
+            id="location"
+            type="text"
+            {...register('location', { required: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="genderCondition">성별 조건</label>
+          <select id="genderCondition" {...register('genderCondition')}>
+            <option value="female">여성</option>
+            <option value="male">남성</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="ageCondition">나이대 조건</label>
+          <input
+            type="range"
+            name="age"
+            id="ageCondition"
+            min="10"
+            max="60"
+            step="10"
+          />
+          <output name="x" htmlFor="ageCondition" />
+        </div>
+        <div>
+          <label htmlFor="heartRateCondition">심박수 조건</label>
+          <input
+            id="heartRateCondition"
+            type="range"
+            {...register('heartRateCondition')}
+          />
+        </div>
+        <div>
+          <label htmlFor="image">이미지</label>
+          <input id="image" type="file" {...register('image')} />
+        </div>
         <button type="submit">작성하기</button>
       </CRForm>
     </CRContainer>
