@@ -2,8 +2,18 @@ package com.main_001.server.recruit.dto;
 
 import lombok.Getter;
 
-@Getter
+import javax.validation.constraints.NotBlank;
+
 public class RecruitCommentDto {
-        private long memberId;
-        private String body;
+        @Getter
+        public static class Default {
+                private long memberId;
+                @NotBlank
+                private String body;
+        }
+
+        @Getter
+        public static class Delete{
+                private long memberId;
+        }
 }
