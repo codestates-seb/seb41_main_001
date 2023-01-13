@@ -8,6 +8,8 @@ import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.mapper.FreeMapper;
 import com.main_001.server.free.service.FreeService;
 import com.main_001.server.recruit.dto.StubResponse;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
+@Api(tags = { "Free" })
 @RestController
 @RequestMapping("/freeboards")
 @Validated
@@ -32,12 +35,14 @@ public class FreeController {
         this.freeService = freeService;
     }
 
+    @ApiOperation(value = "자유글 작성", notes = "제목, 본문, 카테고리를 입력하여 자유글을 작성한다.")
     @PostMapping
-    public ResponseEntity createFreeboard(FreeDto.PostFreeboard postFreeboardDto){
+    public ResponseEntity createFreeboard(@RequestBody FreeDto.PostFreeboard postFreeboardDto){
         FreeStubResponse.StubFreeBoard stubFreeBoard = new FreeStubResponse.StubFreeBoard();
         return new ResponseEntity<>(stubFreeBoard, HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "자유글에 대한 댓글 작성", notes = "자유글에 댓글을 작성한다.")
     @PostMapping("/{free-id}")
     public ResponseEntity createComment(@PathVariable("free-id") @Positive int id,
                                         FreeDto.PostComment postCommentDto){
@@ -46,6 +51,7 @@ public class FreeController {
                 new SingleResponseDto<>(stubFreeComment), HttpStatus.CREATED);
     }
 
+    @ApiOperation(value = "자유글 조회", notes = "자유글 id를 path에 붙여서 자유글을 조회한다.")
     @GetMapping("/{free-id}")
     public ResponseEntity getFreeboard(@PathVariable("free-id") @Positive int id){
         FreeStubResponse.StubFreeBoard stubFreeBoard = new FreeStubResponse.StubFreeBoard();
@@ -53,6 +59,7 @@ public class FreeController {
                 new SingleResponseDto<>(stubFreeBoard), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "자유글 전체 조회", notes = "page, size, category, tag, keyword, sort를 path에 작성하여 필터링한 전체 자유글을 조회한다.")
     @GetMapping
     public ResponseEntity getFreeboardPage(@RequestParam int page,
                                         @RequestParam int size,
@@ -73,27 +80,31 @@ public class FreeController {
                 new MultiResponseDto<>(stubFreeboaedList,pageStubFreeboards), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "자유글 수정", notes = "자유글 내용의 값을 변경하여 자유글 내용을 수정한다.")
     @PatchMapping("/{free-id}")
     public ResponseEntity editFreeboard(@PathVariable("free-id") @Positive int id,
-                                        FreeDto.PatchFreeboard patchFreeboardDto){
+                                        @RequestBody FreeDto.PatchFreeboard patchFreeboardDto){
         FreeStubResponse.StubFreeBoard stubFreeBoard = new FreeStubResponse.StubFreeBoard();
         return new ResponseEntity<>(stubFreeBoard, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "자유글에 대한 댓글 수정", notes = "자유글에 대한 댓글의 내용을 수정한다.")
     @PatchMapping("/{free-id}/{comment-id}")
     public ResponseEntity editComment(@PathVariable("free-id") @Positive int freeId,
                                       @PathVariable("comment-id") @Positive int commentId,
-                                      FreeDto.PatchComment patchCommentDto){
+                                      @RequestBody FreeDto.PatchComment patchCommentDto){
         FreeStubResponse.StubFreeComment stubFreeComment = new FreeStubResponse.StubFreeComment();
         return new ResponseEntity<>(stubFreeComment, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "자유글 삭제", notes = "자유글을 삭제한다.")
     @DeleteMapping("/{free-id}")
     public ResponseEntity deleteFreeboard(@PathVariable("free-id") @Positive int id){
         return new ResponseEntity<>(
                 new SingleResponseDto<>(""), HttpStatus.NO_CONTENT);
     }
 
+    @ApiOperation(value = "자유글에 대한 댓글 삭제", notes = "자유글에 대한 댓글을 삭제한다.")
     @DeleteMapping("/{free-id}/{comment-id}")
     public ResponseEntity deleteComment(@PathVariable("free-id") @Positive int freeId,
                                         @PathVariable("comment-id") @Positive int commentId){
