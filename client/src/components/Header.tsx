@@ -116,9 +116,9 @@ const Header = () => (
       </Logo>
       <Board>
         <Link to="/freeboard">자유게시판</Link>
-        <Link to="/recruits">자유게시판 태그</Link>
+        <Link to="/freeboard/tags">자유게시판 태그</Link>
         <Link to="/recruits">모집게시판</Link>
-        <Link to="/recruits">모집게시판 태그</Link>
+        <Link to="/recruits/tags">모집게시판 태그</Link>
       </Board>
     </div>
     <ButtonsContainer>

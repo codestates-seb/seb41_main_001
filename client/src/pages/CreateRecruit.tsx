@@ -1,6 +1,4 @@
-import { useForm, SubmitHandler } from 'react-hook-form';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 
 enum GenderEnum {
@@ -77,53 +75,67 @@ const CreateRecruit = () => {
   const onSubmit = (data: IFormInput) => console.log(data);
 
   return (
-    <>
-      <Header />
-      <CRContainer>
-        <CRForm onSubmit={handleSubmit(onSubmit)}>
-          <div>모집 게시글 생성</div>
-          <label>태그</label>
-          <input {...register('tag', { required: true })} />
-          <label>제목</label>
-          <input type="text" {...register('title', { required: true })} />
-          <label>내용</label>
-          <textarea
-            className="length"
-            {...register('content', { required: true })}
-          />
-          <label>모임 일시</label>
-          <input
-            type="datetime-local"
-            {...register('date', { required: true })}
-          />
-          <label>모임 인원</label>
-          <input type="number" {...register('quota', { required: true })} />
-          <label>모임 장소</label>
-          <input type="text" {...register('location', { required: true })} />
-          <label>성별 조건</label>
-          <select {...register('genderCondition')}>
-            <option value="female">여성</option>
-            <option value="male">남성</option>
-          </select>
-          <label>나이대 조건</label>
-          <input
-            type="range"
-            name="age"
-            id="ageCondition"
-            min="10"
-            max="60"
-            step="10"
-          ></input>
-          <output name="x" htmlFor="ageCondition"></output>
-          <label>심박수 조건</label>
-          <input type="range" {...register('heartRateCondition')} />
-          <label>이미지</label>
-          <input type="file" {...register('image')} />
-          <button type="submit">작성하기</button>
-        </CRForm>
-      </CRContainer>
-      <Footer />
-    </>
+    <CRContainer>
+      <CRForm onSubmit={handleSubmit(onSubmit)}>
+        <div>모집 게시글 생성</div>
+        <label htmlFor="tag">태그</label>
+        <input id="tag" {...register('tag', { required: true })} />
+        <label htmlFor="title">제목</label>
+        <input
+          id="title"
+          type="text"
+          {...register('title', { required: true })}
+        />
+        <label htmlFor="content">내용</label>
+        <textarea
+          id="content"
+          className="length"
+          {...register('content', { required: true })}
+        />
+        <label htmlFor="date">모임 일시</label>
+        <input
+          id="date"
+          type="datetime-local"
+          {...register('date', { required: true })}
+        />
+        <label htmlFor="quota">모임 인원</label>
+        <input
+          id="quota"
+          type="number"
+          {...register('quota', { required: true })}
+        />
+        <label htmlFor="location">모임 장소</label>
+        <input
+          id="location"
+          type="text"
+          {...register('location', { required: true })}
+        />
+        <label htmlFor="genderCondition">성별 조건</label>
+        <select id="genderCondition" {...register('genderCondition')}>
+          <option value="female">여성</option>
+          <option value="male">남성</option>
+        </select>
+        <label htmlFor="ageCondition">나이대 조건</label>
+        <input
+          type="range"
+          name="age"
+          id="ageCondition"
+          min="10"
+          max="60"
+          step="10"
+        />
+        <output name="x" htmlFor="ageCondition" />
+        <label htmlFor="heartRateCondition">심박수 조건</label>
+        <input
+          id="heartRateCondition"
+          type="range"
+          {...register('heartRateCondition')}
+        />
+        <label htmlFor="image">이미지</label>
+        <input id="image" type="file" {...register('image')} />
+        <button type="submit">작성하기</button>
+      </CRForm>
+    </CRContainer>
   );
 };
 

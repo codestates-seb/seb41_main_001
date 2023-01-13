@@ -1,6 +1,4 @@
 import { useForm } from 'react-hook-form';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -73,40 +71,38 @@ const LogIn = () => {
   //   console.log(watch('Email'));
 
   return (
-    <>
-      <Header />
-      <LogInContainer>
-        <LogInForm
-          onSubmit={handleSubmit((data) => {
-            alert(JSON.stringify(data));
-          })}
-        >
-          <div>로그인</div>
-          <label>Email</label>
-          <input
-            {...register('email', { required: true })}
-            defaultValue="abc@gmail.com"
-          />
-          {errors.email && <div>이메일을 입력하세요</div>}
-          <label>Password</label>
-          <input
-            type="password"
-            {...register('password', { required: true, maxLength: 10 })}
-          />
-          {errors.password && <div>비밀번호를 입력하세요</div>}
-          <ButtonContainer>
-            <Link to="/search-password">
-              <button>비밀번호 찾기</button>
-            </Link>
-            <button type="submit">로그인</button>
-            <Link to="/signup">
-              <button>회원가입</button>
-            </Link>
-          </ButtonContainer>
-        </LogInForm>
-      </LogInContainer>
-      <Footer />
-    </>
+    <LogInContainer>
+      <LogInForm
+        onSubmit={handleSubmit((data) => {
+          alert(JSON.stringify(data));
+        })}
+      >
+        <div>로그인</div>
+        <label htmlFor="email">이메일</label>
+        <input
+          id="email"
+          {...register('email', { required: true })}
+          defaultValue="abc@gmail.com"
+        />
+        {errors.email && <div>이메일을 입력하세요</div>}
+        <label htmlFor="password">비밀번호</label>
+        <input
+          id="password"
+          type="password"
+          {...register('password', { required: true, maxLength: 10 })}
+        />
+        {errors.password && <div>비밀번호를 입력하세요</div>}
+        <ButtonContainer>
+          <Link to="/search-password">
+            <button type="button">비밀번호 찾기</button>
+          </Link>
+          <button type="submit">로그인</button>
+          <Link to="/signup">
+            <button type="button">회원가입</button>
+          </Link>
+        </ButtonContainer>
+      </LogInForm>
+    </LogInContainer>
   );
 };
 export default LogIn;

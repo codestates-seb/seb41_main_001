@@ -24,8 +24,8 @@ const App = () => (
         <Route path="/members/edit/:id" element={<EditUser />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/create-recruit" element={<CreateRecruit />} />
-        <Route path="/edit-recruit" element={<EditRecruit />} />
+        <Route path="/recruit/new" element={<CreateRecruit />} />
+        <Route path="/recruit/1/edit" element={<EditRecruit />} />
       </Routes>
       <Footer />
     </Router>
