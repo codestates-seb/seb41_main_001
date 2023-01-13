@@ -4,7 +4,7 @@ const TagContainer = styled.span`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
   text-align: center;
   border: 1px solid white;
   border-radius: 5px;
@@ -13,9 +13,10 @@ const TagContainer = styled.span`
 
   input[type="checkbox"] {
     width: 17px;
-    border: 10px solid red;
     bottom: 10px;
-    position:relative;
+    /* position:relative; */
+    margin-top: 15px;
+    bottom:10px;
     top:5px;
   }
 
@@ -23,7 +24,10 @@ const TagContainer = styled.span`
     width: 107px;
     font-size: 13px;
     padding: 5px;
-    height:100%;
+    /* height:100%; */
+    display:flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 

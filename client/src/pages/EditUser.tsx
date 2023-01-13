@@ -90,15 +90,15 @@ const InfoBlock = styled.label`
     margin-left: 15px;
   }
   #map {
-      width: 250px;
-      height: 250px;
+      width: 300px;
+      height: 300px;
     }
   > div {
     display: flex;
     flex-direction: column;
     justify-content: center;
     > div {
-      margin: 5px 5px 10px 0;
+      margin: 5px 5px 0px 0;
       font-size: 15px;
       > i {
         color: white;
@@ -364,8 +364,8 @@ const EditUser = () => {
           </InfoBlock>
           <InfoBlock htmlFor="location">
             <div>등록 지역 변경</div>
-            <KakaoMap />
             <div>
+              <KakaoMap />
               <div>
                 서울시 강서구
                 <i className="fa-solid fa-xmark" />
