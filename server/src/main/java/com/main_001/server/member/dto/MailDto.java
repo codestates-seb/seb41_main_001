@@ -1,5 +1,6 @@
 package com.main_001.server.member.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,5 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MailDto {
+    @ApiModelProperty(example = "email@gmail.com")
     private String email;
 }

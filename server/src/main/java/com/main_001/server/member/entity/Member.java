@@ -1,5 +1,8 @@
 package com.main_001.server.member.entity;
 
+import com.main_001.server.free.entity.Free;
+import com.main_001.server.free.entity.FreeComment;
+import com.main_001.server.free.entity.FreeLike;
 import com.main_001.server.recruit.entity.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,4 +75,12 @@ public class Member {
     private List<Review> reviews = new ArrayList<>();
 
     // free 게시판 관련 내용
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<Free> frees = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<FreeLike> freeLikes = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<FreeComment> freeComments = new ArrayList<>();
 }

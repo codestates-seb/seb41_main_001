@@ -12,6 +12,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher #swagger 에러 해결
   mail:
     host: smtp.gmail.com
     port: 587
