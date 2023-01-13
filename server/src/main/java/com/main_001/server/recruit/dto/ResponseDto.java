@@ -24,8 +24,8 @@ public class ResponseDto {
 //        private long recruitCommentId;
         private long memberId;
         //필요하면 아래항목 추가
-//        private String nickname;
-//        private int heart;
+        private String nickname;
+        private int heart;
         private String body;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
@@ -51,8 +51,8 @@ public class ResponseDto {
     public static class Review {
         private long memberId;
         //필요하면 아래항목 추가
-//        private String nickname;
-//        private int heart;
+        private String nickname;
+        private int heart;
         private String body;
         private int star;
     }

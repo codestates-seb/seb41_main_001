@@ -7,4 +7,5 @@ public class ReviewDto {
     private long memberId;
     private String body;
     private int star;
+    private String worstMemberNickname;
 }
