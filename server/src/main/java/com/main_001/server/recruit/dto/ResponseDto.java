@@ -31,8 +31,12 @@ public class ResponseDto {
         @ApiModelProperty(example = "Member id")
         private long memberId;
         //필요하면 아래항목 추가
-//        private String nickname;
-//        private int heart;
+
+        @ApiModelProperty(example = "낙네임")
+        private String nickname;
+
+        @ApiModelProperty(example = "심박수")
+        private int heart;
 
         @ApiModelProperty(example = "본문 내")
         private String body;
@@ -69,8 +73,11 @@ public class ResponseDto {
         @ApiModelProperty(example = "Member id")
         private long memberId;
         //필요하면 아래항목 추가
-//        private String nickname;
-//        private int heart;
+        @ApiModelProperty(example = "낙네임")
+        private String nickname;
+
+        @ApiModelProperty(example = "심박수")
+        private int heart;
 
         @ApiModelProperty(example = "리뷰 내용")
         private String body;

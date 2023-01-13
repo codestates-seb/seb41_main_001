@@ -55,6 +55,15 @@ public class Recruit {
     @Column
     private String ageGroupString;
 
+    @Column
+    private String sex;
+
+    @Column
+    private LocalDateTime date;
+
+    @Column
+    private String location;
+
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
@@ -75,10 +84,10 @@ public class Recruit {
     private List<Review> reviews  = new ArrayList<>();
 
     public enum RecruitStatus{
-        RECRUITING(1,"모집 중"),
-        RECRUIT_MEET_MINIMUM(2, "최소 인원 충족"),
-        RECRUIT_COMPLETE(3, "모집 완료"),
-        RECRUIT_END(4, "활동 종료");
+        RECRUITING(1,"모집중"),
+        RECRUIT_MEET_MINIMUM(2, "최소인원 충족"),
+        RECRUIT_COMPLETE(3, "모집완료"),
+        RECRUIT_END(4, "활동종료");
 
         @Getter
         private int stepNumber;

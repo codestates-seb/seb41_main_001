@@ -4,6 +4,7 @@ import com.main_001.server.recruit.entity.Recruit;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +31,15 @@ public class RecruitDto {
         @ApiModelProperty(example = "심박수")
         private int heart;
 
+        @ApiModelProperty(example = "성별")
+        private String sex;
+
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private LocalDateTime date;
+
+        @ApiModelProperty(example = "모집 지역")
+        private String location;
+
         private List<Integer> ages;
 
         @ApiModelProperty(example = "[\n" +
@@ -54,6 +64,12 @@ public class RecruitDto {
     }
 
     @Getter
+    public static class PatchStatus{
+        @ApiModelProperty(example = "Member id")
+        private long memberId;
+    }
+
+    @Getter
     public static class Delete{
         @ApiModelProperty(example = "Member id")
         private long memberId;
@@ -64,6 +80,7 @@ public class RecruitDto {
     public static class Response{
         @ApiModelProperty(example = "Recruit id")
         private long recruitId;
+
         @ApiModelProperty(example = "글 제목")
         private String title;
 
@@ -83,7 +100,7 @@ public class RecruitDto {
         private int minRequire;
 
         @ApiModelProperty(example = "모집 상태")
-        private Recruit.RecruitStatus recruitStatus;
+        private String recruitStatus;
 
         @ApiModelProperty(example = "별점")
         private double star;
@@ -103,11 +120,23 @@ public class RecruitDto {
         @ApiModelProperty(example = "닉네임")
         private String nickname;
 
+        @ApiModelProperty(example = "성별")
+        private String sex;
+
+        @ApiModelProperty(example = "모집글 마감 일자")
+        private LocalDateTime date;
+
+        @ApiModelProperty(example = "모집 지역")
+        private String location;
+
         @ApiModelProperty(example = "지원자 목록")
         private List<ResponseDto.Apply> applies;
 
         @ApiModelProperty(example = "모집글 좋아요 누른 member id")
         private List<ResponseDto.RecruitLike> recruitLikes;
+
+        @ApiModelProperty(example = "좋아요 개수")
+        private int Likes;
 
         @ApiModelProperty(example = "모집글 운동 태그")
         private List<ResponseDto.RecruitTag> recruitTags;

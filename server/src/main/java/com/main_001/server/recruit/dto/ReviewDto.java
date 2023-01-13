@@ -13,4 +13,5 @@ public class ReviewDto {
 
     @ApiModelProperty(example = "별점")
     private int star;
+    private String worstMemberNickname;
 }
