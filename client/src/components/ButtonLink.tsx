@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
-const ButtonContainer = styled.button`
+const ButtonContainer = styled(Link)`
   text-decoration: none;
   background-color: var(--gray);
   color: white;
@@ -22,11 +23,11 @@ const ButtonContainer = styled.button`
 
 interface ButtonProps {
   value: string;
-  onClick: () => void;
+  to: string;
 }
 
-const Button = ({ value, onClick }: ButtonProps) => (
-  <ButtonContainer onClick={onClick}>{value}</ButtonContainer>
+const ButtonLink = ({ value, to }: ButtonProps) => (
+  <ButtonContainer to={to}>{value}</ButtonContainer>
 );
 
-export default Button;
+export default ButtonLink;

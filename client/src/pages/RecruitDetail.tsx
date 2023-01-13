@@ -9,8 +9,6 @@ const MainContainer = styled.main`
   height: 100%;
 `;
 
-const Main = () => (
-  <MainContainer>Main</MainContainer>
-);
+const RecruitDetail = () => <MainContainer>RecruitDetail</MainContainer>;
 
-export default Main;
+export default RecruitDetail;
