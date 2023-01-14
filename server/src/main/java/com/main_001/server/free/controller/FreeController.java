@@ -4,10 +4,8 @@ import com.main_001.server.dto.MultiResponseDto;
 import com.main_001.server.dto.SingleResponseDto;
 import com.main_001.server.free.dto.FreeDto;
 import com.main_001.server.free.dto.FreeStubResponse;
-import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.mapper.FreeMapper;
 import com.main_001.server.free.service.FreeService;
-import com.main_001.server.recruit.dto.StubResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,14 +21,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/freeboards")
 @Validated
+@RequiredArgsConstructor
 public class FreeController {
-    private FreeMapper freeMapper;
-    private FreeService freeService;
-
-    public FreeController(FreeMapper freeMapper, FreeService freeService) {
-        this.freeMapper = freeMapper;
-        this.freeService = freeService;
-    }
+    private final FreeMapper freeMapper;
+    private final FreeService freeService;
 
     @PostMapping
     public ResponseEntity createFreeboard(FreeDto.PostFreeboard postFreeboardDto){
@@ -59,7 +53,9 @@ public class FreeController {
                                         @RequestParam(required = false, defaultValue = "all") String category,
                                         @RequestParam(required = false, defaultValue = "all") String tag,
                                         @RequestParam(required = false) String keyword,
-                                        @RequestParam(required = false, defaultValue = "latest") String sort){
+                                        @RequestParam(required = false, defaultValue = "latest") String sort)
+    //dto
+     {
         FreeStubResponse.StubFreeBoard stubFreeBoard1 = new FreeStubResponse.StubFreeBoard();
         FreeStubResponse.StubFreeBoard stubFreeBoard2 = new FreeStubResponse.StubFreeBoard();
         List<FreeStubResponse.StubFreeBoard> stubFreeBoards = List.of(stubFreeBoard1, stubFreeBoard2);
@@ -67,7 +63,8 @@ public class FreeController {
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), stubFreeBoards.size());
 
-        Page<FreeStubResponse.StubFreeBoard> pageStubFreeboards = new PageImpl<>(stubFreeBoards.subList(start, end), pageRequest, stubFreeBoards.size());
+        Page<FreeStubResponse.StubFreeBoard> pageStubFreeboards = new PageImpl<>(stubFreeBoards.subList(start, end),
+                pageRequest, stubFreeBoards.size());
         List<FreeStubResponse.StubFreeBoard> stubFreeboaedList = pageStubFreeboards.getContent();
         return new ResponseEntity<>(
                 new MultiResponseDto<>(stubFreeboaedList,pageStubFreeboards), HttpStatus.OK);
