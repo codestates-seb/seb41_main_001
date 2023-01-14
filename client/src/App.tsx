@@ -10,7 +10,10 @@ import EditUser from './pages/EditUser';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
 import CreateRecruit from './pages/CreateRecruit';
+import CreateFreeboard from './pages/CreateFreeboard';
 import EditRecruit from './pages/EditRecruit';
+import EditFreeboard from './pages/EditFreeboard';
+import Recruits from './pages/Recruits';
 
 const App = () => (
   // const [login, setLogin] = useState(false);
@@ -24,8 +27,11 @@ const App = () => (
         <Route path="/members/edit/:id" element={<EditUser />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/recruits" element={<Recruits />} />
         <Route path="/recruit/new" element={<CreateRecruit />} />
+        <Route path="/freeboard/new" element={<CreateFreeboard />} />
         <Route path="/recruit/1/edit" element={<EditRecruit />} />
+        <Route path="/freeboard/1/edit" element={<EditFreeboard />} />
       </Routes>
       <Footer />
     </Router>

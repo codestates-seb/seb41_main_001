@@ -6,7 +6,7 @@ import Badge from '../components/Badge';
 import Loading from './Loading';
 
 const Background = styled.div`
-  padding-top: 100px;
+  padding-top: 10rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
