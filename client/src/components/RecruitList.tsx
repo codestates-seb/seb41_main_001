@@ -42,6 +42,7 @@ const ListInfo = styled.div`
   justify-content: flex-end;
   align-items: center;
   width: 20%;
+  margin-right: 20px;
   > div {
     display: flex;
     justify-content: center;
@@ -142,7 +143,6 @@ const ListCondition = styled.div`
           color: white;
         }
       }
-      transition: 0.2s ease-in-out;
       &:nth-child(3) {
         display: flex;
         flex-direction: row;
@@ -155,10 +155,12 @@ const ListCondition = styled.div`
           white-space: nowrap;
         }
       }
+      /* transition: 0.2s ease-in-out;
+
       &:hover {
         background-color: rgba(255, 255, 255, 0.4);
         transition: 0.2s ease-in-out;
-      }
+      } */
     }
   }
 
@@ -174,7 +176,6 @@ const ListCondition = styled.div`
       height: 100px;
       border-radius: 20px;
       background-color: rgba(255, 255, 255, 0.2);
-      transition: 0.2s ease-in-out;
       padding: 20px;
       > div:first-child {
         text-align: left;
@@ -200,11 +201,12 @@ const ListCondition = styled.div`
           font-weight: 400;
         }
       }
+      /* transition: 0.2s ease-in-out;
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.4);
         transition: 0.2s ease-in-out;
-      }
+      } */
     }
   }
 `;

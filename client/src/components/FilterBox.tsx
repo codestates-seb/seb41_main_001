@@ -105,7 +105,7 @@ const DropDownBox = styled.div`
     overflow: hidden;
     &:hover {
       cursor: pointer;
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: rgba(255, 255, 255, 0.9);
       transition: 0.2s ease-in-out;
     }
   }
