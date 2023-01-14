@@ -11,6 +11,9 @@ import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
 import CreateRecruit from './pages/CreateRecruit';
 import EditRecruit from './pages/EditRecruit';
+import Recruits from './pages/Recruits';
+import RecruitDetail from './pages/RecruitDetail';
+import TaggedRecruit from './pages/TaggedRecruit';
 
 const App = () => (
   // const [login, setLogin] = useState(false);
@@ -26,6 +29,12 @@ const App = () => (
         <Route path="/signup" element={<SignUp />} />
         <Route path="/recruit/new" element={<CreateRecruit />} />
         <Route path="/recruit/1/edit" element={<EditRecruit />} />
+        <Route path="/recruits" element={<Recruits />} />
+        <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
+        <Route
+          path="/recruits/tags/:tagId/:tagName"
+          element={<TaggedRecruit />}
+        />
       </Routes>
       <Footer />
     </Router>

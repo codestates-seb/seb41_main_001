@@ -28,6 +28,7 @@ const KakaoMap = () => {
       {/* <button type="button" onClick={() => initMap}>
         현재 위치로 이동
       </button> */}
+      {console.log(location)}
     </>
   );
 };
