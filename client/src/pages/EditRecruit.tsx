@@ -19,9 +19,9 @@ const ERContainer = styled.div`
 `;
 
 const ERForm = styled.form`
-  width: 52vw;
+  width: 35rem;
   height: auto;
-  border: 1px solid white;
+  border: 0.05rem solid white;
   border-radius: 1rem;
   padding: 1rem;
   margin-top: 1.7rem;

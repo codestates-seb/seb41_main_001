@@ -39,7 +39,7 @@ const SignUpContainer = styled.div`
 
 const SignUpForm = styled.form`
   /* width: 700px; */
-  width: 52vw;
+  width: 35rem;
   height: auto;
   padding: 1rem;
   margin-top: 1.7rem;
@@ -48,7 +48,7 @@ const SignUpForm = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 1px solid white;
+  border: 0.05rem solid white;
   border-radius: 1rem;
 
   div:first-child {
@@ -76,10 +76,10 @@ const SignUpForm = styled.form`
       outline: none;
       border: none;
       background-color: rgba(1, 1, 1, 0);
-      border-bottom: 2px solid grey;
+      border-bottom: 0.1rem solid grey;
       color: white;
       &:focus-within {
-        border-bottom: 2px solid white;
+        border-bottom: 0.1rem solid white;
       }
     }
 

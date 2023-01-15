@@ -38,11 +38,11 @@ const CRContainer = styled.div`
 `;
 
 const CRForm = styled.form`
-  width: 52vw;
+  width: 35rem;
   height: auto;
-  border: 1px solid white;
+  border: 0.05rem solid white;
   border-radius: 1rem;
-  padding: 20px;
+  padding: 1rem;
   margin-top: 1.7rem;
   margin-bottom: 1.7rem;
   display: flex;
@@ -84,10 +84,10 @@ const CRForm = styled.form`
       outline: none;
       border: none;
       background-color: rgba(1, 1, 1, 0);
-      border-bottom: 2px solid grey;
+      border-bottom: 0.1rem solid grey;
       color: white;
       &:focus-within {
-        border-bottom: 2px solid white;
+        border-bottom: 0.1rem solid white;
       }
     }
 

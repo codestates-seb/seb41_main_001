@@ -20,7 +20,7 @@ const LogInForm = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid white;
+  border: 0.05rem solid white;
   border-radius: 1rem;
 
   div {
@@ -38,10 +38,10 @@ const LogInForm = styled.form`
       outline: none;
       border: none;
       background-color: rgba(1, 1, 1, 0);
-      border-bottom: 2px solid grey;
+      border-bottom: 0.1rem solid grey;
       color: white;
       &:focus-within {
-        border-bottom: 2px solid white;
+        border-bottom: 0.1rem solid white;
       }
     }
   }
@@ -60,7 +60,7 @@ const ButtonContainer = styled.div`
     text-decoration: none;
     background-color: var(--gray);
     color: white;
-    border-radius: 5px;
+    border-radius: 0.3rem;
     margin: 0.3rem;
     padding: 0.5rem 1rem;
     transition: 0.2s ease-in-out;
