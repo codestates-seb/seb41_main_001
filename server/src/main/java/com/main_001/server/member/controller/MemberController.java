@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/members")
 public class MemberController {
-    private static final int HEART_DEFAULT = 50;
     private final MemberService memberService;
     private final MemberMapper memberMapper;
 
@@ -34,7 +33,6 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity signUp(@RequestBody MemberDto.MemberPostDto memberPost) {
         Member member = memberMapper.memberPostToMember(memberPost);
-        member.setHeart(HEART_DEFAULT); // 가입했을 때는 초기값을 저장해주어야 한다.
 
         Member createMember = memberService.createMember(member);
 
@@ -96,13 +94,12 @@ public class MemberController {
 //    }
 
     // 회원 정보 수정
-    @ApiOperation(value = "회원 정보 수정", notes = "이름, 생년월일, 비밀번호, 닉네임, 성별 중 변경하고 싶은 정보를 수정할 수 있다. 비밀번호의 경우, 현재 비밀번호와 새 비밀번호를 입력해야 한다.")
+    @ApiOperation(value = "회원 정보 수정", notes = "닉네임, 비밀번호, 전화번호, 지역, 태그 중 변경하고 싶은 정보를 수정할 수 있다. 비밀번호의 경우, 현재 비밀번호와 새 비밀번호를 입력해야 한다.")
     @PatchMapping("/my-page/{member-id}")
     public ResponseEntity patchMyPage(@PathVariable("member-id") long memberId,
                                       @RequestBody MemberDto.MemberPatchDto memberPatch) {
         memberPatch.setMemberId(memberId);
 
-        System.out.println(memberPatch.getCurPassword());
         // 비밀번호가 맞는지 검증 후 변경
         if (memberPatch.getCurPassword() != null)
             memberService.checkPassword(memberId, memberPatch.getCurPassword(), memberPatch.getNewPassword());

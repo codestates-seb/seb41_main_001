@@ -47,6 +47,8 @@ public class Member {
 
     // 이미지 어떻게 받아오지?
 
+    private String locationGroupString;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -57,6 +59,9 @@ public class Member {
     // TODO 개발 완료 후 봉인 해제
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<MemberTag> memberTags = new ArrayList<>();
 
     // Recruit 게시판 관련 내용
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
