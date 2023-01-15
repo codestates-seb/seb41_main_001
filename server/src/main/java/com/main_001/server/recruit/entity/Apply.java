@@ -1,14 +1,16 @@
 package com.main_001.server.recruit.entity;
 
 import com.main_001.server.member.entity.Member;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Apply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +34,8 @@ public class Apply {
 
     public void setMember(Member member) {
         this.member = member;
-//        if (!this.member.getApplies().contains(this)){
-//            this.member.getApplies().add(this);
-//        }
+        if (!this.member.getApplies().contains(this)){
+            this.member.getApplies().add(this);
+        }
     }
 }
