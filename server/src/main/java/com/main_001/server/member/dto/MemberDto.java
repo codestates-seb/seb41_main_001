@@ -8,6 +8,7 @@ import com.main_001.server.recruit.dto.RecruitDto;
 import com.main_001.server.recruit.dto.RecruitLikeDto;
 import com.main_001.server.recruit.dto.ResponseDto;
 import com.main_001.server.recruit.entity.*;
+import com.main_001.server.tag.entity.Tag;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,7 +49,16 @@ public class MemberDto {
         @ApiModelProperty(example = "성별")
         private String sex;
 
-        // region 패키지 생성 후 지역 추가
+        // 지역 추가
+        private List<String> locations;
+
+        @ApiModelProperty(example = "[\n" +
+                "    {\n" +
+                "      \"tagId\": 1,\n" +
+                "      \"tagName\": \"축구\"\n" +
+                "    }\n" +
+                "  ]")
+        private List<MemberTagDto> memberTags;
     }
 
     @AllArgsConstructor
@@ -57,11 +67,8 @@ public class MemberDto {
         @ApiModelProperty(example = "경로에 포함되는 값입니다.")
         private long memberId;
 
-        @ApiModelProperty(example = "이름")
-        private String name;
-
-        @ApiModelProperty(example = "생년월일")
-        private String birth;
+        @ApiModelProperty(example = "닉네임(중복 검사 필요)")
+        private String nickname;
 
         @ApiModelProperty(example = "현재 비밀번호")
         private String curPassword;
@@ -69,11 +76,18 @@ public class MemberDto {
         @ApiModelProperty(example = "새 비밀번호")
         private String newPassword;
 
-        @ApiModelProperty(example = "닉네임")
-        private String nickname;
+        @ApiModelProperty(example = "전화번호(중복 검사 필요)")
+        private String phone;
 
-        @ApiModelProperty(example = "성별")
-        private String sex;
+        private List<String> locations;
+
+        @ApiModelProperty(example = "[\n" +
+                "    {\n" +
+                "      \"tagId\": 1,\n" +
+                "      \"tagName\": \"축구\"\n" +
+                "    }\n" +
+                "  ]")
+        private List<MemberTagDto> memberTags;
 
         public void setMemberId(long memberId) {
             this.memberId = memberId;
@@ -111,17 +125,27 @@ public class MemberDto {
         @ApiModelProperty(example = "심박수")
         private int heart;
 
-        // Recruit, FreeBoard response 추가
-//        private List<ResponseDto.Apply> applies;
-//
-//        private List<RecruitDto.Response> recruits;
-//
-//        private List<ResponseDto.RecruitComment> recruitComments;
-//
-//        private List<ResponseDto.RecruitLike> recruitLikes;
-//
-//        private List<ResponseDto.Review> reviews;
-//
+        private List<String> locations;
+
+        @ApiModelProperty(example = "[\n" +
+                "    {\n" +
+                "      \"tagId\": 1,\n" +
+                "      \"tagName\": \"축구\"\n" +
+                "    }\n" +
+                "  ]")
+        private List<MemberTagResponseDto> memberTags;
+
+        // TODO Recruit, FreeBoard response 추가
+        private List<ResponseDto.Apply> applies;
+
+        private List<RecruitDto.Response> recruits;
+
+        private List<ResponseDto.RecruitComment> recruitComments;
+
+        private List<ResponseDto.RecruitLike> recruitLikes;
+
+        private List<ResponseDto.Review> reviews;
+
 //        private List<Free> frees;
 //
 //        private List<FreeLike> freeLikes;
@@ -145,7 +169,15 @@ public class MemberDto {
         @ApiModelProperty(example = "심박수")
         private int heart;
 
-        // Recruit, FreeBoard response 추가
+        @ApiModelProperty(example = "[\n" +
+                "    {\n" +
+                "      \"tagId\": 1,\n" +
+                "      \"tagName\": \"축구\"\n" +
+                "    }\n" +
+                "  ]")
+        private List<MemberTagResponseDto> memberTags;
+
+        // TODO Recruit, FreeBoard response 추가
 
     }
 

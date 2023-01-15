@@ -131,14 +131,14 @@ public class MemberService {
     public Member updateMember(Member member) {
         Member findMember = findVerifiedMember(member.getMemberId());
 
-        Optional.ofNullable(member.getName())
-                .ifPresent(findMember::setName);
-        Optional.ofNullable(member.getBirth())
-                .ifPresent(findMember::setBirth);
         Optional.ofNullable(member.getNickname())
                 .ifPresent(findMember::setNickname);
-        Optional.ofNullable(member.getSex())
-                .ifPresent(findMember::setSex);
+        Optional.ofNullable(member.getPhone())
+                .ifPresent(findMember::setPhone);
+        Optional.ofNullable(member.getLocationGroupString())
+                .ifPresent(findMember::setLocationGroupString);
+        Optional.ofNullable(member.getMemberTags())
+                .ifPresent(findMember::setMemberTags);
 
         return memberRepository.save(findMember);
     }
