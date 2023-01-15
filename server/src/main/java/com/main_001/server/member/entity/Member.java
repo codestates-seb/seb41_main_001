@@ -1,5 +1,9 @@
 package com.main_001.server.member.entity;
 
+import com.main_001.server.free.entity.Free;
+import com.main_001.server.free.entity.FreeComment;
+import com.main_001.server.free.entity.FreeLike;
+import com.main_001.server.recruit.entity.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
@@ -8,12 +12,12 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AuditingEntityListener.class) // 생성 날짜 자동화
 @Setter
 @Getter
 @Entity
@@ -45,12 +49,38 @@ public class Member {
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
     private int heart;
 
     // member의 권한 정보 테이블과 매핑
+    // TODO 개발 완료 후 봉인 해제
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
+    // Recruit 게시판 관련 내용
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Apply> applies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Recruit> recruits = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<RecruitComment> recruitComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<RecruitLike> recruitLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
+    // free 게시판 관련 내용
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<Free> frees = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<FreeLike> freeLikes = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+//    private List<FreeComment> freeComments = new ArrayList<>();
 }
