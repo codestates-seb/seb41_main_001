@@ -30,7 +30,7 @@ public class FreeController {
 
     @PostMapping
     public ResponseEntity createFreeboard(@RequestBody FreeDto.PostFreeboard requestBody){
-        Free free = freeService.createFreeboaed(freeMapper.freeboardPostToFree(requestBody));
+        Free free = freeService.createFreeboard(freeMapper.freeboardPostToFree(requestBody));
         return new ResponseEntity<>(freeMapper.FreeToFreeResponseDto(free), HttpStatus.CREATED);
 //        FreeStubResponse.StubFreeBoard stubFreeBoard = new FreeStubResponse.StubFreeBoard();
 //        return new ResponseEntity<>(stubFreeBoard, HttpStatus.CREATED);
