@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useForm } from 'react-hook-form';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import Tag from '../components/Tag';
@@ -85,14 +86,16 @@ const InfoBlock = styled.label`
     border: 1px solid white;
     color: white;
     border-radius: 5px;
-    width: 100px;
-    height: 40px;
+    padding: 0rem 1rem;
     background-color: var(--gray);
     margin-left: 15px;
+    &:hover {
+      background-color: black;
+    }
   }
   #map {
-      width: 25rem;
-      height: 25rem;
+      width: 21rem;
+      height: 21rem;
     }
   > div {
     display: flex;
@@ -200,7 +203,7 @@ const InputButton = styled.label`
 `;
 
 const TagContainer = styled.div`
-  form {
+  fieldset {
     display: flex;
     flex-direction: row;
     width: 500px;
@@ -222,6 +225,14 @@ interface PreviewPfp {
 //   longitude: number;
 //   timestamp: number;
 // }
+interface UserFormInput {
+  nickname: string;
+  curpassword: string;
+  newpassword: string;
+  phone: string;
+  place: string;
+  tags: string;
+}
 
 const EditUser = () => {
   const { id } = useParams();
@@ -233,6 +244,9 @@ const EditUser = () => {
   const [img, setImg] = useState<any>(
     'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   );
+  const { register, handleSubmit } = useForm<UserFormInput>();
+  const onSubmit = (data: UserFormInput) => console.log(data);
+
   // const imgRef = useRef<any>();
   // function readImage(input: any) {
   //   // 인풋 태그에 파일이 있는 경우
@@ -314,7 +328,7 @@ const EditUser = () => {
   // }, []);
 
   return (
-    <EditContainer>
+    <EditContainer onSubmit={handleSubmit(onSubmit)}>
       <Container>
         <div>회원정보 수정</div>
         <PersonalInfo>
@@ -345,16 +359,16 @@ const EditUser = () => {
           </InfoBlock>
           <InfoBlock htmlFor="nickname">
             <div>닉네임</div>
-            <input type="text" name="nickname" placeholder="NickName" />
+            <input type="text" placeholder="NickName" {...register('nickname', { required: true })} />
             <button type="button">중복 확인</button>
           </InfoBlock>
           <InfoBlock htmlFor="formerPassword">
             <div>기존 비밀번호</div>
-            <input type="password" name="formerPassword" />
+            <input type="password" {...register('curpassword', { required: true })} />
           </InfoBlock>
           <InfoBlock htmlFor="newPassword">
             <div>새 비밀번호</div>
-            <input type="password" name="newPassword" />
+            <input type="password" {...register('newpassword')} />
           </InfoBlock>
           <InfoBlock htmlFor="newPasswordCheck">
             <div>새 비밀번호 확인</div>
@@ -362,13 +376,16 @@ const EditUser = () => {
           </InfoBlock>
           <InfoBlock htmlFor="phone">
             <div>휴대폰 번호</div>
-            <input type="tel" name="phone" placeholder="010-1234-5678" />
+            <input type="tel" placeholder="010-1234-5678" {...register('phone')} />
             <button type="button">중복 확인</button>
           </InfoBlock>
           <InfoBlock htmlFor="location">
             <div>등록 지역 변경</div>
             <div>
-              <KakaoMap />
+              <div>
+                <KakaoMap />
+                <button type="button">현재 위치 추가</button>
+              </div>
               <div>
                 서울시 강서구
                 <i className="fa-solid fa-xmark" />
@@ -382,7 +399,7 @@ const EditUser = () => {
           <InfoBlock htmlFor="tags">
             <div>등록 태그 변경</div>
             <TagContainer>
-              <form>
+              <fieldset>
                 <Tag name="축구/풋살" emoji="⚽️" />
                 <Tag name="농구" emoji="🏀" />
                 <Tag name="야구" emoji="⚾️" />
@@ -404,7 +421,7 @@ const EditUser = () => {
                 <Tag name="요가/필라테스" emoji="🧘" />
                 <Tag name="헬스/크로스핏" emoji="🏋️" />
                 <Tag name="스케이트/인라인" emoji="⛸️" />
-              </form>
+              </fieldset>
             </TagContainer>
           </InfoBlock>
         </PersonalInfo>

@@ -152,7 +152,6 @@ const MyBoard = styled.div`
 
 const RegisteredBoard = styled.div`
   border: 2px solid white;
-  width: 100%;
   border-radius: 20px;
   margin: 10px;
   padding: 10px;
