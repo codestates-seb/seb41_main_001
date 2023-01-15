@@ -1,14 +1,16 @@
 package com.main_001.server.recruit.entity;
 
 import com.main_001.server.member.entity.Member;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +22,9 @@ public class Review {
 
     @Column
     private int star;
+
+    @Column
+    private String worstMemberNickname;
 
     @ManyToOne
     @JoinColumn(name = "RECRUIT_ID")

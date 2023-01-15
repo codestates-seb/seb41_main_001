@@ -1,10 +1,10 @@
-package com.main_001.server.recruit.dto;
+package com.main_001.server.member.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 @Getter
-public class RecruitTagDto {
+public class MemberTagDto {
     @ApiModelProperty(example = "Tag id")
     private long tagId;
 

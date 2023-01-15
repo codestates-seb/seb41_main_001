@@ -1,5 +1,6 @@
 package com.main_001.server.recruit.entity;
 
+import com.main_001.server.tag.entity.Tag;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,15 +19,22 @@ public class RecruitTag {
     @JoinColumn(name = "RECRUIT_ID")
     private Recruit recruit;
 
-//    @ManyToOne
-//    @JoinColumn(name = "TAG_ID")
-//    private Tag tag;
+    @ManyToOne
+    @JoinColumn(name = "TAG_ID")
+    private Tag tag;
 
     public void setRecruit(Recruit recruit) {
         this.recruit = recruit;
         if (!this.recruit.getRecruitTags().contains(this)) {
             this.recruit.getRecruitTags().add(this);
         }
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
+//        if(!this.tag.getRecruitTags().contains(this)){
+//            this.tag.addQuestionTag(this);
+//        }
     }
 
     public Long getId() {
