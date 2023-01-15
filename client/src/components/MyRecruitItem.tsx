@@ -2,30 +2,30 @@ import styled from 'styled-components';
 
 const ItemWrapper = styled.div`
   border: 1px solid white;
-  display:flex;
+  display: flex;
   flex-direction: column;
   color: white;
-  width: 600px;
-  border-radius:10px;
-  padding: 15px;
+  width: 30rem;
+  border-radius: 10px;
+  padding: 1.2rem;
   > div:first-child {
-    text-shadow: white 0 0 5px;
+    text-shadow: white 0 0 0.3rem;
   }
   > div {
-    margin: 5px;
+    margin: 0.2rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    font-size: 20px;
+    font-size: 1.2rem;
     > div {
       display: flex;
       flex-direction: row;
-      font-size: 14px;
+      font-size: 0.8rem;
     }
   }
   span {
-    margin-right: 20px;
+    margin-right: 0.6rem;
   }
 `;
 
@@ -35,7 +35,7 @@ const ItemContainer = styled.div`
   justify-content: flex-start;
   align-items: center;
   i {
-    font-size:24px;
+    font-size: 24px;
     margin-left: 40px;
   }
 `;
@@ -47,9 +47,7 @@ interface Item {
   tags: string[];
 }
 
-const MyRecruitItem = ({
-  title, quota, dueDate, tags,
-}: Item) => (
+const MyRecruitItem = ({ title, quota, dueDate, tags }: Item) => (
   <div>
     <ItemContainer>
       <ItemWrapper>
