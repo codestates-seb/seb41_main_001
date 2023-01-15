@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
 
@@ -40,9 +40,9 @@ const Container = styled.div`
 const PersonalInfo = styled.div`
   border: 2px solid white;
   padding: 10px;
-  margin: 10px;
+  margin: 10px 0 10px 10px;
   border-radius: 20px;
-  padding: 40px 50px 40px 20px;
+  padding: 40px 0px 40px 20px;
 `;
 
 const InfoBlock = styled.label`
@@ -58,16 +58,17 @@ const InfoBlock = styled.label`
     text-shadow: white 0 0 5px;
     margin-right: 10px;
     margin-top: 5px;
-    margin-left: 70px;
+    margin-left: 20px;
   }
   input {
     margin-bottom: 15px;
     background-color: var(--gray);
     padding: 5px;
+    margin-left: 10px;
     font-size: 16px;
     border: none;
     border-bottom: 2px solid gray;
-    width: 300px;
+    width: 320px;
     outline: none;
     color: white;
     &:focus-within {
@@ -90,8 +91,8 @@ const InfoBlock = styled.label`
     margin-left: 15px;
   }
   #map {
-      width: 300px;
-      height: 300px;
+      width: 25rem;
+      height: 25rem;
     }
   > div {
     display: flex;
@@ -211,24 +212,24 @@ interface PreviewPfp {
   src: string;
 }
 
-interface Location {
-  coords: any;
-  timestamp: any;
-}
+// interface Location {
+//   coords: any;
+//   timestamp: any;
+// }
 
-interface Coordinates {
-  latitude: number;
-  longitude: number;
-  timestamp: number;
-}
+// interface Coordinates {
+//   latitude: number;
+//   longitude: number;
+//   timestamp: number;
+// }
 
 const EditUser = () => {
   const { id } = useParams();
-  const [coordinate, setCoordinate] = useState<Coordinates>({
-    latitude: 126,
-    longitude: 126,
-    timestamp: 1,
-  });
+  // const [coordinate, setCoordinate] = useState<Coordinates>({
+  //   latitude: 126,
+  //   longitude: 126,
+  //   timestamp: 1,
+  // });
   const [img, setImg] = useState<any>(
     'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   );
@@ -276,39 +277,41 @@ const EditUser = () => {
   // inputImage.addEventListener('change', (e) => {
   //   readImage(e.target);
   // });
-  function success({ coords, timestamp }: Location) {
-    const { latitude, longitude } = coords;
-    setCoordinate({
-      latitude,
-      longitude,
-      timestamp,
-    });
-    console.log('actually, yeah', latitude, longitude);
-    console.log(
-      'this is what u get',
-      coordinate.latitude,
-      coordinate.longitude,
-    );
-    alert(
-      `위도: ${coordinate.latitude}, 경도: ${coordinate.longitude}, 위치 반환 시간: ${coordinate.timestamp},`,
-    );
-    // location.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
-  }
+  // function success({ coords, timestamp }: Location) {
+  //   const { latitude, longitude } = coords;
+  //   setCoordinate({
+  //     latitude,
+  //     longitude,
+  //     timestamp,
+  //   });
+  //   console.log('actually, yeah', latitude, longitude);
+  //   console.log(
+  //     'this is what u get',
+  //     coordinate.latitude,
+  //     coordinate.longitude,
+  //   );
+  //   alert(
+  //     `위도: ${coordinate.latitude},
+  //      경도: ${coordinate.longitude},
+  //      위치 반환 시간: ${coordinate.timestamp},`
+  //   );
+  //   // location.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+  // }
 
-  const getUserLocation = () => {
-    if (!navigator.geolocation) {
-      throw Object.assign(new Error('위치 정보가 지원되지 않습니다.'));
-    }
-    navigator.geolocation.getCurrentPosition(success);
-  };
+  // const getUserLocation = () => {
+  //   if (!navigator.geolocation) {
+  //     throw Object.assign(new Error('위치 정보가 지원되지 않습니다.'));
+  //   }
+  //   navigator.geolocation.getCurrentPosition(success);
+  // };
 
-  useEffect(() => {
-    getUserLocation();
-    const script = document.createElement('script');
-    script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=2a51fcab7ce5015f76fc7c20fc68714c';
-    script.async = true;
-    document.body.appendChild(script);
-  }, []);
+  // useEffect(() => {
+  //   getUserLocation();
+  //   const script = document.createElement('script');
+  //   script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=2a51fcab7ce5015f76fc7c20fc68714c';
+  //   script.async = true;
+  //   document.body.appendChild(script);
+  // }, []);
 
   return (
     <EditContainer>
