@@ -7,7 +7,7 @@ const LogInContainer = styled.div`
   color: white;
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 5rem;
   height: auto;
 `;
 
@@ -21,7 +21,7 @@ const LogInForm = styled.form`
   align-items: center;
   justify-content: center;
   border: 1px solid white;
-  border-radius: 10px;
+  border-radius: 1rem;
 
   div {
     display: flex;

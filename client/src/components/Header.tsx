@@ -5,7 +5,7 @@ const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 0.5rem;
   background-color: black;
   color: white;
   width: 100%;
@@ -23,7 +23,7 @@ const Logo = styled(Link)`
   align-items: center;
   font-family: 'Rubik Bubbles', cursive;
   font-size: 40px;
-  text-shadow: var(--neon-yellow) 0 0 20px;
+  text-shadow: var(--neon-yellow) 0 0 1rem;
   i {
     font-size: xx-large;
     margin-right: 0.5rem;
@@ -48,14 +48,14 @@ const ButtonsContainer = styled.div`
       background-color: rgba(1, 1, 1, 0);
       outline: none;
       border: none;
-      border-bottom: 2px solid var(--gray);
+      border-bottom: 0.1rem solid var(--gray);
       color: white;
       font-size: 16px;
     }
     &:focus-within {
       color: white;
       input {
-        border-bottom: 2px solid white;
+        border-bottom: 0.1rem solid white;
       }
       transition: 0.2s ease-in-out;
     }
@@ -66,7 +66,7 @@ const Button = styled(Link)`
   text-decoration: none;
   background-color: var(--gray);
   color: white;
-  border-radius: 5px;
+  border-radius: 0.3rem;
   margin-left: 0.6rem;
   padding: 0.5rem 1rem;
   transition: 0.2s ease-in-out;
@@ -98,7 +98,7 @@ const Board = styled.nav`
     align-items: flex-start;
     &:hover {
       color: var(--neon-yellow);
-      text-shadow: white 0 0 20px;
+      text-shadow: white 0 0 1rem;
       font-weight: bold;
       transition: 0.2s ease-in-out;
     }

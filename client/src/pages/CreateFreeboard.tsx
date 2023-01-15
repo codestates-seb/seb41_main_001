@@ -59,6 +59,12 @@ const CRForm = styled.form`
       width: 50px;
       text-align: right;
     }
+    .select-container {
+      position:relative;
+      select {
+        display:none;
+      }
+    }
   }
   .length {
     height: 300px;
@@ -116,19 +122,28 @@ const CreateFreeboard = () => {
   const { register, handleSubmit } = useForm<FormInputFree>();
   const onSubmit = (data: FormInputFree) => console.log(data);
 
+  // const fileNums = (e:any) => {
+  //   if (e.files.length > 2) {
+  //     alert('file up to 2');
+  //   } else {
+  //     alert('alr we cool');
+  //   }
+  // };
   return (
     <Background>
       <CRForm onSubmit={handleSubmit(onSubmit)}>
         <div>자유 게시글 생성</div>
         <div>
           <label htmlFor="category">말머리</label>
-          <select id="category" {...register('category', { required: true })}>
-            <option value="question">질문</option>
-            <option value="info">정보</option>
-            <option value="exercise">운동</option>
-            <option value="giveaway">나눔</option>
-            <option value="showoff">자랑</option>
-          </select>
+          <div id="select-contanier">
+            <select id="category" {...register('category', { required: true })}>
+              <option value="question">질문</option>
+              <option value="info">정보</option>
+              <option value="exercise">운동</option>
+              <option value="giveaway">나눔</option>
+              <option value="showoff">자랑</option>
+            </select>
+          </div>
         </div>
         <div>
           <label htmlFor="title">제목</label>
@@ -155,6 +170,7 @@ const CreateFreeboard = () => {
             id="image"
             type="file"
             accept="image/jpeg,image/jpg, image/png, image/svg"
+            multiple
             {...register('image')}
           />
         </div>

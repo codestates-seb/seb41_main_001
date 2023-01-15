@@ -33,26 +33,27 @@ const SignUpContainer = styled.div`
   color: white;
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 5rem;
   height: 100%;
 `;
 
 const SignUpForm = styled.form`
-  width: 700px;
+  /* width: 700px; */
+  width: 52vw;
   height: auto;
-  padding: 20px;
-  margin-top: 30px;
-  margin-bottom: 30px;
+  padding: 1rem;
+  margin-top: 1.7rem;
+  margin-bottom: 1.7rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border: 1px solid white;
-  border-radius: 10px;
+  border-radius: 1rem;
 
   div:first-child {
-    margin-top: 20px;
-    margin-bottom: 30px;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
     font-weight: bold;
   }
 
@@ -60,18 +61,18 @@ const SignUpForm = styled.form`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
 
     label,
     p {
-      width: 120px;
+      width: 6rem;
     }
 
     input,
     select {
-      margin-bottom: 10px;
-      width: 400px;
-      margin: 10px;
+      margin-bottom: 0.5rem;
+      width: 20rem;
+      margin: 0.5rem;
       outline: none;
       border: none;
       background-color: rgba(1, 1, 1, 0);
@@ -83,19 +84,19 @@ const SignUpForm = styled.form`
     }
 
     #map {
-      width: 400px;
-      height: 400px;
+      width: 20rem;
+      height: 20rem;
     }
   }
 
   button {
-    width: 170px;
+    width: 9rem;
     text-decoration: none;
     background-color: var(--gray);
     color: white;
-    border-radius: 5px;
-    margin: 5px;
-    padding: 8px 14px;
+    border-radius: 0.2rem;
+    margin: 0.3rem;
+    padding: 0.5rem 1rem;
     transition: 0.2s ease-in-out;
     font-size: 16px;
     &:hover {
@@ -108,10 +109,10 @@ const SignUpForm = styled.form`
 `;
 
 const TagList = styled.div`
-  width: 400px;
+  width: 20rem;
   display: flex;
   flex-wrap: wrap;
-  margin: 10px;
+  margin: 0.5rem;
 `;
 
 const SignUp = () => {

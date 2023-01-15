@@ -14,25 +14,26 @@ const ERContainer = styled.div`
   color: white;
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 5rem;
   height: 100%;
 `;
 
 const ERForm = styled.form`
-  width: 800px;
+  width: 52vw;
   height: auto;
   border: 1px solid white;
-  border-radius: 5px;
-  padding: 20px;
-  margin: 30px;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1.7rem;
+  margin-bottom: 1.7rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
   div:first-child {
-    margin-top: 20px;
-    margin-bottom: 30px;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
     font-weight: bold;
   }
 
@@ -40,28 +41,28 @@ const ERForm = styled.form`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
 
     input,
     textarea {
-      width: 300px;
-      margin: 10px;
+      width: 15rem;
+      margin: 0.5rem;
       outline: none;
       border: none;
       background-color: rgba(1, 1, 1, 0);
-      border-bottom: 2px solid grey;
+      border-bottom: 0.1rem solid grey;
       color: white;
       &:focus-within {
-        border-bottom: 2px solid white;
+        border-bottom: 0.1rem solid white;
       }
     }
 
     label {
-      width: 100px;
+      width: 5rem;
     }
 
     .length {
-      height: 100px;
+      height: 5rem;
     }
   }
 
@@ -70,13 +71,13 @@ const ERForm = styled.form`
   }
 
   button {
-    width: 130px;
+    width: 6rem;
     text-decoration: none;
     background-color: var(--gray);
     color: white;
-    border-radius: 5px;
-    margin: 5px;
-    padding: 8px 14px;
+    border-radius: 0.2rem;
+    margin: 0.3rem;
+    padding: 0.5rem 1rem;
     transition: 0.2s ease-in-out;
     font-size: 16px;
     &:hover {

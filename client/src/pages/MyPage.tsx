@@ -6,7 +6,7 @@ import Badge from '../components/Badge';
 import Loading from './Loading';
 
 const Background = styled.div`
-  padding-top: 10rem;
+  padding-top: 7rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,13 +15,13 @@ const Background = styled.div`
 `;
 
 const MyPageWrapper = styled.div`
-  margin-top: 100px 100px 100px 0;
   padding: 50px 430px;
   background-color: var(--gray);
   color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items:center;
   width: 100%;
 `;
 
@@ -29,7 +29,7 @@ const MyPageHeader = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
+  width: 40rem;
   margin-bottom: 50px;
 `;
 const Pfp = styled.div`
@@ -43,7 +43,7 @@ const Pfp = styled.div`
 
 const Info = styled.div`
   margin: 10px;
-  font-size: 18px;
+  font-size: 16px;
   display: flex;
   flex-direction: column;
   padding: 5px;
@@ -55,7 +55,7 @@ const Info = styled.div`
   }
   > div:first-child {
     color: var(--neon-yellow);
-    font-size: 28px;
+    font-size: 25px;
     padding: 10px 15px;
     text-shadow: white 0 0 3px;
     font-weight: bold;
@@ -91,9 +91,9 @@ const Button = styled(Link)`
   }
 `;
 const MyPageBody = styled.div`
-  width: 100%;
+  width: 40rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   > div {
     display: flex;
@@ -127,7 +127,6 @@ const MyBoard = styled.div`
   margin: 10px;
   padding: 10px;
   padding-bottom: 25px;
-  width: 760px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -153,7 +152,6 @@ const MyBoard = styled.div`
 
 const RegisteredBoard = styled.div`
   border: 2px solid white;
-  width: 760px;
   border-radius: 20px;
   margin: 10px;
   padding: 10px;
@@ -169,7 +167,7 @@ const Badges = styled.div`
   border: 2px solid white;
   margin: 10px;
   padding: 10px;
-  width: 330px;
+  width: 25rem;
   border-radius: 10px;
   display: flex;
   flex-direction: row;
@@ -178,7 +176,7 @@ const Tags = styled.div`
   border: 2px solid white;
   padding: 10px;
   margin: 10px;
-  width: 160px;
+  width: 10rem;
   height: 120px;
   border-radius: 10px;
   > span {
@@ -266,50 +264,6 @@ const MyPage = () => {
             </MyPageHeader>
             <MyPageBody>
               <div>
-                <Container>
-                  <div>작성 게시글</div>
-                  <MyBoard>
-                    <span>
-                      <span>모집게시판</span>
-                      <span>자유게시판</span>
-                    </span>
-                    <MyRecruitItem
-                      title="title"
-                      quota="quota"
-                      dueDate="dueDate"
-                      tags={['tags']}
-                    />
-                    <MyRecruitItem
-                      title="같이 농구할 사람 구해요~"
-                      quota="2/5"
-                      dueDate="2023.01.30"
-                      tags={['#농구']}
-                    />
-                  </MyBoard>
-                </Container>
-                <Container>
-                  <div>좋아요한 게시글</div>
-                  <MyBoard>
-                    <span>
-                      <span>모집게시판</span>
-                      <span>자유게시판</span>
-                    </span>
-                    <MyRecruitItem
-                      title="좋아요한 게시글"
-                      quota="2/3"
-                      dueDate="2023.01.17"
-                      tags={['#좋아요']}
-                    />
-                  </MyBoard>
-                </Container>
-                <Container>
-                  <div>신청한 모집글</div>
-                  <RegisteredBoard>
-                    <div>글이 아직 없습니다.</div>
-                  </RegisteredBoard>
-                </Container>
-              </div>
-              <div>
                 <span>
                   <Container>
                     <div>뱃지</div>
@@ -358,6 +312,50 @@ const MyPage = () => {
                       </div>
                     </InfoBlock>
                   </PersonalInfo>
+                </Container>
+              </div>
+              <div>
+                <Container>
+                  <div>작성 게시글</div>
+                  <MyBoard>
+                    <span>
+                      <span>모집게시판</span>
+                      <span>자유게시판</span>
+                    </span>
+                    <MyRecruitItem
+                      title="title"
+                      quota="quota"
+                      dueDate="dueDate"
+                      tags={['tags']}
+                    />
+                    <MyRecruitItem
+                      title="같이 농구할 사람 구해요~"
+                      quota="2/5"
+                      dueDate="2023.01.30"
+                      tags={['#농구']}
+                    />
+                  </MyBoard>
+                </Container>
+                <Container>
+                  <div>좋아요한 게시글</div>
+                  <MyBoard>
+                    <span>
+                      <span>모집게시판</span>
+                      <span>자유게시판</span>
+                    </span>
+                    <MyRecruitItem
+                      title="좋아요한 게시글"
+                      quota="2/3"
+                      dueDate="2023.01.17"
+                      tags={['#좋아요']}
+                    />
+                  </MyBoard>
+                </Container>
+                <Container>
+                  <div>신청한 모집글</div>
+                  <RegisteredBoard>
+                    <div>글이 아직 없습니다.</div>
+                  </RegisteredBoard>
                   <span>
                     <Button to={`/members/withdrawl/${id}`}>회원 탈퇴</Button>
                   </span>
