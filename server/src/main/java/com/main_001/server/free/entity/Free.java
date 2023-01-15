@@ -59,7 +59,7 @@ public class Free {
 
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
-    private Member memberId;
+    private Member member;
 
     @NotNull
     private String category;
