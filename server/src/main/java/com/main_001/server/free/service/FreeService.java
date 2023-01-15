@@ -24,13 +24,13 @@ public class FreeService{
     private final FreeCommentReposittory freeCommentReposittory;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
-    public Free createFreeboaed(Free free) {
+    public Free createFreeboard(Free free) {
         memberService.findMember(free.getMember().getMemberId());
         return freeRepository.save(free);
     }
 
     public Free updateFreeboard(Free free, FreeDto.PatchFreeboard patchFreeboardDto) {
-        Free findFree = findVerifiedFreeboard(free.getFreeId());
+        Free findFree = findVerifiedFreeboard(free.getFreeId());//BusinessLogicException 코드 수정 이후 freeboard가 없으면 경고주는 용도
         free.setFreeBody(patchFreeboardDto.getFreeBody());
         free.setFreeTitle(patchFreeboardDto.getFreeTitle());
         free.setCategory(patchFreeboardDto.getCategory());

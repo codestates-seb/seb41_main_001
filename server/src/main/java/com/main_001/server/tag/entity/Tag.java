@@ -25,7 +25,7 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
-    private int tagId;
+    private long tagId;
     private boolean categoryExcercise;
     @NotNull
     private String tagName;
