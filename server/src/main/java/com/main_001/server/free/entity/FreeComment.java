@@ -1,5 +1,6 @@
 package com.main_001.server.free.entity;
 
+import com.main_001.server.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,9 @@ public class FreeComment {
 //    @OneToOne
     private long freeId;
 //    @OneToOne
-    private long memberId;
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
     @NotNull
     private String commentBody;
     @CreatedDate
