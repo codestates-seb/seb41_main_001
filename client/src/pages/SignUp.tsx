@@ -81,6 +81,11 @@ const SignUpForm = styled.form`
         border-bottom: 2px solid white;
       }
     }
+
+    #map {
+      width: 400px;
+      height: 400px;
+    }
   }
 
   button {

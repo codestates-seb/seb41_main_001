@@ -25,7 +25,7 @@ const KakaoMap = () => {
 
   return (
     <>
-      <div id="map" style={{ width: '400px', height: '400px' }} />
+      <div id="map" />
       {/* <button type="button" onClick={() => initMap}>
         현재 위치로 이동
       </button> */}
