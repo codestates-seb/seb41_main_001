@@ -5,7 +5,7 @@ const FooterContainer = styled.footer`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30px;
+  padding: 1.8rem;
   background-color: black;
   color: white;
   width: 100%;
@@ -26,8 +26,8 @@ const HeartContainer = styled(Link)`
     span:first-child {
       color: var(--neon-yellow);
       font-size: 30px;
-      margin-right: 3px;
-      padding-bottom: 10px;
+      margin-right: 0.2rem;
+      padding-bottom: 0.5rem;
       font-family: 'Rubik Bubbles', cursive;
     }
   }
@@ -41,7 +41,7 @@ const TeamInfo = styled.div`
   justify-content: center;
   align-items: center;
   > div:nth-child(2) {
-    margin: 10px 0px;
+    margin: 0.5rem 0;
   }
 `;
 

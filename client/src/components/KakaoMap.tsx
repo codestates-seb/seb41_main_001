@@ -4,7 +4,6 @@ import Locations from '../utils/Locations';
 const KakaoMap = () => {
   const mapRef = useRef<HTMLElement | null>(null);
   const location: any = Locations();
-
   const initMap = () => {
     if (typeof location !== 'string') {
       const container = document.getElementById('map');
@@ -15,6 +14,8 @@ const KakaoMap = () => {
 
       const map = new kakao.maps.Map(container as HTMLElement, options);
       (mapRef as MutableRefObject<any>).current = map;
+
+      // const getcoder = new kakao.maps.services.Geocoder();
     }
   };
 
@@ -28,7 +29,6 @@ const KakaoMap = () => {
       {/* <button type="button" onClick={() => initMap}>
         현재 위치로 이동
       </button> */}
-      {console.log(location)}
     </>
   );
 };

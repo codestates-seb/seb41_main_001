@@ -9,7 +9,7 @@ const HeaderContainer = styled.header`
   background-color: black;
   color: white;
   width: 100%;
-  height: 100px;
+  height: 5rem;
   position: fixed;
   top: 0;
   left: 0;
@@ -26,7 +26,7 @@ const Logo = styled(Link)`
   text-shadow: var(--neon-yellow) 0 0 20px;
   i {
     font-size: xx-large;
-    margin-right: 10px;
+    margin-right: 0.5rem;
   }
 `;
 
@@ -39,12 +39,12 @@ const ButtonsContainer = styled.div`
     color: var(--gray);
     transition: 0.2s ease-in-out;
     i {
-      margin-right: 10px;
+      margin-right: 0.3rem;
       font-size: 25px;
     }
     input {
-      width: 250px;
-      padding: 10px;
+      width: 12rem;
+      padding: 0.5rem;
       background-color: rgba(1, 1, 1, 0);
       outline: none;
       border: none;
@@ -67,8 +67,8 @@ const Button = styled(Link)`
   background-color: var(--gray);
   color: white;
   border-radius: 5px;
-  margin-left: 10px;
-  padding: 8px 14px;
+  margin-left: 0.6rem;
+  padding: 0.5rem 1rem;
   transition: 0.2s ease-in-out;
   font-size: 16px;
   white-space: nowrap;
@@ -84,15 +84,15 @@ const Board = styled.nav`
   color: white;
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 0.5rem;
   a {
     text-decoration: none;
     color: white;
     font-size: 16px;
     transition: 0.2s ease-in-out;
     width: auto;
-    height: 25px;
-    margin: 0 9px;
+    height: 1rem;
+    margin: 0 0.3rem;
     white-space: nowrap;
     display: flex;
     align-items: flex-start;
@@ -104,10 +104,6 @@ const Board = styled.nav`
     }
   }
 `;
-
-// interface CheckLogin {
-//   login: boolean;
-// }
 
 const Header = () => (
   <HeaderContainer>

@@ -8,14 +8,14 @@ const LogInContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 100px;
-  height: 60vh;
+  height: auto;
 `;
 
 const LogInForm = styled.form`
   width: auto;
-  height: 60%;
-  padding: 20px;
-  margin-top: 100px;
+  height: 50%;
+  padding: 1rem;
+  margin: 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,12 +29,12 @@ const LogInForm = styled.form`
     align-items: center;
 
     label {
-      width: 80px;
+      width: 4rem;
     }
 
     input {
-      width: 200px;
-      margin: 10px;
+      width: 10rem;
+      margin: 0.5rem;
       outline: none;
       border: none;
       background-color: rgba(1, 1, 1, 0);
@@ -47,22 +47,22 @@ const LogInForm = styled.form`
   }
 
   div:first-child {
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
     font-weight: bold;
   }
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 20px;
+  margin-top: 1rem;
 
   button {
-    width: 130px;
+    width: 7rem;
     text-decoration: none;
     background-color: var(--gray);
     color: white;
     border-radius: 5px;
-    margin: 5px;
-    padding: 8px 14px;
+    margin: 0.3rem;
+    padding: 0.5rem 1rem;
     transition: 0.2s ease-in-out;
     font-size: 16px;
     &:hover {

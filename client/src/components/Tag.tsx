@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-// import { useState } from 'react';
 
 const TagContainer = styled.span`
   display: flex;
@@ -34,17 +33,20 @@ const TagContainer = styled.span`
 interface PropsType {
   name: string;
   emoji: string;
+  onChange: object;
+  register: any;
 }
 
-// const [bChecked, setChecked] = useState(false);
-// const checkHandler: any({target}) => {
-//   setChecked(!bChecked);
-//   checkTagHandler(tag.id, target.checked);
-// }
-
-const Tag = ({ name, emoji }: PropsType) => (
+const Tag = ({ onChange, register, name, emoji }: PropsType) => (
   <TagContainer>
-    <input type="checkbox" id={name} name="tags" value={name} />
+    <input
+      type="checkbox"
+      id={name}
+      name="tags"
+      value={name}
+      onChange={onChange}
+      {...register('tags', { required: '태그를 선택하세요' })}
+    />
     <label htmlFor={name}>
       {name}
       <br />

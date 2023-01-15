@@ -1,8 +1,13 @@
 // import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import React from 'react';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
+
+const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  console.log('change', event.target.value);
+};
 
 enum GenderEnum {
   female = '여성',
@@ -18,7 +23,8 @@ interface IFormInput {
   phone: string;
   password: string;
   passwordRetype: string;
-  tags: string; // 문자열이 담긴 배열
+  tags: [];
+  location: object;
   profile: string;
 }
 
@@ -104,20 +110,15 @@ const TagList = styled.div`
 `;
 
 const SignUp = () => {
-  const { register, handleSubmit } = useForm<IFormInput>();
+  const { register, watch, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
 
-  // const [checkedTags, setCheckedTags] = useState(new Set());
-
-  // const checkedTagHandler = (id, isChecked) => {
-  //   if (isChecked) {
-  //     checkedTags.add(id);
-  //     setCheckedTags(checkedTags);
-  //   } else if (!isChecked && checkedTags.has(id)) {
-  //     checkedTags.delete(id);
-  //     setCheckedTags(checkedTags);
-  //   }
-  // };
+  console.log(watch('tags'));
+  const toggles = watch('tags', []);
+  if (toggles.length > 3) {
+    alert('최대 3개까지 선택');
+    // 3개 이상부터는 체크가 안되게 하는 법.
+  }
 
   return (
     <SignUpContainer>
@@ -188,27 +189,132 @@ const SignUp = () => {
         <div>
           <p>관심 태그</p>
           <TagList>
-            <Tag name="축구/풋살" emoji="⚽️" />
-            <Tag name="농구" emoji="🏀" />
-            <Tag name="야구" emoji="⚾️" />
-            <Tag name="배구" emoji="🏐" />
-            <Tag name="복싱" emoji="🥊" />
-            <Tag name="탁구" emoji="🏓" />
-            <Tag name="배드민턴" emoji="🏸" />
-            <Tag name="테니스/스쿼시" emoji="🎾" />
-            <Tag name="태권도/유도" emoji="🥋" />
-            <Tag name="검도" emoji="⚔️" />
-            <Tag name="무술/주짓수" emoji="🥋" />
-            <Tag name="족구" emoji="⚽️" />
-            <Tag name="러닝" emoji="🏃" />
-            <Tag name="자전거" emoji="🚴" />
-            <Tag name="등산" emoji="🏔️" />
-            <Tag name="클라이밍" emoji="🧗‍♀️" />
-            <Tag name="수영" emoji="🏊‍♀️" />
-            <Tag name="골프" emoji="⛳️" />
-            <Tag name="요가/필라테스" emoji="🧘" />
-            <Tag name="헬스/크로스핏" emoji="🏋️" />
-            <Tag name="스케이트/인라인" emoji="⛸️" />
+            <Tag
+              name="축구/풋살"
+              emoji="⚽️"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="농구"
+              emoji="🏀"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="야구"
+              emoji="⚾️"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="배구"
+              emoji="🏐"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="복싱"
+              emoji="🥊"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="탁구"
+              emoji="🏓"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="배드민턴"
+              emoji="🏸"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="테니스/스쿼시"
+              emoji="🎾"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="태권도/유도"
+              emoji="🥋"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="검도"
+              emoji="⚔️"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="무술/주짓수"
+              emoji="🥋"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="족구"
+              emoji="⚽️"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="러닝"
+              emoji="🏃"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="자전거"
+              emoji="🚴"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="등산"
+              emoji="🏔️"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="클라이밍"
+              emoji="🧗‍♀️"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="수영"
+              emoji="🏊‍♀️"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="골프"
+              emoji="⛳️"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="요가/필라테스"
+              emoji="🧘"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="헬스/크로스핏"
+              emoji="🏋️"
+              onChange={onChange}
+              register={register}
+            />
+            <Tag
+              name="스케이트/인라인"
+              emoji="⛸️"
+              onChange={onChange}
+              register={register}
+            />
           </TagList>
         </div>
         <div>
