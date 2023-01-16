@@ -16,18 +16,16 @@ const KakaoMap = () => {
       const map = new kakao.maps.Map(container as HTMLElement, options);
       (mapRef as MutableRefObject<any>).current = map;
 
-      // const getcoder = new kakao.maps.services.Geocoder();
-
       const markerPosition = new kakao.maps.LatLng(
         location.latitude,
-        location.logitude,
+        location.longitude,
       );
 
       const marker = new kakao.maps.Marker({
         position: markerPosition,
       });
 
-      // marker.setMap(null);
+      marker.setMap(null);
       marker.setMap(map);
     }
   };

@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import styled from 'styled-components';
 
 enum GenderEnum {
@@ -62,14 +63,9 @@ const CRForm = styled.form`
     align-items: center;
     margin-bottom: 0.5rem;
 
-    label {
+    label,
+    p {
       width: 6rem;
-    }
-
-    input,
-    textarea,
-    select {
-      margin-bottom: 0.5rem;
     }
 
     .length {
@@ -91,8 +87,14 @@ const CRForm = styled.form`
       }
     }
 
-    label {
-      width: 5rem;
+    div {
+      label {
+        width: 3rem;
+      }
+      input {
+        width: 1rem;
+      }
+      width: 8rem;
     }
   }
 
@@ -113,11 +115,34 @@ const CRForm = styled.form`
       transition: 0.2s ease-in-out;
     }
   }
+
+  .heartCon {
+    width: 15rem;
+    margin: 0.5rem;
+    input {
+      width: 13rem;
+    }
+  }
+
+  .ageCon {
+    width: 15rem;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0.5rem;
+    span {
+      width: 5rem;
+    }
+  }
 `;
 
 const CreateRecruit = () => {
   const { register, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
+  const [value, setValue] = useState(60);
+
+  const handleChange = (e: any) => {
+    setValue(e.target.value);
+  };
 
   return (
     <CRContainer>
@@ -169,30 +194,100 @@ const CreateRecruit = () => {
         </div>
         <div>
           <label htmlFor="genderCondition">성별 조건</label>
-          <select id="genderCondition" {...register('genderCondition')}>
-            <option value="female">여성</option>
-            <option value="male">남성</option>
-          </select>
+          <div>
+            <input
+              type="radio"
+              id="female"
+              name="genderCondition"
+              value="여성"
+            />
+            <label htmlFor="female">여성</label>
+          </div>
+          <div>
+            <input type="radio" id="male" name="genderCondition" value="남성" />
+            <label htmlFor="male">남성</label>
+          </div>
         </div>
         <div>
-          <label htmlFor="ageCondition">나이대 조건</label>
-          <input
-            type="range"
-            name="age"
-            id="ageCondition"
-            min="10"
-            max="60"
-            step="10"
-          />
-          <output name="x" htmlFor="ageCondition" />
+          <p>나이대 조건</p>
+          <div className="ageCon">
+            <span>
+              <input
+                type="checkbox"
+                id="teenage"
+                // name="ageCondition"
+                value="teenage"
+                {...register('ageCondition')}
+              />
+              <label htmlFor="teenage">10대</label>
+            </span>
+            <span>
+              <input
+                type="checkbox"
+                id="twenties"
+                // name="ageCondition"
+                value="twenties"
+                {...register('ageCondition')}
+              />
+              <label htmlFor="twenties">20대</label>
+            </span>
+            <span>
+              <input
+                type="checkbox"
+                id="thirties"
+                // name="ageCondition"
+                value="thirties"
+                {...register('ageCondition')}
+              />
+              <label htmlFor="thirties">30대</label>
+            </span>
+            <span>
+              <input
+                type="checkbox"
+                id="forties"
+                // name="ageCondition"
+                value="forties"
+                {...register('ageCondition')}
+              />
+              <label htmlFor="forties">40대</label>
+            </span>
+            <span>
+              <input
+                type="checkbox"
+                id="fifties"
+                // name="ageCondition"
+                value="fifties"
+                {...register('ageCondition')}
+              />
+              <label htmlFor="fifties">50대</label>
+            </span>
+            <span>
+              <input
+                type="checkbox"
+                id="sixties"
+                // name="ageCondition"
+                value="sixties"
+                {...register('ageCondition')}
+              />
+              <label htmlFor="sixties">60대</label>
+            </span>
+          </div>
         </div>
         <div>
           <label htmlFor="heartRateCondition">심박수 조건</label>
-          <input
-            id="heartRateCondition"
-            type="range"
-            {...register('heartRateCondition')}
-          />
+          <div className="heartCon">
+            <input
+              id="heartRateCondition"
+              type="range"
+              min="0"
+              max="200"
+              step="10"
+              value={value}
+              onChange={handleChange}
+              {...(register('heartRateCondition'), { required: true })}
+            />
+            <span className="result">{value}</span>
+          </div>
         </div>
         <div>
           <label htmlFor="image">이미지</label>

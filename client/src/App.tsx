@@ -14,6 +14,8 @@ import CreateFreeboard from './pages/CreateFreeboard';
 import EditRecruit from './pages/EditRecruit';
 import EditFreeboard from './pages/EditFreeboard';
 import Recruits from './pages/Recruits';
+import FreeBoardList from './pages/FreeBoardList';
+import FreeDetail from './pages/FreeDetail';
 
 const App = () => (
   // const [login, setLogin] = useState(false);
@@ -29,7 +31,9 @@ const App = () => (
         <Route path="/signup" element={<SignUp />} />
         <Route path="/recruits" element={<Recruits />} />
         <Route path="/recruit/new" element={<CreateRecruit />} />
+        <Route path="/freeboard" element={<FreeBoardList />} />
         <Route path="/freeboard/new" element={<CreateFreeboard />} />
+        <Route path="/freeboard/1" element={<FreeDetail />} />
         <Route path="/recruit/1/edit" element={<EditRecruit />} />
         <Route path="/freeboard/1/edit" element={<EditFreeboard />} />
       </Routes>
