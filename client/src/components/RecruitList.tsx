@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
 import TagLink from './TagLink';
 import timeDifference from '../utils/timeDifference';
+import CreatorCard from './CreatorCard';
 
 const ListContainer = styled.li`
-  width: 100%;
+  width: 750px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 20px;
   padding: 20px;
@@ -25,7 +26,7 @@ const ListTitle = styled(Link)`
   color: #b2b2b2;
   font-weight: 600;
   font-size: 22px;
-  width: 500px;
+  width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -69,55 +70,24 @@ const ListInfo = styled.div`
   }
 `;
 
-const ListCreator = styled.div`
-  background-color: rgba(255, 255, 255, 0.2);
-  width: 100px;
-  border-radius: 20px;
-  padding: 15px;
-  a {
-    text-decoration: none;
-    color: black;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
-    font-weight: 600;
-    img {
-      margin-bottom: 10px;
-      border-radius: 50%;
-    }
-    div {
-      font-size: 12px;
-      color: var(--neon-red);
-      margin-top: 5px;
-      i {
-        margin-right: 3px;
-      }
-    }
-  }
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-  }
-`;
-
 const ListCondition = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   > div:nth-child(1) {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     margin-bottom: 20px;
     > div {
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       border-radius: 20px;
       background-color: rgba(255, 255, 255, 0.2);
+      font-size: 100%;
       i {
         margin-bottom: 15px;
         font-size: 36px;
@@ -150,7 +120,7 @@ const ListCondition = styled.div`
         padding: 10px;
         justify-content: center;
         align-items: center;
-        > div {
+        > span {
           margin: 2px;
           white-space: nowrap;
         }
@@ -166,13 +136,13 @@ const ListCondition = styled.div`
 
   > div:nth-child(2) {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     > div {
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
-      width: 250px;
+      width: 270px;
       height: 100px;
       border-radius: 20px;
       background-color: rgba(255, 255, 255, 0.2);
@@ -192,6 +162,7 @@ const ListCondition = styled.div`
         align-items: center;
         position: relative;
         word-break: keep-all;
+        line-height: 120%;
       }
       h4 {
         margin: 0;
@@ -366,19 +337,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
             <i className="fa-solid fa-eye" />
             {views}
           </div>
-          <ListCreator>
-            <Link to={`/users/${memberId}/${nickname}`}>
-              <img
-                src={`https://picsum.photos/seed/${memberId}/50/50.webp`}
-                alt={`avator of ${nickname}}`}
-              />
-              {nickname}
-              <div>
-                <i className="fa-solid fa-heart" />
-                60
-              </div>
-            </Link>
-          </ListCreator>
+          <CreatorCard memberId={memberId} nickname={nickname} />
         </ListInfo>
         <ListCondition>
           <div>
@@ -392,7 +351,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
             </div>
             <div>
               {classifyingAge(ageGroup).map((el) => (
-                <div key={el}>{el}</div>
+                <span key={el}>{el}</span>
               ))}
             </div>
             <div>
