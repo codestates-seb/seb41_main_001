@@ -5,6 +5,7 @@ import com.main_001.server.dto.SingleResponseDto;
 import com.main_001.server.free.dto.FreeDto;
 import com.main_001.server.free.dto.FreeStubResponse;
 import com.main_001.server.free.entity.Free;
+import com.main_001.server.free.entity.FreeComment;
 import com.main_001.server.free.mapper.FreeMapper;
 import com.main_001.server.free.service.FreeService;
 import com.main_001.server.recruit.dto.StubResponse;
