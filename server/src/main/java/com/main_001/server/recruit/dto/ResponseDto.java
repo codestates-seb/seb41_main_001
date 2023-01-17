@@ -15,7 +15,6 @@ public class ResponseDto {
 //        private long applyId;
         @ApiModelProperty(example = "Member id")
         private long memberId;
-        //필요하면 아래항목 추가
 
         @ApiModelProperty(example = "닉네임")
         private String nickname;
@@ -27,10 +26,8 @@ public class ResponseDto {
     @Builder
     @Getter
     public static class RecruitComment{
-//        private long recruitCommentId;
         @ApiModelProperty(example = "Member id")
         private long memberId;
-        //필요하면 아래항목 추가
 
         @ApiModelProperty(example = "낙네임")
         private String nickname;
@@ -51,7 +48,6 @@ public class ResponseDto {
     @Builder
     @Getter
     public static class RecruitLike {
-//        private long recruitLikeId;
         @ApiModelProperty(example = "Member id")
         private long memberId;
     }
@@ -59,7 +55,6 @@ public class ResponseDto {
     @Builder
     @Getter
     public static class RecruitTag {
-//        private long recruitTagId;
         @ApiModelProperty(example = "Tag id")
         private long tagId;
 
@@ -72,7 +67,7 @@ public class ResponseDto {
     public static class Review {
         @ApiModelProperty(example = "Member id")
         private long memberId;
-        //필요하면 아래항목 추가
+
         @ApiModelProperty(example = "낙네임")
         private String nickname;
 
