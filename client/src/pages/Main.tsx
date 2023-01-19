@@ -9,8 +9,6 @@ const MainContainer = styled.main`
   height: 100%;
 `;
 
-const Main = () => (
-  <MainContainer>Main</MainContainer>
-);
+const Main = () => <MainContainer>Main</MainContainer>;
 
 export default Main;

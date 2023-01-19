@@ -21,3 +21,11 @@ font-family: 'NanumSquareNeoHeavy'; */
   --neon-blue: #5aa1f1;
   --gray: #484848;
 }
+
+.App {
+  width: 100%;
+  background-color: var(--gray);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

@@ -7,25 +7,25 @@ const TagContainer = styled.span`
   align-items: center;
   text-align: center;
   border: 1px solid white;
-  border-radius: 5px;
-  width: 140px;
-  margin: 5px;
+  border-radius: 0.3rem;
+  width: 6.55rem;
+  height: 2.5rem;
+  margin: 0.05rem;
 
-  input[type="checkbox"] {
-    width: 17px;
-    bottom: 10px;
-    /* position:relative; */
-    margin-top: 15px;
-    bottom:10px;
-    top:5px;
+  input[type='checkbox'] {
+    width: 0.8rem;
+    bottom: 0.5rem;
+    margin-top: 0.75rem;
+    /* bottom:10px; */
+    top: 0.25rem;
   }
 
   label {
-    width: 107px;
-    font-size: 13px;
-    padding: 5px;
-    /* height:100%; */
-    display:flex;
+    width: 5rem;
+    font-size: 10px;
+    padding: 0.25rem;
+    height: auto;
+    display: flex;
     align-items: center;
     justify-content: center;
   }
@@ -34,13 +34,23 @@ const TagContainer = styled.span`
 interface PropsType {
   name: string;
   emoji: string;
+  onChange: object;
+  register: any;
 }
 
-const Tag = ({ name, emoji }: PropsType) => (
+const Tag = ({ onChange, register, name, emoji }: PropsType) => (
   <TagContainer>
-    <input type="checkbox" id={name} name="tags" value={name} />
+    <input
+      type="checkbox"
+      id={name}
+      name="tags"
+      value={name}
+      onChange={onChange}
+      {...register('tags', { required: '태그를 선택하세요' })}
+    />
     <label htmlFor={name}>
       {name}
+      <br />
       {emoji}
     </label>
   </TagContainer>
