@@ -50,7 +50,7 @@ public class Recruit {
     private int views=0;
 
     @Column
-    private int heart=0;
+    private int heartLimit=0;
 
     @Column
     private String ageGroupString;

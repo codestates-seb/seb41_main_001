@@ -26,9 +26,12 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
     private long tagId;
-    private boolean categoryExcercise;
+    private boolean categoryExercise;
     @NotNull
     private String tagName;
+    private String emoji;
+
     @NotNull
     private int count;
+
 }
