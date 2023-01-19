@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
+import useCurrentLocation from '../utils/useCurrentLocation';
 
 enum GenderEnum {
   female = '여성',
@@ -95,6 +97,16 @@ const SignUpForm = styled.form`
 
 const SignUp = () => {
   const { register, handleSubmit } = useForm<IFormInput>();
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+
+  useCurrentLocation().then((res) => {
+    if (res === undefined) return;
+    setLocation(res);
+  });
+
   const onSubmit = (data: IFormInput) => console.log(data);
 
   return (
@@ -143,7 +155,12 @@ const SignUp = () => {
           {...register('passwordRetype', { required: true })}
         />
         <label htmlFor="location">지역</label>
-        <KakaoMap />
+        {location && (
+          <KakaoMap
+            latitude={location.latitude}
+            longitude={location.longitude}
+          />
+        )}
         <fieldset>
           <legend className="tagLabel">관심 운동 태그</legend>
           <div>

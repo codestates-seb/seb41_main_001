@@ -13,8 +13,6 @@ const MainContainer = styled.main`
   justify-content: center;
   margin-top: 100px;
   > div:first-child {
-    width: 100%;
-    height: 100%;
     padding: 20px;
     h1 {
       margin: 10px 0px;
@@ -24,7 +22,7 @@ const MainContainer = styled.main`
   ul {
     list-style: none;
     margin: 0;
-    padding: 10px;
+    padding: 0;
     margin-top: 40px;
     width: 100%;
     display: flex;
@@ -33,7 +31,7 @@ const MainContainer = styled.main`
   }
 
   aside {
-    width: 50%;
+    width: 420px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -67,16 +65,17 @@ const Recruits = () => {
       image: '',
       createdAt: '2023-01-02T16:18:48.908218',
       modifiedAt: '2023-01-02T16:18:48.908218',
-      status: '모집중', // 모집중/모집완료/활동종료
+      recruitStatus: '모집중', // 모집중/모집완료/활동종료
       star: 0,
       views: 0,
       memberId: 1,
       nickname: '글자수세기TEST글자수세기TEST글자',
-      like: 0,
+      likes: 0,
+      location: { latitude: 37.343336, longitude: 127.1233716 },
       heart: 50, // number, 0
-      ageGroup: [10, 20, 30, 40, 50, 60],
+      ageGroup: ['10', '20', '30', '40', '50', '60'],
       sex: 'Both', // Male, Female, Both
-      applicants: [
+      applies: [
         { memberId: 2, nickname: 'bbb', heart: 80 },
         { memberId: 3, nickname: 'ccc', heart: 80 },
         { memberId: 4, nickname: 'ddd', heart: 80 },
@@ -89,9 +88,31 @@ const Recruits = () => {
       minRequire: 2,
       require: 5,
       date: '2023-01-02T16:18:48.908218',
-      tagId: 1,
-      tagName: '축구/풋볼',
-      tagEmoji: '⚽️',
+      recruitTags: [{ tagId: 1, tagName: '축구/풋볼', tagEmoji: '⚽️' }],
+      recruitLikes: [
+        {
+          memberId: 1,
+        },
+      ],
+      reviews: [
+        {
+          memberId: 1,
+          nickname: '닉네임',
+          heart: 50,
+          body: '리뷰 내용',
+          star: 5,
+        },
+      ],
+      recruitComments: [
+        {
+          memberId: 1,
+          nickname: '닉네임',
+          heart: 50,
+          body: '댓글 내용 작성',
+          createdAt: '2023-01-18T17:35:10.171566',
+          modifiedAt: '2023-01-18T17:35:10.165851',
+        },
+      ],
     },
     {
       recruitId: 2,
@@ -101,25 +122,48 @@ const Recruits = () => {
       image: '',
       createdAt: '2023-01-02T16:18:48.908218',
       modifiedAt: '2023-01-02T16:18:48.908218',
-      status: '활동종료', // 모집중/모집완료/활동종료
+      recruitStatus: '활동종료', // 모집중/모집완료/활동종료
       star: 0,
       views: 0,
       memberId: 1,
       nickname: 'aaa',
-      like: 0,
+      likes: 0,
+      location: { latitude: 37.343336, longitude: 127.1233716 },
       heart: 20, // number, 0
-      ageGroup: [10, 20, 30],
+      ageGroup: ['10', '20', '30'],
       sex: 'Male', // Male, Female, Both
-      applicants: [
+      applies: [
         { memberId: 2, nickname: 'bbb', heart: 80 },
         { memberId: 3, nickname: 'ccc', heart: 80 },
       ],
       minRequire: 2,
       require: 5,
       date: '2023-01-02T16:18:48.908218',
-      tagId: 21,
-      tagName: '스케이트/인라인',
-      tagEmoji: '⛸️',
+      recruitTags: [{ tagId: 21, tagName: '스케이트/인라인', tagEmoji: '⛸️' }],
+      recruitLikes: [
+        {
+          memberId: 1,
+        },
+      ],
+      reviews: [
+        {
+          memberId: 1,
+          nickname: '닉네임',
+          heart: 50,
+          body: '리뷰 내용',
+          star: 5,
+        },
+      ],
+      recruitComments: [
+        {
+          memberId: 1,
+          nickname: '닉네임',
+          heart: 50,
+          body: '댓글 내용 작성',
+          createdAt: '2023-01-18T17:35:10.171566',
+          modifiedAt: '2023-01-18T17:35:10.165851',
+        },
+      ],
     },
     {
       recruitId: 3,
@@ -129,22 +173,45 @@ const Recruits = () => {
       image: '',
       createdAt: '2023-01-02T16:18:48.908218',
       modifiedAt: '2023-01-02T16:18:48.908218',
-      status: '모집완료', // 모집중/모집완료/활동종료
+      recruitStatus: '모집완료', // 모집중/모집완료/활동종료
       star: 0,
       views: 0,
       memberId: 1,
       nickname: 'aaa',
-      like: 0,
+      likes: 0,
+      location: { latitude: 37.343336, longitude: 127.1233716 },
       heart: 20, // number, 0
-      ageGroup: [10, 20, 30, 40, 50, 60, 70],
+      ageGroup: ['10', '20', '30', '40', '50', '60', '70'],
       sex: 'Female', // Male, Female, Both
-      applicants: [{ memberId: 2, nickname: 'bbb', heart: 80 }],
+      applies: [{ memberId: 2, nickname: 'bbb', heart: 80 }],
       minRequire: 2,
       require: 5,
       date: '2023-01-02T16:18:48.908218',
-      tagId: 11,
-      tagName: '무술/주짓수',
-      tagEmoji: '🥋',
+      recruitTags: [{ tagId: 11, tagName: '무술/주짓수', tagEmoji: '🥋' }],
+      recruitLikes: [
+        {
+          memberId: 1,
+        },
+      ],
+      reviews: [
+        {
+          memberId: 1,
+          nickname: '닉네임',
+          heart: 50,
+          body: '리뷰 내용',
+          star: 5,
+        },
+      ],
+      recruitComments: [
+        {
+          memberId: 1,
+          nickname: '닉네임',
+          heart: 50,
+          body: '댓글 내용 작성',
+          createdAt: '2023-01-18T17:35:10.171566',
+          modifiedAt: '2023-01-18T17:35:10.165851',
+        },
+      ],
     },
   ];
   const params = new URLSearchParams(useLocation().search);

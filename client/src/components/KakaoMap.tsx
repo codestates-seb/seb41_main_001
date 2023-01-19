@@ -1,34 +1,65 @@
-import { useRef, useEffect, MutableRefObject } from 'react';
-import Locations from '../utils/Locations';
+/* eslint-disable no-new */
+import { useEffect, useRef } from 'react';
+import styled from 'styled-components';
 
-const KakaoMap = () => {
-  const mapRef = useRef<HTMLElement | null>(null);
-  const location: any = Locations();
+const MapContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: block;
 
-  const initMap = () => {
-    if (typeof location !== 'string') {
-      const container = document.getElementById('map');
-      const options = {
-        center: new kakao.maps.LatLng(location.latitude, location.longitude),
-        level: 2,
-      };
-
-      const map = new kakao.maps.Map(container as HTMLElement, options);
-      (mapRef as MutableRefObject<any>).current = map;
+  .customoverlay {
+    span {
+      padding: 10px;
+      border-radius: 10px;
+      background-color: white;
+      color: black;
+      font-weight: 600;
     }
+  }
+`;
+
+interface KakaoMapProps {
+  latitude: number;
+  longitude: number;
+  overlayvalue?: string;
+}
+
+const KakaoMap = ({
+  latitude,
+  longitude,
+  overlayvalue = '현재 위치',
+}: KakaoMapProps) => {
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const { kakao } = window;
+  const position = new kakao.maps.LatLng(latitude, longitude);
+  const mapOptions = {
+    center: position, // 지도의 중심좌표
+    level: 4, // 지도의 확대 레벨
   };
 
   useEffect(() => {
-    kakao.maps.load(() => initMap());
-  }, [mapRef, location]);
+    const map = new kakao.maps.Map(mapContainer.current!, mapOptions);
+    const marker = new kakao.maps.Marker({ position }); // 마커 생성
 
-  return (
-    <>
-      <div id="map" style={{ width: '500px', height: '400px' }} />
-      <button type="button" onClick={() => initMap}>
-        현재 위치로 이동
-      </button>
-    </>
-  );
+    // 커스텀 오버레이에 표출될 내용
+    const content = `
+    <div class="customoverlay">
+    <span>${overlayvalue}</span>
+    </div>
+    `;
+
+    // 커스텀 오버레이 생성
+    new kakao.maps.CustomOverlay({
+      map,
+      position,
+      content,
+    });
+
+    // 마커가 지도 위에 표시되도록 설정
+    marker.setMap(map);
+  }, []);
+
+  return <MapContainer id="kakao-map" ref={mapContainer} />;
 };
+
 export default KakaoMap;

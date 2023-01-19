@@ -1,5 +1,7 @@
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import styled from 'styled-components';
+import TagAutoComplete from '../components/TagAutoComplete';
 
 enum GenderEnum {
   female = '여성',
@@ -73,13 +75,14 @@ const CRForm = styled.form`
 const CreateRecruit = () => {
   const { register, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
+  const [filterTag, setFilterTag] = useState('');
 
   return (
     <CRContainer>
       <CRForm onSubmit={handleSubmit(onSubmit)}>
         <div>모집 게시글 생성</div>
         <label htmlFor="tag">태그</label>
-        <input id="tag" {...register('tag', { required: true })} />
+        <TagAutoComplete filterTag={filterTag} setFilterTag={setFilterTag} />
         <label htmlFor="title">제목</label>
         <input
           id="title"
