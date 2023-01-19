@@ -1,6 +1,9 @@
 package com.main_001.server.tag.controller;
 
+import com.main_001.server.dto.MultiResponseDto;
+import com.main_001.server.dto.SingleResponseDto;
 import com.main_001.server.tag.dto.TagDto;
+import com.main_001.server.tag.entity.Tag;
 import com.main_001.server.tag.mapper.TagMapper;
 import com.main_001.server.tag.service.TagService;
 import io.swagger.annotations.Api;
@@ -10,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Api(tags = { "Tag" })
 @RestController
@@ -22,22 +28,25 @@ public class TagController {
 
     @ApiOperation(value = "태그 생성", notes = "태그를 생성한다.")
     @PostMapping
-    public ResponseEntity postTag(TagDto.Post tagPostDto){
-
-        return new ResponseEntity<>("", HttpStatus.CREATED);
+    public ResponseEntity postTag(@RequestBody TagDto.Post tagPostDto){
+        Tag tag = tagService.createTag(tagMapper.tagPostDtoToTag(tagPostDto));
+        return new ResponseEntity<>(
+                new SingleResponseDto<>(tag), HttpStatus.CREATED);
     }
 
-    @ApiOperation(value = "태그 기준 모집글 조회", notes = "태그를 기준으로 모집글을 조회한다.")
+    @ApiOperation(value = "모집글 관련 태그 조회", notes = "모집글을 기준으로 관련 태그를 조회한다.")
     @GetMapping("/recruits")
-    public ResponseEntity getRecruitByTag(){
-
-        return new ResponseEntity<>("",HttpStatus.OK);
+    public ResponseEntity getTagsFromRecruit(){
+        List<Tag> recruitTags = tagService.findTagsRecruit();
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(recruitTags),HttpStatus.OK);
     }
 
-    @ApiOperation(value = "태그 기준 자글 조회", notes = "태그를 기준으로 자유글을 조회한다.")
+    @ApiOperation(value = "자유 게시글 관련 태그 조회", notes = "자유 게시글을 기준으로 관련 태그를 조회한다.")
     @GetMapping("/freeboards")
-    public ResponseEntity getFreeboardsByTag(){
-
-        return new ResponseEntity<>("",HttpStatus.OK);
+    public ResponseEntity getTagsFromFreeboard(){
+        List<Tag> freeTags = tagService.findTagsFreeboard();
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(freeTags),HttpStatus.OK);
     }
 }
