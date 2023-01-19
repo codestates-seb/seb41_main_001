@@ -86,12 +86,12 @@ public class RecruitService {
         //Todo : 멤버가 모집글에 등록한 태그가 유효한지 확인
     }
 
-    public RecruitComment createComment(long recruitId, RecruitComment recruitComment) {
+    public Recruit createComment(long recruitId, RecruitComment recruitComment) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         recruitComment.setCreatedAt(LocalDateTime.now());
         recruitComment.setRecruit(findRecruit);
-        saveRecruit(findRecruit);
-        return recruitComment;
+        return saveRecruit(findRecruit);
+//        return recruitComment;
     }
 
     public Page<Recruit> findRecruits(int page, int size, String tag, String status) {
@@ -130,8 +130,10 @@ public class RecruitService {
     public Recruit updateRecruit(long recruitId, Recruit recruit) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         if(!Objects.equals(findRecruit.getMember().getMemberId(), recruit.getMember().getMemberId())) throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
-        findRecruit.setBody(recruit.getBody());
-        findRecruit.setTitle(recruit.getTitle());
+        if(recruit.getBody()!=null)findRecruit.setBody(recruit.getBody());
+        if(recruit.getTitle()!=null)findRecruit.setTitle(recruit.getTitle());
+        if(recruit.getLocation()!=null)findRecruit.setLocation(recruit.getLocation());
+        if(recruit.getDate()!=null)findRecruit.setDate(recruit.getDate());
         return saveRecruit(findRecruit);
     }
 
@@ -169,15 +171,16 @@ public class RecruitService {
         return saveRecruit(findRecruit);
     }
 
-    public RecruitComment updateComment(long recruitId, long commentId, RecruitComment recruitComment) {
+    public Recruit updateComment(long recruitId, long commentId, RecruitComment recruitComment) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         RecruitComment targetComment = recruitCommentRepository.findById(commentId).orElseThrow();
         if(!Objects.equals(targetComment.getMember().getMemberId(), recruitComment.getMember().getMemberId())) throw new BusinessLogicException(ExceptionCode.COMMENT_MODIFY_DENIED);
         targetComment.setModifiedAt(recruitComment.getModifiedAt());
         targetComment.setBody(recruitComment.getBody());
-        saveRecruit(findRecruit);
 
-        return targetComment;
+        return saveRecruit(findRecruit);
+
+//        return targetComment;
     }
 
     public Recruit deleteComment(long recruitId, long commentId, long memberId) {
@@ -209,7 +212,7 @@ public class RecruitService {
         return saveRecruit(findRecruit);
     }
 
-    public List<Review> createReview(long recruitId, Review review) {
+    public Recruit createReview(long recruitId, Review review) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         Member findMember = memberService.findMember(review.getMember().getMemberId());
         List<Member> members = new ArrayList<>();
@@ -224,7 +227,7 @@ public class RecruitService {
         if(count==0) review.setRecruit(findRecruit);
         else throw new BusinessLogicException(ExceptionCode.ONLY_ONE_REVIEW);
 
-        saveRecruit(findRecruit);
-        return findRecruit.getReviews();
+        return saveRecruit(findRecruit);
+//        return findRecruit.getReviews();
     }
 }

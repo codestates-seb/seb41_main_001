@@ -24,13 +24,14 @@ public interface RecruitMapper {
                     Tag tag = new Tag();
                     tag.setTagId((int) recruitTagDto.getTagId());
                     tag.setTagName(recruitTagDto.getTagName());
+                    tag.setEmoji(recruitTagDto.getEmoji());
                     recruitTag.setRecruit(recruit);
                     recruitTag.setTag(tag);
                     return recruitTag;
                 }).collect(Collectors.toList());
         recruit.setMember(member);
         recruit.setRecruitTags(recruitTags);
-        recruit.setHeart(requestBody.getHeart());
+        recruit.setHeartLimit(requestBody.getHeartLimit());
         recruit.setTitle(requestBody.getTitle());
         recruit.setBody(requestBody.getBody());
         recruit.setRequire(requestBody.getRequire());
@@ -67,10 +68,11 @@ public interface RecruitMapper {
                 .recruitStatus(recruit.getRecruitStatus().getStepDescription())
                 .star(recruit.getStar())
                 .views(recruit.getViews())
-                .heart(recruit.getHeart())
+                .heartLimit(recruit.getHeartLimit())
                 .ageGroup(ageGroup)
                 .memberId(recruit.getMember().getMemberId())
                 .nickname(recruit.getMember().getNickname())
+                .authorHeart(recruit.getMember().getHeart())
                 .sex(recruit.getSex())
                 .date(recruit.getDate())
                 .location(recruit.getLocation())
@@ -175,6 +177,8 @@ public interface RecruitMapper {
         recruit.setMember(member);
         recruit.setTitle(requestBody.getTitle());
         recruit.setBody(requestBody.getBody());
+        recruit.setLocation(requestBody.getLocation());
+        recruit.setDate(requestBody.getDate());
         return recruit;
     }
 

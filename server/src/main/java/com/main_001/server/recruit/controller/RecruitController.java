@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = { "Recruit" })
+@Api(tags = {"Recruit"})
 @RestController
 @RequestMapping("/recruits")
 public class RecruitController {
@@ -51,10 +51,10 @@ public class RecruitController {
                                       @RequestParam int size,
                                       @RequestParam(required = false, defaultValue = "all") String tag,
                                       @RequestParam(required = false, defaultValue = "all") String status) {
-        Page<Recruit> pageRecruits = recruitService.findRecruits(page-1, size, tag, status);
+        Page<Recruit> pageRecruits = recruitService.findRecruits(page - 1, size, tag, status);
         List<Recruit> recruits = pageRecruits.getContent();
         return new ResponseEntity<>(
-                new MultiResponseDto<>(recruitMapper.recruitsToRecruitResponseDtos(recruits),pageRecruits),
+                new MultiResponseDto<>(recruitMapper.recruitsToRecruitResponseDtos(recruits), pageRecruits),
                 HttpStatus.OK);
     }
 
@@ -62,7 +62,6 @@ public class RecruitController {
     @PatchMapping("/{recruit-id}")
     public ResponseEntity patchRecruit(@PathVariable("recruit-id") long recruitId,
                                        @RequestBody RecruitDto.Patch requestBody) {
-        //Todo patchRecruitUsingPATCH에 모집인원, 모집장소도 변경될 수 있어서 추가해야될 것 같아요!
 
         Recruit recruit = recruitService.updateRecruit(recruitId, recruitMapper.recruitPatchDtoToRecruit(requestBody));
 
@@ -84,28 +83,38 @@ public class RecruitController {
                                        @RequestBody RecruitDto.Patch requestBody) {
         Recruit recruit = recruitService.updateStatus(recruitId, requestBody);
         return new ResponseEntity<>(
-                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)),HttpStatus.OK);
+                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "모집글 좋아요 표시", notes = "모집글에 좋아요를 누른 member id를 추가하거나 삭제한다.")
     @PatchMapping("/{recruit-id}/likes")
     public ResponseEntity patchLike(@PathVariable("recruit-id") long recruitId,
-                                      @RequestBody RecruitLikeDto requestBody) {
-        List<RecruitLike> recruitLikes = recruitService.updateLike(recruitId, recruitMapper.recruitLikeDtoToRecruitLike(requestBody)).getRecruitLikes();
+                                    @RequestBody RecruitLikeDto requestBody) {
+        Recruit recruit = recruitService.updateLike(recruitId, recruitMapper.recruitLikeDtoToRecruitLike(requestBody));
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(recruitMapper.recruitLikesToRecruitLikeResponseDtos(recruitLikes)), HttpStatus.OK);
+                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)), HttpStatus.OK);
+
+//        List<RecruitLike> recruitLikes = recruitService.updateLike(recruitId, recruitMapper.recruitLikeDtoToRecruitLike(requestBody)).getRecruitLikes();
+//
+//        return new ResponseEntity<>(
+//                new SingleResponseDto<>(recruitMapper.recruitLikesToRecruitLikeResponseDtos(recruitLikes)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "모집글에 대한 댓글 작성", notes = "모집글에 댓글을 작성한다.")
     @PostMapping("/{recruit-id}")
     public ResponseEntity postComment(@PathVariable("recruit-id") long recruitId,
                                       @RequestBody RecruitCommentDto.Default requestBody) {
-        RecruitComment recruitComment = recruitService.createComment(recruitId, recruitMapper.recruitCommentDtoToRecruitComment(requestBody));
+        Recruit recruit = recruitService.createComment(recruitId, recruitMapper.recruitCommentDtoToRecruitComment(requestBody));
         return new ResponseEntity<>(
-                new SingleResponseDto<>(recruitMapper.recruitCommentToRecruitCommentResponseDto(recruitComment)),
+                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)),
                 HttpStatus.CREATED
         );
+//        RecruitComment recruitComment = recruitService.createComment(recruitId, recruitMapper.recruitCommentDtoToRecruitComment(requestBody));
+//        return new ResponseEntity<>(
+//                new SingleResponseDto<>(recruitMapper.recruitCommentToRecruitCommentResponseDto(recruitComment)),
+//                HttpStatus.CREATED
+//        );
     }
 
     @ApiOperation(value = "모집글에 대한 댓글 수정", notes = "모집글에 대한 댓글의 내용을 수정한다.")
@@ -113,10 +122,14 @@ public class RecruitController {
     public ResponseEntity patchComment(@PathVariable("recruit-id") long recruitId,
                                        @PathVariable("comment-id") long commentId,
                                        @RequestBody RecruitCommentDto.Default requestBody) {
-        RecruitComment recruitComment = recruitService.updateComment(recruitId, commentId, recruitMapper.recruitCommentDtoToRecruitComment(requestBody));
+        Recruit recruit = recruitService.updateComment(recruitId, commentId, recruitMapper.recruitCommentDtoToRecruitComment(requestBody));
         return new ResponseEntity<>(
-                new SingleResponseDto<>(recruitMapper.recruitCommentToRecruitCommentResponseDto(recruitComment)),
+                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)),
                 HttpStatus.OK);
+//        RecruitComment recruitComment = recruitService.updateComment(recruitId, commentId, recruitMapper.recruitCommentDtoToRecruitComment(requestBody));
+//        return new ResponseEntity<>(
+//                new SingleResponseDto<>(recruitMapper.recruitCommentToRecruitCommentResponseDto(recruitComment)),
+//                HttpStatus.OK);
     }
 
     //delete 시 member-id를 받아와서 작성자와 비교 후 삭제?
@@ -127,7 +140,7 @@ public class RecruitController {
                                         @RequestBody RecruitCommentDto.Delete requestBody) {
         Recruit recruit = recruitService.deleteComment(recruitId, commentId, requestBody.getMemberId());
         return new ResponseEntity<>(
-                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)),HttpStatus.OK);
+                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "모집글 끌어올리기", notes = "모집글의 시간을 현재 시간으로 변경한다.")
@@ -144,32 +157,24 @@ public class RecruitController {
     @PatchMapping("/{recruit-id}/application")
     public ResponseEntity patchRecruit(@PathVariable("recruit-id") long recruitId,
                                        @RequestBody ApplyDto requestBody) {
-        List<Apply> applies = recruitService.createAppliment(recruitId, recruitMapper.applyDtoToApply(requestBody)).getApplies();
+        Recruit recruit = recruitService.createAppliment(recruitId, recruitMapper.applyDtoToApply(requestBody));
         return new ResponseEntity<>(
-                new SingleResponseDto<>(recruitMapper.appliesToApplyResponseDtos(applies)), HttpStatus.CREATED
-        );
+                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)),
+                HttpStatus.CREATED);
+//        아래는 신청 리스트를 반환하는 방식
+//        List<Apply> applies = recruitService.createAppliment(recruitId, recruitMapper.applyDtoToApply(requestBody)).getApplies();
+//        return new ResponseEntity<>(
+//                new SingleResponseDto<>(recruitMapper.appliesToApplyResponseDtos(applies)), HttpStatus.CREATED
+//        );
     }
-//    @ApiOperation(value = "모집글 참여 신청 취소", notes = "모집글에 참여 신청한 내역을 취소한다.")
-//    @DeleteMapping("/{recruit-id}/cancellation/{apply-id}")
-//    public ResponseEntity cancelRecruit(@PathVariable("recruit-id") long recruitId,
-//                                        @PathVariable("apply-id") long applyId,
-//                                        @RequestBody ApplyDto requestBody) {
-//
-//        //Todo:
-//
-//        //아래는 stub
-//        StubResponse.StubApply stubApply2 = new StubResponse.StubApply();
-//        List<StubResponse.StubApply> applies = List.of(stubApply2);
-//        return new ResponseEntity(
-//                new SingleResponseDto<>(applies), HttpStatus.OK);
-//    }
 
     @ApiOperation(value = "모집글 리뷰 작성", notes = "모집글에 대한 리뷰를 작성한다.")
     @PostMapping("/{recruit-id}/reviews")
     public ResponseEntity postReview(@PathVariable("recruit-id") long recruitId,
                                      @RequestBody ReviewDto requestBody) {
-        List<Review> reviews = recruitService.createReview(recruitId, recruitMapper.reviewDtoToReview(requestBody));
+        Recruit recruit = recruitService.createReview(recruitId, recruitMapper.reviewDtoToReview(requestBody));
+//        List<Review> reviews = recruitService.createReview(recruitId, recruitMapper.reviewDtoToReview(requestBody));
         return new ResponseEntity<>(
-                new SingleResponseDto<>(recruitMapper.reviewsToReviewResponseDtos(reviews)), HttpStatus.CREATED);
+                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)), HttpStatus.CREATED);
     }
 }

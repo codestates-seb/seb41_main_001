@@ -7,10 +7,11 @@ public class TagDto {
         private String tagName;
     }
 
-    public static class Responce{
+    public static class Response{
         private int tagId;
-        private boolean categoryExcercise;
+        private boolean categoryExercise;
         private String tagName;
+        private String emoji;
         private int count;
     }
 }

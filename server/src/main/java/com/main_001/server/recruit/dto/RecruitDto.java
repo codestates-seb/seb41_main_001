@@ -34,7 +34,7 @@ public class RecruitDto {
 
         @ApiModelProperty(example = "심박수 제한")
         @NotBlank
-        private int heart;
+        private int heartLimit;
 
         @ApiModelProperty(example = "성별")
         @NotBlank
@@ -73,6 +73,13 @@ public class RecruitDto {
 
         @ApiModelProperty(example = "내용 작성")
         private String body;
+
+        @ApiModelProperty(example = "모집 장소")
+        private String location;
+
+        @ApiModelProperty(example = "모집 일시")
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        private LocalDateTime date;
     }
 
     @Getter
@@ -123,7 +130,7 @@ public class RecruitDto {
         private int views;
 
         @ApiModelProperty(example = "심박수")
-        private int heart;
+        private int heartLimit;
 
         @ApiModelProperty(example = "연령대")
         private List<String> ageGroup;
@@ -133,6 +140,12 @@ public class RecruitDto {
 
         @ApiModelProperty(example = "닉네임")
         private String nickname;
+        
+        @ApiModelProperty(example = "작성자 심박수")
+        private int authorHeart;
+
+//        @ApiModelProperty()
+        //Todo 추후 작성자 프사 추가
 
         @ApiModelProperty(example = "성별")
         private String sex;
