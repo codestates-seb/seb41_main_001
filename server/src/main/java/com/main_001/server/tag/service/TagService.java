@@ -20,6 +20,6 @@ public class TagService {
     }
 
     public List<Tag> findTagsFreeboard(){
-        return findTagsFreeboard();
+        return tagRepository.findAllbyFreeTag();
     }
 }
