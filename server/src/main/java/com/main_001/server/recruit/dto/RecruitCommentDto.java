@@ -9,6 +9,7 @@ public class RecruitCommentDto {
         @Getter
         public static class Default {
                 @ApiModelProperty(example = "Member id")
+                @NotBlank
                 private long memberId;
                 @ApiModelProperty(example = "댓글 내용 작성")
                 @NotBlank
@@ -18,6 +19,7 @@ public class RecruitCommentDto {
         @Getter
         public static class Delete{
                 @ApiModelProperty(example = "Member id")
+                @NotBlank
                 private long memberId;
         }
 }
