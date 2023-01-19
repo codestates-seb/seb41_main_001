@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import React from 'react';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
+import useCurrentLocation from '../utils/useCurrentLocation';
 
 const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   console.log('change', event.target.value);
