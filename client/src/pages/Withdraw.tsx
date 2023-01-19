@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Link, useParams } from 'react-router-dom';
 
-const WithdrawlContainer = styled.main`
+const WithdrawContainer = styled.main`
   background-color: var(--gray);
   color: white;
   display: flex;
@@ -35,7 +35,7 @@ const WithdrawlContainer = styled.main`
   }
 `;
 
-const WithdrawlWrapper = styled.div`
+const WithdrawWrapper = styled.div`
   background-color: var(--gray);
   display: flex;
   justify-content: center;
@@ -67,11 +67,11 @@ const Button = styled(Link)`
   }
 `;
 
-const Withdrawl = () => {
+const Withdraw = () => {
   const { id } = useParams();
   return (
-    <WithdrawlWrapper>
-      <WithdrawlContainer>
+    <WithdrawWrapper>
+      <WithdrawContainer>
         <div>회원탈퇴</div>
         <div>
           <span>
@@ -106,9 +106,9 @@ const Withdrawl = () => {
           </Button>
           <Button to={`/members/mypage/${id}`}>돌아가기</Button>
         </ButtonContainer>
-      </WithdrawlContainer>
-    </WithdrawlWrapper>
+      </WithdrawContainer>
+    </WithdrawWrapper>
   );
 };
 
-export default Withdrawl;
+export default Withdraw;

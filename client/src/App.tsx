@@ -2,7 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // import { useState } from 'react';
 import Main from './pages/Main';
-import Withdrawl from './pages/Withdrawl';
+import Withdraw from './pages/Withdraw';
 import MyPage from './pages/MyPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -23,7 +23,7 @@ const App = () => (
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/members/mypage/:id" element={<MyPage />} />
-        <Route path="/members/withdrawl/:id" element={<Withdrawl />} />
+        <Route path="/members/withdraw/:id" element={<Withdraw />} />
         <Route path="/members/edit/:id" element={<EditUser />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />

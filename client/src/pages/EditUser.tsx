@@ -208,6 +208,9 @@ const TagContainer = styled.div`
     flex-direction: row;
     width: 500px;
     flex-wrap: wrap;
+    border: none;
+    padding-left: 0 ;
+    margin-left: 0;
   }
 `;
 
