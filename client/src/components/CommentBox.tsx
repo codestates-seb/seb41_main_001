@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import timeDifference from '../utils/timeDifference';
 import Button from './Button';
+import CommentSubmitBox from './CommentSubmitBox';
 
 const CommentContainer = styled.li`
   width: 100%;
@@ -82,6 +84,8 @@ const CommentBox = (props: { data: CommentProps }) => {
 
   const LOGIN_ID = 1;
 
+  const [modifying, setModifying] = useState(false);
+
   return (
     <CommentContainer>
       <CreatorBox>
@@ -108,15 +112,36 @@ const CommentBox = (props: { data: CommentProps }) => {
         <div>
           {memberId === LOGIN_ID ? (
             <>
-              <Button value="수정" onClick={() => {}} />
-              <Button value="삭제" onClick={() => {}} />
+              {modifying === false ? (
+                <Button value="수정" onClick={() => setModifying(true)} />
+              ) : (
+                <Button value="닫기" onClick={() => setModifying(false)} />
+              )}
+              {/* // TODO: 댓글삭제 api. */}
+              <Button
+                value="삭제"
+                onClick={() => {
+                  console.log('댓글삭제!');
+                }}
+              />
             </>
           ) : (
             ''
           )}
         </div>
       </CreatorBox>
-      <div>{body}</div>
+      {modifying === false ? (
+        <div>{body}</div>
+      ) : (
+        // TODO: onClick에 댓글수정 api
+        <CommentSubmitBox
+          value={body}
+          onClick={() => {
+            console.log('댓글수정!');
+            setModifying(false);
+          }}
+        />
+      )}
     </CommentContainer>
   );
 };

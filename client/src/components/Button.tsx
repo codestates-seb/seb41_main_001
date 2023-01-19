@@ -22,12 +22,12 @@ const ButtonContainer = styled.button`
 
 interface ButtonProps {
   value: string;
-  onClick: () => void;
+  onClick: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: 'button' | 'submit' | 'reset' | undefined;
 }
 
 const Button = ({ value, onClick, type }: ButtonProps) => (
-  <ButtonContainer onClick={onClick} type={type}>
+  <ButtonContainer onClick={(e: any) => onClick(e)} type={type}>
     {value}
   </ButtonContainer>
 );

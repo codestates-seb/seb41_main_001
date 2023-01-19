@@ -254,7 +254,8 @@ const RecruitDetail = () => {
             <CommentBox key={el.memberId} data={el} />
           ))}
         </ul>
-        <CommentSubmitBox />
+        {/* // TODO: onClick에 댓글등록 api. */}
+        <CommentSubmitBox onClick={() => console.log('댓글등록!')} />
       </CommentArea>
     </MainContainer>
   );
