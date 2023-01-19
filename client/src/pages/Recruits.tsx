@@ -26,6 +26,10 @@ const MainContainer = styled.main`
     margin: 0;
     padding: 10px;
     margin-top: 40px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   aside {
@@ -67,7 +71,7 @@ const Recruits = () => {
       star: 0,
       views: 0,
       memberId: 1,
-      nickname: 'aaa',
+      nickname: '글자수세기TEST글자수세기TEST글자',
       like: 0,
       heart: 50, // number, 0
       ageGroup: [10, 20, 30, 40, 50, 60],

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import ButtonLink from './ButtonLink';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -62,23 +63,23 @@ const ButtonsContainer = styled.div`
   }
 `;
 
-const Button = styled(Link)`
-  text-decoration: none;
-  background-color: var(--gray);
-  color: white;
-  border-radius: 0.3rem;
-  margin-left: 0.6rem;
-  padding: 0.5rem 1rem;
-  transition: 0.2s ease-in-out;
-  font-size: 16px;
-  white-space: nowrap;
-  &:hover {
-    cursor: pointer;
-    background-color: var(--neon-yellow);
-    color: black;
-    transition: 0.2s ease-in-out;
-  }
-`;
+// const Button = styled(Link)`
+//   text-decoration: none;
+//   background-color: var(--gray);
+//   color: white;
+//   border-radius: 5px;
+//   margin-left: 10px;
+//   padding: 8px 14px;
+//   transition: 0.2s ease-in-out;
+//   font-size: 16px;
+//   white-space: nowrap;
+//   &:hover {
+//     cursor: pointer;
+//     background-color: var(--neon-yellow);
+//     color: black;
+//     transition: 0.2s ease-in-out;
+//   }
+// `;
 
 const Board = styled.nav`
   color: white;
@@ -124,10 +125,8 @@ const Header = () => (
         <i className="fa-solid fa-magnifying-glass" />
         <input placeholder="Search here..." />
       </form>
-      <div>
-        <Button to="/login">로그인</Button>
-        <Button to="/signup">회원가입</Button>
-      </div>
+      <ButtonLink value="로그인" to="/login" />
+      <ButtonLink value="회원가입" to="/signup" />
     </ButtonsContainer>
   </HeaderContainer>
 );

@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import styled from 'styled-components';
+import TagAutoComplete from '../components/TagAutoComplete';
 
 enum GenderEnum {
   female = '여성',
@@ -36,6 +37,7 @@ const CRContainer = styled.div`
   justify-content: center;
   margin-top: 5rem;
   height: 100%;
+  font-size: 16px;
 `;
 
 const CRForm = styled.form`
@@ -51,17 +53,19 @@ const CRForm = styled.form`
   justify-content: center;
   align-items: center;
 
-  div:first-child {
+  > div:first-child {
     margin-top: 1rem;
     margin-bottom: 1.5rem;
     font-weight: bold;
   }
 
-  div {
+  > div:not(:nth-child(2)) {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 0.5rem;
+    width: 20rem;
+    margin: 0.5rem;
+    margin-bottom: 1rem;
 
     label,
     p {
@@ -76,7 +80,6 @@ const CRForm = styled.form`
     textarea,
     select {
       width: 15rem;
-      margin: 0.5rem;
       outline: none;
       border: none;
       background-color: rgba(1, 1, 1, 0);
@@ -87,7 +90,7 @@ const CRForm = styled.form`
       }
     }
 
-    div {
+    > div {
       label {
         width: 3rem;
       }
@@ -98,7 +101,28 @@ const CRForm = styled.form`
     }
   }
 
-  button {
+  > div:nth-child(2) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    width: 20rem;
+    label {
+      width: 6rem;
+      white-space: nowrap;
+      margin-right: 1.5rem;
+    }
+    > div {
+      width: 100%;
+      margin-bottom: 0.5rem;
+      display: flex;
+      input {
+        height: auto;
+      }
+    }
+  }
+
+  .submitBtn {
     width: 6rem;
     text-decoration: none;
     background-color: var(--gray);
@@ -144,13 +168,19 @@ const CreateRecruit = () => {
     setValue(e.target.value);
   };
 
+  const [filterTag, setFilterTag] = useState('');
+
   return (
     <CRContainer>
       <CRForm onSubmit={handleSubmit(onSubmit)}>
         <div>모집 게시글 작성</div>
         <div>
           <label htmlFor="tag">태그</label>
-          <input id="tag" {...register('tag', { required: true })} />
+          <TagAutoComplete
+            filterTag={filterTag}
+            setFilterTag={setFilterTag}
+            // {...register('tag', { required: true })}
+          />
         </div>
         <div>
           <label htmlFor="title">제목</label>
@@ -293,7 +323,9 @@ const CreateRecruit = () => {
           <label htmlFor="image">이미지</label>
           <input id="image" type="file" {...register('image')} />
         </div>
-        <button type="submit">작성하기</button>
+        <button className="submitBtn" type="submit">
+          작성하기
+        </button>
       </CRForm>
     </CRContainer>
   );

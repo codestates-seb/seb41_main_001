@@ -37,9 +37,9 @@ const KakaoMap = () => {
   return (
     <>
       <div id="map" />
-      {/* <button type="button" onClick={() => initMap}>
+      <button type="button" onClick={() => initMap}>
         현재 위치로 이동
-      </button> */}
+      </button>
     </>
   );
 };
