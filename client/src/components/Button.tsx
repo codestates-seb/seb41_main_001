@@ -6,7 +6,7 @@ const ButtonContainer = styled.button`
   color: white;
   border: 1px solid white;
   border-radius: 5px;
-  margin-left: 10px;
+  /* margin-left: 10px; */
   padding: 8px 14px;
   transition: 0.2s ease-in-out;
   font-size: 16px;
@@ -23,10 +23,13 @@ const ButtonContainer = styled.button`
 interface ButtonProps {
   value: string;
   onClick: () => void;
+  type?: 'button' | 'submit' | 'reset' | undefined;
 }
 
-const Button = ({ value, onClick }: ButtonProps) => (
-  <ButtonContainer onClick={onClick}>{value}</ButtonContainer>
+const Button = ({ value, onClick, type }: ButtonProps) => (
+  <ButtonContainer onClick={onClick} type={type}>
+    {value}
+  </ButtonContainer>
 );
 
 export default Button;

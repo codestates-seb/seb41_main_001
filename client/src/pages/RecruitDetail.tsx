@@ -8,6 +8,7 @@ import modifyingDate from '../utils/modifyingDate';
 import RecruitCreatorSelectBox from '../components/RecruitCreatorSelectBox';
 import RecruitSelectBox from '../components/RecruitSelectBox';
 import CommentBox from '../components/CommentBox';
+import CommentSubmitBox from '../components/CommentSubmitBox';
 
 const MainContainer = styled.main`
   width: 900px;
@@ -44,7 +45,7 @@ const LocationBox = styled.div`
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 10px;
+      padding: 20px;
       margin-right: 20px;
       border-radius: 20px;
       background-color: rgba(255, 255, 255, 0.2);
@@ -62,7 +63,7 @@ const LocationBox = styled.div`
 const ConditionBox = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   > div {
     width: 130px;
     height: 130px;
@@ -104,6 +105,20 @@ const ConditionBox = styled.div`
         }
       }
     }
+  }
+`;
+
+const CommentArea = styled.div`
+  h3 {
+    margin: 0;
+    padding: 0;
+    margin-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  }
+  ul {
+    margin: 0;
+    padding: 0;
   }
 `;
 
@@ -160,6 +175,14 @@ const RecruitDetail = () => {
         nickname: 'holiday',
         heart: 50,
         body: '안녕하세요',
+        createdAt: '2023-01-18T17:35:10.171566',
+        modifiedAt: '2023-01-18T17:35:10.165851',
+      },
+      {
+        memberId: 2,
+        nickname: '글자수세기TEST글자수세기TEST글자',
+        heart: 50,
+        body: '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
         createdAt: '2023-01-18T17:35:10.171566',
         modifiedAt: '2023-01-18T17:35:10.165851',
       },
@@ -224,9 +247,15 @@ const RecruitDetail = () => {
       ) : (
         <RecruitSelectBox />
       )}
-      {DATA.recruitComments.map((el) => (
-        <CommentBox key={el.memberId} data={el} />
-      ))}
+      <CommentArea>
+        <h3>{`${DATA.recruitComments.length}개의 댓글이 있습니다`}</h3>
+        <ul>
+          {DATA.recruitComments.map((el) => (
+            <CommentBox key={el.memberId} data={el} />
+          ))}
+        </ul>
+        <CommentSubmitBox />
+      </CommentArea>
     </MainContainer>
   );
 };
