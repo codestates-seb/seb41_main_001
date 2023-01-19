@@ -3,12 +3,13 @@ package com.main_001.server.free.controller;
 import com.main_001.server.dto.MultiResponseDto;
 import com.main_001.server.dto.SingleResponseDto;
 import com.main_001.server.free.dto.FreeDto;
-import com.main_001.server.free.dto.FreeStubResponse;
 import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.entity.FreeComment;
+import com.main_001.server.free.entity.FreeLike;
 import com.main_001.server.free.mapper.FreeMapper;
 import com.main_001.server.free.service.FreeService;
-import com.main_001.server.recruit.dto.StubResponse;
+import com.main_001.server.recruit.dto.RecruitLikeDto;
+import com.main_001.server.recruit.entity.RecruitLike;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -34,75 +35,79 @@ public class FreeController {
         this.freeMapper = freeMapper;
         this.freeService = freeService;
     }
-
+    @ApiOperation(value = "자유 게시글 작성", notes = "작성자 id, 제목, 본문, 태그, 위치정보를 입력하여 자유 게시글을 작성한다.")
     @PostMapping
-    public ResponseEntity createFreeboard(@RequestBody FreeDto.PostFreeboard requestBody){
-        Free free = freeService.createFreeboard(freeMapper.freeboardPostToFree(requestBody));
+    public ResponseEntity createFreeboard(@RequestBody FreeDto.PostFreeboard postFreeboaedDto){
+        Free free = freeService.createFreeboard(freeMapper.freeboardPostToFree(postFreeboaedDto));
         return new ResponseEntity<>(freeMapper.FreeToFreeResponseDto(free), HttpStatus.CREATED);
-//        FreeStubResponse.StubFreeBoard stubFreeBoard = new FreeStubResponse.StubFreeBoard();
-//        return new ResponseEntity<>(stubFreeBoard, HttpStatus.CREATED);
     }
-
+    @ApiOperation(value = "자유 게시글에 대한 댓글 작성", notes = "자유 게시글에 댓글을 작성한다.")
     @PostMapping("/{free-id}")
-    public ResponseEntity createComment(@PathVariable("free-id") @Positive int id,
+    public ResponseEntity createComment(@PathVariable("free-id") @Positive long id,
                                         FreeDto.PostComment postCommentDto){
-        FreeStubResponse.StubFreeComment stubFreeComment = new FreeStubResponse.StubFreeComment();
-        return new ResponseEntity<>(
-                new SingleResponseDto<>(stubFreeComment), HttpStatus.CREATED);
+        FreeComment freeComment = freeService.createFreeComment(freeMapper.commentPostToFreeComment(postCommentDto));
+        return new ResponseEntity<>( new SingleResponseDto<>(freeMapper.FreeToFreeCommentResponseDto(freeComment)), HttpStatus.CREATED);
     }
-
+    @ApiOperation(value = "자유 게시글 조회", notes = "자유 게시글 id를 path에 붙여서 자유 게시글을 조회한다.")
     @GetMapping("/{free-id}")
-    public ResponseEntity getFreeboard(@PathVariable("free-id") @Positive int id){
-        FreeStubResponse.StubFreeBoard stubFreeBoard = new FreeStubResponse.StubFreeBoard();
+    public ResponseEntity getFreeboard(@PathVariable("free-id") @Positive long freeId){
+        Free free = freeService.findFreeboard(freeId);
         return new ResponseEntity<>(
-                new SingleResponseDto<>(stubFreeBoard), HttpStatus.OK);
+                new SingleResponseDto<>(free), HttpStatus.OK);
     }
-
+    @ApiOperation(value = "자유 게시글 전체 조회", notes = "page, size, searchDto(type=[category, tag, keyword], keyword) path에 작성하여 필터링한 전체 자유 개시글을 조회한다.")
     @GetMapping
     public ResponseEntity getFreeboardPage(@RequestParam int page,
-                                        @RequestParam int size,
-                                        @RequestParam(required = false, defaultValue = "all") String category,
-                                        @RequestParam(required = false, defaultValue = "all") String tag,
-                                        @RequestParam(required = false) String keyword,
-                                        @RequestParam(required = false, defaultValue = "latest") String sort){
-        FreeStubResponse.StubFreeBoard stubFreeBoard1 = new FreeStubResponse.StubFreeBoard();
-        FreeStubResponse.StubFreeBoard stubFreeBoard2 = new FreeStubResponse.StubFreeBoard();
-        List<FreeStubResponse.StubFreeBoard> stubFreeBoards = List.of(stubFreeBoard1, stubFreeBoard2);
-        PageRequest pageRequest =PageRequest.of(page-1, size);
-        int start = (int) pageRequest.getOffset();
-        int end = Math.min((start + pageRequest.getPageSize()), stubFreeBoards.size());
-
-        Page<FreeStubResponse.StubFreeBoard> pageStubFreeboards = new PageImpl<>(stubFreeBoards.subList(start, end), pageRequest, stubFreeBoards.size());
-        List<FreeStubResponse.StubFreeBoard> stubFreeboaedList = pageStubFreeboards.getContent();
+                                           @RequestParam int size,
+                                           @RequestParam FreeDto.Search searchDto){
+        Page<Free> freeboardsPage = freeService.findFreeboards(page - 1, size, searchDto);
+        List<Free> freeboardsList = freeboardsPage.getContent();
         return new ResponseEntity<>(
-                new MultiResponseDto<>(stubFreeboaedList,pageStubFreeboards), HttpStatus.OK);
+                new MultiResponseDto<>(freeMapper.FreeToFreeMultiRespnseDto(freeboardsList),freeboardsPage), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "자유 게시글 수정", notes = "자유 게시글 내용의 값을 변경하여 자유 게시글 내용을 수정한다.")
     @PatchMapping("/{free-id}")
-    public ResponseEntity patchFreeboard(@PathVariable("free-id") @Positive int freeId,
-                                        @RequestBody FreeDto.PatchFreeboard requestBody){
+    public ResponseEntity patchFreeboard(@PathVariable("free-id") @Positive long freeId,
+                                        @RequestBody FreeDto.PatchFreeboard patchFreeboardDto){
         Free freeboard = freeService.findFreeboard(freeId);
-        Free free = freeService.updateFreeboard(freeboard, requestBody);
+        Free free = freeService.updateFreeboard(freeboard, patchFreeboardDto);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(freeMapper.FreeToFreeResponseDto(free)), HttpStatus.OK);
-//        FreeStubResponse.StubFreeBoard stubFreeBoard = new FreeStubResponse.StubFreeBoard();
-//        return new ResponseEntity<>(stubFreeBoard, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "자유 게시글 뎃글 수정", notes = "자유 게시글 뎃글 내용의 값을 변경하여 자유 게시글 뎃글 내용을 수정한다.")
     @PatchMapping("/{free-id}/{comment-id}")
-    public ResponseEntity editComment(@PathVariable("free-id") @Positive int freeId,
-                                      @PathVariable("comment-id") @Positive int commentId,
-                                      @RequestBody FreeDto.PatchComment requestBody){
-        FreeComment freeComment = freeService.findFreeComment(commentId);
-        freeService.updateFreeComment(freeComment);
+    public ResponseEntity patchComment(@PathVariable("free-id") @Positive long freeId,
+                                      @PathVariable("comment-id") @Positive long commentId,
+                                      @RequestBody FreeDto.PatchComment patchCommentDto){
+        FreeComment updateFreeComment = freeService.updateFreeComment(freeId, commentId, patchCommentDto);
         return new ResponseEntity<>(
-                new SingleResponseDto<>(""), HttpStatus.NO_CONTENT);
+                new SingleResponseDto<>(freeMapper.FreeToFreeCommentResponseDto(updateFreeComment)), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{free-id}/{comment-id}")
-    public ResponseEntity deleteComment(@PathVariable("free-id") @Positive int freeId,
-                                        @PathVariable("comment-id") @Positive int commentId){
+    @ApiOperation(value = "자유 게시글 좋아요 표시", notes = "자유 게시글에 좋아요를 누른 member id를 추가하거나 삭제한다.")
+    @PatchMapping("/{recruit-id}/likes")
+    public ResponseEntity patchLike(@PathVariable("recruit-id") long freeId,
+                                    @RequestBody FreeDto.Like freeLikeDto) {
+        List<FreeLike> freeLikes = freeService.updateLike(freeId, freeMapper.freeLikeDtoToFreeLike(freeLikeDto)).getFreeLikes();
+
         return new ResponseEntity<>(
-                new SingleResponseDto<>(""), HttpStatus.NO_CONTENT);
+                new SingleResponseDto<>(freeMapper.freeLikesToFreeLikeResponseDtos(freeLikes)), HttpStatus.OK);
+    }
+    @ApiOperation(value = "자유 게시글 삭제", notes = "글을 작성한 작성자 id를 입력해서 자유 게시글을 삭제한다.")
+    @DeleteMapping("/{free-id}")
+    public ResponseEntity deleteFreeboard(@PathVariable("free-id") @Positive long freeId,
+                                          @RequestBody FreeDto.Delete requestBody){
+        freeService.deleteFreeboard(freeId, requestBody.getMemberId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @ApiOperation(value = "자유 게시글 뎃글 삭제", notes = "글을 작성한 작성자 id를 입력해서 자유 게시글 뎃을 삭제한다.")
+    @DeleteMapping("/{free-id}/{comment-id}")
+    public ResponseEntity deleteComment(@PathVariable("free-id") @Positive long freeId,
+                                        @PathVariable("comment-id") @Positive long commentId){
+        FreeComment freeComment = freeService.findFreeComment(freeId, commentId);
+        freeService.deleteFreeComment(freeComment);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
