@@ -1,6 +1,7 @@
 /* eslint-disable no-new */
 import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import markerImg from '../img/placeholder.png';
 
 const MapContainer = styled.div`
   width: 100%;
@@ -39,7 +40,22 @@ const KakaoMap = ({
 
   useEffect(() => {
     const map = new kakao.maps.Map(mapContainer.current!, mapOptions);
-    const marker = new kakao.maps.Marker({ position }); // 마커 생성
+
+    const imageSrc = markerImg;
+    const imageSize = new kakao.maps.Size(53, 60);
+    const imageOption = { offset: new kakao.maps.Point(27, 69) };
+
+    const markerImage = new kakao.maps.MarkerImage(
+      imageSrc,
+      imageSize,
+      imageOption,
+    );
+    const markerPosition = new kakao.maps.LatLng(latitude, longitude);
+
+    const marker = new kakao.maps.Marker({
+      position: markerPosition,
+      image: markerImage,
+    }); // 마커 생성
 
     // 커스텀 오버레이에 표출될 내용
     const content = `
