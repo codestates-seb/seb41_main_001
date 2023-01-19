@@ -20,5 +20,9 @@ export default interface FreeDataProps {
     commentBody: string;
     createdAt: string;
     modifiedAt: string;
+    memberId: number;
+    nickname: string;
+    heart: number;
+    body: string;
   }[];
 }

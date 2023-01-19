@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import Tag from '../components/Tag';
-import KakaoMap from '../components/KakaoMap';
+// import KakaoMap from '../components/KakaoMap';
 
 const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   console.log('change', event.target.value);
@@ -395,7 +395,7 @@ const EditUser = () => {
             <div>등록 지역 변경</div>
             <div>
               <div>
-                <KakaoMap />
+                {/* <KakaoMap /> */}
                 <button type="button">현재 위치 추가</button>
               </div>
               <div>

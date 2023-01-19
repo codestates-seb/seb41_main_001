@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import CreatorCard from './CreatorCard';
+import CreatorMiniCard from './CreatorMiniCard';
 import TagLink from './TagLink';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
@@ -119,7 +119,7 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
           <div>
             {/* {category} */}
             <i className="fa-solid fa-dumbbell" />
-            정보
+            운동
           </div>
           <div>
             {/* {freeTitle} */}
@@ -151,7 +151,7 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
             {views}
           </div>
         </div>
-        <CreatorCard memberId={freeId} nickname="aaa" />
+        <CreatorMiniCard memberId={freeId} nickname="aaa" heart={100} />
       </AuthorSec>
     </Board>
   );
