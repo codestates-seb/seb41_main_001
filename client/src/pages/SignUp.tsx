@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import React from 'react';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
+// import useCurrentLocation from '../utils/useCurrentLocation';
 
 const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   console.log('change', event.target.value);
@@ -118,6 +119,8 @@ const TagList = styled.div`
 const SignUp = () => {
   const { register, watch, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
+  const exLatitude = 127;
+  const exLongitude = 36;
 
   console.log(watch('tags'));
   const toggles = watch('tags', []);
@@ -190,7 +193,7 @@ const SignUp = () => {
         </div>
         <div>
           <p>지역</p>
-          <KakaoMap />
+          <KakaoMap longitude={exLongitude} latitude={exLatitude} />
         </div>
         <div>
           <p>관심 태그</p>

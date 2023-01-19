@@ -3,14 +3,18 @@ import { Link } from 'react-router-dom';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
 import TagLink from './TagLink';
 import timeDifference from '../utils/timeDifference';
-import CreatorCard from './CreatorCard';
+import CreatorCard from './CreatorMiniCard';
+import classifyingGender from '../utils/classifyingGender';
+import classifyingStatus from '../utils/classifyingStatus';
+import classifyingAge from '../utils/classifyingAge';
 
 const ListContainer = styled.li`
-  width: 750px;
+  width: 700px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 20px;
   padding: 20px;
   margin-bottom: 20px;
+  font-size: 16px;
   > div:first-child {
     display: flex;
     align-items: center;
@@ -49,6 +53,7 @@ const ListInfo = styled.div`
     justify-content: center;
     align-items: center;
     margin-top: 10px;
+    font-size: 14px;
     i {
       margin-right: 7px;
     }
@@ -79,15 +84,17 @@ const ListCondition = styled.div`
     justify-content: space-between;
     margin-bottom: 20px;
     > div {
-      width: 130px;
-      height: 130px;
+      width: 120px;
+      height: 120px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       border-radius: 20px;
       background-color: rgba(255, 255, 255, 0.2);
-      font-size: 100%;
+      font-size: 1rem;
+      position: relative;
+      padding-top: 30px;
       i {
         margin-bottom: 15px;
         font-size: 36px;
@@ -113,14 +120,19 @@ const ListCondition = styled.div`
           color: white;
         }
       }
+      > span:first-child {
+        font-size: 0.9rem;
+        position: absolute;
+        top: 10px;
+      }
       &:nth-child(3) {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        padding: 10px;
+        padding: 30px 10px 10px 10px;
         justify-content: center;
         align-items: center;
-        > span {
+        > span:not(:first-child) {
           margin: 2px;
           white-space: nowrap;
         }
@@ -142,7 +154,7 @@ const ListCondition = styled.div`
       justify-content: center;
       align-items: center;
       text-align: center;
-      width: 270px;
+      width: 255px;
       height: 100px;
       border-radius: 20px;
       background-color: rgba(255, 255, 255, 0.2);
@@ -227,7 +239,7 @@ const ProfileImg = styled.img<ProfileImgProps>`
 //     heart: 50, // number, 0
 //     ageGroup: [20, 30],
 //     sex: 'Both', // Male, Female, Both
-//     applicants: [{memberId: 2, nickname: "bbb"},
+//     applies: [{memberId: 2, nickname: "bbb"},
 //                 {memberId: 3, nickname: "ccc"},{memberId: 4, nickname: "ddd"}],
 //     minRequire: 2,
 //     require: 5,
@@ -241,19 +253,17 @@ const ProfileImg = styled.img<ProfileImgProps>`
 const RecruitList = (props: { data: RecruitDataProps }) => {
   const {
     data: {
-      tagId,
-      tagName,
-      tagEmoji,
+      recruitTags,
       recruitId,
       title,
       star,
-      like,
+      likes,
       views,
       sex,
       heart,
       ageGroup,
-      status,
-      applicants,
+      recruitStatus,
+      applies,
       minRequire,
       require,
       date,
@@ -261,26 +271,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       nickname,
     },
   } = props;
-
-  const classifyingGender = (gender: string) => {
-    if (gender === 'Male') {
-      return { text: '남성만', icon: 'fa-solid fa-mars' };
-    }
-    if (gender === 'Female') {
-      return { text: '여성만', icon: 'fa-solid fa-venus' };
-    }
-    return { text: '성별무관', icon: 'fa-solid fa-venus-mars' };
-  };
-
-  const classifyingStatus = (now: string) => {
-    if (now === '모집중') {
-      return { icon: 'fa-solid fa-hourglass-half' };
-    }
-    if (now === '모집완료') {
-      return { icon: 'fa-solid fa-circle-check' };
-    }
-    return { icon: 'fa-solid fa-calendar-check' };
-  };
+  const { tagId, tagName, tagEmoji } = recruitTags[0];
 
   const convertToDate = (time: string) => {
     const DATE = new Date(time);
@@ -309,11 +300,6 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
     return { msg, color };
   };
 
-  const classifyingAge = (ages: number[]) => {
-    if (ages.length >= 7) return ['연령 무관'];
-    return ages.map((el) => `${el}대`);
-  };
-
   return (
     <ListContainer>
       <div>
@@ -331,32 +317,36 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
           </div>
           <div>
             <i className="fa-solid fa-heart" />
-            {like}
+            {likes}
           </div>
           <div>
             <i className="fa-solid fa-eye" />
             {views}
           </div>
-          <CreatorCard memberId={memberId} nickname={nickname} />
+          <CreatorCard memberId={memberId} nickname={nickname} heart={heart} />
         </ListInfo>
         <ListCondition>
           <div>
             <div>
+              <span>성별</span>
               <i className={`${classifyingGender(sex).icon}`} />
               {classifyingGender(sex).text}
             </div>
             <div>
+              <span>심박수</span>
               <i className="fa-solid fa-heart-circle-exclamation" />
               <span>{`${heart} 이상`}</span>
             </div>
             <div>
+              <span>나이대</span>
               {classifyingAge(ageGroup).map((el) => (
                 <span key={el}>{el}</span>
               ))}
             </div>
             <div>
-              <i className={`${classifyingStatus(status).icon}`} />
-              <span>{status}</span>
+              <span>현재 상태</span>
+              <i className={`${classifyingStatus(recruitStatus).icon}`} />
+              <span>{recruitStatus}</span>
             </div>
           </div>
           <div>
@@ -365,7 +355,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
               <div>
                 <h4>
                   <ProfileImgContainer>
-                    {applicants.map((el, i) => (
+                    {applies.map((el, i) => (
                       <ProfileImg
                         key={el.memberId}
                         img-id={i + 1}
@@ -374,17 +364,17 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
                       />
                     ))}
                   </ProfileImgContainer>
-                  {`${applicants.length} / ${require}명`}
+                  {`${applies.length} / ${require}명`}
                   <span>{`(최소 ${minRequire}명 이상)`}</span>
                 </h4>
                 <div
                   style={{
-                    color: `${applyMsg(applicants, minRequire, require).color}`,
+                    color: `${applyMsg(applies, minRequire, require).color}`,
                     fontWeight: 600,
                     fontSize: '15px',
                   }}
                 >
-                  {`${applyMsg(applicants, minRequire, require).msg}`}
+                  {`${applyMsg(applies, minRequire, require).msg}`}
                 </div>
               </div>
             </div>

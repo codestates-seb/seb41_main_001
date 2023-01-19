@@ -162,170 +162,68 @@ const CRForm = styled.form`
 const CreateRecruit = () => {
   const { register, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
-  const [value, setValue] = useState(60);
-
-  const handleChange = (e: any) => {
-    setValue(e.target.value);
-  };
-
   const [filterTag, setFilterTag] = useState('');
 
   return (
     <CRContainer>
       <CRForm onSubmit={handleSubmit(onSubmit)}>
-        <div>모집 게시글 작성</div>
-        <div>
-          <label htmlFor="tag">태그</label>
-          <TagAutoComplete
-            filterTag={filterTag}
-            setFilterTag={setFilterTag}
-            // {...register('tag', { required: true })}
-          />
-        </div>
-        <div>
-          <label htmlFor="title">제목</label>
-          <input
-            id="title"
-            type="text"
-            {...register('title', { required: true })}
-          />
-        </div>
-        <div>
-          <label htmlFor="content">내용</label>
-          <textarea
-            id="content"
-            className="length"
-            {...register('content', { required: true })}
-          />
-        </div>
-        <div>
-          <label htmlFor="date">모임 일시</label>
-          <input
-            id="date"
-            type="datetime-local"
-            {...register('date', { required: true })}
-          />
-        </div>
-        <div>
-          <label htmlFor="quota">모임 인원</label>
-          <input
-            id="quota"
-            type="number"
-            {...register('quota', { required: true })}
-          />
-        </div>
-        <div>
-          <label htmlFor="location">모임 장소</label>
-          <input
-            id="location"
-            type="text"
-            {...register('location', { required: true })}
-          />
-        </div>
-        <div>
-          <label htmlFor="genderCondition">성별 조건</label>
-          <div>
-            <input
-              type="radio"
-              id="female"
-              name="genderCondition"
-              value="여성"
-            />
-            <label htmlFor="female">여성</label>
-          </div>
-          <div>
-            <input type="radio" id="male" name="genderCondition" value="남성" />
-            <label htmlFor="male">남성</label>
-          </div>
-        </div>
-        <div>
-          <p>나이대 조건</p>
-          <div className="ageCon">
-            <span>
-              <input
-                type="checkbox"
-                id="teenage"
-                // name="ageCondition"
-                value="teenage"
-                {...register('ageCondition')}
-              />
-              <label htmlFor="teenage">10대</label>
-            </span>
-            <span>
-              <input
-                type="checkbox"
-                id="twenties"
-                // name="ageCondition"
-                value="twenties"
-                {...register('ageCondition')}
-              />
-              <label htmlFor="twenties">20대</label>
-            </span>
-            <span>
-              <input
-                type="checkbox"
-                id="thirties"
-                // name="ageCondition"
-                value="thirties"
-                {...register('ageCondition')}
-              />
-              <label htmlFor="thirties">30대</label>
-            </span>
-            <span>
-              <input
-                type="checkbox"
-                id="forties"
-                // name="ageCondition"
-                value="forties"
-                {...register('ageCondition')}
-              />
-              <label htmlFor="forties">40대</label>
-            </span>
-            <span>
-              <input
-                type="checkbox"
-                id="fifties"
-                // name="ageCondition"
-                value="fifties"
-                {...register('ageCondition')}
-              />
-              <label htmlFor="fifties">50대</label>
-            </span>
-            <span>
-              <input
-                type="checkbox"
-                id="sixties"
-                // name="ageCondition"
-                value="sixties"
-                {...register('ageCondition')}
-              />
-              <label htmlFor="sixties">60대</label>
-            </span>
-          </div>
-        </div>
-        <div>
-          <label htmlFor="heartRateCondition">심박수 조건</label>
-          <div className="heartCon">
-            <input
-              id="heartRateCondition"
-              type="range"
-              min="0"
-              max="200"
-              step="10"
-              value={value}
-              onChange={handleChange}
-              {...(register('heartRateCondition'), { required: true })}
-            />
-            <span className="result">{value}</span>
-          </div>
-        </div>
-        <div>
-          <label htmlFor="image">이미지</label>
-          <input id="image" type="file" {...register('image')} />
-        </div>
-        <button className="submitBtn" type="submit">
-          작성하기
-        </button>
+        <div>모집 게시글 생성</div>
+        <label htmlFor="tag">태그</label>
+        <TagAutoComplete filterTag={filterTag} setFilterTag={setFilterTag} />
+        <label htmlFor="title">제목</label>
+        <input
+          id="title"
+          type="text"
+          {...register('title', { required: true })}
+        />
+        <label htmlFor="content">내용</label>
+        <textarea
+          id="content"
+          className="length"
+          {...register('content', { required: true })}
+        />
+        <label htmlFor="date">모임 일시</label>
+        <input
+          id="date"
+          type="datetime-local"
+          {...register('date', { required: true })}
+        />
+        <label htmlFor="quota">모임 인원</label>
+        <input
+          id="quota"
+          type="number"
+          {...register('quota', { required: true })}
+        />
+        <label htmlFor="location">모임 장소</label>
+        <input
+          id="location"
+          type="text"
+          {...register('location', { required: true })}
+        />
+        <label htmlFor="genderCondition">성별 조건</label>
+        <select id="genderCondition" {...register('genderCondition')}>
+          <option value="female">여성</option>
+          <option value="male">남성</option>
+        </select>
+        <label htmlFor="ageCondition">나이대 조건</label>
+        <input
+          type="range"
+          name="age"
+          id="ageCondition"
+          min="10"
+          max="60"
+          step="10"
+        />
+        <output name="x" htmlFor="ageCondition" />
+        <label htmlFor="heartRateCondition">심박수 조건</label>
+        <input
+          id="heartRateCondition"
+          type="range"
+          {...register('heartRateCondition')}
+        />
+        <label htmlFor="image">이미지</label>
+        <input id="image" type="file" {...register('image')} />
+        <button type="submit">작성하기</button>
       </CRForm>
     </CRContainer>
   );

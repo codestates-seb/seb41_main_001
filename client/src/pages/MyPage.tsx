@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import MyRecruitItem from '../components/MyRecruitItem';
 import Badge from '../components/Badge';
 import Loading from './Loading';
@@ -224,15 +225,16 @@ const MyPage = () => {
 
   useEffect(() => {
     const getOneUser = () => {
-      fetch(
-        `members/${id}`,
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data.data);
-          setOneUsers(data.data);
+      axios
+        .get(
+          `http://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080/members/${id}`,
+        )
+        .then((res) => {
+          console.log(res.data.data);
+          setOneUsers(res.data.data);
           setIsLoading(false);
-        });
+        })
+        .catch((err) => console.log(err));
     };
     getOneUser();
   }, []);

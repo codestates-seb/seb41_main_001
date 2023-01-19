@@ -241,6 +241,11 @@ interface UserFormInput {
   tags: string;
 }
 
+// interface location {
+//   longitude: number;
+//   latitude: number;
+// }
+
 const EditUser = () => {
   const { id } = useParams();
   // const [coordinate, setCoordinate] = useState<Coordinates>({
@@ -398,7 +403,7 @@ const EditUser = () => {
             <div>등록 지역 변경</div>
             <div>
               <div>
-                <KakaoMap />
+                <KakaoMap longitude={127} latitude={36} />
                 <button type="button">현재 위치 추가</button>
               </div>
               <div>

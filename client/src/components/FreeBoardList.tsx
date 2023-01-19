@@ -151,7 +151,7 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
             {views}
           </div>
         </div>
-        <CreatorCard memberId={freeId} nickname="aaa" />
+        <CreatorCard memberId={freeId} nickname="aaa" heart={likes} />
       </AuthorSec>
     </Board>
   );
