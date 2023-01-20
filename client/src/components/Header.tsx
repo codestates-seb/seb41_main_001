@@ -31,7 +31,7 @@ const Logo = styled(Link)`
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   form {
@@ -44,19 +44,19 @@ const ButtonContainer = styled.div`
       font-size: 150%;
     }
     input {
-      width: 250px;
+      width: 200px;
       padding: 10px;
       background-color: rgba(1, 1, 1, 0);
       outline: none;
       border: none;
-      border-bottom: 2px solid var(--gray);
+      border-bottom: 1px solid var(--gray);
       color: white;
       font-size: 100%;
     }
     &:focus-within {
       color: white;
       input {
-        border-bottom: 2px solid white;
+        border-bottom: 1px solid white;
       }
       transition: 0.2s ease-in-out;
     }
@@ -92,14 +92,13 @@ const Board = styled.nav`
     font-size: 100%;
     transition: 0.2s ease-in-out;
     width: auto;
-    height: 25px;
-    margin: 0 9px;
+    margin-right: 15px;
     white-space: nowrap;
     display: flex;
     align-items: flex-start;
     &:hover {
       color: var(--neon-yellow);
-      text-shadow: white 0 0 20px;
+      text-shadow: white 0 0 1rem;
       font-weight: bold;
       transition: 0.2s ease-in-out;
     }
@@ -120,14 +119,14 @@ const Header = () => (
         <Link to="/recruits/tags">모집게시판 태그</Link>
       </Board>
     </div>
-    <ButtonContainer>
+    <ButtonsContainer>
       <form>
         <i className="fa-solid fa-magnifying-glass" />
         <input placeholder="Search here..." />
       </form>
       <ButtonLink value="로그인" to="/login" />
       <ButtonLink value="회원가입" to="/signup" />
-    </ButtonContainer>
+    </ButtonsContainer>
   </HeaderContainer>
 );
 
