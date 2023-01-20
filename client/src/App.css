@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap');
+@import url('https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css');
+
+/* font-family: 'NanumSquareNeoLight';
+font-family: 'NanumSquareNeo';
+font-family: 'NanumSquareNeoBold';
+font-family: 'NanumSquareNeoExtraBold';
+font-family: 'NanumSquareNeoHeavy'; */
+
+* {
+  box-sizing: border-box;
+  font-family: 'NanumSquareNeo';
+}
+
+:root {
+  --neon-red: #e9366e;
+  --neon-orange: #ee8834;
+  --neon-yellow: #cbfd50;
+  --neon-green: #3fb950;
+  --neon-sky-blue: #7dede1;
+  --neon-blue: #5aa1f1;
+  --gray: #484848;
+}
+
+.App {
+  width: 100%;
+  background-color: var(--gray);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
