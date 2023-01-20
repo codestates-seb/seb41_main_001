@@ -1,9 +1,7 @@
 import styled from 'styled-components';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const MainContainer = styled.main`
-  background-color: grey;
+  background-color: var(--gray);
   color: white;
   display: flex;
   justify-content: center;
@@ -11,12 +9,6 @@ const MainContainer = styled.main`
   height: 100%;
 `;
 
-const Main = () => (
-  <>
-    <Header />
-    <MainContainer>Main</MainContainer>
-    <Footer />
-  </>
-);
+const Main = () => <MainContainer>Main</MainContainer>;
 
 export default Main;

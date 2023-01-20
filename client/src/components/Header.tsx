@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import ButtonLink from './ButtonLink';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -12,6 +13,8 @@ const HeaderContainer = styled.header`
   height: 100px;
   position: fixed;
   top: 0;
+  left: 0;
+  z-index: 99;
 `;
 
 const Logo = styled(Link)`
@@ -20,7 +23,7 @@ const Logo = styled(Link)`
   display: flex;
   align-items: center;
   font-family: 'Rubik Bubbles', cursive;
-  font-size: 40px;
+  font-size: 220%;
   text-shadow: var(--neon-yellow) 0 0 20px;
   i {
     font-size: xx-large;
@@ -38,7 +41,7 @@ const ButtonContainer = styled.div`
     transition: 0.2s ease-in-out;
     i {
       margin-right: 10px;
-      font-size: 25px;
+      font-size: 150%;
     }
     input {
       width: 250px;
@@ -48,7 +51,7 @@ const ButtonContainer = styled.div`
       border: none;
       border-bottom: 2px solid var(--gray);
       color: white;
-      font-size: 16px;
+      font-size: 100%;
     }
     &:focus-within {
       color: white;
@@ -60,23 +63,23 @@ const ButtonContainer = styled.div`
   }
 `;
 
-const Button = styled(Link)`
-  text-decoration: none;
-  background-color: var(--gray);
-  color: white;
-  border-radius: 5px;
-  margin-left: 10px;
-  padding: 8px 14px;
-  transition: 0.2s ease-in-out;
-  font-size: 16px;
-  white-space: nowrap;
-  &:hover {
-    cursor: pointer;
-    background-color: var(--neon-yellow);
-    color: black;
-    transition: 0.2s ease-in-out;
-  }
-`;
+// const Button = styled(Link)`
+//   text-decoration: none;
+//   background-color: var(--gray);
+//   color: white;
+//   border-radius: 5px;
+//   margin-left: 10px;
+//   padding: 8px 14px;
+//   transition: 0.2s ease-in-out;
+//   font-size: 16px;
+//   white-space: nowrap;
+//   &:hover {
+//     cursor: pointer;
+//     background-color: var(--neon-yellow);
+//     color: black;
+//     transition: 0.2s ease-in-out;
+//   }
+// `;
 
 const Board = styled.nav`
   color: white;
@@ -86,7 +89,7 @@ const Board = styled.nav`
   a {
     text-decoration: none;
     color: white;
-    font-size: 16px;
+    font-size: 100%;
     transition: 0.2s ease-in-out;
     width: auto;
     height: 25px;
@@ -112,9 +115,9 @@ const Header = () => (
       </Logo>
       <Board>
         <Link to="/freeboard">자유게시판</Link>
-        <Link to="/recruits">자유게시판 태그</Link>
+        <Link to="/freeboard/tags">자유게시판 태그</Link>
         <Link to="/recruits">모집게시판</Link>
-        <Link to="/recruits">모집게시판 태그</Link>
+        <Link to="/recruits/tags">모집게시판 태그</Link>
       </Board>
     </div>
     <ButtonContainer>
@@ -122,8 +125,8 @@ const Header = () => (
         <i className="fa-solid fa-magnifying-glass" />
         <input placeholder="Search here..." />
       </form>
-      <Button to="/login">로그인</Button>
-      <Button to="/signup">회원가입</Button>
+      <ButtonLink value="로그인" to="/login" />
+      <ButtonLink value="회원가입" to="/signup" />
     </ButtonContainer>
   </HeaderContainer>
 );

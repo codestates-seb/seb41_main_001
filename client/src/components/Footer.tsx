@@ -14,18 +14,17 @@ const FooterContainer = styled.footer`
 
 const HeartContainer = styled(Link)`
   text-decoration: none;
-  font-size: 30px;
   display: flex;
   flex-direction: column;
   div {
     color: white;
     font-family: 'Rubik Bubbles', cursive;
-    font-size: 16px;
+    font-size: 100%;
     display: flex;
     align-items: center;
     span:first-child {
       color: var(--neon-yellow);
-      font-size: 30px;
+      font-size: 200%;
       margin-right: 3px;
       padding-bottom: 10px;
       font-family: 'Rubik Bubbles', cursive;
@@ -35,7 +34,7 @@ const HeartContainer = styled(Link)`
 
 const TeamInfo = styled.div`
   color: white;
-  font-size: 16px;
+  font-size: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
