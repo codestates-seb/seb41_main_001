@@ -6,11 +6,11 @@ const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 0.5rem;
   background-color: black;
   color: white;
   width: 100%;
-  height: 100px;
+  height: 5rem;
   position: fixed;
   top: 0;
   left: 0;
@@ -27,11 +27,11 @@ const Logo = styled(Link)`
   text-shadow: var(--neon-yellow) 0 0 20px;
   i {
     font-size: xx-large;
-    margin-right: 10px;
+    margin-right: 0.5rem;
   }
 `;
 
-const ButtonContainer = styled.div`
+const ButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   form {
@@ -44,19 +44,19 @@ const ButtonContainer = styled.div`
       font-size: 150%;
     }
     input {
-      width: 250px;
-      padding: 10px;
+      width: 12rem;
+      padding: 0.5rem;
       background-color: rgba(1, 1, 1, 0);
       outline: none;
       border: none;
-      border-bottom: 2px solid var(--gray);
+      border-bottom: 0.1rem solid var(--gray);
       color: white;
       font-size: 100%;
     }
     &:focus-within {
       color: white;
       input {
-        border-bottom: 2px solid white;
+        border-bottom: 0.1rem solid white;
       }
       transition: 0.2s ease-in-out;
     }
@@ -85,21 +85,21 @@ const Board = styled.nav`
   color: white;
   display: flex;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 0.5rem;
   a {
     text-decoration: none;
     color: white;
     font-size: 100%;
     transition: 0.2s ease-in-out;
     width: auto;
-    height: 25px;
-    margin: 0 9px;
+    height: 1rem;
+    margin: 0 0.3rem;
     white-space: nowrap;
     display: flex;
     align-items: flex-start;
     &:hover {
       color: var(--neon-yellow);
-      text-shadow: white 0 0 20px;
+      text-shadow: white 0 0 1rem;
       font-weight: bold;
       transition: 0.2s ease-in-out;
     }
@@ -120,14 +120,14 @@ const Header = () => (
         <Link to="/recruits/tags">모집게시판 태그</Link>
       </Board>
     </div>
-    <ButtonContainer>
+    <ButtonsContainer>
       <form>
         <i className="fa-solid fa-magnifying-glass" />
         <input placeholder="Search here..." />
       </form>
       <ButtonLink value="로그인" to="/login" />
       <ButtonLink value="회원가입" to="/signup" />
-    </ButtonContainer>
+    </ButtonsContainer>
   </HeaderContainer>
 );
 
