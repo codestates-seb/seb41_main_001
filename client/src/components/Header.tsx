@@ -6,11 +6,11 @@ const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem;
+  padding: 10px;
   background-color: black;
   color: white;
   width: 100%;
-  height: 5rem;
+  height: 100px;
   position: fixed;
   top: 0;
   left: 0;
@@ -27,7 +27,7 @@ const Logo = styled(Link)`
   text-shadow: var(--neon-yellow) 0 0 20px;
   i {
     font-size: xx-large;
-    margin-right: 0.5rem;
+    margin-right: 10px;
   }
 `;
 
@@ -44,19 +44,19 @@ const ButtonsContainer = styled.div`
       font-size: 150%;
     }
     input {
-      width: 12rem;
-      padding: 0.5rem;
+      width: 200px;
+      padding: 10px;
       background-color: rgba(1, 1, 1, 0);
       outline: none;
       border: none;
-      border-bottom: 0.1rem solid var(--gray);
+      border-bottom: 1px solid var(--gray);
       color: white;
       font-size: 100%;
     }
     &:focus-within {
       color: white;
       input {
-        border-bottom: 0.1rem solid white;
+        border-bottom: 1px solid white;
       }
       transition: 0.2s ease-in-out;
     }
@@ -85,15 +85,14 @@ const Board = styled.nav`
   color: white;
   display: flex;
   align-items: center;
-  margin-top: 0.5rem;
+  margin-top: 10px;
   a {
     text-decoration: none;
     color: white;
     font-size: 100%;
     transition: 0.2s ease-in-out;
     width: auto;
-    height: 1rem;
-    margin: 0 0.3rem;
+    margin-right: 15px;
     white-space: nowrap;
     display: flex;
     align-items: flex-start;

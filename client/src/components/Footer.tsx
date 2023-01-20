@@ -5,7 +5,7 @@ const FooterContainer = styled.footer`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.8rem;
+  padding: 20px;
   background-color: black;
   color: white;
   width: 100%;
@@ -24,15 +24,9 @@ const HeartContainer = styled(Link)`
     align-items: center;
     span:first-child {
       color: var(--neon-yellow);
-<<<<<<< HEAD
-      font-size: 30px;
-      margin-right: 0.2rem;
-      padding-bottom: 0.5rem;
-=======
       font-size: 200%;
       margin-right: 3px;
       padding-bottom: 10px;
->>>>>>> a6f303a12e9148453b9bdec46cab22eaf18fef94
       font-family: 'Rubik Bubbles', cursive;
     }
   }
@@ -46,7 +40,7 @@ const TeamInfo = styled.div`
   justify-content: center;
   align-items: center;
   > div:nth-child(2) {
-    margin: 0.5rem 0;
+    margin: 10px 0px;
   }
 `;
 
