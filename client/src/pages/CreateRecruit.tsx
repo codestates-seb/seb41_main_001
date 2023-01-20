@@ -1,7 +1,9 @@
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import styled from 'styled-components';
+import useCurrentLocation from '../utils/useCurrentLocation';
 import TagAutoComplete from '../components/TagAutoComplete';
+import KakaoMapClick from '../components/KakaoMapClick';
 
 enum GenderEnum {
   female = '여성',
@@ -59,7 +61,7 @@ const CRForm = styled.form`
     font-weight: bold;
   }
 
-  > div:not(:nth-child(2)) {
+  > div:not(:nth-child(2), :nth-child(7)) {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -122,6 +124,17 @@ const CRForm = styled.form`
     }
   }
 
+  > div:nth-child(7) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    label {
+      width: 4rem;
+      margin-right: 1rem;
+    }
+  }
+
   .submitBtn {
     width: 6rem;
     text-decoration: none;
@@ -157,12 +170,26 @@ const CRForm = styled.form`
       width: 5rem;
     }
   }
+
+  .mapClick {
+    width: 15rem;
+    height: 15rem;
+  }
 `;
 
 const CreateRecruit = () => {
   const { register, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
   const [value, setValue] = useState(60);
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+
+  useCurrentLocation().then((res) => {
+    if (res === undefined) return;
+    setLocation(res);
+  });
 
   const handleChange = (e: any) => {
     setValue(e.target.value);
@@ -214,13 +241,21 @@ const CreateRecruit = () => {
             {...register('quota', { required: true })}
           />
         </div>
-        <div>
+        <div className="mapCon">
           <label htmlFor="location">모임 장소</label>
-          <input
+          {/* <input
             id="location"
             type="text"
             {...register('location', { required: true })}
-          />
+          /> */}
+          <div className="mapClick">
+            {location && (
+              <KakaoMapClick
+                latitude={location?.latitude}
+                longitude={location?.longitude}
+              />
+            )}
+          </div>
         </div>
         <div>
           <label htmlFor="genderCondition">성별 조건</label>

@@ -16,6 +16,7 @@ import EditFreeboard from './pages/EditFreeboard';
 import Recruits from './pages/Recruits';
 import RecruitDetail from './pages/RecruitDetail';
 import TaggedRecruit from './pages/TaggedRecruit';
+// import FreeBoards from './pages/FreeBoards';
 import FreeBoards from './pages/FreeBoards';
 import FreeDetail from './pages/FreeDetail';
 import FreeTags from './pages/FreeTags';

@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
@@ -6,7 +7,9 @@ import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
 import Loading from './Loading';
 import KakaoMap from '../components/KakaoMap';
-// import CommentBox from '../components/CommentBox';
+import CommentBox from '../components/CommentBox';
+import CommentSubmitBox from '../components/CommentSubmitBox';
+// import CreatorCard from '../components/CreatorCard';
 import preview from './preview.jpeg';
 
 const FDContainer = styled.main`
@@ -158,6 +161,9 @@ const FreeDetail = () => {
             <i className="fa-solid fa-dumbbell" />
             운동
           </div>
+          {/* {post && (
+            <CreatorCard memberId={post?.memberId} nickname="aaa" heart={100} />
+          )} */}
           <CreatorContainer>
             <div>profile</div>
             <div>
@@ -210,14 +216,11 @@ const FreeDetail = () => {
               {post?.likes}
             </div>
           </CountContainer>
-          {/* {post &&
+          {post?.freeComments &&
             post?.freeComments.map((el) => (
-              <CommentBox data={el} key={el.memberId} />
-            ))} */}
-          {/* <div>
-            <label htmlFor="comment">comment</label>
-            <input id="comment" type="text" />
-          </div> */}
+              <CommentBox data={el} key={el.commentId} />
+            ))}
+          <CommentSubmitBox />
         </BoardContainer>
       ) : (
         <Loading />
