@@ -9,7 +9,8 @@ import CreateRecruit from './pages/CreateRecruit';
 import EditRecruit from './pages/EditRecruit';
 import Recruits from './pages/Recruits';
 import RecruitDetail from './pages/RecruitDetail';
-import TaggedRecruit from './pages/TaggedRecruit';
+import RecruitTags from './pages/RecruitTags';
+import FreeboardTags from './pages/FreeboardTags';
 
 const App = () => (
   <div className="App">
@@ -23,10 +24,8 @@ const App = () => (
         <Route path="/recruit/1/edit" element={<EditRecruit />} />
         <Route path="/recruits" element={<Recruits />} />
         <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
-        <Route
-          path="/recruits/tags/:tagId/:tagName"
-          element={<TaggedRecruit />}
-        />
+        <Route path="/recruits/tags" element={<RecruitTags />} />
+        <Route path="/freeboard/tags" element={<FreeboardTags />} />
       </Routes>
       <Footer />
     </Router>
