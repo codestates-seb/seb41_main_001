@@ -23,7 +23,7 @@ const Logo = styled(Link)`
   display: flex;
   align-items: center;
   font-family: 'Rubik Bubbles', cursive;
-  font-size: 40px;
+  font-size: 220%;
   text-shadow: var(--neon-yellow) 0 0 20px;
   i {
     font-size: xx-large;
@@ -41,7 +41,7 @@ const ButtonContainer = styled.div`
     transition: 0.2s ease-in-out;
     i {
       margin-right: 10px;
-      font-size: 25px;
+      font-size: 150%;
     }
     input {
       width: 250px;
@@ -51,7 +51,7 @@ const ButtonContainer = styled.div`
       border: none;
       border-bottom: 2px solid var(--gray);
       color: white;
-      font-size: 16px;
+      font-size: 100%;
     }
     &:focus-within {
       color: white;
@@ -89,7 +89,7 @@ const Board = styled.nav`
   a {
     text-decoration: none;
     color: white;
-    font-size: 16px;
+    font-size: 100%;
     transition: 0.2s ease-in-out;
     width: auto;
     height: 25px;

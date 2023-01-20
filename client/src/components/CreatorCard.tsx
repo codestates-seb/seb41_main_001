@@ -10,7 +10,7 @@ const ListCreator = styled.div`
     text-decoration: none;
     color: black;
     display: flex;
-    font-size: 16px;
+    font-size: 100%;
     font-weight: 600;
     img {
       border-radius: 50%;
@@ -23,7 +23,7 @@ const ListCreator = styled.div`
       justify-content: space-around;
       span {
         color: var(--neon-red);
-        font-size: 14px;
+        font-size: 80%;
         i {
           margin-right: 4px;
         }

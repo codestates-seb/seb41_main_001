@@ -40,15 +40,26 @@ const CreatorBox = styled.div`
     text-decoration: none;
     color: white;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 100%;
 
     > div:last-child {
       display: flex;
       flex-direction: column;
       justify-content: space-around;
+      > div:first-child {
+        display: flex;
+        align-items: center;
+        > div:nth-child(2) {
+          margin-left: 10px;
+          padding: 5px;
+          background-color: var(--neon-blue);
+          border-radius: 7px;
+          font-size: 80%;
+        }
+      }
       > div:last-child {
         span {
-          font-size: 14px;
+          font-size: 90%;
           font-weight: 400;
           &:first-child {
             color: var(--neon-red);
@@ -77,8 +88,9 @@ interface CommentProps {
   modifiedAt: string;
 }
 
-const CommentBox = (props: { data: CommentProps }) => {
+const CommentBox = (props: { memberId: number; data: CommentProps }) => {
   const {
+    memberId: creatorId,
     data: { memberId, nickname, heart, body, createdAt, modifiedAt },
   } = props;
 
@@ -95,7 +107,10 @@ const CommentBox = (props: { data: CommentProps }) => {
             alt={`avator of ${nickname}}`}
           />
           <div>
-            <div>{nickname}</div>
+            <div>
+              <div>{nickname}</div>
+              {creatorId === memberId ? <div>글쓴이</div> : ''}
+            </div>
             <div>
               <span>
                 <i className="fa-solid fa-heart" />

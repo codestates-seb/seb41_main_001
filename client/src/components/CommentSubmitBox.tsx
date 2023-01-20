@@ -5,12 +5,11 @@ import Button from './Button';
 const SubmitContainter = styled.form`
   width: 100%;
   display: flex;
-  padding: 20px;
   textarea {
     width: 100%;
     height: 120px;
     margin-right: 20px;
-    background-color: var(--gray);
+    background-color: rgba(255, 255, 255, 0);
     color: white;
     font-size: 100%;
     padding: 10px;
@@ -29,10 +28,8 @@ interface CommentSubmitProps {
   value?: string;
   onClick: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-const CommentSubmitBox = ({
-  value = '댓글을 작성해주세요',
-  onClick,
-}: CommentSubmitProps) => {
+
+const CommentSubmitBox = ({ value = '', onClick }: CommentSubmitProps) => {
   const [comment, setComment] = useState(value);
 
   return (
@@ -47,6 +44,7 @@ const CommentSubmitBox = ({
         required
         maxLength={500}
         value={comment}
+        placeholder="댓글을 작성해주세요"
         onChange={(e) => setComment(e.target.value)}
       />
       {/* // TODO: onClick에 댓글등록 api. */}
