@@ -38,7 +38,6 @@ const SignUpContainer = styled.div`
 `;
 
 const SignUpForm = styled.form`
-  /* width: 700px; */
   width: 35rem;
   height: auto;
   padding: 1rem;
