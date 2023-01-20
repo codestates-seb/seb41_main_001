@@ -4,30 +4,28 @@ import { Link } from 'react-router-dom';
 const ListCreator = styled.div`
   background-color: rgba(255, 255, 255, 0.2);
   width: auto;
-  border-radius: 20px;
-  padding: 20px;
+  border-radius: 10px;
+  padding: 15px 20px;
   a {
     text-decoration: none;
     color: black;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
+    font-size: 100%;
     font-weight: 600;
     img {
       border-radius: 50%;
-      margin-right: 10px;
+      margin-right: 20px;
     }
     div {
       margin-top: 5px;
       display: flex;
       flex-direction: column;
+      justify-content: space-around;
       span {
         color: var(--neon-red);
-        margin-top: 10px;
-        font-size: 12px;
+        font-size: 80%;
         i {
-          margin-right: 3px;
+          margin-right: 4px;
         }
       }
     }

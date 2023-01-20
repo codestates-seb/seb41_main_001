@@ -1,10 +1,9 @@
-// import { useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import React from 'react';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
-// import useCurrentLocation from '../utils/useCurrentLocation';
+import useCurrentLocation from '../utils/useCurrentLocation';
 
 const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   console.log('change', event.target.value);
@@ -83,11 +82,6 @@ const SignUpForm = styled.form`
         border-bottom: 0.1rem solid white;
       }
     }
-
-    #map {
-      width: 20rem;
-      height: 20rem;
-    }
   }
 
   button {
@@ -107,6 +101,11 @@ const SignUpForm = styled.form`
       transition: 0.2s ease-in-out;
     }
   }
+
+  .map {
+    width: 20rem;
+    height: 20rem;
+  }
 `;
 
 const TagList = styled.div`
@@ -119,8 +118,6 @@ const TagList = styled.div`
 const SignUp = () => {
   const { register, watch, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
-  const exLatitude = 127;
-  const exLongitude = 36;
 
   console.log(watch('tags'));
   const toggles = watch('tags', []);
@@ -128,6 +125,16 @@ const SignUp = () => {
     alert('최대 3개까지 선택');
     // 3개 이상부터는 체크가 안되게 하는 법.
   }
+
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+
+  useCurrentLocation().then((res) => {
+    if (res === undefined) return;
+    setLocation(res);
+  });
 
   return (
     <SignUpContainer>
@@ -193,7 +200,14 @@ const SignUp = () => {
         </div>
         <div>
           <p>지역</p>
-          <KakaoMap longitude={exLongitude} latitude={exLatitude} />
+          <div className="map">
+            {location && (
+              <KakaoMap
+                latitude={location.latitude}
+                longitude={location.longitude}
+              />
+            )}
+          </div>
         </div>
         <div>
           <p>관심 태그</p>

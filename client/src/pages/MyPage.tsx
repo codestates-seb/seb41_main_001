@@ -227,14 +227,14 @@ const MyPage = () => {
     const getOneUser = () => {
       axios
         .get(
-          `http://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080/members/${id}`,
+          '/members/1',
         )
-        .then((res) => {
-          console.log(res.data.data);
-          setOneUsers(res.data.data);
+        .then((res:any) => {
+          console.log(res);
+          setOneUsers(res.data);
           setIsLoading(false);
         })
-        .catch((err) => console.log(err));
+        .catch((err:any) => console.log(err));
     };
     getOneUser();
   }, []);

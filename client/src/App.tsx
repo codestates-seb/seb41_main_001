@@ -16,6 +16,8 @@ import EditFreeboard from './pages/EditFreeboard';
 import Recruits from './pages/Recruits';
 import FreeBoards from './pages/FreeBoards';
 import FreeDetail from './pages/FreeDetail';
+import RecruitDetail from './pages/RecruitDetail';
+import TaggedRecruit from './pages/TaggedRecruit';
 
 const App = () => (
   // const [login, setLogin] = useState(false);
@@ -36,6 +38,12 @@ const App = () => (
         <Route path="/freeboard/:freeId" element={<FreeDetail />} />
         <Route path="/recruit/1/edit" element={<EditRecruit />} />
         <Route path="/freeboard/1/edit" element={<EditFreeboard />} />
+        <Route path="/recruits" element={<Recruits />} />
+        <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
+        <Route
+          path="/recruits/tags/:tagId/:tagName"
+          element={<TaggedRecruit />}
+        />
       </Routes>
       <Footer />
     </Router>

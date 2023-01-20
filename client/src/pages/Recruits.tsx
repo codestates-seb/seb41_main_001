@@ -16,6 +16,7 @@ const MainContainer = styled.main`
     padding: 20px;
     h1 {
       margin: 10px 0px;
+      font-size: 200%;
     }
   }
 

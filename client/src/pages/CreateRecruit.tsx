@@ -35,127 +35,40 @@ const CRContainer = styled.div`
   color: white;
   display: flex;
   justify-content: center;
-  margin-top: 5rem;
+  margin-top: 100px;
   height: 100%;
-  font-size: 16px;
 `;
 
 const CRForm = styled.form`
-  width: 35rem;
+  width: auto;
   height: auto;
-  border: 0.05rem solid white;
-  border-radius: 1rem;
-  padding: 1rem;
-  margin-top: 1.7rem;
-  margin-bottom: 1.7rem;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  > div:first-child {
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
-    font-weight: bold;
+  label,
+  input,
+  textarea,
+  select {
+    border-radius: 5px;
+    border: none;
+    width: 400px;
+    height: 30px;
   }
 
-  > div:not(:nth-child(2)) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 20rem;
-    margin: 0.5rem;
-    margin-bottom: 1rem;
-
-    label,
-    p {
-      width: 6rem;
-    }
-
-    .length {
-      height: 5rem;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 15rem;
-      outline: none;
-      border: none;
-      background-color: rgba(1, 1, 1, 0);
-      border-bottom: 0.1rem solid grey;
-      color: white;
-      &:focus-within {
-        border-bottom: 0.1rem solid white;
-      }
-    }
-
-    > div {
-      label {
-        width: 3rem;
-      }
-      input {
-        width: 1rem;
-      }
-      width: 8rem;
-    }
+  input,
+  textarea,
+  select {
+    margin-bottom: 10px;
   }
 
-  > div:nth-child(2) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    width: 20rem;
-    label {
-      width: 6rem;
-      white-space: nowrap;
-      margin-right: 1.5rem;
-    }
-    > div {
-      width: 100%;
-      margin-bottom: 0.5rem;
-      display: flex;
-      input {
-        height: auto;
-      }
-    }
-  }
-
-  .submitBtn {
-    width: 6rem;
-    text-decoration: none;
-    background-color: var(--gray);
-    color: white;
-    border-radius: 0.2rem;
-    margin: 0.3rem;
-    padding: 0.5rem 1rem;
-    transition: 0.2s ease-in-out;
-    font-size: 16px;
-    &:hover {
-      cursor: pointer;
-      background-color: var(--neon-yellow);
-      color: black;
-      transition: 0.2s ease-in-out;
-    }
-  }
-
-  .heartCon {
-    width: 15rem;
-    margin: 0.5rem;
-    input {
-      width: 13rem;
-    }
-  }
-
-  .ageCon {
-    width: 15rem;
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0.5rem;
-    span {
-      width: 5rem;
-    }
+  .length {
+    height: 100px;
   }
 `;
 

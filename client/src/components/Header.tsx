@@ -23,8 +23,8 @@ const Logo = styled(Link)`
   display: flex;
   align-items: center;
   font-family: 'Rubik Bubbles', cursive;
-  font-size: 40px;
-  text-shadow: var(--neon-yellow) 0 0 1rem;
+  font-size: 220%;
+  text-shadow: var(--neon-yellow) 0 0 20px;
   i {
     font-size: xx-large;
     margin-right: 0.5rem;
@@ -40,8 +40,8 @@ const ButtonsContainer = styled.div`
     color: var(--gray);
     transition: 0.2s ease-in-out;
     i {
-      margin-right: 0.3rem;
-      font-size: 25px;
+      margin-right: 10px;
+      font-size: 150%;
     }
     input {
       width: 12rem;
@@ -51,7 +51,7 @@ const ButtonsContainer = styled.div`
       border: none;
       border-bottom: 0.1rem solid var(--gray);
       color: white;
-      font-size: 16px;
+      font-size: 100%;
     }
     &:focus-within {
       color: white;
@@ -89,7 +89,7 @@ const Board = styled.nav`
   a {
     text-decoration: none;
     color: white;
-    font-size: 16px;
+    font-size: 100%;
     transition: 0.2s ease-in-out;
     width: auto;
     height: 1rem;
