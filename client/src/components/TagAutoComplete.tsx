@@ -5,8 +5,6 @@ const FilterTagBox = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 10px;
-  margin-bottom: 50px;
-  width: 100%;
 `;
 
 const Tag = styled.div`
@@ -50,7 +48,7 @@ const AutoCompleteBox = styled.div`
     border-bottom: 1px solid rgba(255, 255, 255, 0.4);
     background-color: rgba(1, 1, 1, 0);
     color: white;
-    font-size: 16px;
+    font-size: 100%;
     &:focus {
       border-bottom: 1px solid white;
       outline: none;
@@ -84,7 +82,7 @@ const DropDownBox = styled.div`
     margin-top: 2px;
     background-color: rgba(255, 255, 255, 0.4);
     transition: 0.2s ease-in-out;
-    font-size: 16px;
+    font-size: 100%;
     white-space: nowrap;
     overflow: hidden;
     &:hover {

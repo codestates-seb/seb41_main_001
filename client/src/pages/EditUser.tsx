@@ -3,11 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import Tag from '../components/Tag';
-// import KakaoMap from '../components/KakaoMap';
-
-const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  console.log('change', event.target.value);
-};
+import KakaoMap from '../components/KakaoMap';
 
 // declare global {
 //   interface Window {
@@ -22,11 +18,11 @@ const EditContainer = styled.main`
   display: flex;
   justify-content: center;
   height: 100%;
-  padding: 150px;
+  padding: 10rem;
 `;
 
 const Container = styled.div`
-  margin: 10px;
+  margin: 1rem;
   display: flex;
   flex-direction: column;
   > div:first-child {
@@ -73,7 +69,7 @@ const InfoBlock = styled.label`
     font-size: 16px;
     border: none;
     border-bottom: 2px solid gray;
-    width: 320px;
+    width: 13rem;
     outline: none;
     color: white;
     &:focus-within {
@@ -90,16 +86,36 @@ const InfoBlock = styled.label`
     border: 1px solid white;
     color: white;
     border-radius: 5px;
-    padding: 0rem 1rem;
+    padding: 0 0.5rem;
     background-color: var(--gray);
-    margin-left: 15px;
+    margin: 0 2rem;
     &:hover {
       background-color: black;
     }
   }
   #map {
-    width: 21rem;
+    width: 20rem;
     height: 21rem;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    margin-bottom: 1rem;
+    > #locationButton {
+      padding: 1rem 2rem;
+      background-color: var(--gray);
+      &:hover {
+        background-color:black;
+        cursor: pointer;
+      }
+    }
+    > button {
+      margin-top: 1rem;
+      border: 1px solid white;
+      border-radius: 15px;
+      cursor: pointer;
+      color: white;
+    }
   }
   > div {
     display: flex;
@@ -210,8 +226,11 @@ const TagContainer = styled.div`
   fieldset {
     display: flex;
     flex-direction: row;
-    width: 500px;
+    width: 25rem;
     flex-wrap: wrap;
+    border: none;
+    padding-left: 0 ;
+    margin-left: 0;
   }
 `;
 
@@ -238,6 +257,11 @@ interface UserFormInput {
   tags: string;
 }
 
+// interface location {
+//   longitude: number;
+//   latitude: number;
+// }
+
 const EditUser = () => {
   const { id } = useParams();
   // const [coordinate, setCoordinate] = useState<Coordinates>({
@@ -250,6 +274,9 @@ const EditUser = () => {
   );
   const { register, handleSubmit } = useForm<UserFormInput>();
   const onSubmit = (data: UserFormInput) => console.log(data);
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('change', event.target.value);
+  };
 
   // const imgRef = useRef<any>();
   // function readImage(input: any) {
@@ -395,8 +422,10 @@ const EditUser = () => {
             <div>등록 지역 변경</div>
             <div>
               <div>
-                {/* <KakaoMap /> */}
-                <button type="button">현재 위치 추가</button>
+                <div id="map">
+                  <KakaoMap longitude={127} latitude={36} />
+                  <button type="button" id="locationButton">현재 위치 추가</button>
+                </div>
               </div>
               <div>
                 서울시 강서구

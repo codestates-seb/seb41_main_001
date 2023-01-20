@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import timeDifference from '../utils/timeDifference';
 import Button from './Button';
+import CommentSubmitBox from './CommentSubmitBox';
 
 const CommentContainer = styled.li`
   width: 100%;
@@ -38,15 +40,26 @@ const CreatorBox = styled.div`
     text-decoration: none;
     color: white;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 100%;
 
     > div:last-child {
       display: flex;
       flex-direction: column;
       justify-content: space-around;
+      > div:first-child {
+        display: flex;
+        align-items: center;
+        > div:nth-child(2) {
+          margin-left: 10px;
+          padding: 5px;
+          background-color: var(--neon-blue);
+          border-radius: 7px;
+          font-size: 80%;
+        }
+      }
       > div:last-child {
         span {
-          font-size: 14px;
+          font-size: 90%;
           font-weight: 400;
           &:first-child {
             color: var(--neon-red);
@@ -75,12 +88,15 @@ interface CommentProps {
   modifiedAt: string;
 }
 
-const CommentBox = (props: { data: CommentProps }) => {
+const CommentBox = (props: { memberId: number; data: CommentProps }) => {
   const {
+    memberId: creatorId,
     data: { memberId, nickname, heart, body, createdAt, modifiedAt },
   } = props;
 
   const LOGIN_ID = 1;
+
+  const [modifying, setModifying] = useState(false);
 
   return (
     <CommentContainer>
@@ -91,7 +107,10 @@ const CommentBox = (props: { data: CommentProps }) => {
             alt={`avator of ${nickname}}`}
           />
           <div>
-            <div>{nickname}</div>
+            <div>
+              <div>{nickname}</div>
+              {creatorId === memberId ? <div>글쓴이</div> : ''}
+            </div>
             <div>
               <span>
                 <i className="fa-solid fa-heart" />
@@ -108,15 +127,36 @@ const CommentBox = (props: { data: CommentProps }) => {
         <div>
           {memberId === LOGIN_ID ? (
             <>
-              <Button value="수정" onClick={() => {}} />
-              <Button value="삭제" onClick={() => {}} />
+              {modifying === false ? (
+                <Button value="수정" onClick={() => setModifying(true)} />
+              ) : (
+                <Button value="닫기" onClick={() => setModifying(false)} />
+              )}
+              {/* // TODO: 댓글삭제 api. */}
+              <Button
+                value="삭제"
+                onClick={() => {
+                  console.log('댓글삭제!');
+                }}
+              />
             </>
           ) : (
             ''
           )}
         </div>
       </CreatorBox>
-      <div>{body}</div>
+      {modifying === false ? (
+        <div>{body}</div>
+      ) : (
+        // TODO: onClick에 댓글수정 api
+        <CommentSubmitBox
+          value={body}
+          onClick={() => {
+            console.log('댓글수정!');
+            setModifying(false);
+          }}
+        />
+      )}
     </CommentContainer>
   );
 };

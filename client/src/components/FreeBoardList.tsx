@@ -9,7 +9,7 @@ const Board = styled.li`
   width: 35rem;
   padding: 1rem;
   margin: 1rem;
-  border: 0.1rem solid white;
+  border: 0.05rem solid white;
   border-radius: 1rem;
   display: flex;
   align-items: center;

@@ -7,21 +7,16 @@ import RecruitList from '../components/RecruitList';
 import ButtonLink from '../components/ButtonLink';
 
 const MainContainer = styled.main`
-  width: 1200px;
+  width: 1100px;
   color: white;
   display: flex;
   justify-content: center;
   margin-top: 100px;
   > div:first-child {
-    padding: 20px;
-    h1 {
-      margin: 10px 0px;
-    }
   }
 
   ul {
     list-style: none;
-    margin: 0;
     padding: 0;
     margin-top: 40px;
     width: 100%;

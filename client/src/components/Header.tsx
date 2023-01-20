@@ -23,7 +23,7 @@ const Logo = styled(Link)`
   display: flex;
   align-items: center;
   font-family: 'Rubik Bubbles', cursive;
-  font-size: 40px;
+  font-size: 220%;
   text-shadow: var(--neon-yellow) 0 0 1rem;
   i {
     font-size: xx-large;
@@ -41,7 +41,7 @@ const ButtonsContainer = styled.div`
     transition: 0.2s ease-in-out;
     i {
       margin-right: 0.3rem;
-      font-size: 25px;
+      font-size: 150%;
     }
     input {
       width: 12rem;
@@ -51,12 +51,12 @@ const ButtonsContainer = styled.div`
       border: none;
       border-bottom: 0.1rem solid var(--gray);
       color: white;
-      font-size: 16px;
+      font-size: 100%;
     }
     &:focus-within {
       color: white;
       input {
-        border-bottom: 0.1rem solid white;
+        border-bottom: 0.05rem solid white;
       }
       transition: 0.2s ease-in-out;
     }
@@ -89,11 +89,12 @@ const Board = styled.nav`
   a {
     text-decoration: none;
     color: white;
-    font-size: 16px;
+    font-size: 100%;
     transition: 0.2s ease-in-out;
     width: auto;
     height: 1rem;
     margin: 0 0.3rem;
+    margin-right: 15px;
     white-space: nowrap;
     display: flex;
     align-items: flex-start;

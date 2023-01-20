@@ -14,7 +14,7 @@ const ListContainer = styled.li`
   border-radius: 20px;
   padding: 20px;
   margin-bottom: 20px;
-  font-size: 16px;
+  font-size: 100%;
   > div:first-child {
     display: flex;
     align-items: center;
@@ -29,7 +29,7 @@ const ListTitle = styled(Link)`
   text-decoration: none;
   color: #b2b2b2;
   font-weight: 600;
-  font-size: 22px;
+  font-size: 130%;
   width: 100%;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -53,21 +53,23 @@ const ListInfo = styled.div`
     justify-content: center;
     align-items: center;
     margin-top: 10px;
-    font-size: 14px;
     i {
       margin-right: 7px;
     }
     &:nth-child(1) {
+      font-size: 80%;
       i {
         color: var(--neon-yellow);
       }
     }
     &:nth-child(2) {
+      font-size: 80%;
       i {
         color: var(--neon-red);
       }
     }
     &:nth-child(3) {
+      font-size: 80%;
       i {
         color: var(--neon-blue);
       }
@@ -92,12 +94,12 @@ const ListCondition = styled.div`
       align-items: center;
       border-radius: 20px;
       background-color: rgba(255, 255, 255, 0.2);
-      font-size: 1rem;
+      font-size: 90%;
       position: relative;
       padding-top: 30px;
       i {
         margin-bottom: 15px;
-        font-size: 36px;
+        font-size: 220%;
         &.fa-mars {
           color: var(--neon-blue);
         }
@@ -121,7 +123,7 @@ const ListCondition = styled.div`
         }
       }
       > span:first-child {
-        font-size: 0.9rem;
+        font-size: 90%;
         position: absolute;
         top: 10px;
       }
@@ -162,7 +164,7 @@ const ListCondition = styled.div`
       > div:first-child {
         text-align: left;
         white-space: nowrap;
-        font-size: 14px;
+        font-size: 80%;
         padding-right: 10px;
       }
       > div:nth-child(2) {
@@ -175,12 +177,14 @@ const ListCondition = styled.div`
         position: relative;
         word-break: keep-all;
         line-height: 120%;
+        font-size: 100%;
       }
       h4 {
         margin: 0;
         margin-bottom: 10px;
+        font-size: 100%;
         span {
-          font-size: 12px;
+          font-size: 70%;
           font-weight: 400;
         }
       }
@@ -271,7 +275,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       nickname,
     },
   } = props;
-  const { tagId, tagName, tagEmoji } = recruitTags[0];
+  const { tagName, tagEmoji } = recruitTags[0];
 
   const convertToDate = (time: string) => {
     const DATE = new Date(time);
@@ -305,7 +309,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       <div>
         <TagLink
           value={`${tagEmoji} ${tagName}`}
-          to={`/tags/${tagId}/${tagName}`}
+          to={`/recruits?tag="${tagName}"`}
         />
         <ListTitle to={`/recruit/${recruitId}`}>{title}</ListTitle>
       </div>

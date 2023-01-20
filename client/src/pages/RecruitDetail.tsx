@@ -5,10 +5,11 @@ import KakaoMap from '../components/KakaoMap';
 import classifyingGender from '../utils/classifyingGender';
 import classifyingAge from '../utils/classifyingAge';
 import modifyingDate from '../utils/modifyingDate';
-import RecruitCreatorSelectBox from '../components/RecruitCreatorSelectBox';
+import CreatorSelectBox from '../components/RecruitCreatorSelectBox';
 import RecruitSelectBox from '../components/RecruitSelectBox';
 import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
+import Button from '../components/Button';
 
 const MainContainer = styled.main`
   width: 900px;
@@ -16,7 +17,6 @@ const MainContainer = styled.main`
   margin-top: 100px;
 
   > div:nth-child(2) {
-    display: flex;
     justify-content: space-between;
     > div:first-child {
       > span {
@@ -33,7 +33,7 @@ const ContentBox = styled.div`
   padding: 10px;
   margin: 10px 0px;
   line-height: 150%;
-  font-size: 16px;
+  font-size: 100%;
 `;
 
 const LocationBox = styled.div`
@@ -49,7 +49,7 @@ const LocationBox = styled.div`
       margin-right: 20px;
       border-radius: 20px;
       background-color: rgba(255, 255, 255, 0.2);
-      font-size: 1.2rem;
+      font-size: 110%;
       > span {
         margin-bottom: 20px;
       }
@@ -73,14 +73,14 @@ const ConditionBox = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 1rem;
-    padding: 0.5rem;
+    font-size: 90%;
+    padding: 10px;
     text-align: center;
     word-break: keep-all;
     line-height: 150%;
     i {
-      margin-bottom: 10px;
-      font-size: 32px;
+      margin-bottom: 20px;
+      font-size: 220%;
       &.fa-mars {
         color: var(--neon-blue);
       }
@@ -101,10 +101,21 @@ const ConditionBox = styled.div`
       span {
         margin: 2px;
         &:first-child {
-          font-size: 0.9rem;
+          font-size: 85%;
         }
       }
     }
+  }
+`;
+
+const ButtonArea = styled.div<{ likes: boolean }>`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin: 20px 0px;
+  > button:first-child {
+    color: ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
+    border: 1px solid ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
   }
 `;
 
@@ -112,13 +123,16 @@ const CommentArea = styled.div`
   h3 {
     margin: 0;
     padding: 0;
-    margin-top: 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    font-size: 120%;
   }
   ul {
     margin: 0;
     padding: 0;
+  }
+  > form:last-child {
+    padding: 20px;
   }
 `;
 
@@ -190,6 +204,11 @@ const RecruitDetail = () => {
   };
 
   const LOGIN_ID = 1;
+  // 좋아요를 누른 멤버아이디만 모아둠 [1, 2, 3, 4...]
+  const LIKES_MEMBER_ID = DATA.recruitLikes.reduce((res: number[], ele) => {
+    res.push(ele.memberId);
+    return res;
+  }, []);
 
   return (
     <MainContainer>
@@ -242,19 +261,29 @@ const RecruitDetail = () => {
           />
         </div>
       </LocationBox>
-      {DATA.memberId === LOGIN_ID ? (
-        <RecruitCreatorSelectBox />
-      ) : (
-        <RecruitSelectBox />
-      )}
+      <RecruitSelectBox />
+      <ButtonArea likes={LIKES_MEMBER_ID.includes(LOGIN_ID)}>
+        <Button
+          value="좋아요"
+          onClick={() => console.log('좋아요!')}
+          icon={<i className="fa-solid fa-heart" />}
+        />
+
+        {DATA.memberId === LOGIN_ID ? (
+          <CreatorSelectBox applies={DATA.applies} />
+        ) : (
+          ''
+        )}
+      </ButtonArea>
       <CommentArea>
         <h3>{`${DATA.recruitComments.length}개의 댓글이 있습니다`}</h3>
         <ul>
           {DATA.recruitComments.map((el) => (
-            <CommentBox key={el.memberId} data={el} />
+            <CommentBox key={el.memberId} memberId={DATA.memberId} data={el} />
           ))}
         </ul>
-        <CommentSubmitBox />
+        {/* // TODO: onClick에 댓글등록 api. */}
+        <CommentSubmitBox onClick={() => console.log('댓글등록!')} />
       </CommentArea>
     </MainContainer>
   );

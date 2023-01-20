@@ -13,16 +13,16 @@ const ListCreator = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 14px;
+    font-size: 80%;
     font-weight: 600;
     img {
       margin-bottom: 5px;
       border-radius: 50%;
     }
     div {
-      font-size: 10px;
       color: var(--neon-red);
       margin-top: 5px;
+      font-size: 60%;
       i {
         margin-right: 3px;
       }

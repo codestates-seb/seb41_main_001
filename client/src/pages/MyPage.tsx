@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 import MyRecruitItem from '../components/MyRecruitItem';
 import Badge from '../components/Badge';
 import Loading from './Loading';
@@ -214,24 +215,26 @@ const MyPage = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [oneUser, setOneUsers] = useState({
-    // "userId": 1,
+    memberId: 1,
     nickname: 'NickName hey',
-    reputation: 87,
-    // heartbeat
-    memberSince: '1 Months',
-    email: 'kellycho1031@gmail.com',
+    heart: 87,
+    sex: '여성',
+    // memberSince: '1 Months',
+    // email: 'kellycho1031@gmail.com',
   });
 
   useEffect(() => {
     const getOneUser = () => {
-      fetch(
-        `http://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080/users/${id}`,
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          setOneUsers(data.data);
+      axios
+        .get(
+          '/members/1',
+        )
+        .then((res:any) => {
+          console.log(res);
+          setOneUsers(res.data);
           setIsLoading(false);
-        });
+        })
+        .catch((err:any) => console.log(err));
     };
     getOneUser();
   }, []);
@@ -248,12 +251,12 @@ const MyPage = () => {
                   <div>{oneUser.nickname}</div>
                   <div>
                     <i className="fa-solid fa-heart" />
-                    {oneUser.reputation}
+                    {oneUser.heart}
                   </div>
                   <div>
                     <i className="fa-regular fa-calendar" />
                     Member for
-                    {oneUser.memberSince}
+                    {oneUser.sex}
                   </div>
                 </Info>
               </HeadInfo>
@@ -298,7 +301,7 @@ const MyPage = () => {
                     </InfoBlock>
                     <InfoBlock>
                       <div>이메일</div>
-                      <div>{oneUser.email}</div>
+                      <div>{oneUser.memberId}</div>
                     </InfoBlock>
                     <InfoBlock>
                       <div>휴대폰 번호</div>
@@ -357,7 +360,7 @@ const MyPage = () => {
                     <div>글이 아직 없습니다.</div>
                   </RegisteredBoard>
                   <span>
-                    <Button to={`/members/withdrawl/${id}`}>회원 탈퇴</Button>
+                    <Button to={`/members/withdraw/${id}`}>회원 탈퇴</Button>
                   </span>
                 </Container>
               </div>

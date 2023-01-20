@@ -10,6 +10,7 @@ font-family: 'NanumSquareNeoHeavy'; */
 * {
   box-sizing: border-box;
   font-family: 'NanumSquareNeo';
+  font-size: 100%;
 }
 
 :root {
