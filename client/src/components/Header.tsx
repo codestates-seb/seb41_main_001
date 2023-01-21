@@ -44,19 +44,32 @@ const ButtonsContainer = styled.div`
       font-size: 150%;
     }
     input {
+<<<<<<< HEAD
       width: 12rem;
       padding: 0.5rem;
       background-color: rgba(1, 1, 1, 0);
       outline: none;
       border: none;
       border-bottom: 0.1rem solid var(--gray);
+=======
+      width: 200px;
+      padding: 10px;
+      background-color: rgba(1, 1, 1, 0);
+      outline: none;
+      border: none;
+      border-bottom: 1px solid var(--gray);
+>>>>>>> 0aeae5d39f0b1c175cf725aed749fb83c73257e3
       color: white;
       font-size: 100%;
     }
     &:focus-within {
       color: white;
       input {
+<<<<<<< HEAD
         border-bottom: 0.1rem solid white;
+=======
+        border-bottom: 1px solid white;
+>>>>>>> 0aeae5d39f0b1c175cf725aed749fb83c73257e3
       }
       transition: 0.2s ease-in-out;
     }
@@ -92,8 +105,12 @@ const Board = styled.nav`
     font-size: 100%;
     transition: 0.2s ease-in-out;
     width: auto;
+<<<<<<< HEAD
     height: 1rem;
     margin: 0 0.3rem;
+=======
+    margin-right: 15px;
+>>>>>>> 0aeae5d39f0b1c175cf725aed749fb83c73257e3
     white-space: nowrap;
     display: flex;
     align-items: flex-start;

@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
+import useCurrentLocation from '../utils/useCurrentLocation';
 
 // declare global {
 //   interface Window {
@@ -78,7 +79,7 @@ const InfoBlock = styled.label`
     }
     &:-webkit-autofill {
       box-shadow: 0 0 0 20px var(--gray) inset;
-      -webkit-text-fill-color: var(--gray);
+      -webkit-text-fill-color: white;
       color: white;
     }
   }
@@ -277,6 +278,15 @@ const EditUser = () => {
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log('change', event.target.value);
   };
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+
+  useCurrentLocation().then((res) => {
+    if (res === undefined) return;
+    setLocation(res);
+  });
 
   // const imgRef = useRef<any>();
   // function readImage(input: any) {
@@ -421,11 +431,14 @@ const EditUser = () => {
           <InfoBlock htmlFor="location">
             <div>등록 지역 변경</div>
             <div>
-              <div>
-                <div id="map">
-                  <KakaoMap longitude={127} latitude={36} />
-                  <button type="button" id="locationButton">현재 위치 추가</button>
-                </div>
+              <div id="map">
+                {location && (
+                  <KakaoMap
+                    latitude={location.latitude}
+                    longitude={location.longitude}
+                  />
+                )}
+                <button type="button" id="locationButton">현재 위치 추가</button>
               </div>
               <div>
                 서울시 강서구

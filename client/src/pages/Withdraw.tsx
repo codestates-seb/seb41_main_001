@@ -69,6 +69,11 @@ const Button = styled(Link)`
 
 const Withdraw = () => {
   const { id } = useParams();
+  // let checker:(HTMLElement|null) = document.getElementById('consent');
+  // let wbtn:(HTMLElement|null) = document.getElementById('withdraw');
+  // checker.onchange = function() {
+  //   wbtn.disabled = !!this.checked;
+  // };
   return (
     <WithdrawWrapper>
       <WithdrawContainer>
@@ -91,7 +96,7 @@ const Withdraw = () => {
         </div>
         <div>
           <label htmlFor="consent">
-            <input type="checkbox" name="consent" id="consent" value="blue" />
+            <input type="checkbox" name="consent" id="consent" value="agree" />
             <div>
               본인은 위에 적힌 정보를 읽었으며 회원 탈퇴의 의미를 이해합니다.
               <br />
@@ -101,7 +106,7 @@ const Withdraw = () => {
           </label>
         </div>
         <ButtonContainer>
-          <Button to="/" type="button">
+          <Button to="/" type="button" id="withdraw">
             탈퇴하기
           </Button>
           <Button to={`/members/mypage/${id}`}>돌아가기</Button>

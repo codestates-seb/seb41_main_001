@@ -6,7 +6,7 @@ import TagAutoComplete from './TagAutoComplete';
 const BoxContainer = styled.div`
   position: sticky;
   top: 130px;
-  margin: 0px 20px;
+  margin-left: 20px;
   padding: 0px 20px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 10px;

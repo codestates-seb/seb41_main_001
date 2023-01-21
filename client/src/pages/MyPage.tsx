@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import MyRecruitItem from '../components/MyRecruitItem';
-import Badge from '../components/Badge';
+// import Badge from '../components/Badge';
 import Loading from './Loading';
 
 const Background = styled.div`
@@ -37,7 +37,7 @@ const Pfp = styled.div`
   margin: 10px;
   border: 2px solid white;
   border-radius: 100px;
-  background-color: blue;
+  background-color: pink;
   width: 130px;
   height: 130px;
 `;
@@ -164,27 +164,26 @@ const RegisteredBoard = styled.div`
     margin: 20px;
   }
 `;
-const Badges = styled.div`
-  border: 2px solid white;
-  margin: 10px;
-  padding: 10px;
-  width: 25rem;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: row;
-`;
-const Tags = styled.div`
-  border: 2px solid white;
-  padding: 10px;
-  margin: 10px;
-  width: 10rem;
-  height: 120px;
-  border-radius: 10px;
-  > span {
-    margin: 5px;
-    padding: 3px 0;
-  }
-`;
+// const Badges = styled.div`
+//   border: 2px solid white;
+//   margin: 10px;
+//   padding: 10px;
+//   width: 25rem;
+//   border-radius: 10px;
+//   display: flex;
+//   flex-direction: row;
+// `;
+// const Tags = styled.div`
+//   border: 2px solid white;
+//   padding: 1rem 2rem;
+//   margin: 10px;
+//   width: 100%;
+//   border-radius: 10px;
+//   > span {
+//     margin: 5px;
+//     padding: 3px 0;
+//   }
+// `;
 const PersonalInfo = styled.div`
   border: 2px solid white;
   padding: 10px;
@@ -267,23 +266,6 @@ const MyPage = () => {
             </MyPageHeader>
             <MyPageBody>
               <div>
-                <span>
-                  <Container>
-                    <div>뱃지</div>
-                    <Badges>
-                      <Badge title="writer" icon="fa-solid fa-pen" />
-                      <Badge title="starter" icon="fa-solid fa-star" />
-                    </Badges>
-                  </Container>
-                  <Container>
-                    <div>관심 태그</div>
-                    <Tags>
-                      <span># 스쿠버다이빙</span>
-                      <span># 헬스/크로스핏</span>
-                      <span># 축구</span>
-                    </Tags>
-                  </Container>
-                </span>
                 <Container>
                   <div>개인정보</div>
                   <PersonalInfo>
@@ -312,6 +294,14 @@ const MyPage = () => {
                       <div>
                         <div>서울시 강서구</div>
                         <div>수원시</div>
+                      </div>
+                    </InfoBlock>
+                    <InfoBlock>
+                      <div>관심 태그</div>
+                      <div>
+                        <div># 스쿠버다이빙</div>
+                        <div># 헬스/크로스핏</div>
+                        <div># 수영</div>
                       </div>
                     </InfoBlock>
                   </PersonalInfo>

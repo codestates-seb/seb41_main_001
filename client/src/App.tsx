@@ -1,11 +1,12 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // import { useState } from 'react';
+
+import Header from './components/Header';
+import Footer from './components/Footer';
 import Main from './pages/Main';
 import Withdraw from './pages/Withdraw';
 import MyPage from './pages/MyPage';
-import Header from './components/Header';
-import Footer from './components/Footer';
 import EditUser from './pages/EditUser';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
@@ -17,7 +18,8 @@ import Recruits from './pages/Recruits';
 import FreeBoards from './pages/FreeBoards';
 import FreeDetail from './pages/FreeDetail';
 import RecruitDetail from './pages/RecruitDetail';
-import TaggedRecruit from './pages/TaggedRecruit';
+import RecruitTags from './pages/RecruitTags';
+import FreeboardTags from './pages/FreeboardTags';
 
 const App = () => (
   // const [login, setLogin] = useState(false);
@@ -40,10 +42,8 @@ const App = () => (
         <Route path="/freeboard/1/edit" element={<EditFreeboard />} />
         <Route path="/recruits" element={<Recruits />} />
         <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
-        <Route
-          path="/recruits/tags/:tagId/:tagName"
-          element={<TaggedRecruit />}
-        />
+        <Route path="/recruits/tags" element={<RecruitTags />} />
+        <Route path="/freeboard/tags" element={<FreeboardTags />} />
       </Routes>
       <Footer />
     </Router>

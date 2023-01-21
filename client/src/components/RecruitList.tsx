@@ -123,7 +123,7 @@ const ListCondition = styled.div`
         }
       }
       > span:first-child {
-        font-size: 85%;
+        font-size: 90%;
         position: absolute;
         top: 10px;
       }
@@ -275,7 +275,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       nickname,
     },
   } = props;
-  const { tagId, tagName, tagEmoji } = recruitTags[0];
+  const { tagName, tagEmoji } = recruitTags[0];
 
   const convertToDate = (time: string) => {
     const DATE = new Date(time);
@@ -309,7 +309,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       <div>
         <TagLink
           value={`${tagEmoji} ${tagName}`}
-          to={`/tags/${tagId}/${tagName}`}
+          to={`/recruits?tag="${tagName}"`}
         />
         <ListTitle to={`/recruit/${recruitId}`}>{title}</ListTitle>
       </div>

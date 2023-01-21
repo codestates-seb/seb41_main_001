@@ -2,23 +2,30 @@ import styled from 'styled-components';
 
 const TagContainer = styled.span`
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   text-align: center;
   border: 1px solid white;
-  border-radius: 5px;
-  width: 140px;
-  margin: 5px;
-  padding: 5px;
-
-  input {
-    zoom: 0.5;
+  border-radius: 0.3rem;
+  width: 6.55rem;
+  height: 2.5rem;
+  margin: 0.05rem;
+  input[type='checkbox'] {
+    width: 0.8rem;
+    bottom: 0.5rem;
+    margin-top: 0.75rem;
+    /* bottom:10px; */
+    top: 0.25rem;
   }
-
   label {
-    width: 110px;
-    height: 20px;
-    font-size: 13px;
+    width: 5rem;
+    font-size: 10px;
+    padding: 0.25rem;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 `;
 

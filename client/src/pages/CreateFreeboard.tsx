@@ -180,7 +180,7 @@ const CreateFreeboard = () => {
         </div>
         <ButtonContainer>
           <button type="submit">작성하기</button>
-          <Link to="/freeboards">
+          <Link to="/freeboard">
             <button type="button">취소하기</button>
           </Link>
         </ButtonContainer>
