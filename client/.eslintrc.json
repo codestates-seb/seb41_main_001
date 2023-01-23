@@ -20,6 +20,7 @@
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
     "react/react-in-jsx-scope": "off",
+    "no-param-reassign": 0,
     "react/function-component-definition": [
       2,
       {

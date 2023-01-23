@@ -6,7 +6,9 @@ import KakaoMap from '../components/KakaoMap';
 import useCurrentLocation from '../utils/useCurrentLocation';
 
 const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  console.log('change', event.target.value);
+  event.preventDefault();
+  // console.log('change', event.target);
+  // console.log(event);
 };
 
 enum GenderEnum {
@@ -38,7 +40,6 @@ const SignUpContainer = styled.div`
 `;
 
 const SignUpForm = styled.form`
-  /* width: 700px; */
   width: 35rem;
   height: auto;
   padding: 1rem;
@@ -119,7 +120,7 @@ const SignUp = () => {
   const { register, watch, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
 
-  console.log(watch('tags'));
+  // console.log(watch('tags'));
   const toggles = watch('tags', []);
   if (toggles.length > 3) {
     alert('최대 3개까지 선택');

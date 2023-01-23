@@ -15,12 +15,8 @@ const MainContainer = styled.main`
   width: 900px;
   color: white;
   margin-top: 100px;
-  h1 {
-    font-size: 200%;
-  }
 
   > div:nth-child(2) {
-    display: flex;
     justify-content: space-between;
     > div:first-child {
       > span {

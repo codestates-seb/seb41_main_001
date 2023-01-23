@@ -24,9 +24,9 @@ const HeartContainer = styled(Link)`
     align-items: center;
     span:first-child {
       color: var(--neon-yellow);
+      margin-right: 0.2rem;
+      padding-bottom: 0.5rem;
       font-size: 200%;
-      margin-right: 3px;
-      padding-bottom: 10px;
       font-family: 'Rubik Bubbles', cursive;
     }
   }

@@ -42,7 +42,7 @@ const Tag = ({ onChange, register, name, emoji }: PropsType) => (
       type="checkbox"
       id={name}
       name="tags"
-      value={name}
+      // value={name}
       onChange={onChange}
       {...register('tags', { required: '태그를 선택하세요' })}
     />

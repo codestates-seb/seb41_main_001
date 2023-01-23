@@ -10,8 +10,6 @@ const BoxContainer = styled.div`
   padding: 0px 20px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 10px;
-<<<<<<< HEAD
-=======
   h3 {
     font-size: 120%;
   }
@@ -19,7 +17,6 @@ const BoxContainer = styled.div`
   > div:nth-child(3) {
     margin-bottom: 50px;
   }
->>>>>>> a6f303a12e9148453b9bdec46cab22eaf18fef94
 
   > div:last-child {
     display: flex;
@@ -36,11 +33,7 @@ const SelectBox = styled.div`
     height: 35px;
     width: 100%;
     text-align: center;
-<<<<<<< HEAD
-    font-size: 16px;
-=======
     font-size: 100%;
->>>>>>> a6f303a12e9148453b9bdec46cab22eaf18fef94
     background-color: var(--gray);
     color: white;
   }

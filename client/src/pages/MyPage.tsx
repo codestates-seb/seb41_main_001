@@ -22,7 +22,7 @@ const MyPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items:center;
+  align-items: center;
   width: 100%;
 `;
 
@@ -86,9 +86,11 @@ const Button = styled(Link)`
     padding-right: 10px;
   }
   &:hover {
-    background-color: black;
     transition: 0.2s ease-in-out;
     text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
   }
 `;
 const MyPageBody = styled.div`
@@ -143,6 +145,7 @@ const MyBoard = styled.div`
       &:hover {
         color: var(--neon-yellow);
         text-shadow: white 0 0 3px;
+        cursor: pointer;
       }
     }
   }
@@ -225,15 +228,13 @@ const MyPage = () => {
   useEffect(() => {
     const getOneUser = () => {
       axios
-        .get(
-          '/members/1',
-        )
-        .then((res:any) => {
-          console.log(res);
+        .get('/members/1')
+        .then((res: any) => {
+          // console.log(res);
           setOneUsers(res.data);
           setIsLoading(false);
         })
-        .catch((err:any) => console.log(err));
+        .catch((err: any) => console.log(err));
     };
     getOneUser();
   }, []);

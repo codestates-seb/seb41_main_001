@@ -1,3 +1,5 @@
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { useParams, Link } from 'react-router-dom';
@@ -5,7 +7,6 @@ import { useState } from 'react';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
 import useCurrentLocation from '../utils/useCurrentLocation';
-
 // declare global {
 //   interface Window {
 //     kakao: any;
@@ -13,7 +14,7 @@ import useCurrentLocation from '../utils/useCurrentLocation';
 //   const kakao: any;
 // }
 
-const EditContainer = styled.main`
+const EditContainer = styled.form`
   background-color: var(--gray);
   color: white;
   display: flex;
@@ -45,23 +46,6 @@ const PersonalInfo = styled.div`
   margin: 10px 0 10px 10px;
   border-radius: 20px;
   padding: 40px 0px 40px 20px;
-`;
-
-const InfoBlock = styled.label`
-  display: flex;
-  flex-direction: row;
-  padding: 5px;
-  margin: 8px;
-  > div:first-child {
-    width: 120px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
-    text-shadow: white 0 0 5px;
-    margin-right: 10px;
-    margin-top: 5px;
-    margin-left: 20px;
-  }
   input {
     margin-bottom: 15px;
     background-color: var(--gray);
@@ -83,6 +67,23 @@ const InfoBlock = styled.label`
       color: white;
     }
   }
+`;
+
+const InfoBlock = styled.label`
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+  margin: 8px;
+  > div:first-child {
+    width: 120px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    text-shadow: white 0 0 5px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-left: 20px;
+  }
   > button {
     border: 1px solid white;
     color: white;
@@ -91,22 +92,32 @@ const InfoBlock = styled.label`
     background-color: var(--gray);
     margin: 0 2rem;
     &:hover {
-      background-color: black;
+      transition: 0.2s ease-in-out;
+      text-shadow: white 0 0 5px;
+      background-color: var(--neon-yellow);
+      color: black;
+      border: 1px solid var(--neon-yellow);
+      cursor: pointer;
     }
   }
   #map {
     width: 20rem;
     height: 21rem;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 1rem;
+    margin-left: 0.8rem;
     > #locationButton {
       padding: 1rem 2rem;
       background-color: var(--gray);
       &:hover {
-        background-color:black;
+        transition: 0.2s ease-in-out;
+        text-shadow: white 0 0 5px;
+        background-color: var(--neon-yellow);
+        color: black;
+        border: 1px solid var(--neon-yellow);
         cursor: pointer;
       }
     }
@@ -130,8 +141,10 @@ const InfoBlock = styled.label`
         font-size: 16px;
         margin-left: 15px;
         &:hover {
-          color: var(--neon-blue);
+          color: var(--neon-red);
+          text-shadow: white 0 0 2px;
           transition: 0.2s ease-in-out;
+          cursor: pointer;
         }
       }
     }
@@ -146,7 +159,35 @@ const Pfp = styled.img<PreviewPfp>`
   margin: 0 10px;
 `;
 
-const Button = styled(Link)`
+const Button = styled.button`
+  border: 1px solid white;
+  border-radius: 10px;
+  align-items: center;
+  padding: 15px;
+  margin: 15px 30px;
+  font-size: 20px;
+  height: 50px;
+  text-align: center;
+  display: flex;
+  text-decoration: none;
+  color: white;
+  justify-content: center;
+  background-color: var(--gray);
+  cursor: pointer;
+  i {
+    padding-right: 10px;
+  }
+  &:hover {
+    transition: 0.2s ease-in-out;
+    text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
+    cursor: pointer;
+  }
+`;
+
+const TempButton = styled(Link)`
   border: 1px solid white;
   border-radius: 10px;
   align-items: center;
@@ -163,11 +204,14 @@ const Button = styled(Link)`
     padding-right: 10px;
   }
   &:hover {
-    background-color: black;
-    text-shadow: white 0 0 5px;
     transition: 0.2s ease-in-out;
+    text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
+    cursor: pointer;
   }
-`;
+`; // 임시 버튼, 버튼에 기능 넣으면 navigate 쓰고 Button으로 통일하자
 
 const NoLinkButton = styled.button`
   border: 1px solid white;
@@ -188,9 +232,12 @@ const NoLinkButton = styled.button`
     padding-right: 5px;
   }
   &:hover {
-    background-color: black;
-    text-shadow: white 0 0 5px;
     transition: 0.2s ease-in-out;
+    text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
+    cursor: pointer;
   }
 `;
 
@@ -217,9 +264,12 @@ const InputButton = styled.label`
     padding-right: 5px;
   }
   &:hover {
-    background-color: black;
-    text-shadow: white 0 0 5px;
     transition: 0.2s ease-in-out;
+    text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
+    cursor: pointer;
   }
 `;
 
@@ -230,7 +280,7 @@ const TagContainer = styled.div`
     width: 25rem;
     flex-wrap: wrap;
     border: none;
-    padding-left: 0 ;
+    padding-left: 0;
     margin-left: 0;
   }
 `;
@@ -254,8 +304,8 @@ interface UserFormInput {
   curpassword: string;
   newpassword: string;
   phone: string;
-  place: string;
-  tags: string;
+  // place: string;
+  // tags: string;
 }
 
 // interface location {
@@ -273,8 +323,45 @@ const EditUser = () => {
   const [img, setImg] = useState<any>(
     'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   );
-  const { register, handleSubmit } = useForm<UserFormInput>();
-  const onSubmit = (data: UserFormInput) => console.log(data);
+  const schema = yup.object().shape({
+    nickname: yup
+      .string()
+      .required('Please enter your nickname')
+      .min(2)
+      .max(24),
+    phone: yup.number().required('Please enter digits only'),
+    curPassword: yup
+      .string()
+      .min(
+        6,
+        'Passwords must be at least 6 characters, and contain one special character',
+      )
+      .max(24)
+      .required('Enter your current password'),
+    newPassword: yup
+      .string()
+      .min(
+        6,
+        'Passwords must be at least 6 characters, and contain one special character',
+      )
+      .max(24)
+      .required('Enter your new password'),
+    newPasswordCheck: yup
+      .string()
+      .required('Type your password again')
+      .oneOf([yup.ref('newPassword')], 'Passwords must match'),
+  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserFormInput>({
+    resolver: yupResolver(schema),
+  });
+  const onSubmitHandler = async (data: UserFormInput) => {
+    console.log('data is ', data);
+  };
+  // const onInvalid = (errors: any) => console.error(errors);
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log('change', event.target.value);
   };
@@ -369,7 +456,7 @@ const EditUser = () => {
   // }, []);
 
   return (
-    <EditContainer onSubmit={handleSubmit(onSubmit)}>
+    <EditContainer onSubmit={handleSubmit(onSubmitHandler)}>
       <Container>
         <div>회원정보 수정</div>
         <PersonalInfo>
@@ -402,6 +489,7 @@ const EditUser = () => {
               placeholder="NickName"
               {...register('nickname', { required: true })}
             />
+            {errors.nickname?.message}
             <button type="button">중복 확인</button>
           </InfoBlock>
           <InfoBlock htmlFor="formerPassword">
@@ -424,7 +512,7 @@ const EditUser = () => {
             <input
               type="tel"
               placeholder="010-1234-5678"
-              {...register('phone')}
+              {...register('phone', { required: true })}
             />
             <button type="button">중복 확인</button>
           </InfoBlock>
@@ -438,7 +526,9 @@ const EditUser = () => {
                     longitude={location.longitude}
                   />
                 )}
-                <button type="button" id="locationButton">현재 위치 추가</button>
+                <button type="button" id="locationButton">
+                  현재 위치 추가
+                </button>
               </div>
               <div>
                 서울시 강서구
@@ -585,14 +675,14 @@ const EditUser = () => {
           </InfoBlock>
         </PersonalInfo>
         <span>
-          <Button to={`/members/mypage/${id}`}>
+          <Button type="submit">
             <i className="fa-solid fa-square-check" />
             저장하기
           </Button>
-          <Button to={`/members/mypage/${id}`}>
+          <TempButton to={`/members/mypage/${id}`}>
             <i className="fa-solid fa-xmark" />
             취소하기
-          </Button>
+          </TempButton>
         </span>
       </Container>
     </EditContainer>
