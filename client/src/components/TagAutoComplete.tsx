@@ -80,14 +80,14 @@ const DropDownBox = styled.div`
     border: none;
     border-radius: 5px;
     margin-top: 2px;
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgb(197, 197, 197);
     transition: 0.2s ease-in-out;
     font-size: 100%;
     white-space: nowrap;
     overflow: hidden;
     &:hover {
       cursor: pointer;
-      background-color: rgba(255, 255, 255, 0.9);
+      background-color: rgb(245, 245, 245);
       transition: 0.2s ease-in-out;
     }
   }

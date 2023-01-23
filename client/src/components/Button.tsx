@@ -33,7 +33,7 @@ const ButtonContainer = styled.button`
 
 interface ButtonProps {
   value: string;
-  onClick: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onClick: (e: React.SyntheticEvent) => void;
   type?: 'button' | 'submit' | 'reset' | undefined;
   disabled?: boolean;
   icon?: JSX.Element;

@@ -7,7 +7,7 @@ export default interface RecruitDataProps {
   modifiedAt: string;
   require: number;
   minRequire: number;
-  recruitStatus: string; // 모집중/모집완료/활동종료
+  recruitStatus: '모집중' | '최소인원충족' | '모집완료' | '활동종료'; // 모집중/모집완료/최소인원충족/활동종료
   star: number;
   views: number;
   heart: number;
@@ -16,9 +16,10 @@ export default interface RecruitDataProps {
   nickname: string;
   sex: 'Male' | 'Female' | 'Both'; // Male, Female, Both
   date: string;
-  location: { latitude: number; longitude: number }; // TODO: 지금은 string이지만 후에 객체로 변환 {latitude: number; longitude: number}
+  // TODO: 지금은 string이지만 후에 객체로 변환 {latitude: number; longitude: number}
+  location: { latitude: number; longitude: number };
   applies: { memberId: number; nickname: string; heart: number }[]; // TODO: 후에 이미지도 추가될 듯
-  recruitLikes: { memberId: number }[]; // TODO: 좋아요를 누른 회원. 후에 이미지도 추가될 듯
+  recruitLikes: { memberId: number }[]; // TODO: 좋아요를 누른 회원.
   recruitTags: { tagId: number; tagName: string; tagEmoji: string }[]; // TODO: 후에 tagEmoji도 추가될 듯
   reviews: {
     memberId: number;

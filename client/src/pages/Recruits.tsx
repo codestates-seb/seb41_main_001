@@ -123,7 +123,7 @@ const Recruits = () => {
       image: '',
       createdAt: '2023-01-02T16:18:48.908218',
       modifiedAt: '2023-01-02T16:18:48.908218',
-      recruitStatus: '활동종료', // 모집중/모집완료/활동종료
+      recruitStatus: '최소인원충족', // 모집중/모집완료/활동종료
       star: 0,
       views: 0,
       memberId: 1,

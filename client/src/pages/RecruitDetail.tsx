@@ -5,11 +5,12 @@ import KakaoMap from '../components/KakaoMap';
 import classifyingGender from '../utils/classifyingGender';
 import classifyingAge from '../utils/classifyingAge';
 import modifyingDate from '../utils/modifyingDate';
-import CreatorSelectBox from '../components/RecruitCreatorSelectBox';
-import RecruitSelectBox from '../components/RecruitSelectBox';
+import RecruitCreatorSelectBox from '../components/RecruitCreatorSelectBox';
 import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
 import Button from '../components/Button';
+import RecruitApplyBeforeMeeting from '../components/RecruitApplyBeforeMeeting';
+import RecruitApplyAfterMeeting from '../components/RecruitApplyAfterMeeting';
 
 const MainContainer = styled.main`
   width: 900px;
@@ -42,6 +43,7 @@ const ContentBox = styled.div`
 
 const LocationBox = styled.div`
   display: flex;
+  margin-bottom: 40px;
   > div {
     width: 100%;
     &:first-child {
@@ -112,15 +114,16 @@ const ConditionBox = styled.div`
   }
 `;
 
-const ButtonArea = styled.div<{ likes: boolean }>`
+const ButtonArea = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-  margin: 20px 0px;
-  > button:first-child {
-    color: ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
-    border: 1px solid ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
-  }
+  margin-bottom: 20px;
+`;
+
+const LikeButton = styled(Button)<{ likes: boolean }>`
+  color: ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
+  border: 1px solid ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
 `;
 
 const CommentArea = styled.div`
@@ -148,8 +151,8 @@ const RecruitDetail = () => {
     body: '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
     image: '',
     createdAt: '2023-01-02T16:18:48.908218',
-    modifiedAt: '2023-01-02T16:18:48.908218',
-    recruitStatus: '모집중', // 모집중/모집완료/활동종료
+    modifiedAt: '2023-01-20T16:18:48.908218',
+    recruitStatus: '모집완료', // 모집중/모집완료/최소인원충족/활동종료
     star: 0,
     views: 0,
     memberId: 1,
@@ -158,8 +161,9 @@ const RecruitDetail = () => {
     location: { latitude: 37.343336, longitude: 127.1233716 },
     heart: 50, // number, 0
     ageGroup: ['10', '20', '30', '40', '50', '60'],
-    sex: 'Both', // Male, Female, Both
+    sex: 'Male', // Male, Female, Both
     applies: [
+      // { memberId: 1, nickname: 'aaa', heart: 80 },
       { memberId: 2, nickname: 'bbb', heart: 80 },
       { memberId: 3, nickname: 'ccc', heart: 80 },
       { memberId: 4, nickname: 'ddd', heart: 80 },
@@ -214,6 +218,19 @@ const RecruitDetail = () => {
     return res;
   }, []);
 
+  const APPLICANTS_ID = DATA.applies.reduce((res: number[], ele) => {
+    res.push(ele.memberId);
+    return res;
+  }, []);
+
+  const checkIfMeetingEnded = (d: string) => {
+    const TIME_INPUT = new Date(d).getTime();
+    const TIME_NOW = new Date().getTime();
+
+    if (TIME_INPUT > TIME_NOW) return true;
+    return false;
+  };
+
   return (
     <MainContainer>
       <h1>{DATA.title}</h1>
@@ -265,16 +282,36 @@ const RecruitDetail = () => {
           />
         </div>
       </LocationBox>
-      <RecruitSelectBox />
-      <ButtonArea likes={LIKES_MEMBER_ID.includes(LOGIN_ID)}>
-        <Button
+      {!checkIfMeetingEnded(DATA.date) ? (
+        <RecruitApplyBeforeMeeting
+          applicantsId={APPLICANTS_ID}
+          heartCond={DATA.heart}
+          ageGroup={DATA.ageGroup}
+          sexCon={DATA.sex}
+          recruitStatus={DATA.recruitStatus}
+          creatorId={DATA.memberId}
+          applies={DATA.applies}
+          minRequire={DATA.minRequire}
+          require={DATA.require}
+        />
+      ) : (
+        <RecruitApplyAfterMeeting />
+      )}
+      <ButtonArea>
+        <LikeButton
+          likes={LIKES_MEMBER_ID.includes(LOGIN_ID)}
           value="좋아요"
-          onClick={() => console.log('좋아요!')}
+          onClick={() => {
+            console.log(`/recruits/${DATA.recruitId}/likes`, '좋아요!');
+          }}
           icon={<i className="fa-solid fa-heart" />}
         />
 
         {DATA.memberId === LOGIN_ID ? (
-          <CreatorSelectBox applies={DATA.applies} />
+          <RecruitCreatorSelectBox
+            applies={DATA.applies}
+            modifiedAt={DATA.modifiedAt}
+          />
         ) : (
           ''
         )}
@@ -283,11 +320,17 @@ const RecruitDetail = () => {
         <h3>{`${DATA.recruitComments.length}개의 댓글이 있습니다`}</h3>
         <ul>
           {DATA.recruitComments.map((el) => (
-            <CommentBox key={el.memberId} memberId={DATA.memberId} data={el} />
+            <CommentBox
+              key={el.memberId}
+              memberId={DATA.memberId}
+              board="recruits"
+              boardId={DATA.recruitId}
+              applicantsId={APPLICANTS_ID}
+              data={el}
+            />
           ))}
         </ul>
-        {/* // TODO: onClick에 댓글등록 api. */}
-        <CommentSubmitBox onClick={() => console.log('댓글등록!')} />
+        <CommentSubmitBox submitComment={`/recruits/${DATA.recruitId}`} />
       </CommentArea>
     </MainContainer>
   );

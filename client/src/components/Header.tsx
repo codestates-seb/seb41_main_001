@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import ButtonLink from './ButtonLink';
 
 const HeaderContainer = styled.header`
@@ -38,7 +38,6 @@ const ButtonsContainer = styled.div`
     display: flex;
     align-items: center;
     color: var(--gray);
-    transition: 0.2s ease-in-out;
     i {
       margin-right: 10px;
       font-size: 150%;
@@ -58,7 +57,6 @@ const ButtonsContainer = styled.div`
       input {
         border-bottom: 1px solid white;
       }
-      transition: 0.2s ease-in-out;
     }
   }
 `;
@@ -82,52 +80,66 @@ const ButtonsContainer = styled.div`
 // `;
 
 const Board = styled.nav`
-  color: white;
   display: flex;
   align-items: center;
   margin-top: 10px;
-  a {
-    text-decoration: none;
-    color: white;
-    font-size: 100%;
+`;
+
+const BoardLink = styled(Link)<{ path: string; to: string }>`
+  text-decoration: none;
+  font-size: 100%;
+  transition: 0.2s ease-in-out;
+  width: auto;
+  margin-right: 15px;
+  white-space: nowrap;
+  display: flex;
+  align-items: flex-start;
+  color: ${(props) => (props.path === props.to ? 'var(--neon-yellow)' : 'white')};
+  text-shadow: ${(props) => (props.path === props.to ? 'white 0 0 1rem' : '')}; 
+  font-weight: ${(props) => (props.path === props.to ? 'bold' : '')}; 
+  &:hover {
+    color: var(--neon-yellow);
+    text-shadow: white 0 0 1rem;
+    font-weight: bold;
     transition: 0.2s ease-in-out;
-    width: auto;
-    margin-right: 15px;
-    white-space: nowrap;
-    display: flex;
-    align-items: flex-start;
-    &:hover {
-      color: var(--neon-yellow);
-      text-shadow: white 0 0 1rem;
-      font-weight: bold;
-      transition: 0.2s ease-in-out;
-    }
   }
 `;
 
-const Header = () => (
-  <HeaderContainer>
-    <div>
-      <Logo to="/">
-        <i className="fa-solid fa-heart-pulse" />
-        HEART
-      </Logo>
-      <Board>
-        <Link to="/freeboard">자유게시판</Link>
-        <Link to="/freeboard/tags">자유게시판 태그</Link>
-        <Link to="/recruits">모집게시판</Link>
-        <Link to="/recruits/tags">모집게시판 태그</Link>
-      </Board>
-    </div>
-    <ButtonsContainer>
-      <form>
-        <i className="fa-solid fa-magnifying-glass" />
-        <input placeholder="Search here..." />
-      </form>
-      <ButtonLink value="로그인" to="/login" />
-      <ButtonLink value="회원가입" to="/signup" />
-    </ButtonsContainer>
-  </HeaderContainer>
-);
+const Header = () => {
+  const { pathname: path } = useLocation();
+
+  return (
+    <HeaderContainer>
+      <div>
+        <Logo to="/">
+          <i className="fa-solid fa-heart-pulse" />
+          HEART
+        </Logo>
+        <Board>
+          <BoardLink path={path} to="/freeboard">
+            자유게시판
+          </BoardLink>
+          <BoardLink path={path} to="/freeboard/tags">
+            자유게시판 태그
+          </BoardLink>
+          <BoardLink path={path} to="/recruits">
+            모집게시판
+          </BoardLink>
+          <BoardLink path={path} to="/recruits/tags">
+            모집게시판 태그
+          </BoardLink>
+        </Board>
+      </div>
+      <ButtonsContainer>
+        <form>
+          <i className="fa-solid fa-magnifying-glass" />
+          <input placeholder="Search here..." />
+        </form>
+        <ButtonLink value="로그인" to="/login" />
+        <ButtonLink value="회원가입" to="/signup" />
+      </ButtonsContainer>
+    </HeaderContainer>
+  );
+};
 
 export default Header;
