@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import classifyingStatus from '../utils/classifyingStatus';
 import Button from './Button';
+import maskingNickname from '../utils/maskingNickname';
 
 const SelectContainer = styled.div`
   display: flex;
@@ -60,9 +61,53 @@ const ApplicantsBox = styled.div`
   }
   > div:last-child {
     margin-top: 10px;
-    > img {
-      border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
+
+const ProfileImg = styled.div`
+  position: relative;
+  img {
+    border-radius: 50%;
+    &:hover {
+      + div {
+        display: block;
+      }
     }
+  }
+`;
+
+const Bubble = styled.div`
+  display: none;
+  position: absolute;
+  top: -140%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  .bubble {
+    position: relative;
+    background: #ffffff;
+    color: #000000;
+    font-family: Arial;
+    font-size: 14px;
+    box-shadow: 0px 0px 20px 10px rgba(163, 163, 163, 0.42);
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 7px;
+  }
+  .bubble:after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 0;
+    z-index: 1;
+    border-style: solid;
+    border-color: #ffffff transparent;
+    border-width: 5px 5px 0;
+    bottom: -5px;
+    left: 50%;
+    margin-left: -5px;
   }
 `;
 
@@ -163,10 +208,15 @@ const RecruitApplyBeforeMeeting = ({
           <div>{`(최소인원 ${minRequire}명)`}</div>
           <div>
             {applies.map((el) => (
-              <img
-                src={`https://picsum.photos/seed/${el.memberId}/20/20.webp`}
-                alt={`avatar of ${el.nickname}`}
-              />
+              <ProfileImg>
+                <img
+                  src={`https://picsum.photos/seed/${el.memberId}/20/20.webp`}
+                  alt={`avatar of ${el.nickname}`}
+                />
+                <Bubble>
+                  <div className="bubble">{maskingNickname(el.nickname)}</div>
+                </Bubble>
+              </ProfileImg>
             ))}
           </div>
         </ApplicantsBox>
@@ -228,7 +278,7 @@ const RecruitApplyBeforeMeeting = ({
         <div>
           <ul>
             <li>조건이 충족되지 못하면 신청이 불가합니다</li>
-            <li>모집완료 후에는 모임 전이라도 취소가 불가합니다</li>
+            <li>모집이 완료된 뒤에는 모임 전이라도 취소가 불가합니다</li>
             <li>신중한 모임 참가 부탁드릴게요!</li>
           </ul>
         </div>
