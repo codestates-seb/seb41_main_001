@@ -211,7 +211,7 @@ const RecruitApplyBeforeMeeting = ({
               <ProfileImg>
                 <img
                   src={`https://picsum.photos/seed/${el.memberId}/20/20.webp`}
-                  alt={`avatar of ${el.nickname}`}
+                  alt={`avatar of ${maskingNickname(el.nickname)}`}
                 />
                 <Bubble>
                   <div className="bubble">{maskingNickname(el.nickname)}</div>
@@ -282,7 +282,6 @@ const RecruitApplyBeforeMeeting = ({
             <li>신중한 모임 참가 부탁드릴게요!</li>
           </ul>
         </div>
-        <div />
       </SelectBox>
     </SelectContainer>
   );

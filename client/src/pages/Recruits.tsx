@@ -97,6 +97,7 @@ const Recruits = () => {
       ],
       reviews: [
         {
+          reviewId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -148,6 +149,7 @@ const Recruits = () => {
       ],
       reviews: [
         {
+          reviewId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -196,6 +198,7 @@ const Recruits = () => {
       ],
       reviews: [
         {
+          reviewId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,

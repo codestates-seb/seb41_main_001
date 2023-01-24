@@ -22,6 +22,7 @@ export default interface RecruitDataProps {
   recruitLikes: { memberId: number }[]; // TODO: 좋아요를 누른 회원.
   recruitTags: { tagId: number; tagName: string; tagEmoji: string }[]; // TODO: 후에 tagEmoji도 추가될 듯
   reviews: {
+    reviewId: number;
     memberId: number;
     nickname: string;
     heart: number;
