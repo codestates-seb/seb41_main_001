@@ -1,8 +1,6 @@
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
-import { useParams, Link } from 'react-router-dom';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
@@ -69,16 +67,16 @@ const PersonalInfo = styled.div`
   }
 `;
 
-const InfoBlock = styled.label`
+const InfoBlock = styled.div`
   display: flex;
   flex-direction: row;
   padding: 5px;
   margin: 8px;
-  > div:first-child {
+  > label:first-child {
     width: 120px;
     display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
+    justify-content: flex-end;
+    align-items: flex-start;
     text-shadow: white 0 0 5px;
     margin-right: 10px;
     margin-top: 5px;
@@ -301,9 +299,16 @@ interface PreviewPfp {
 // }
 interface UserFormInput {
   nickname: string;
-  curpassword: string;
-  newpassword: string;
+  curPassword: string;
+  newPassword: string;
+  newPasswordCheck: string;
   phone: string;
+
+  locations: string[];
+  memberTags: {
+    tagId: number;
+    tagName: string;
+  }[];
   // place: string;
   // tags: string;
 }
@@ -315,53 +320,21 @@ interface UserFormInput {
 
 const EditUser = () => {
   const { id } = useParams();
-  // const [coordinate, setCoordinate] = useState<Coordinates>({
-  //   latitude: 126,
-  //   longitude: 126,
-  //   timestamp: 1,
+  const navigate = useNavigate();
   // });
   const [img, setImg] = useState<any>(
     'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   );
-  const schema = yup.object().shape({
-    nickname: yup
-      .string()
-      .required('Please enter your nickname')
-      .min(2)
-      .max(24),
-    phone: yup.number().required('Please enter digits only'),
-    curPassword: yup
-      .string()
-      .min(
-        6,
-        'Passwords must be at least 6 characters, and contain one special character',
-      )
-      .max(24)
-      .required('Enter your current password'),
-    newPassword: yup
-      .string()
-      .min(
-        6,
-        'Passwords must be at least 6 characters, and contain one special character',
-      )
-      .max(24)
-      .required('Enter your new password'),
-    newPasswordCheck: yup
-      .string()
-      .required('Type your password again')
-      .oneOf([yup.ref('newPassword')], 'Passwords must match'),
-  });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<UserFormInput>({
-    resolver: yupResolver(schema),
-  });
-  const onSubmitHandler = async (data: UserFormInput) => {
+  } = useForm<UserFormInput>();
+  const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
     console.log('data is ', data);
+    navigate(`/members/mypage/${id}`);
   };
-  // const onInvalid = (errors: any) => console.error(errors);
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log('change', event.target.value);
   };
@@ -419,49 +392,13 @@ const EditUser = () => {
   // inputImage.addEventListener('change', (e) => {
   //   readImage(e.target);
   // });
-  // function success({ coords, timestamp }: Location) {
-  //   const { latitude, longitude } = coords;
-  //   setCoordinate({
-  //     latitude,
-  //     longitude,
-  //     timestamp,
-  //   });
-  //   console.log('actually, yeah', latitude, longitude);
-  //   console.log(
-  //     'this is what u get',
-  //     coordinate.latitude,
-  //     coordinate.longitude,
-  //   );
-  //   alert(
-  //     `위도: ${coordinate.latitude},
-  //      경도: ${coordinate.longitude},
-  //      위치 반환 시간: ${coordinate.timestamp},`
-  //   );
-  //   // location.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
-  // }
-
-  // const getUserLocation = () => {
-  //   if (!navigator.geolocation) {
-  //     throw Object.assign(new Error('위치 정보가 지원되지 않습니다.'));
-  //   }
-  //   navigator.geolocation.getCurrentPosition(success);
-  // };
-
-  // useEffect(() => {
-  //   getUserLocation();
-  //   const script = document.createElement('script');
-  //   script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=2a51fcab7ce5015f76fc7c20fc68714c';
-  //   script.async = true;
-  //   document.body.appendChild(script);
-  // }, []);
-
   return (
     <EditContainer onSubmit={handleSubmit(onSubmitHandler)}>
       <Container>
         <div>회원정보 수정</div>
         <PersonalInfo>
-          <InfoBlock htmlFor="pfp">
-            <div>프로필 사진</div>
+          <InfoBlock>
+            <label htmlFor="pfp">프로필 사진</label>
             <div>
               <Pfp id="preview-image" src={img} />
             </div>
@@ -482,42 +419,53 @@ const EditUser = () => {
               </NoLinkButton>
             </div>
           </InfoBlock>
-          <InfoBlock htmlFor="nickname">
-            <div>닉네임</div>
+          <InfoBlock>
+            <label htmlFor="nickname">닉네임</label>
             <input
+              id="nickname"
               type="text"
-              placeholder="NickName"
+              defaultValue="NickName"
               {...register('nickname', { required: true })}
             />
-            {errors.nickname?.message}
-            <button type="button">중복 확인</button>
+            {errors.nickname && <span>닉네임을 입력하세요</span>}
+            <NoLinkButton type="button">중복 확인</NoLinkButton>
           </InfoBlock>
-          <InfoBlock htmlFor="formerPassword">
-            <div>기존 비밀번호</div>
+          <InfoBlock>
+            <label htmlFor="formerPassword">기존 비밀번호</label>
             <input
+              id="curPassword"
               type="password"
-              {...register('curpassword', { required: true })}
+              {...register('curPassword', { required: true })}
             />
           </InfoBlock>
-          <InfoBlock htmlFor="newPassword">
-            <div>새 비밀번호</div>
-            <input type="password" {...register('newpassword')} />
-          </InfoBlock>
-          <InfoBlock htmlFor="newPasswordCheck">
-            <div>새 비밀번호 확인</div>
-            <input type="password" name="newPasswordCheck" />
-          </InfoBlock>
-          <InfoBlock htmlFor="phone">
-            <div>휴대폰 번호</div>
+          <InfoBlock>
+            <label htmlFor="newPassword">새 비밀번호</label>
             <input
+              id="newPassword"
+              type="password"
+              {...register('newPassword')}
+            />
+          </InfoBlock>
+          <InfoBlock>
+            <label htmlFor="newPasswordCheck">새 비밀번호 확인</label>
+            <input
+              id="newPasswordCheck"
+              type="password"
+              {...register('newPasswordCheck')}
+            />
+          </InfoBlock>
+          <InfoBlock>
+            <label htmlFor="phone">휴대폰 번호</label>
+            <input
+              id="phone"
               type="tel"
               placeholder="010-1234-5678"
               {...register('phone', { required: true })}
             />
-            <button type="button">중복 확인</button>
+            <NoLinkButton type="button">중복 확인</NoLinkButton>
           </InfoBlock>
-          <InfoBlock htmlFor="location">
-            <div>등록 지역 변경</div>
+          <InfoBlock>
+            <label htmlFor="location">등록 지역 변경</label>
             <div>
               <div id="map">
                 {location && (
@@ -540,8 +488,8 @@ const EditUser = () => {
               </div>
             </div>
           </InfoBlock>
-          <InfoBlock htmlFor="tags">
-            <div>등록 태그 변경</div>
+          <InfoBlock>
+            <label htmlFor="tags">등록 태그 변경</label>
             <TagContainer>
               <fieldset>
                 <Tag

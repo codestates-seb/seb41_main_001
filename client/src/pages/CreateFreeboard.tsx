@@ -152,9 +152,8 @@ const CRForm = styled.form`
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 5px;
   button {
-    margin: 10px 30px;
+    margin: 0px 30px 10px 30px;
     padding: 9px 15px;
     background-color: var(--gray);
     color: white;
@@ -177,38 +176,47 @@ const CreateFreeboard = () => {
     formState: { errors },
   } = useForm<FormInputFree>();
   const navigate = useNavigate();
+  const [warning, setWarning] = useState('');
+  const [content, setContent] = useState('');
 
   const onSubmit = (data: FormInputFree) => {
+    data.content = content;
     console.log(data);
-    axios
-      .post('/freeboards', {
-        freeTitle: data.title,
-        freeBody: data.content,
-        category: data.category,
-        // tagList: tags.reduce((r, e) => {
-        //   r.push({ tagId: e.tagId });
-        //   return r;
-        // }, []),
-        // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
-      })
-      .then((res) => {
-        console.log(res);
-        navigate('/freeboard');
-      })
-      .catch((err) => {
-        console.log(err);
-        navigate('/login');
-      });
+    if (!data.content || data.content.length === 0) {
+      setWarning('본문을 입력하세요');
+    } else {
+      axios
+        .post('/freeboards', {
+          freeTitle: data.title,
+          freeBody: data.content,
+          category: data.category,
+          // tagList: tags.reduce((r, e) => {
+          //   r.push({ tagId: e.tagId });
+          //   return r;
+          // }, []),
+          // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+        })
+        .then((res) => {
+          console.log(res);
+          navigate('/freeboard');
+        })
+        .catch((err) => {
+          console.log(err);
+          navigate('/login');
+        });
+    }
   };
-
-  const [content, setContent] = useState('');
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   UseAutosizeTextArea(textAreaRef.current, content);
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value;
-
+    if (val.length === 0) {
+      setWarning('본문을 입력하세요');
+    } else {
+      setWarning('');
+    }
     setContent(val);
   };
   // const fileNums = (e:any) => {
@@ -252,14 +260,23 @@ const CreateFreeboard = () => {
         </div>
         <div>
           <label htmlFor="content">내용</label>
-          <textarea
-            id="content"
-            rows={1}
-            onChange={handleChange}
-            ref={textAreaRef}
-            value={content}
-            // {...register('content', { required: true })}
-          />
+          <WarnSet>
+            <textarea
+              id="content"
+              rows={1}
+              onChange={handleChange}
+              ref={textAreaRef}
+              value={content}
+              name="content"
+              // {...register('content', { required: true })}
+            />
+            {warning !== '' && (
+              <span>
+                <i className="fa-solid fa-circle-exclamation" />
+                {warning}
+              </span>
+            )}
+          </WarnSet>
         </div>
         <div>
           <label htmlFor="tag">태그</label>

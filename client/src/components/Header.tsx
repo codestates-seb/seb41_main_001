@@ -56,7 +56,7 @@ const ButtonsContainer = styled.div`
     &:focus-within {
       color: white;
       input {
-        border-bottom: 0.1rem solid white;
+        border-bottom: 0.05rem solid white;
       }
       transition: 0.2s ease-in-out;
     }

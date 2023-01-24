@@ -1,4 +1,6 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import MiniTag from './MiniTag';
 
 const ItemWrapper = styled.div`
   border: 1px solid white;
@@ -10,6 +12,11 @@ const ItemWrapper = styled.div`
   padding: 1.2rem;
   > div:first-child {
     text-shadow: white 0 0 0.3rem;
+    width: 27rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
   }
   > div {
     margin: 0.2rem;
@@ -23,41 +30,69 @@ const ItemWrapper = styled.div`
       flex-direction: row;
       font-size: 0.8rem;
     }
-  }
-  span {
-    margin-right: 0.6rem;
+    #quota {
+      margin-right: 0.6rem;
+    }
+    #tagContainer {
+      width: 15rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-direction: row;
+      height: 1rem;
+      display: flex;
+      justify-content: flex-end;
+    }
   }
 `;
 
-const ItemContainer = styled.div`
+const ItemContainer = styled(Link)`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  text-decoration: none;
   i {
     font-size: 24px;
     margin-left: 40px;
+    color: white;
+    &:hover {
+      color: var(--neon-red);
+      text-shadow: white 0 0 3px;
+    }
   }
 `;
-
 interface Item {
   title: string;
   quota: string;
   dueDate: string;
-  tags: string[];
+  tags: { tagId: number; tagName: string }[];
+  id: number;
 }
 
-const MyRecruitItem = ({ title, quota, dueDate, tags }: Item) => (
+const MyRecruitItem = ({ title, quota, dueDate, tags, id }: Item) => (
   <div>
-    <ItemContainer>
+    <ItemContainer to={`/recruit/${id}`}>
       <ItemWrapper>
-        <div>{title}</div>
+        <div>
+          제목이 엄청 길어지면 어떻게 될까? 한번 테스트해보자
+          {title}
+        </div>
         <div>
           <div>
-            <span>{quota}</span>
-            <span>{dueDate}</span>
+            <span id="quota">{quota}</span>
+            <span>{dueDate.slice(0, 10)}</span>
           </div>
-          <div>{tags[0]}</div>
+          <div id="tagContainer">
+            {tags.map((e) => (
+              <MiniTag key={e.tagId} tagName="태그예시" />
+              // tagName에는 e.tagName을 할당
+            ))}
+            {/* <MiniTag key={10} tagName="길어지면" />
+            <MiniTag key={11} tagName="이런식으로" />
+            <MiniTag key={12} tagName="나타나는거지" />
+            <MiniTag key={13} tagName="좀더길어지게" /> */}
+          </div>
         </div>
       </ItemWrapper>
       <div>
