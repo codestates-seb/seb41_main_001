@@ -60,6 +60,9 @@ public class Member {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    private MemberImage memberImage;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<MemberTag> memberTags = new ArrayList<>();
 
@@ -88,4 +91,11 @@ public class Member {
 //
 //    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 //    private List<FreeComment> freeComments = new ArrayList<>();
+
+    public void addMemberImage(MemberImage memberImage) {
+        if (memberImage.getMember() != this) {
+            memberImage.setMember(this);
+        }
+        this.memberImage = memberImage;
+    }
 }

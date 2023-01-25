@@ -29,24 +29,27 @@ public class TagController {
     @ApiOperation(value = "태그 생성", notes = "태그를 생성한다.")
     @PostMapping
     public ResponseEntity postTag(@RequestBody TagDto.Post tagPostDto){
-        Tag tag = tagService.createTag(tagMapper.tagPostDtoToTag(tagPostDto));
-        return new ResponseEntity<>(
-                new SingleResponseDto<>(tag), HttpStatus.CREATED);
+//        Tag tag = tagService.createTag(tagMapper.tagPostDtoToTag(tagPostDto));
+//        return new ResponseEntity<>(
+//                new SingleResponseDto<>(tag), HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "모집글 관련 태그 조회", notes = "모집글을 기준으로 관련 태그를 조회한다.")
     @GetMapping("/recruits")
     public ResponseEntity getTagsFromRecruit(){
-        List<Tag> recruitTags = tagService.findTagsRecruit();
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(recruitTags),HttpStatus.OK);
+//        List<Tag> recruitTags = tagService.findTagsRecruit();
+//        return new ResponseEntity<>(
+//                new MultiResponseDto<>(recruitTags),HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ApiOperation(value = "자유 게시글 관련 태그 조회", notes = "자유 게시글을 기준으로 관련 태그를 조회한다.")
     @GetMapping("/freeboards")
     public ResponseEntity getTagsFromFreeboard(){
-        List<Tag> freeTags = tagService.findTagsFreeboard();
-        return new ResponseEntity<>(
-                new MultiResponseDto<>(freeTags),HttpStatus.OK);
+//        List<Tag> freeTags = tagService.findTagsFreeboard();
+//        return new ResponseEntity<>(
+//                new MultiResponseDto<>(freeTags),HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -3,7 +3,13 @@ package com.main_001.server.member.service;
 import com.main_001.server.auth.dto.LoginDto;
 import com.main_001.server.auth.jwt.JwtTokenizer;
 //import com.main_001.server.auth.utils.CustomAuthorityUtils;
+import com.main_001.server.file.FileHandler;
+import com.main_001.server.file.UploadFile;
 import com.main_001.server.member.dto.TokenDto;
+import com.main_001.server.member.entity.MemberImage;
+import com.main_001.server.member.repository.MemberImageRepository;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
 import com.main_001.server.member.entity.Member;
@@ -11,6 +17,8 @@ import com.main_001.server.member.repository.MemberRepository;
 import org.springframework.http.HttpHeaders;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -21,17 +29,26 @@ public class MemberService {
 //    private final CustomAuthorityUtils authorityUtils;
 //    private final JwtTokenizer jwtTokenizer;
     private final JavaMailSender mailSender;
+    private final MemberImageRepository memberImageRepository;
+    private final FileHandler fileHandler;
+
+    @Value("${file.path}")
+    private String memberImagePath;
 
     public MemberService(MemberRepository memberRepository,
 //                         PasswordEncoder passwordEncoder,
 //                         CustomAuthorityUtils authorityUtils,
 //                         JwtTokenizer jwtTokenizer,
-                         JavaMailSender mailSender) {
+                         JavaMailSender mailSender,
+                         MemberImageRepository memberImageRepository,
+                         FileHandler fileHandler) {
         this.memberRepository = memberRepository;
 //        this.passwordEncoder = passwordEncoder;
 //        this.authorityUtils = authorityUtils;
 //        this.jwtTokenizer = jwtTokenizer;
         this.mailSender = mailSender;
+        this.memberImageRepository = memberImageRepository;
+        this.fileHandler = fileHandler;
     }
 
     // 이메일, 닉네임, 전화번호를 따로 검사하는 로직이 있기 때문에 회원가입은 바로 저장소에 저장될 수 있다.
@@ -47,7 +64,40 @@ public class MemberService {
 //        List<String> roles = authorityUtils.createRoles(member.getEmail());
 //        member.setRoles(roles);
 
+//        MemberImage memberImageLocal = MemberImage.builder()
+//                .filePath(memberImagePath)
+//                .build();
+//        member.addMemberImage(memberImageLocal);
+
         return memberRepository.save(member);
+    }
+
+    //
+    @SneakyThrows
+    @Transactional
+    public void createImage(Long memberId, List<MultipartFile> multipartFiles) {
+        Member findMember = findMember(memberId);
+
+        List<UploadFile> uploadFiles = fileHandler.parseFileInfo(multipartFiles);
+        List<MemberImage> memberImages = new ArrayList<>();
+
+        uploadFiles.forEach(uploadFile -> {
+            MemberImage memberImage = MemberImage.builder()
+                    .originalFileName(uploadFile.getOriginalFileName())
+                    .storedFileName(uploadFile.getStoredFileName())
+                    .filePath(uploadFile.getFilePath())
+                    .fileSize(uploadFile.getFileSize())
+                    .build();
+            memberImages.add(memberImage);
+        });
+
+        if (!memberImages.isEmpty()) {
+            for (MemberImage memberImage : memberImages) {
+                findMember.addMemberImage(memberImage);
+                memberRepository.save(findMember);
+                break;
+            }
+        }
     }
 
     // 이메일 중복여부 중복이면 true, 중복이 아니면 false
@@ -127,7 +177,7 @@ public class MemberService {
         memberRepository.save(findMember);
     }
 
-    // 마이페이지 수정 로직
+    // 마이페이지 수정 로직, tag는 하나씩만 존재하도록 체크 필요함
     public Member updateMember(Member member) {
         Member findMember = findVerifiedMember(member.getMemberId());
 
