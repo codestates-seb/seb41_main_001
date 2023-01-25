@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
+import axios from 'axios';
 import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
 import useCurrentLocation from '../utils/useCurrentLocation';
-
-const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  console.log('change', event.target.value);
-};
+import Button from '../components/Button';
 
 enum GenderEnum {
   female = '여성',
@@ -25,7 +24,7 @@ interface IFormInput {
   passwordRetype: string;
   tags: [];
   location: object;
-  profile: string;
+  // profile: string;
 }
 
 const SignUpContainer = styled.div`
@@ -35,6 +34,7 @@ const SignUpContainer = styled.div`
   justify-content: center;
   margin-top: 5rem;
   height: 100%;
+  font-size: 1rem;
 `;
 
 const SignUpForm = styled.form`
@@ -50,300 +50,393 @@ const SignUpForm = styled.form`
   border: 0.05rem solid white;
   border-radius: 1rem;
 
-  div:first-child {
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
-    font-weight: bold;
-  }
-
-  div {
+  .inputCon {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 0.5rem;
-
+    height: 3rem;
+    margin-bottom: 1rem;
     label,
     p {
       width: 6rem;
     }
 
-    input,
-    select {
-      margin-bottom: 0.5rem;
-      width: 20rem;
-      margin: 0.5rem;
-      outline: none;
-      border: none;
-      background-color: rgba(1, 1, 1, 0);
-      border-bottom: 0.1rem solid grey;
-      color: white;
-      &:focus-within {
-        border-bottom: 0.1rem solid white;
+    div {
+      > div {
+        margin-left: 0.5rem;
+      }
+      display: flex;
+      flex-direction: column;
+      input,
+      select {
+        margin-bottom: 0.5rem;
+        width: 22rem;
+        margin: 0.5rem;
+        outline: none;
+        border: none;
+        background-color: rgba(1, 1, 1, 0);
+        border-bottom: 0.1rem solid grey;
+        color: white;
+        &:focus-within {
+          border-bottom: 0.1rem solid white;
+        }
       }
     }
   }
 
-  button {
-    width: 9rem;
-    text-decoration: none;
-    background-color: var(--gray);
-    color: white;
-    border-radius: 0.2rem;
-    margin: 0.3rem;
-    padding: 0.5rem 1rem;
-    transition: 0.2s ease-in-out;
-    font-size: 16px;
-    &:hover {
-      cursor: pointer;
-      background-color: var(--neon-yellow);
-      color: black;
-      transition: 0.2s ease-in-out;
+  .withBtn {
+    width: 35rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 3rem;
+    margin-bottom: 1rem;
+    label,
+    p {
+      width: 6rem;
+    }
+
+    div {
+      > div {
+        margin-left: 0.5rem;
+      }
+      display: flex;
+      flex-direction: column;
+      input {
+        margin-bottom: 0.5rem;
+        width: 16rem;
+        margin: 0.5rem;
+        outline: none;
+        border: none;
+        background-color: rgba(1, 1, 1, 0);
+        border-bottom: 0.1rem solid grey;
+        color: white;
+        &:focus-within {
+          border-bottom: 0.1rem solid white;
+        }
+      }
     }
   }
 
-  .map {
-    width: 20rem;
-    height: 20rem;
+  .mapCon {
+    width: 30rem;
+    height: 22rem;
+    display: flex;
+    margin-left: 1rem;
+    margin-bottom: 1rem;
+    > div {
+      width: 22rem;
+      height: 22rem;
+      margin-left: 4.5rem;
+    }
+  }
+
+  div:nth-child(11) {
+    display: flex;
+    /* margin-bottom: 1rem; */
+    p {
+      height: 95%;
+      width: 6rem;
+    }
+    div {
+      padding: 0.2rem;
+    }
   }
 `;
 
 const TagList = styled.div`
-  width: 20rem;
+  width: 22rem;
   display: flex;
   flex-wrap: wrap;
   margin: 0.5rem;
 `;
 
 const SignUp = () => {
-  const { register, watch, handleSubmit } = useForm<IFormInput>();
-  const onSubmit = (data: IFormInput) => console.log(data);
+  const {
+    register,
+    watch,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>();
+  const navigate = useNavigate();
+  const { location: currentLocation } = useCurrentLocation();
+  const [checkedNickname, setCheckedNickname] = useState(false);
+  const [checkedPhone, setCheckedPhone] = useState(false);
+  const [checkedEmail, setCheckedEmail] = useState(false);
+
+  const onSubmit = (data: IFormInput) => {
+    axios
+      .post('/members/signup', {
+        ...data,
+        location: {
+          latitude: currentLocation?.latitude,
+          longitude: currentLocation?.longitude,
+        },
+      })
+      .then((res) => {
+        // console.log(res);
+        alert(res);
+        navigate('/login');
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(err);
+        console.log(
+          JSON.stringify({
+            ...data,
+            location: {
+              latitude: currentLocation?.latitude,
+              longitude: currentLocation?.longitude,
+            },
+          }),
+        );
+      });
+  };
 
   console.log(watch('tags'));
   const toggles = watch('tags', []);
-  if (toggles.length > 3) {
-    alert('최대 3개까지 선택');
-    // 3개 이상부터는 체크가 안되게 하는 법.
-  }
+  const [disabled, setDisabled] = useState(false);
+  // if (toggles.length > 3) {
+  //   alert('최대 3개까지 선택');
+  // }
+  useEffect(() => {
+    if (toggles.length > 2) {
+      setDisabled(true);
+    }
+  }, [toggles]);
 
-  const [location, setLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
-
-  useCurrentLocation().then((res) => {
-    if (res === undefined) return;
-    setLocation(res);
-  });
+  const TAG_DATA = [
+    { tagId: 1, tagName: '축구/풋살', tagEmoji: '⚽️' },
+    { tagId: 2, tagName: '농구', tagEmoji: '🏀' },
+    { tagId: 3, tagName: '야구', tagEmoji: '⚾️' },
+    { tagId: 4, tagName: '배구', tagEmoji: '🏐' },
+    { tagId: 5, tagName: '복싱', tagEmoji: '🥊' },
+    { tagId: 6, tagName: '탁구', tagEmoji: '🏓' },
+    { tagId: 7, tagName: '배드민턴', tagEmoji: '🏸' },
+    { tagId: 8, tagName: '테니스/스쿼시', tagEmoji: '🎾' },
+    { tagId: 9, tagName: '태권도/유도', tagEmoji: '🥋' },
+    { tagId: 10, tagName: '검도', tagEmoji: '⚔️' },
+    { tagId: 11, tagName: '무술/주짓수', tagEmoji: '🥋' },
+    { tagId: 12, tagName: '족구', tagEmoji: '⚽️' },
+    { tagId: 13, tagName: '러닝', tagEmoji: '🏃' },
+    { tagId: 14, tagName: '자전거', tagEmoji: '🚴' },
+    { tagId: 15, tagName: '등산', tagEmoji: '🏔️' },
+    { tagId: 16, tagName: '클라이밍', tagEmoji: '🧗‍♀️' },
+    { tagId: 17, tagName: '수영', tagEmoji: '🏊‍♀️' },
+    { tagId: 18, tagName: '골프', tagEmoji: '⛳️' },
+    { tagId: 19, tagName: '요가/필라테스', tagEmoji: '🧘' },
+    { tagId: 20, tagName: '헬스/크로스핏', tagEmoji: '🏋️' },
+    { tagId: 21, tagName: '스케이트/인라인', tagEmoji: '⛸️' },
+  ];
 
   return (
     <SignUpContainer>
       <SignUpForm onSubmit={handleSubmit(onSubmit)}>
-        <div>회원가입</div>
-        <div>
+        <h1>회원가입</h1>
+        <div className="inputCon">
           <label htmlFor="name">이름</label>
-          <input id="name" {...register('name', { required: true })} />
+          <div>
+            <input id="name" {...register('name', { required: true })} />
+            {errors.name && <div>이름을 입력하세요</div>}
+          </div>
         </div>
-        <div>
+        <div className="withBtn">
           <label htmlFor="nickname">닉네임</label>
-          <input id="nickname" {...register('nickname', { required: true })} />
+          <div>
+            <input
+              id="nickname"
+              {...register('nickname', { required: true })}
+            />
+            {errors.nickname && <div>닉네임을 입력하세요</div>}
+          </div>
+          <Button
+            value="중복 확인"
+            onClick={() => {
+              axios
+                .get('/members/signup/check-nickname/{nickname}')
+                .then((res) => {
+                  console.log(res);
+                  if (res.data === true) {
+                    alert('사용 가능한 닉네임입니다.');
+                    setCheckedNickname(true);
+                  } else {
+                    alert('사용 불가능한 닉네임입니다.');
+                    setCheckedNickname(false);
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }}
+          />
         </div>
-        <div>
+        <div className="inputCon">
           <label htmlFor="birth">생년월일</label>
-          <input
-            id="birth"
-            type="date"
-            {...register('birth', { required: true })}
-          />
+          <div>
+            <input
+              id="birth"
+              type="date"
+              {...register('birth', { required: true })}
+            />
+            {errors.birth && <div>생년월일을 입력하세요</div>}
+          </div>
         </div>
-        <div>
+        <div className="inputCon">
           <label htmlFor="gender">성별</label>
-          <select id="gender" {...register('gender')}>
-            <option value="female">여성</option>
-            <option value="male">남성</option>
-          </select>
+          <div>
+            <select id="gender" {...register('gender')}>
+              <option value="female">여성</option>
+              <option value="male">남성</option>
+            </select>
+            {errors.gender && <div>성별을 입력하세요</div>}
+          </div>
         </div>
-        <div>
+        <div className="withBtn">
           <label htmlFor="email">이메일</label>
-          <input
-            id="email"
-            type="email"
-            {...register('email', { required: true })}
+          <div>
+            <input
+              id="email"
+              type="email"
+              {...register('email', { required: true })}
+            />
+            {errors.email && <div>이메일을 입력하세요</div>}
+          </div>
+          <Button
+            value="중복 확인"
+            onClick={() => {
+              axios
+                .get('/members/signup/check-email/{email}')
+                .then((res) => {
+                  console.log(res);
+                  if (res.data !== true) {
+                    alert('사용 불가능한 이메일입니다.');
+                    setCheckedEmail(true);
+                  } else {
+                    alert('사용 가능한 이메일입니다.');
+                    setCheckedEmail(false);
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }}
           />
         </div>
-        <div />
-        <div>
+        <div className="withBtn">
           <label htmlFor="phone">휴대폰 번호</label>
-          <input
-            id="phone"
-            type="tel"
-            {...register('phone', { required: true })}
+          <div>
+            <input
+              id="phone"
+              type="tel"
+              {...register('phone', { required: true })}
+            />
+            {errors.phone && <div>휴대폰 번호를 입력하세요</div>}
+          </div>
+          <Button
+            value="중복 확인"
+            onClick={() => {
+              axios
+                .get('/members/signup/check-phone/{phone}')
+                .then((res) => {
+                  console.log(res);
+                  if (res.data === true) {
+                    alert('사용 가능한 번호입니다.');
+                    setCheckedPhone(true);
+                  } else {
+                    alert('사용 불가능한 번호입니다.');
+                    setCheckedPhone(false);
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }}
           />
         </div>
-        <div>
+        <div className="inputCon">
           <label htmlFor="password">비밀번호</label>
-          <input
-            id="password"
-            type="password"
-            {...register('password', {
-              required: true,
-            })}
-          />
+          <div>
+            <input
+              id="password"
+              type="password"
+              {...register('password', {
+                required: '비밀번호를 입력해주세요.',
+                minLength: {
+                  value: 8,
+                  message: '최소 8자 이상의 비밀번호를 입력해주세요.',
+                },
+                maxLength: {
+                  value: 16,
+                  message: '16자 이하의 비밀번호를 입력해주세요.',
+                },
+                pattern: {
+                  value: /^(?=.*\d)(?=.*[a-zA-ZS]).{8,}/,
+                  message: '영문, 숫자를 혼용하여 입력해주세요.',
+                },
+              })}
+            />
+            {errors.password && <div>비밀번호를 입력하세요</div>}
+          </div>
         </div>
-        <div>
+        <div className="inputCon">
           <label htmlFor="passwordRetype">비밀번호 확인</label>
-          <input
-            id="passwordRetype"
-            type="password"
-            {...register('passwordRetype', { required: true })}
-          />
+          <div>
+            <input
+              id="passwordRetype"
+              type="password"
+              placeholder="비밀번호를 다시 입력해주세요."
+              {...register('passwordRetype', {
+                required: '비밀번호를 확인해주세요.',
+                validate: {
+                  matchesPreviousPassword: (value) => {
+                    const { password } = getValues();
+                    return (
+                      password === value || '비밀번호가 일치하지 않습니다.'
+                    );
+                  },
+                },
+              })}
+            />
+            {errors.passwordRetype && <div>비밀번호 확인을 입력하세요</div>}
+          </div>
         </div>
-        <div>
+        <div className="mapCon">
           <p>지역</p>
-          <div className="map">
-            {location && (
+          <div>
+            {currentLocation && (
               <KakaoMap
-                latitude={location.latitude}
-                longitude={location.longitude}
+                latitude={currentLocation.latitude}
+                longitude={currentLocation.longitude}
               />
             )}
           </div>
         </div>
         <div>
+          {/* 11번째 */}
           <p>관심 태그</p>
           <TagList>
-            <Tag
-              name="축구/풋살"
-              emoji="⚽️"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="농구"
-              emoji="🏀"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="야구"
-              emoji="⚾️"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="배구"
-              emoji="🏐"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="복싱"
-              emoji="🥊"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="탁구"
-              emoji="🏓"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="배드민턴"
-              emoji="🏸"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="테니스/스쿼시"
-              emoji="🎾"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="태권도/유도"
-              emoji="🥋"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="검도"
-              emoji="⚔️"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="무술/주짓수"
-              emoji="🥋"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="족구"
-              emoji="⚽️"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="러닝"
-              emoji="🏃"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="자전거"
-              emoji="🚴"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="등산"
-              emoji="🏔️"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="클라이밍"
-              emoji="🧗‍♀️"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="수영"
-              emoji="🏊‍♀️"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="골프"
-              emoji="⛳️"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="요가/필라테스"
-              emoji="🧘"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="헬스/크로스핏"
-              emoji="🏋️"
-              onChange={onChange}
-              register={register}
-            />
-            <Tag
-              name="스케이트/인라인"
-              emoji="⛸️"
-              onChange={onChange}
-              register={register}
-            />
+            {TAG_DATA.map((el) => (
+              <Tag
+                key={el.tagId}
+                name={el.tagName}
+                emoji={el.tagEmoji}
+                disabled={disabled}
+                register={register}
+              />
+            ))}
           </TagList>
         </div>
-        <div>
+        {/* <div className="inputCon">
           <label htmlFor="profile">프로필 사진</label>
           <input id="profile" type="file" {...register('profile')} />
-        </div>
-        <button type="submit">건강한 삶 시작하기</button>
+        </div> */}
+        <Button
+          onClick={() => {}}
+          value="건강한 삶 시작하기"
+          disabled={!checkedNickname && !checkedEmail && !checkedPhone}
+          type="submit"
+        />
       </SignUpForm>
     </SignUpContainer>
   );
