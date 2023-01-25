@@ -4,10 +4,12 @@ import styled from 'styled-components';
 import useCurrentLocation from '../utils/useCurrentLocation';
 import TagAutoComplete from '../components/TagAutoComplete';
 import KakaoMapClick from '../components/KakaoMapClick';
+import Button from '../components/Button';
 
 enum GenderEnum {
   female = '여성',
   male = '남성',
+  both = '성별 무관',
 }
 
 enum AgeEnum {
@@ -29,7 +31,7 @@ interface IFormInput {
   genderCondition: GenderEnum;
   ageCondition: AgeEnum;
   heartRateCondition: number;
-  image: string;
+  // image: string;
 }
 
 const CRContainer = styled.div`
@@ -55,33 +57,21 @@ const CRForm = styled.form`
   justify-content: center;
   align-items: center;
 
-  > div:first-child {
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
-    font-weight: bold;
-  }
-
-  > div:not(:nth-child(2), :nth-child(7)) {
+  > div {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20rem;
-    margin: 0.5rem;
     margin-bottom: 1rem;
-
     label,
     p {
       width: 6rem;
     }
-
-    .length {
-      height: 5rem;
-    }
-
     input,
     textarea,
     select {
+      margin-bottom: 0.5rem;
       width: 15rem;
+      /* margin: 0.5rem; */
       outline: none;
       border: none;
       background-color: rgba(1, 1, 1, 0);
@@ -91,89 +81,56 @@ const CRForm = styled.form`
         border-bottom: 0.1rem solid white;
       }
     }
-
-    > div {
-      label {
-        width: 3rem;
-      }
-      input {
-        width: 1rem;
-      }
-      width: 8rem;
-    }
   }
+`;
 
-  > div:nth-child(2) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    width: 20rem;
-    label {
-      width: 6rem;
-      white-space: nowrap;
-      margin-right: 1.5rem;
-    }
-    > div {
-      width: 100%;
-      margin-bottom: 0.5rem;
-      display: flex;
-      input {
-        height: auto;
-      }
-    }
-  }
-
-  > div:nth-child(7) {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    label {
-      width: 4rem;
-      margin-right: 1rem;
-    }
-  }
-
-  .submitBtn {
-    width: 6rem;
-    text-decoration: none;
-    background-color: var(--gray);
-    color: white;
-    border-radius: 0.2rem;
-    margin: 0.3rem;
-    padding: 0.5rem 1rem;
-    transition: 0.2s ease-in-out;
-    font-size: 16px;
-    &:hover {
-      cursor: pointer;
-      background-color: var(--neon-yellow);
-      color: black;
-      transition: 0.2s ease-in-out;
-    }
-  }
-
-  .heartCon {
+const TagContainer = styled.div`
+  > div {
     width: 15rem;
-    margin: 0.5rem;
-    input {
-      width: 13rem;
-    }
   }
+`;
 
-  .ageCon {
-    width: 15rem;
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0.5rem;
-    span {
-      width: 5rem;
-    }
-  }
-
+const MapContainer = styled.div`
   .mapClick {
     width: 15rem;
     height: 15rem;
+  }
+`;
+const AgeContainer = styled.div`
+  p {
+    width: 6rem;
+  }
+  div {
+    width: 15rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    > div {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      input {
+        width: 5rem;
+      }
+      label {
+        width: 5rem;
+      }
+    }
+  }
+`;
+
+const HeartContainer = styled.div`
+  > div {
+    width: 15rem;
+    input {
+      width: 12rem;
+      margin-right: 0.5rem;
+    }
+    span {
+      width: 3rem;
+    }
   }
 `;
 
@@ -181,15 +138,11 @@ const CreateRecruit = () => {
   const { register, handleSubmit } = useForm<IFormInput>();
   const onSubmit = (data: IFormInput) => console.log(data);
   const [value, setValue] = useState(60);
-  const [location, setLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
-
-  useCurrentLocation().then((res) => {
-    if (res === undefined) return;
-    setLocation(res);
-  });
+  const { location: currentLocation } = useCurrentLocation();
+  // const [location, setLocation] = useState<{
+  //   latitude: number;
+  //   longitude: number;
+  // } | null>(null);
 
   const handleChange = (e: any) => {
     setValue(e.target.value);
@@ -200,15 +153,15 @@ const CreateRecruit = () => {
   return (
     <CRContainer>
       <CRForm onSubmit={handleSubmit(onSubmit)}>
-        <div>모집 게시글 작성</div>
-        <div>
+        <h1>모집 게시글 작성</h1>
+        <TagContainer>
           <label htmlFor="tag">태그</label>
           <TagAutoComplete
             filterTag={filterTag}
             setFilterTag={setFilterTag}
-            // {...register('tag', { required: true })}
+            {...register('tag', { required: true })}
           />
-        </div>
+        </TagContainer>
         <div>
           <label htmlFor="title">제목</label>
           <input
@@ -241,7 +194,7 @@ const CreateRecruit = () => {
             {...register('quota', { required: true })}
           />
         </div>
-        <div className="mapCon">
+        <MapContainer>
           <label htmlFor="location">모임 장소</label>
           {/* <input
             id="location"
@@ -249,34 +202,26 @@ const CreateRecruit = () => {
             {...register('location', { required: true })}
           /> */}
           <div className="mapClick">
-            {location && (
+            {currentLocation && (
               <KakaoMapClick
-                latitude={location?.latitude}
-                longitude={location?.longitude}
+                latitude={currentLocation?.latitude}
+                longitude={currentLocation?.longitude}
               />
             )}
           </div>
-        </div>
+        </MapContainer>
         <div>
           <label htmlFor="genderCondition">성별 조건</label>
-          <div>
-            <input
-              type="radio"
-              id="female"
-              name="genderCondition"
-              value="여성"
-            />
-            <label htmlFor="female">여성</label>
-          </div>
-          <div>
-            <input type="radio" id="male" name="genderCondition" value="남성" />
-            <label htmlFor="male">남성</label>
-          </div>
+          <select id="gender" {...register('genderCondition')}>
+            <option value="female">여성</option>
+            <option value="male">남성</option>
+            <option value="both">성별 무관</option>
+          </select>
         </div>
-        <div>
+        <AgeContainer>
           <p>나이대 조건</p>
-          <div className="ageCon">
-            <span>
+          <div>
+            <div>
               <input
                 type="checkbox"
                 id="teenage"
@@ -285,8 +230,8 @@ const CreateRecruit = () => {
                 {...register('ageCondition')}
               />
               <label htmlFor="teenage">10대</label>
-            </span>
-            <span>
+            </div>
+            <div>
               <input
                 type="checkbox"
                 id="twenties"
@@ -295,8 +240,8 @@ const CreateRecruit = () => {
                 {...register('ageCondition')}
               />
               <label htmlFor="twenties">20대</label>
-            </span>
-            <span>
+            </div>
+            <div>
               <input
                 type="checkbox"
                 id="thirties"
@@ -305,8 +250,8 @@ const CreateRecruit = () => {
                 {...register('ageCondition')}
               />
               <label htmlFor="thirties">30대</label>
-            </span>
-            <span>
+            </div>
+            <div>
               <input
                 type="checkbox"
                 id="forties"
@@ -315,8 +260,8 @@ const CreateRecruit = () => {
                 {...register('ageCondition')}
               />
               <label htmlFor="forties">40대</label>
-            </span>
-            <span>
+            </div>
+            <div>
               <input
                 type="checkbox"
                 id="fifties"
@@ -325,8 +270,8 @@ const CreateRecruit = () => {
                 {...register('ageCondition')}
               />
               <label htmlFor="fifties">50대</label>
-            </span>
-            <span>
+            </div>
+            <div>
               <input
                 type="checkbox"
                 id="sixties"
@@ -335,12 +280,12 @@ const CreateRecruit = () => {
                 {...register('ageCondition')}
               />
               <label htmlFor="sixties">60대</label>
-            </span>
+            </div>
           </div>
-        </div>
-        <div>
+        </AgeContainer>
+        <HeartContainer>
           <label htmlFor="heartRateCondition">심박수 조건</label>
-          <div className="heartCon">
+          <div>
             <input
               id="heartRateCondition"
               type="range"
@@ -353,14 +298,12 @@ const CreateRecruit = () => {
             />
             <span className="result">{value}</span>
           </div>
-        </div>
-        <div>
+        </HeartContainer>
+        {/* <div>
           <label htmlFor="image">이미지</label>
           <input id="image" type="file" {...register('image')} />
-        </div>
-        <button className="submitBtn" type="submit">
-          작성하기
-        </button>
+        </div> */}
+        <Button onClick={() => {}} type="submit" value="작성하기" />
       </CRForm>
     </CRContainer>
   );
