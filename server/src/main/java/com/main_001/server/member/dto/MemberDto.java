@@ -3,6 +3,7 @@ package com.main_001.server.member.dto;
 import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.entity.FreeComment;
 import com.main_001.server.free.entity.FreeLike;
+import com.main_001.server.member.entity.MemberImage;
 import com.main_001.server.recruit.dto.RecruitCommentDto;
 import com.main_001.server.recruit.dto.RecruitDto;
 import com.main_001.server.recruit.dto.RecruitLikeDto;
@@ -125,6 +126,9 @@ public class MemberDto {
         @ApiModelProperty(example = "심박수")
         private int heart;
 
+        @ApiModelProperty(example = "프로필 이미지")
+        private MemberImageResponseDto memberImage;
+
         private List<String> locations;
 
         @ApiModelProperty(example = "[\n" +
@@ -168,6 +172,9 @@ public class MemberDto {
 
         @ApiModelProperty(example = "심박수")
         private int heart;
+
+        @ApiModelProperty(example = "프로필 이미지")
+        private MemberImageResponseDto memberImage;
 
         @ApiModelProperty(example = "[\n" +
                 "    {\n" +

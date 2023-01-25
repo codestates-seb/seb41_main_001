@@ -11,10 +11,15 @@ import com.main_001.server.member.mapper.MemberMapper;
 import com.main_001.server.member.service.MemberService;
 import com.main_001.server.recruit.dto.StubResponse;
 import io.swagger.annotations.*;
+import org.hibernate.annotations.Parameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Api(tags = { "Member" })
 @RestController
@@ -30,13 +35,20 @@ public class MemberController {
 
     // 회원가입
     @ApiOperation(value = "회원가입", notes = "닉네임, 이메일, 비밀번호를 입력하여 회원 정보를 등록한다.")
-    @PostMapping("/signup")
+    @PostMapping( "/signup")
     public ResponseEntity signUp(@RequestBody MemberDto.MemberPostDto memberPost) {
         Member member = memberMapper.memberPostToMember(memberPost);
 
         Member createMember = memberService.createMember(member);
 
         return new ResponseEntity<>(memberMapper.memberToMemberMyResponse(createMember), HttpStatus.CREATED);
+    }
+
+    // 프로필 이미지 등록(Edit 화면), 추후 token으로 인증받아서 memberId에 접근한다.
+    @PostMapping(path = "/profileImage/{member-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void createMemberImage(@PathVariable("member-id") long memberId,
+                                  @RequestPart(value = "file", required = false) List<MultipartFile> files) {
+        memberService.createImage(memberId, files);
     }
 
     // email 중복체크

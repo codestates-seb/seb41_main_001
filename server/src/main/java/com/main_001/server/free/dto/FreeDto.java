@@ -21,7 +21,7 @@ public class FreeDto {
     @AllArgsConstructor
     @Getter
     public static class PostFreeboard{
-        @ApiModelProperty(example = " Member ID")
+        @ApiModelProperty(example = "Member ID")
         private long memberId;
         @ApiModelProperty(example = "글 제목")
         @NotBlank(message = "제목 작성을 하지 않을 경우 등록이 불가합니다.")
@@ -50,9 +50,9 @@ public class FreeDto {
     @AllArgsConstructor
     @Getter
     public static class PostComment{
-        @ApiModelProperty(example = " Member ID")
+        @ApiModelProperty(example = "Member ID")
         private long memberId;
-        @ApiModelProperty(example = " Free ID")
+        @ApiModelProperty(example = "Free ID")
         private long freeId;
         @ApiModelProperty(example = "내용 작성")
         @NotBlank(message = "댓글 작성을 하지 않을 경우 등록이 불가합니다.")
@@ -62,7 +62,7 @@ public class FreeDto {
     @AllArgsConstructor
     @Getter
     public static class PatchFreeboard{
-        @ApiModelProperty(example = " Member ID")
+        @ApiModelProperty(example = "Member ID")
         private long memberId;
         @ApiModelProperty(example = "글 제목")
         private String freeTitle;
@@ -78,9 +78,9 @@ public class FreeDto {
     @AllArgsConstructor
     @Getter
     public static class PatchComment{
-        @ApiModelProperty(example = " Member ID")
+        @ApiModelProperty(example = "Member ID")
         private long memberId;
-        @ApiModelProperty(example = " Free ID")
+        @ApiModelProperty(example = "Free ID")
         private long freeId;
         @ApiModelProperty(example = "내용 작성")
         @NotBlank(message = "댓글 수정을 하지 않을 경우 등록이 불가합니다.")
