@@ -113,6 +113,9 @@ const ListCondition = styled.div`
           color: var(--neon-red);
         }
         &.fa-hourglass-half {
+          color: var(--neon-orange);
+        }
+        &.fa-star-half-stroke {
           color: var(--neon-blue);
         }
         &.fa-circle-check {
@@ -226,34 +229,6 @@ const ProfileImg = styled.img<ProfileImgProps>`
   }
 `;
 
-// const DATA: RecruitDataProps[] = [
-//   {
-//     recruitId: 1,
-//     title: 'TITLE1',
-//     body: 'BODY1',
-//     image: '',
-//     createdAt: '2023-01-02T16:18:48.908218',
-//     modifiedAt: '2023-01-02T16:18:48.908218',
-//     status: '모집중', // 모집중/모집완료/활동종료
-//     star: 0,
-//     views: 0,
-//     memberId: 1,
-//     nickname: "aaa",
-//     like: 0,
-//     heart: 50, // number, 0
-//     ageGroup: [20, 30],
-//     sex: 'Both', // Male, Female, Both
-//     applies: [{memberId: 2, nickname: "bbb"},
-//                 {memberId: 3, nickname: "ccc"},{memberId: 4, nickname: "ddd"}],
-//     minRequire: 2,
-//     require: 5,
-//     date: '2023-01-02T16:18:48.908218',
-//     tagId: 1,
-//     tagName: "축구/풋볼",
-//     tagEmoji: "⚽️"
-//   },
-// ];
-
 const RecruitList = (props: { data: RecruitDataProps }) => {
   const {
     data: {
@@ -293,10 +268,10 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
     let color;
     if (apply.length >= maximum) {
       msg = '모집이 완료되었습니다. 다음 기회에 참가해주세요!';
-      color = 'var(--neon-blue)';
+      color = 'var(--neon-green)';
     } else if (apply.length >= minimum) {
       msg = '최소인원이 충족되었습니다!';
-      color = 'var(--neon-green)';
+      color = 'var(--neon-blue)';
     } else if (apply.length < minimum) {
       msg = '최소인원이 충족되지 못했습니다';
       color = 'var(--neon-orange)';

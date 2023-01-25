@@ -50,11 +50,6 @@ const CreatorBox = styled.div`
         display: flex;
         align-items: center;
         > div:nth-child(2) {
-          margin-left: 10px;
-          padding: 5px;
-          background-color: var(--neon-blue);
-          border-radius: 7px;
-          font-size: 80%;
         }
       }
       > div:last-child {
@@ -79,6 +74,18 @@ const CreatorBox = styled.div`
   }
 `;
 
+const CreatorMark = styled.div`
+  margin-left: 10px;
+  padding: 5px;
+  background-color: var(--neon-blue);
+  border-radius: 7px;
+  font-size: 80%;
+`;
+
+const ApplicantMark = styled(CreatorMark)`
+  background-color: var(--neon-red);
+`;
+
 interface CommentProps {
   memberId: number;
   nickname: string;
@@ -88,15 +95,24 @@ interface CommentProps {
   modifiedAt: string;
 }
 
-const CommentBox = (props: { memberId: number; data: CommentProps }) => {
+const CommentBox = (props: {
+  memberId: number;
+  board: string;
+  boardId: number;
+  applicantsId?: number[];
+  data: CommentProps;
+}) => {
   const {
     memberId: creatorId,
+    board,
+    boardId,
+    applicantsId,
     data: { memberId, nickname, heart, body, createdAt, modifiedAt },
   } = props;
 
   const LOGIN_ID = 1;
 
-  const [modifying, setModifying] = useState(false);
+  const [modifying, setModifying] = useState<boolean>(false);
 
   return (
     <CommentContainer>
@@ -109,7 +125,12 @@ const CommentBox = (props: { memberId: number; data: CommentProps }) => {
           <div>
             <div>
               <div>{nickname}</div>
-              {creatorId === memberId ? <div>글쓴이</div> : ''}
+              {creatorId === memberId ? <CreatorMark>글쓴이</CreatorMark> : ''}
+              {applicantsId && applicantsId.includes(memberId) ? (
+                <ApplicantMark>참여자</ApplicantMark>
+              ) : (
+                ''
+              )}
             </div>
             <div>
               <span>
@@ -132,11 +153,11 @@ const CommentBox = (props: { memberId: number; data: CommentProps }) => {
               ) : (
                 <Button value="닫기" onClick={() => setModifying(false)} />
               )}
-              {/* // TODO: 댓글삭제 api. */}
+              {/* // TODO: 댓글삭제 api */}
               <Button
                 value="삭제"
                 onClick={() => {
-                  console.log('댓글삭제!');
+                  console.log(`DELETE /${board}/${boardId}/commentId`);
                 }}
               />
             </>
@@ -148,13 +169,11 @@ const CommentBox = (props: { memberId: number; data: CommentProps }) => {
       {modifying === false ? (
         <div>{body}</div>
       ) : (
-        // TODO: onClick에 댓글수정 api
+        // TODO: submitComment에 댓글수정 api.
         <CommentSubmitBox
           value={body}
-          onClick={() => {
-            console.log('댓글수정!');
-            setModifying(false);
-          }}
+          submitComment={`/${board}/${boardId}/commentId`}
+          setModifying={setModifying}
         />
       )}
     </CommentContainer>

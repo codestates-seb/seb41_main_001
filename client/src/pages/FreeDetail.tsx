@@ -35,11 +35,7 @@ const BoardContainer = styled.div`
 
   > div:first-child {
     width: 5rem;
-<<<<<<< HEAD
-    height: 1.5rem;
-=======
     height: 1rem;
->>>>>>> 0aeae5d39f0b1c175cf725aed749fb83c73257e3
     border: 0.1rem solid white;
     border-radius: 0.3rem;
     background-color: white;
@@ -109,7 +105,7 @@ const ContentContainer = styled.div`
 
     .map {
       width: 31rem;
-      height: 10rem;
+      height: 24rem;
     }
   }
 `;
@@ -222,9 +218,15 @@ const FreeDetail = () => {
           </CountContainer>
           {post?.freeComments &&
             post?.freeComments.map((el) => (
-              <CommentBox data={el} key={el.commentId} memberId={el.memberId} />
+              <CommentBox
+                key={el.commentId}
+                memberId={el.memberId}
+                data={el}
+                board="freeboards"
+                boardId={post.freeId}
+              />
             ))}
-          <CommentSubmitBox onClick={() => console.log('댓글등록!')} />
+          <CommentSubmitBox submitComment={`/freeboards/${post?.freeId}`} />
         </BoardContainer>
       ) : (
         <Loading />

@@ -14,14 +14,13 @@ import EditRecruit from './pages/EditRecruit';
 import EditFreeboard from './pages/EditFreeboard';
 import Recruits from './pages/Recruits';
 import RecruitDetail from './pages/RecruitDetail';
-import TaggedRecruit from './pages/TaggedRecruit';
 // import FreeBoards from './pages/FreeBoards';
 import FreeBoards from './pages/FreeBoards';
 import FreeDetail from './pages/FreeDetail';
-import FreeTags from './pages/FreeTags';
 import Withdraw from './pages/Withdraw';
 import RecruitTags from './pages/RecruitTags';
 import FreeboardTags from './pages/FreeboardTags';
+import Loading from './pages/Loading';
 
 const App = () => (
   // const [login, setLogin] = useState(false);
@@ -36,22 +35,18 @@ const App = () => (
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/recruits" element={<Recruits />} />
-        <Route path="recruit/:recruitId" element={<RecruitDetail />} />
+        <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruit/new" element={<CreateRecruit />} />
         <Route path="/freeboard" element={<FreeBoards />} />
         <Route path="/freeboard/new" element={<CreateFreeboard />} />
         <Route path="/freeboard/:freeId" element={<FreeDetail />} />
         <Route path="/recruit/1/edit" element={<EditRecruit />} />
         <Route path="/freeboard/1/edit" element={<EditFreeboard />} />
-        <Route path="/freeboard/tags" element={<FreeTags />} />
-        <Route
-          path="recruits/tags/:tagId/:tagName"
-          element={<TaggedRecruit />}
-        />
         <Route path="/recruits" element={<Recruits />} />
         <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruits/tags" element={<RecruitTags />} />
         <Route path="/freeboard/tags" element={<FreeboardTags />} />
+        <Route path="/loading" element={<Loading />} />
       </Routes>
       <Footer />
     </Router>
