@@ -1,12 +1,10 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // import { useState } from 'react';
-
+import Main from './pages/Main';
+import MyPage from './pages/MyPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Main from './pages/Main';
-import Withdraw from './pages/Withdraw';
-import MyPage from './pages/MyPage';
 import EditUser from './pages/EditUser';
 import LogIn from './pages/LogIn';
 import SignUp from './pages/SignUp';
@@ -15,11 +13,14 @@ import CreateFreeboard from './pages/CreateFreeboard';
 import EditRecruit from './pages/EditRecruit';
 import EditFreeboard from './pages/EditFreeboard';
 import Recruits from './pages/Recruits';
+import RecruitDetail from './pages/RecruitDetail';
+// import FreeBoards from './pages/FreeBoards';
 import FreeBoards from './pages/FreeBoards';
 import FreeDetail from './pages/FreeDetail';
-import RecruitDetail from './pages/RecruitDetail';
+import Withdraw from './pages/Withdraw';
 import RecruitTags from './pages/RecruitTags';
 import FreeboardTags from './pages/FreeboardTags';
+import Loading from './pages/Loading';
 
 const App = () => (
   // const [login, setLogin] = useState(false);
@@ -34,6 +35,7 @@ const App = () => (
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/recruits" element={<Recruits />} />
+        <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruit/new" element={<CreateRecruit />} />
         <Route path="/freeboard" element={<FreeBoards />} />
         <Route path="/freeboard/new" element={<CreateFreeboard />} />
@@ -44,6 +46,7 @@ const App = () => (
         <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruits/tags" element={<RecruitTags />} />
         <Route path="/freeboard/tags" element={<FreeboardTags />} />
+        <Route path="/loading" element={<Loading />} />
       </Routes>
       <Footer />
     </Router>

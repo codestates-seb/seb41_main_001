@@ -17,9 +17,6 @@ const MainContainer = styled.main`
   color: white;
   margin-top: 100px;
   margin-bottom: 50px;
-  h1 {
-    font-size: 200%;
-  }
 
   > div:nth-child(2) {
     display: flex;
@@ -194,7 +191,7 @@ const RecruitDetail = () => {
       },
       {
         reviewId: 2,
-        memberId: 2,
+        memberId: 3,
         nickname: '글자수세기TEST글자수세기TEST글자',
         heart: 50,
         body: '좋아요',

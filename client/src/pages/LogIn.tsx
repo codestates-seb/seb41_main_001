@@ -7,43 +7,62 @@ const LogInContainer = styled.div`
   color: white;
   display: flex;
   justify-content: center;
-  margin-top: 100px;
-  height: 60vh;
+  margin-top: 5rem;
+  height: auto;
 `;
 
 const LogInForm = styled.form`
   width: auto;
-  height: 60%;
-  padding: 20px;
-  margin-top: 100px;
+  height: 50%;
+  padding: 1rem;
+  margin: 5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid white;
-  border-radius: 10px;
+  border: 0.05rem solid white;
+  border-radius: 1rem;
 
-  label,
-  input {
-    width: 400px;
-    height: 30px;
-    border-radius: 5px;
-    border: none;
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    label {
+      width: 4rem;
+    }
+
+    input {
+      width: 10rem;
+      margin: 0.5rem;
+      outline: none;
+      border: none;
+      background-color: rgba(1, 1, 1, 0);
+      border-bottom: 0.1rem solid grey;
+      color: white;
+      &:focus-within {
+        border-bottom: 0.1rem solid white;
+      }
+    }
   }
-  input {
-    margin-bottom: 10px;
+
+  div:first-child {
+    margin-bottom: 1rem;
+    font-weight: bold;
   }
 `;
 
 const ButtonContainer = styled.div`
+  margin-top: 1rem;
+
   button {
-    width: 130px;
+    width: 7rem;
     text-decoration: none;
     background-color: var(--gray);
     color: white;
-    border-radius: 5px;
-    margin: 5px;
-    padding: 8px 14px;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+    padding: 0.5rem 1rem;
     transition: 0.2s ease-in-out;
     font-size: 16px;
     &:hover {
@@ -78,20 +97,24 @@ const LogIn = () => {
         })}
       >
         <div>로그인</div>
-        <label htmlFor="email">이메일</label>
-        <input
-          id="email"
-          {...register('email', { required: true })}
-          defaultValue="abc@gmail.com"
-        />
-        {errors.email && <div>이메일을 입력하세요</div>}
-        <label htmlFor="password">비밀번호</label>
-        <input
-          id="password"
-          type="password"
-          {...register('password', { required: true, maxLength: 10 })}
-        />
-        {errors.password && <div>비밀번호를 입력하세요</div>}
+        <div>
+          <label htmlFor="email">이메일</label>
+          <input
+            id="email"
+            {...register('email', { required: true })}
+            defaultValue="abc@gmail.com"
+          />
+          {errors.email && <div>이메일을 입력하세요</div>}
+        </div>
+        <div>
+          <label htmlFor="password">비밀번호</label>
+          <input
+            id="password"
+            type="password"
+            {...register('password', { required: true, maxLength: 10 })}
+          />
+          {errors.password && <div>비밀번호를 입력하세요</div>}
+        </div>
         <ButtonContainer>
           <Link to="/search-password">
             <button type="button">비밀번호 찾기</button>

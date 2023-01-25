@@ -13,16 +13,10 @@ const MainContainer = styled.main`
   justify-content: center;
   margin-top: 100px;
   > div:first-child {
-    padding: 20px 0px;
-    h1 {
-      margin: 10px 0px;
-      font-size: 200%;
-    }
   }
 
   ul {
     list-style: none;
-    margin: 0;
     padding: 0;
     margin-top: 40px;
     width: 100%;

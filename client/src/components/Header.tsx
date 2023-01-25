@@ -6,7 +6,7 @@ const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 0.5rem;
   background-color: black;
   color: white;
   width: 100%;
@@ -24,10 +24,10 @@ const Logo = styled(Link)`
   align-items: center;
   font-family: 'Rubik Bubbles', cursive;
   font-size: 220%;
-  text-shadow: var(--neon-yellow) 0 0 20px;
+  text-shadow: var(--neon-yellow) 0 0 1rem;
   i {
     font-size: xx-large;
-    margin-right: 10px;
+    margin-right: 0.5rem;
   }
 `;
 
@@ -39,23 +39,23 @@ const ButtonsContainer = styled.div`
     align-items: center;
     color: var(--gray);
     i {
-      margin-right: 10px;
+      margin-right: 0.3rem;
       font-size: 150%;
     }
     input {
-      width: 200px;
-      padding: 10px;
+      width: 12rem;
+      padding: 0.5rem;
       background-color: rgba(1, 1, 1, 0);
       outline: none;
       border: none;
-      border-bottom: 1px solid var(--gray);
+      border-bottom: 0.1rem solid var(--gray);
       color: white;
       font-size: 100%;
     }
     &:focus-within {
       color: white;
       input {
-        border-bottom: 1px solid white;
+        border-bottom: 0.05rem solid white;
       }
     }
   }
@@ -94,9 +94,10 @@ const BoardLink = styled(Link)<{ path: string; to: string }>`
   white-space: nowrap;
   display: flex;
   align-items: flex-start;
-  color: ${(props) => (props.path === props.to ? 'var(--neon-yellow)' : 'white')};
-  text-shadow: ${(props) => (props.path === props.to ? 'white 0 0 1rem' : '')}; 
-  font-weight: ${(props) => (props.path === props.to ? 'bold' : '')}; 
+  color: ${(props) =>
+    props.path === props.to ? 'var(--neon-yellow)' : 'white'};
+  text-shadow: ${(props) => (props.path === props.to ? 'white 0 0 1rem' : '')};
+  font-weight: ${(props) => (props.path === props.to ? 'bold' : '')};
   &:hover {
     color: var(--neon-yellow);
     text-shadow: white 0 0 1rem;

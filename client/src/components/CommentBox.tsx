@@ -99,7 +99,7 @@ const CommentBox = (props: {
   memberId: number;
   board: string;
   boardId: number;
-  applicantsId: number[];
+  applicantsId?: number[];
   data: CommentProps;
 }) => {
   const {
@@ -126,7 +126,7 @@ const CommentBox = (props: {
             <div>
               <div>{nickname}</div>
               {creatorId === memberId ? <CreatorMark>글쓴이</CreatorMark> : ''}
-              {applicantsId.includes(memberId) ? (
+              {applicantsId && applicantsId.includes(memberId) ? (
                 <ApplicantMark>참여자</ApplicantMark>
               ) : (
                 ''

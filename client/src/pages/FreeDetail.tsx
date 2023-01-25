@@ -1,10 +1,16 @@
+/* eslint-disable operator-linebreak */
 import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import FreeDataProps from '../interfaces/FreeDataProps';
-// import timeDifference from '../utils/timeDifference';
+import timeDifference from '../utils/timeDifference';
 import Loading from './Loading';
+import KakaoMap from '../components/KakaoMap';
+import CommentBox from '../components/CommentBox';
+import CommentSubmitBox from '../components/CommentSubmitBox';
+// import CreatorCard from '../components/CreatorCard';
+import preview from './preview.jpeg';
 
 const FDContainer = styled.main`
   background-color: var(--gray);
@@ -37,8 +43,8 @@ const BoardContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
-    margin-right: 28rem;
+    padding: 0.2rem;
+    margin-right: 26rem;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
   }
@@ -49,18 +55,16 @@ const CreatorContainer = styled.div`
   border-radius: 0.3rem;
   display: flex;
   align-items: center;
-  width: 33rem;
+  width: 31rem;
   height: 4rem;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
+  padding: 0.5rem;
 
   > div {
     > div {
       display: flex;
       padding: 0.3rem;
       > div {
-        padding-right: 0.5rem;
-        width: 5rem;
+        width: 7rem;
       }
     }
   }
@@ -77,20 +81,38 @@ const CreatorContainer = styled.div`
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 0.5rem;
+  /* margin-bottom: 0.5rem; */
+  div:first-child {
+    font-weight: bold;
+    /* padding: 0.3rem; */
+  }
 
   > div {
-    border: 0.1rem solid white;
+    /* border: 0.1rem solid white; */
     width: 33rem;
     height: auto;
     min-height: 3rem;
     padding: 1rem;
+
+    img {
+      width: 31rem;
+      height: 20rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .map {
+      width: 31rem;
+      height: 24rem;
+    }
   }
 `;
 
 const CountContainer = styled.div`
   display: flex;
-  border: 0.1rem solid white;
+  /* border: 0.1rem solid white; */
   border-radius: 0.3rem;
   width: 33rem;
   height: 1rem;
@@ -101,6 +123,14 @@ const CountContainer = styled.div`
 
   > div {
     margin-right: 0.5rem;
+  }
+
+  .view {
+    color: var(--neon-blue);
+  }
+
+  .like {
+    color: var(--neon-red);
   }
 `;
 
@@ -126,42 +156,77 @@ const FreeDetail = () => {
     <FDContainer>
       {!isLoading ? (
         <BoardContainer>
-          <div>{post?.category}</div>
+          <div>
+            {/* {post?.category} */}
+            <i className="fa-solid fa-dumbbell" />
+            운동
+          </div>
+          {/* {post && (
+            <CreatorCard memberId={post?.memberId} nickname="aaa" heart={100} />
+          )} */}
           <CreatorContainer>
             <div>profile</div>
             <div>
-              <div>nickname</div>
               <div>
-                <div>{post?.createdAt}</div>
-                <div>{post?.modifiedAt}</div>
+                <div>nickname</div>
+                <div>heart</div>
+              </div>
+              <div>
+                <div>
+                  게시
+                  {post && `${timeDifference(post?.createdAt)}`}
+                </div>
+                <div>
+                  수정
+                  {post && `${timeDifference(post?.modifiedAt)}`}
+                </div>
               </div>
             </div>
           </CreatorContainer>
           <ContentContainer>
             <div>{post?.freeTitle}</div>
-            <div>img</div>
-            <div>{post?.freeBody}</div>
-            <div>gpsLocation</div>
+            <div>
+              {/* img */}
+              <img src={preview} alt="preview" />
+            </div>
+            <div>
+              {post?.freeBody}
+              안녕안녕안녕안녕 하세요하세요 안녕안녕안녕안녕 하세요하세요
+              안녕안녕안녕안녕 하세요하세요 안녕안녕안녕안녕 하세요하세요
+              안녕안녕안녕안녕 하세요하세요 안녕안녕안녕안녕 하세요하세요
+            </div>
+            <div>
+              {/* 위치 */}
+              <div className="map">
+                <KakaoMap
+                  latitude={37.7424074}
+                  longitude={127.042215}
+                  overlayvalue="운동 장소"
+                />
+              </div>
+            </div>
           </ContentContainer>
           <CountContainer>
             <div>
-              <i className="fa-solid fa-eye" />
-              view
+              <i className="fa-solid fa-eye view" />
+              {post?.views}
             </div>
             <div>
-              <i className="fa-solid fa-heart" />
-              like
+              <i className="fa-solid fa-heart like" />
+              {post?.likes}
             </div>
           </CountContainer>
-          <div>
-            <ul>
-              <div>comment</div>
-            </ul>
-          </div>
-          <div>
-            <label htmlFor="comment">comment</label>
-            <input id="comment" type="text" />
-          </div>
+          {post?.freeComments &&
+            post?.freeComments.map((el) => (
+              <CommentBox
+                key={el.commentId}
+                memberId={el.memberId}
+                data={el}
+                board="freeboards"
+                boardId={post.freeId}
+              />
+            ))}
+          <CommentSubmitBox submitComment={`/freeboards/${post?.freeId}`} />
         </BoardContainer>
       ) : (
         <Loading />
