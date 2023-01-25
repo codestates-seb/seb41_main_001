@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import ButtonLink from '../components/ButtonLink';
+import Button from '../components/Button';
 
 const LogInContainer = styled.div`
   background-color: var(--gray);
@@ -12,7 +13,7 @@ const LogInContainer = styled.div`
 `;
 
 const LogInForm = styled.form`
-  width: auto;
+  width: 25rem;
   height: 50%;
   padding: 1rem;
   margin: 5rem;
@@ -32,45 +33,34 @@ const LogInForm = styled.form`
       width: 4rem;
     }
 
-    input {
-      width: 10rem;
-      margin: 0.5rem;
-      outline: none;
-      border: none;
-      background-color: rgba(1, 1, 1, 0);
-      border-bottom: 0.1rem solid grey;
-      color: white;
-      &:focus-within {
-        border-bottom: 0.1rem solid white;
+    div {
+      display: flex;
+      flex-direction: column;
+      input {
+        width: 14rem;
+        margin: 0.5rem;
+        outline: none;
+        border: none;
+        background-color: rgba(1, 1, 1, 0);
+        border-bottom: 0.1rem solid grey;
+        color: white;
+        &:focus-within {
+          border-bottom: 0.1rem solid white;
+        }
       }
     }
-  }
-
-  div:first-child {
-    margin-bottom: 1rem;
-    font-weight: bold;
   }
 `;
 
 const ButtonContainer = styled.div`
   margin-top: 1rem;
-
+  display: flex;
+  align-items: center;
   button {
-    width: 7rem;
-    text-decoration: none;
-    background-color: var(--gray);
-    color: white;
-    border-radius: 0.3rem;
-    margin: 0.3rem;
-    padding: 0.5rem 1rem;
-    transition: 0.2s ease-in-out;
-    font-size: 16px;
-    &:hover {
-      cursor: pointer;
-      background-color: var(--neon-yellow);
-      color: black;
-      transition: 0.2s ease-in-out;
-    }
+    margin-left: 0.6rem;
+  }
+  a:nth-child(2) {
+    margin-right: 2rem;
   }
 `;
 
@@ -78,7 +68,6 @@ const LogIn = () => {
   const {
     register,
     handleSubmit,
-    // watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -87,8 +76,6 @@ const LogIn = () => {
     },
   });
 
-  //   console.log(watch('Email'));
-
   return (
     <LogInContainer>
       <LogInForm
@@ -96,33 +83,33 @@ const LogIn = () => {
           alert(JSON.stringify(data));
         })}
       >
-        <div>로그인</div>
+        <h1>로그인</h1>
         <div>
           <label htmlFor="email">이메일</label>
-          <input
-            id="email"
-            {...register('email', { required: true })}
-            defaultValue="abc@gmail.com"
-          />
-          {errors.email && <div>이메일을 입력하세요</div>}
+          <div>
+            <input
+              id="email"
+              {...register('email', { required: true })}
+              defaultValue="abc@gmail.com"
+            />
+            {errors.email && <div>이메일을 입력하세요</div>}
+          </div>
         </div>
         <div>
           <label htmlFor="password">비밀번호</label>
-          <input
-            id="password"
-            type="password"
-            {...register('password', { required: true, maxLength: 10 })}
-          />
-          {errors.password && <div>비밀번호를 입력하세요</div>}
+          <div>
+            <input
+              id="password"
+              type="password"
+              {...register('password', { required: true, maxLength: 10 })}
+            />
+            {errors.password && <div>비밀번호를 입력하세요</div>}
+          </div>
         </div>
         <ButtonContainer>
-          <Link to="/search-password">
-            <button type="button">비밀번호 찾기</button>
-          </Link>
-          <button type="submit">로그인</button>
-          <Link to="/signup">
-            <button type="button">회원가입</button>
-          </Link>
+          <ButtonLink value="비밀번호 찾기" to="/search-password" />
+          <Button type="submit" onClick={() => {}} value="로그인" />
+          <ButtonLink value="회원가입" to="/signup" />
         </ButtonContainer>
       </LogInForm>
     </LogInContainer>
