@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import axios from 'axios';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -304,13 +305,11 @@ interface UserFormInput {
   newPasswordCheck: string;
   phone: string;
 
-  locations: string[];
-  memberTags: {
-    tagId: number;
-    tagName: string;
-  }[];
-  // place: string;
-  // tags: string;
+  // locations: string[];
+  // memberTags: {
+  //   tagId: number;
+  //   tagName: string;
+  // }[];
 }
 
 // interface location {
@@ -322,7 +321,9 @@ const EditUser = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   // });
-  const [img, setImg] = useState<any>(
+  const [nickCheck, setNickCheck] = useState(false);
+  const [phoneCheck, setPhoneCheck] = useState(false);
+  const [img, setImg] = useState<string>(
     'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   );
 
@@ -333,6 +334,7 @@ const EditUser = () => {
   } = useForm<UserFormInput>();
   const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
     console.log('data is ', data);
+    console.log('error is ', errors);
     navigate(`/members/mypage/${id}`);
   };
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -389,9 +391,42 @@ const EditUser = () => {
       'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
     );
   };
+  const locationAdd = () => {
+    alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
+  };
   // inputImage.addEventListener('change', (e) => {
   //   readImage(e.target);
   // });
+
+  const nicknameCheck = () => {
+    const name = (document.getElementById('nickname') as HTMLInputElement)
+      .value;
+    axios
+      .get(`/members/signup/check-nickname/${name}`)
+      .then((res: any) => {
+        console.log(res);
+        if (res.data === true) {
+          alert('이미 존재하는 닉네임입니다!');
+        } else {
+          setNickCheck(true);
+        }
+      })
+      .catch((err: any) => console.log(err));
+  };
+  const phoneNumCheck = () => {
+    const phone = (document.getElementById('phone') as HTMLInputElement).value;
+    axios
+      .get(`/members/signup/check-phone/${phone}`)
+      .then((res: any) => {
+        console.log(res);
+        if (res.data === true) {
+          alert('이미 존재하는 휴대폰 번호입니다!');
+        } else {
+          setPhoneCheck(true);
+        }
+      })
+      .catch((err: any) => console.log(err));
+  };
   return (
     <EditContainer onSubmit={handleSubmit(onSubmitHandler)}>
       <Container>
@@ -425,10 +460,15 @@ const EditUser = () => {
               id="nickname"
               type="text"
               defaultValue="NickName"
-              {...register('nickname', { required: true })}
+              disabled={nickCheck}
+              {...register('nickname', {
+                required: true,
+              })}
             />
             {errors.nickname && <span>닉네임을 입력하세요</span>}
-            <NoLinkButton type="button">중복 확인</NoLinkButton>
+            <NoLinkButton type="button" onClick={nicknameCheck}>
+              {nickCheck ? '확인 완료' : '중복 확인'}
+            </NoLinkButton>
           </InfoBlock>
           <InfoBlock>
             <label htmlFor="formerPassword">기존 비밀번호</label>
@@ -437,8 +477,9 @@ const EditUser = () => {
               type="password"
               {...register('curPassword', { required: true })}
             />
+            {errors.curPassword && <span>현재 비밀번호를 입력하세요</span>}
           </InfoBlock>
-          <InfoBlock>
+          {/* <InfoBlock>
             <label htmlFor="newPassword">새 비밀번호</label>
             <input
               id="newPassword"
@@ -453,16 +494,20 @@ const EditUser = () => {
               type="password"
               {...register('newPasswordCheck')}
             />
-          </InfoBlock>
+          </InfoBlock> */}
           <InfoBlock>
             <label htmlFor="phone">휴대폰 번호</label>
             <input
               id="phone"
               type="tel"
               placeholder="010-1234-5678"
+              disabled={phoneCheck}
               {...register('phone', { required: true })}
             />
-            <NoLinkButton type="button">중복 확인</NoLinkButton>
+            {errors.phone && <span>핸드폰 번호를 입력하세요</span>}
+            <NoLinkButton type="button" onClick={phoneNumCheck}>
+              {phoneCheck ? '확인 완료' : '중복 확인'}
+            </NoLinkButton>
           </InfoBlock>
           <InfoBlock>
             <label htmlFor="location">등록 지역 변경</label>
@@ -474,7 +519,7 @@ const EditUser = () => {
                     longitude={location.longitude}
                   />
                 )}
-                <button type="button" id="locationButton">
+                <button type="button" id="locationButton" onClick={locationAdd}>
                   현재 위치 추가
                 </button>
               </div>
