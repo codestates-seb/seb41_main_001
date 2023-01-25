@@ -1,9 +1,11 @@
 /* eslint-disable react/no-array-index-key */
+import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import classifyingStatus from '../utils/classifyingStatus';
 import maskingNickname from '../utils/maskingNickname';
 import Button from './Button';
+import RecruitReviewModal from './RecruitReviewModal';
 
 const SelectContainer = styled.div`
   display: flex;
@@ -63,6 +65,7 @@ const ApplicantsBox = styled.div`
   > div:last-child {
     margin-top: 10px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
   }
@@ -182,6 +185,9 @@ const ReviewBox = styled.div`
             > span:nth-child(2) {
               color: var(--neon-red);
               font-size: 12px;
+              i {
+                margin-right: 2px;
+              }
             }
           }
         }
@@ -205,6 +211,7 @@ interface ReviewConditionProps {
     body: string;
     star: number;
   }[];
+  creatorNickname: string;
 }
 
 const RecruitApplyAfterMeeting = ({
@@ -215,8 +222,10 @@ const RecruitApplyAfterMeeting = ({
   applicantsId,
   creatorId,
   reviews,
+  creatorNickname,
 }: ReviewConditionProps) => {
   const { recruitId } = useParams();
+  const [reviewModal, setReviewModal] = useState<boolean>(false);
   const LOGIN_ID = 2;
   const REVIEW_STAR_NUM = reviews.reduce((res: number[], ele) => {
     res.push(ele.star);
@@ -225,9 +234,23 @@ const RecruitApplyAfterMeeting = ({
   const REVIEW_STAR_AVER = (
     REVIEW_STAR_NUM.reduce((r, e) => r + e, 0) / REVIEW_STAR_NUM.length
   ).toFixed(2);
+  const REVIEW_ID = reviews.reduce((res: number[], ele) => {
+    res.push(ele.memberId);
+    return res;
+  }, []);
 
   return (
     <SelectContainer>
+      {reviewModal ? (
+        <RecruitReviewModal
+          creatorId={creatorId}
+          creatorNickname={creatorNickname}
+          applies={applies}
+          setReviewModal={setReviewModal}
+        />
+      ) : (
+        ''
+      )}
       <SelectBox>
         <h3>
           <span>모집인원</span>
@@ -282,11 +305,20 @@ const RecruitApplyAfterMeeting = ({
                 <span>리뷰작성</span>
               </h3>
               <ApplyBox>
-                <div>리뷰를 작성하시겠습니까?</div>
-                <Button
-                  value="리뷰 작성"
-                  onClick={() => console.log(`open review modal`)}
-                />
+                {!REVIEW_ID.includes(LOGIN_ID) ? (
+                  <>
+                    <div>리뷰를 작성하시겠습니까?</div>
+                    <Button
+                      value="리뷰 작성"
+                      onClick={() => setReviewModal(true)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div>리뷰 작성이 완료되었습니다</div>
+                    <Button value="리뷰 완료" disabled onClick={() => {}} />
+                  </>
+                )}
               </ApplyBox>
             </>
           )}

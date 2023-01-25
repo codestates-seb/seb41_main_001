@@ -62,6 +62,7 @@ const ApplicantsBox = styled.div`
   > div:last-child {
     margin-top: 10px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
   }

@@ -219,10 +219,10 @@ const Recruits = () => {
     },
   ];
   const params = new URLSearchParams(useLocation().search);
-  const [filterTag, setFilterTag] = useState(
+  const [filterTag, setFilterTag] = useState<string>(
     params.get('tag')?.replaceAll('"', '') ?? '',
   );
-  const [filterStatus, setFilterStatus] = useState(
+  const [filterStatus, setFilterStatus] = useState<string>(
     params.get('status')?.replaceAll('"', '') ?? '',
   );
   // const [filterRegion, setFilterRegion] = useState('');

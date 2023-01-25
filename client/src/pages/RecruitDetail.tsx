@@ -16,6 +16,7 @@ const MainContainer = styled.main`
   width: 900px;
   color: white;
   margin-top: 100px;
+  margin-bottom: 50px;
   h1 {
     font-size: 200%;
   }
@@ -191,6 +192,14 @@ const RecruitDetail = () => {
         body: '글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TES',
         star: 5,
       },
+      {
+        reviewId: 2,
+        memberId: 2,
+        nickname: '글자수세기TEST글자수세기TEST글자',
+        heart: 50,
+        body: '좋아요',
+        star: 2,
+      },
     ],
     recruitComments: [
       {
@@ -304,6 +313,7 @@ const RecruitDetail = () => {
           applicantsId={APPLICANTS_ID}
           creatorId={DATA.memberId}
           reviews={DATA.reviews}
+          creatorNickname={DATA.nickname}
         />
       )}
       <ButtonArea>
