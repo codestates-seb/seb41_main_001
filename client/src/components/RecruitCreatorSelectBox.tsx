@@ -13,9 +13,21 @@ const CreatorSelectBox = styled.div`
 
 interface ApplicantsDataProps {
   applies: { memberId: number; nickname: string; heart: number }[];
+  modifiedAt: string;
 }
-const RecruitCreatorSelectBox = ({ applies }: ApplicantsDataProps) => {
+
+const RecruitCreatorSelectBox = ({
+  applies,
+  modifiedAt,
+}: ApplicantsDataProps) => {
   const { recruitId } = useParams();
+
+  const checkIfBringUpPossible = (d: string) => {
+    const TIME_MODIFIED = new Date(d).getTime();
+    const TIME_NOW = new Date().getTime();
+    if (TIME_NOW - TIME_MODIFIED > 24 * 60 * 60 * 1000) return true;
+    return false;
+  };
 
   return (
     <CreatorSelectBox>
@@ -24,16 +36,16 @@ const RecruitCreatorSelectBox = ({ applies }: ApplicantsDataProps) => {
         to={`/recruit/${recruitId}/edit`}
         icon={<i className="fa-solid fa-pen-to-square" />}
       />
-      {/* // TODO: 모집글 삭제, 끌올 api. */}
       <Button
         value="삭제"
-        onClick={() => console.log('글 삭제!')}
+        onClick={() => console.log(`DELETE /recruits/${recruitId}`)}
         disabled={applies.length >= 1}
         icon={<i className="fa-solid fa-trash" />}
       />
       <Button
         value="끌어올리기"
-        onClick={() => console.log('글 끌올!')}
+        onClick={() => console.log(`PATCH /recruits/${recruitId}/bringup`)}
+        disabled={!checkIfBringUpPossible(modifiedAt)}
         icon={<i className="fa-solid fa-circle-up" />}
       />
     </CreatorSelectBox>

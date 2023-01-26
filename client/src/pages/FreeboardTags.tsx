@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import TagCounter from '../components/TagCounter';
 
 const MainContainer = styled.main`
-  width: 900px;
+  width: 70%;
   color: white;
   display: flex;
   flex-direction: column;
@@ -16,7 +16,7 @@ const MainContainer = styled.main`
 
 const TagsContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 20px;
   margin: 20px;
 `;

@@ -31,13 +31,15 @@ const Tag = styled.div`
 
 interface TagProps {
   tagName: string;
-  tagEmoji: string;
+  tagEmoji?: string;
   tagCount: number;
   board: string;
 }
 const TagCounter = ({ tagName, tagEmoji, tagCount, board }: TagProps) => (
   <Tag>
-    <Link to={`/${board}?tag="${tagName}"`}>{`${tagEmoji} ${tagName}`}</Link>
+    <Link to={`/${board}?tag="${tagName}"`}>
+      {tagEmoji ? `${tagEmoji} ${tagName}` : `${tagName}`}
+    </Link>
     <div>{`${tagCount}개의 게시물`}</div>
   </Tag>
 );
