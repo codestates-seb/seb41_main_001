@@ -8,14 +8,8 @@ import com.main_001.server.free.entity.FreeComment;
 import com.main_001.server.free.entity.FreeLike;
 import com.main_001.server.free.mapper.FreeMapper;
 import com.main_001.server.free.service.FreeService;
-import com.main_001.server.recruit.dto.RecruitLikeDto;
-import com.main_001.server.recruit.entity.RecruitLike;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -63,20 +57,19 @@ public class FreeController {
         Page<Free> freeBoardsPage = freeService.findFreeBoards(page - 1, size, searchDto);
         List<Free> freeBoardsList = freeBoardsPage.getContent();
         return new ResponseEntity<>(
-                new MultiResponseDto<>(freeMapper.FreeToFreeMultiResponseDto(freeBoardsList),freeBoardsPage), HttpStatus.OK);
+                new MultiResponseDto<>(freeMapper.FreesToFreeResponseDtos(freeBoardsList),freeBoardsPage), HttpStatus.OK);
     }
 
     @ApiOperation(value = "자유 게시글 수정", notes = "자유 게시글 내용의 값을 변경하여 자유 게시글 내용을 수정한다.")
     @PatchMapping("/{free-id}")
     public ResponseEntity patchFreeBoard(@PathVariable("free-id") @Positive long freeId,
                                         @RequestBody FreeDto.PatchFreeBoard patchFreeBoardDto){
-        Free freeboard = freeService.findFreeBoard(freeId);
-        Free free = freeService.updateFreeBoard(freeboard, patchFreeBoardDto);
+        Free free = freeService.updateFreeBoard(freeId, patchFreeBoardDto);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(freeMapper.FreeToFreeResponseDto(free)), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "자유 게시글 뎃글 수정", notes = "자유 게시글 뎃글 내용의 값을 변경하여 자유 게시글 뎃글 내용을 수정한다.")
+    @ApiOperation(value = "자유 게시글 댓글 수정", notes = "자유 게시글 댓글 내용의 값을 변경하여 자유 게시글 댓글 내용을 수정한다.")
     @PatchMapping("/{free-id}/{comment-id}")
     public ResponseEntity patchComment(@PathVariable("free-id") @Positive long freeId,
                                       @PathVariable("comment-id") @Positive long commentId,
@@ -87,8 +80,8 @@ public class FreeController {
     }
 
     @ApiOperation(value = "자유 게시글 좋아요 표시", notes = "자유 게시글에 좋아요를 누른 member id를 추가하거나 삭제한다.")
-    @PatchMapping("/{recruit-id}/likes")
-    public ResponseEntity patchLike(@PathVariable("recruit-id") long freeId,
+    @PatchMapping("/{free-id}/likes")
+    public ResponseEntity patchLike(@PathVariable("free-id") long freeId,
                                     @RequestBody FreeDto.Like freeLikeDto) {
         List<FreeLike> freeLikes = freeService.updateLike(freeId, freeMapper.freeLikeDtoToFreeLike(freeLikeDto)).getFreeLikes();
 
@@ -102,12 +95,12 @@ public class FreeController {
         freeService.deleteFreeBoard(freeId, requestBody.getMemberId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    @ApiOperation(value = "자유 게시글 뎃글 삭제", notes = "글을 작성한 작성자 id를 입력해서 자유 게시글 뎃을 삭제한다.")
+    @ApiOperation(value = "자유 게시글 댓글 삭제", notes = "글을 작성한 작성자 id를 입력해서 자유 게시글 댓글을 삭제한다.")
     @DeleteMapping("/{free-id}/{comment-id}")
     public ResponseEntity deleteComment(@PathVariable("free-id") @Positive long freeId,
                                         @PathVariable("comment-id") @Positive long commentId){
-        FreeComment freeComment = freeService.findFreeComment(freeId, commentId);
-        freeService.deleteFreeComment(freeComment);
+//        FreeComment freeComment = freeService.findFreeComment(freeId, commentId);
+//        freeService.deleteFreeComment(freeComment);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

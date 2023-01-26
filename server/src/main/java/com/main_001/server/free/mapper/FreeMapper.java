@@ -16,9 +16,8 @@ public interface FreeMapper {
     FreeComment commentPatchToFreeComment(FreeDto.PatchComment patchComment);
     FreeLike freeLikeDtoToFreeLike(FreeDto.Like freeLikeDto);
     FreeDto.Response FreeToFreeResponseDto(Free free);
-    List<FreeDto.Response> FreeToFreeMultiResponseDto(List<Free> free);
+    List<FreeDto.Response> FreesToFreeResponseDtos(List<Free> free);
     FreeDto.Response FreeToFreeCommentResponseDto(FreeComment freeComment);
     List<FreeDto.Like> freeLikesToFreeLikeResponseDtos(List<FreeLike> freeLike);
-    List<FreeDto.Response> FreeToFreeCommentMultiResponseDto(List<FreeComment> freeComment);
 
 }

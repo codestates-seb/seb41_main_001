@@ -58,7 +58,7 @@ public class RecruitService {
         for (RecruitTag recruitTag : recruit.getRecruitTags()) {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
 //            if(tag.getCount()==null) tag.setCount(0);
-            tag.setCount(tag.getCount()+1);
+            tag.setRecruitCount(tag.getRecruitCount()+1);
         }
         return saveRecruit(recruit);
     }

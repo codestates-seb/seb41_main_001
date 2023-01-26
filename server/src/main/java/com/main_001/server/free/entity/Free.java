@@ -41,7 +41,7 @@ public class Free {
     private String freeBody;
 
     @CreatedDate
-    @Column(name = "CREATTED_AT", updatable = false)
+    @Column(name = "CREATED_AT", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
