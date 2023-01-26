@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
+//Todo : 코멘트, 리뷰 아이디 담아서 응답으로 보내기
+
 @Mapper(componentModel = "spring")
 public interface RecruitMapper {
     default Recruit recruitPostDtoToRecruit(RecruitDto.Post requestBody) {
@@ -22,7 +24,7 @@ public interface RecruitMapper {
                 .map(recruitTagDto -> {
                     RecruitTag recruitTag = new RecruitTag();
                     Tag tag = new Tag();
-                    tag.setTagId((int) recruitTagDto.getTagId());
+                    tag.setTagId(recruitTagDto.getTagId());
                     tag.setTagName(recruitTagDto.getTagName());
                     tag.setEmoji(recruitTagDto.getEmoji());
                     recruitTag.setRecruit(recruit);
@@ -39,6 +41,8 @@ public interface RecruitMapper {
         recruit.setSex(requestBody.getSex());
         recruit.setDate(requestBody.getDate());
         recruit.setLocation(requestBody.getLocation());
+        recruit.setLat(requestBody.getLat());
+        recruit.setLon(recruit.getLon());
         recruit.setAgeGroupString(requestBody.getAges().toString());
         return recruit;
     }
@@ -76,6 +80,9 @@ public interface RecruitMapper {
                 .sex(recruit.getSex())
                 .date(recruit.getDate())
                 .location(recruit.getLocation())
+                .lat(recruit.getLat())
+                .lon(recruit.getLon())
+                .distance(recruit.getDistance())
                 .applies(appliesToApplyResponseDtos(applies))
                 .recruitComments(recruitCommentsToRecruitCommentResponseDtos(recruitComments))
                 .recruitLikes(recruitLikesToRecruitLikeResponseDtos(recruitLikes))
@@ -90,6 +97,7 @@ public interface RecruitMapper {
                 .stream()
                 .map(apply -> ResponseDto.Apply
                         .builder()
+                        .recruitId(apply.getRecruit().getRecruitId())
                         .memberId(apply.getMember().getMemberId())
                         .nickname(apply.getMember().getNickname())
                         .heart(apply.getMember().getHeart())
@@ -102,6 +110,7 @@ public interface RecruitMapper {
                 .stream()
                 .map(recruitComment -> ResponseDto.RecruitComment
                         .builder()
+                        .recruitCommentId(recruitComment.getId())
                         .memberId(recruitComment.getMember().getMemberId())
                         .nickname(recruitComment.getMember().getNickname())
                         .heart(recruitComment.getMember().getHeart())
@@ -138,6 +147,7 @@ public interface RecruitMapper {
                 .stream()
                 .map(review -> ResponseDto.Review
                         .builder()
+                        .reviewId(review.getId())
                         .memberId(review.getMember().getMemberId())
                         .nickname(review.getMember().getNickname())
                         .heart(review.getMember().getHeart())
@@ -178,6 +188,8 @@ public interface RecruitMapper {
         recruit.setTitle(requestBody.getTitle());
         recruit.setBody(requestBody.getBody());
         recruit.setLocation(requestBody.getLocation());
+        recruit.setLat(requestBody.getLat());
+        recruit.setLon(requestBody.getLon());
         recruit.setDate(requestBody.getDate());
         return recruit;
     }
@@ -207,6 +219,8 @@ public interface RecruitMapper {
             return null;
         }
         return ResponseDto.RecruitComment.builder()
+                .recruitId(recruitComment.getRecruit().getRecruitId())
+                .recruitCommentId(recruitComment.getId())
                 .memberId(recruitComment.getMember().getMemberId())
                 .nickname(recruitComment.getMember().getNickname())
                 .heart(recruitComment.getMember().getHeart())

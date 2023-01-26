@@ -10,6 +10,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface TagMapper {
     Tag tagPostDtoToTag(TagDto.Post tagDto);
-    TagDto.Responce TagToTagResponseDto(Tag tag);
-    Page<TagDto.Responce> TagsToTagResponseDtos(List<Tag> tag);
+    TagDto.Response TagToTagResponseDto(Tag tag);
+//    Page<TagDto.Response> TagsToTagResponseDtos(List<Tag> tag);
 }

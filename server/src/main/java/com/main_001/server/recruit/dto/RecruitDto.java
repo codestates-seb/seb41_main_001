@@ -12,7 +12,6 @@ import java.util.List;
 public class RecruitDto {
     @Getter
     public static class Post{
-        //작성자 id, 제목, 본문, 모집인원, 최소인원, 모집 연령대
         @ApiModelProperty(example = "Member id")
         private long memberId;
 
@@ -45,9 +44,16 @@ public class RecruitDto {
         @NotBlank
         private LocalDateTime date;
 
-        @ApiModelProperty(example = "모집 지역")
+        @ApiModelProperty(example = "장소 이름")
         @NotBlank
         private String location;
+
+        @ApiModelProperty(example = "lat")
+        private double lat;
+
+        @ApiModelProperty(example = "lon")
+        private double lon;
+
 
         @ApiModelProperty(example = "모집 연령대")
         @NotBlank
@@ -60,6 +66,17 @@ public class RecruitDto {
                 "    }\n" +
                 "  ]")
         private List<RecruitTagDto> recruitTagDtos;
+    }
+
+    @Getter
+    public static class Get{
+        private String tagName;
+        //모집중으로 필터링 할 경우 가까운 거리 순 정렬
+        private String status;
+        private int distanceLimit;
+        private Double lat;
+        private Double lon;
+        private String keyword;
     }
 
     @Getter
@@ -76,6 +93,12 @@ public class RecruitDto {
 
         @ApiModelProperty(example = "모집 장소")
         private String location;
+
+        @ApiModelProperty(example = "lat")
+        private double lat;
+
+        @ApiModelProperty(example = "lon")
+        private double lon;
 
         @ApiModelProperty(example = "모집 일시")
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -156,6 +179,15 @@ public class RecruitDto {
         @ApiModelProperty(example = "모집 지역")
         private String location;
 
+        @ApiModelProperty(example = "lat")
+        private double lat;
+
+        @ApiModelProperty(example = "lon")
+        private double lon;
+
+        @ApiModelProperty(example = "나와의 거리")
+        private double distance;
+
         @ApiModelProperty(example = "지원자 목록")
         private List<ResponseDto.Apply> applies;
 
@@ -174,4 +206,6 @@ public class RecruitDto {
         @ApiModelProperty(example = "모집글에 대한 댓글")
         private List<ResponseDto.RecruitComment> recruitComments;
     }
+
+    // Todo : SimpleResponse 정의해서 Page 정보 넘길 땐 넘어가는 정보 최소화하기 -> 현재 전체글 조회 시 거의 대부분의 정보를 가져가고 있다..
 }
