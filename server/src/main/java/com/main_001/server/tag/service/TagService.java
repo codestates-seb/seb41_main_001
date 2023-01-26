@@ -12,13 +12,13 @@ import java.util.List;
 public class TagService {
     private final TagRepository tagRepository;
 
-//    public Tag createTag(Tag tag){
-//        return tagRepository.save(tag);
-//    }
+    public Tag createTag(Tag tag){
+        return tagRepository.save(tag);
+    }
 //    public List<Tag> findTagsRecruit(){
 //        return tagRepository.finndAllbyRcruitTag();
 //    }
-//
+
 //    public List<Tag> findTagsFreeboard(){
 //        return tagRepository.findAllbyFreeTag();
 //    }
