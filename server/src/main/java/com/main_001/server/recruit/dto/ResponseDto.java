@@ -12,9 +12,7 @@ public class ResponseDto {
     @Builder
     @Getter
     public static class Apply{
-        @ApiModelProperty(example = "Recruit id")
-        private long recruitId;
-
+//        private long applyId;
         @ApiModelProperty(example = "Member id")
         private long memberId;
 
@@ -28,16 +26,10 @@ public class ResponseDto {
     @Builder
     @Getter
     public static class RecruitComment{
-        @ApiModelProperty(example = "Recruit id")
-        private long recruitId;
-
-        @ApiModelProperty(example = "Recruit Comment id")
-        private long recruitCommentId;
-
         @ApiModelProperty(example = "Member id")
         private long memberId;
 
-        @ApiModelProperty(example = "닉네임")
+        @ApiModelProperty(example = "낙네임")
         private String nickname;
 
         @ApiModelProperty(example = "심박수")
@@ -73,9 +65,6 @@ public class ResponseDto {
     @Builder
     @Getter
     public static class Review {
-        @ApiModelProperty(example = "Review id")
-        private long reviewId;
-
         @ApiModelProperty(example = "Member id")
         private long memberId;
 

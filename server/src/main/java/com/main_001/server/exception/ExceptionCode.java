@@ -14,8 +14,7 @@ public enum ExceptionCode {
 
     //Free
     FREEBOARD_NOT_FOUND(404, "해당 자유 게시글을 못 찾음"),
-    FREEBOARD_MODIFY_DENIED(401, "작성자만 수정 가능" ),
-    APPLY_MODIFY_DENIED(401, "모집 완료시 신청 및 신청취소 불가");
+    FREEBOARD_MODIFY_DENIED(401, "작성자만 수정 가능" );
 
 
     @Getter

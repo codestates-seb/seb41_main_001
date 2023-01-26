@@ -42,4 +42,12 @@ public class RecruitComment {
             this.recruit.getRecruitComments().add(this);
         }
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

@@ -16,8 +16,10 @@ public class ReviewDto {
     private String body;
 
     @ApiModelProperty(example = "별점")
+    @NotBlank
     private int star;
 
     @ApiModelProperty(example = "최악의 멤버 닉네임")
+    @NotBlank
     private String worstMemberNickname;
 }

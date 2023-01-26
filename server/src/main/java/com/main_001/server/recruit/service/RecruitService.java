@@ -94,66 +94,34 @@ public class RecruitService {
 //        return recruitComment;
     }
 
-    public Page<Recruit> findRecruits(int page, int size, RecruitDto.Get recruitGetDto) {
-
-        //Todo : 긁어오기, 필터링 한번 효율적으로 개선 ㄱㄱ
-
+    public Page<Recruit> findRecruits(int page, int size, String tag, String status) {
         List<Recruit> recruits;
-        if(recruitGetDto.getKeyword()!=null) {
-            recruits = recruitRepository.findAllByTitleContaining(recruitGetDto.getKeyword(),Sort.by("modifiedAt").descending())
-                    .stream()
-                    .peek(recruit->recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
-                    .filter(recruit -> recruit.getDistance()<recruitGetDto.getDistanceLimit())
-                    .collect(Collectors.toList());
-        } else if(recruitGetDto.getTagName()==null) {
-//            Todo : 각각의 Recruit 마다 현재 사용자의 위치를 입력받아, 각 모집 장소와의 거리를 계산하여 반영
-            recruits = recruitRepository.findAll(Sort.by("modifiedAt").descending())
-                    .stream()
-                    .peek(recruit->recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
-                    .filter(recruit -> recruit.getDistance()<recruitGetDto.getDistanceLimit())
-                    .collect(Collectors.toList());
-        } else {
-            // Todo : findAll -> 많은 데이터를 가져온다 -> 긁어올 때도 시간 up / memory?
-            // findAll 메서드 -> DB 와 통신이 이루어질 것 -> 이 과정(tcp or udp), 쓰레드의 상태 등 자원 효율 / 낭비 / cpu ...
-            // 찾아보고 개선 가능한 방향이 보인다면 적용
+        if(tag.equals("all")) recruits = recruitRepository.findAll(Sort.by("modifiedAt").descending());
+        else {
             List<RecruitTag> recruitTags = recruitTagRepository.findAll();
-//            List<RecruitTag> recruitTags = recruitTagRepository.findAllByTag_TagName(recruitGetDto.getTagName());
             recruits = recruitTags.stream()
-                    .filter(recruitTag -> recruitTag.getTag().getTagName().equals(recruitGetDto.getTagName()))
+                    .filter(recruitTag -> recruitTag.getTag().getTagName().equals(tag))
                     .map(RecruitTag::getRecruit)
-                    .peek(recruit->recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
-                    .filter(recruit -> recruit.getDistance()<recruitGetDto.getDistanceLimit())
-                    .sorted(Comparator.comparing(Recruit::getModifiedAt).reversed())
                     .collect(Collectors.toList());
 
-//            Comparator<Recruit> cp = new Comparator<Recruit>() {
-//                @Override
-//                public int compare(Recruit o1, Recruit o2) {
-//                    LocalDateTime a = o1.getModifiedAt();
-//                    LocalDateTime b = o2.getModifiedAt();
-//
-//                    if(a.isAfter(b)) return -1;
-//                    else return 1;
-//                }
-//            };
-//            recruits.sort(cp);
+            Comparator<Recruit> cp = new Comparator<Recruit>() {
+                @Override
+                public int compare(Recruit o1, Recruit o2) {
+                    LocalDateTime a = o1.getModifiedAt();
+                    LocalDateTime b = o2.getModifiedAt();
+
+                    if(a.isAfter(b)) return -1;
+                    else return 1;
+                }
+            };
+            recruits.sort(cp);
         }
-
-        if(recruitGetDto.getStatus()!=null){
-            if(recruitGetDto.getStatus().equals("모집중")){
-                recruits = recruits.stream()
-                        .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
-                        .sorted(Comparator.comparing(Recruit::getDistance))
-                        .collect(Collectors.toList());
-            } else {
-                recruits = recruits.stream()
-                        .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
-                        .collect(Collectors.toList());
-            }
+        if(!status.equals("all")){
+            recruits = recruits.stream()
+                    .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(status))
+                    .collect(Collectors.toList());
         }
-
-
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("modifiedAt").descending());
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), recruits.size());
 
@@ -230,18 +198,13 @@ public class RecruitService {
         return saveRecruit(findRecruit);
     }
 
-    public Recruit updateAppliment(long recruitId, Apply apply) {
+    public Recruit createAppliment(long recruitId, Apply apply) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
-        if(findRecruit.getRecruitStatus()==Recruit.RecruitStatus.RECRUIT_COMPLETE) throw new BusinessLogicException(ExceptionCode.APPLY_MODIFY_DENIED);
         long applyMemberId = apply.getMember().getMemberId();
         long count = findRecruit.getApplies().stream()
                 .filter(a -> Objects.equals(a.getMember().getMemberId(), applyMemberId))
                 .count();
-        if(count==0) {
-            apply.setRecruit(findRecruit);
-            if(findRecruit.getApplies().size()>=findRecruit.getMinRequire()) findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_MEET_MINIMUM);
-            if(findRecruit.getApplies().size()==findRecruit.getRequire()) findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_COMPLETE);
-        }
+        if(count==0) apply.setRecruit(findRecruit);
         else {
             findRecruit.getApplies().removeIf(a -> Objects.equals(a.getMember().getMemberId(), apply.getMember().getMemberId()));
             recruitLikeRepository.deleteRecruitLikeByMember_MemberIdAndRecruit_RecruitId(applyMemberId,recruitId);

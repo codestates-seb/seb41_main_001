@@ -64,15 +64,6 @@ public class Recruit {
     @Column
     private String location;
 
-    @Column
-    private double lat;
-
-    @Column
-    private double lon;
-
-    @Column
-    private double distance;
-
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
@@ -92,19 +83,9 @@ public class Recruit {
     @OneToMany(mappedBy = "recruit",cascade = CascadeType.ALL)
     private List<Review> reviews  = new ArrayList<>();
 
-    //Todo : 거리계산 하기
-    public void setDistance(double mLat, double mLon) {
-        double p = 0.017453292519943295;
-        var a = 0.5 - Math.cos((mLat - this.lat) * p)/2 +
-                Math.cos(mLat * p) * Math.cos(this.lat * p) *
-                        (1 - Math.cos((mLon - this.lon) * p))/2;
-
-        this.distance = 12742 * Math.asin(Math.sqrt(a));
-    }
-
     public enum RecruitStatus{
         RECRUITING(1,"모집중"),
-        RECRUIT_MEET_MINIMUM(2, "최소인원충족"),
+        RECRUIT_MEET_MINIMUM(2, "최소인원 충족"),
         RECRUIT_COMPLETE(3, "모집완료"),
         RECRUIT_END(4, "활동종료");
 
