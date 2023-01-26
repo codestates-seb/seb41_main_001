@@ -9,21 +9,21 @@ import useCurrentLocation from '../utils/useCurrentLocation';
 import Button from '../components/Button';
 
 enum GenderEnum {
-  female = '여성',
-  male = '남성',
+  Female = '여성',
+  Male = '남성',
 }
 
 interface IFormInput {
   name: string;
   nickname: string;
   birth: string;
-  gender: GenderEnum;
+  sex: GenderEnum;
   email: string;
   phone: string;
   password: string;
-  passwordRetype: string;
+  passwordRetype?: string;
   tags: [];
-  location: object;
+  // locations: object;
   // profile: string;
 }
 
@@ -80,6 +80,11 @@ const SignUpForm = styled.form`
         &:focus-within {
           border-bottom: 0.1rem solid white;
         }
+        &:-webkit-autofill {
+          box-shadow: 0 0 0 20px var(--gray) inset;
+          -webkit-text-fill-color: white;
+          color: white;
+        }
       }
     }
   }
@@ -113,6 +118,11 @@ const SignUpForm = styled.form`
         color: white;
         &:focus-within {
           border-bottom: 0.1rem solid white;
+        }
+        &:-webkit-autofill {
+          box-shadow: 0 0 0 20px var(--gray) inset;
+          -webkit-text-fill-color: white;
+          color: white;
         }
       }
     }
@@ -161,15 +171,20 @@ const SignUp = () => {
   } = useForm<IFormInput>();
   const navigate = useNavigate();
   const { location: currentLocation } = useCurrentLocation();
-  const [checkedNickname, setCheckedNickname] = useState(false);
-  const [checkedPhone, setCheckedPhone] = useState(false);
-  const [checkedEmail, setCheckedEmail] = useState(false);
+  const [nicknameValue, setNicknameValue] = useState('');
+  const [checkedNickname, setCheckedNickname] = useState(true);
+  const [phoneValue, setPhoneValue] = useState('');
+  const [checkedPhone, setCheckedPhone] = useState(true);
+  const [emailValue, setEmailValue] = useState('');
+  const [checkedEmail, setCheckedEmail] = useState(true);
 
   const onSubmit = (data: IFormInput) => {
+    delete data.passwordRetype;
+
     axios
       .post('/members/signup', {
         ...data,
-        location: {
+        locations: {
           latitude: currentLocation?.latitude,
           longitude: currentLocation?.longitude,
         },
@@ -185,7 +200,7 @@ const SignUp = () => {
         console.log(
           JSON.stringify({
             ...data,
-            location: {
+            locations: {
               latitude: currentLocation?.latitude,
               longitude: currentLocation?.longitude,
             },
@@ -194,7 +209,7 @@ const SignUp = () => {
       });
   };
 
-  console.log(watch('tags'));
+  // console.log(watch('tags'));
   const toggles = watch('tags', []);
   const [disabled, setDisabled] = useState(false);
   // if (toggles.length > 3) {
@@ -247,6 +262,9 @@ const SignUp = () => {
             <input
               id="nickname"
               {...register('nickname', { required: true })}
+              onChange={(e) => {
+                setNicknameValue(e.target.value);
+              }}
             />
             {errors.nickname && <div>닉네임을 입력하세요</div>}
           </div>
@@ -254,14 +272,14 @@ const SignUp = () => {
             value="중복 확인"
             onClick={() => {
               axios
-                .get('/members/signup/check-nickname/{nickname}')
+                .get(`/members/signup/check-nickname/${nicknameValue}`)
                 .then((res) => {
                   console.log(res);
                   if (res.data === true) {
-                    alert('사용 가능한 닉네임입니다.');
+                    alert('사용 불가능한 닉네임입니다.');
                     setCheckedNickname(true);
                   } else {
-                    alert('사용 불가능한 닉네임입니다.');
+                    alert('사용 가능한 닉네임입니다.');
                     setCheckedNickname(false);
                   }
                 })
@@ -283,13 +301,13 @@ const SignUp = () => {
           </div>
         </div>
         <div className="inputCon">
-          <label htmlFor="gender">성별</label>
+          <label htmlFor="sex">성별</label>
           <div>
-            <select id="gender" {...register('gender')}>
-              <option value="female">여성</option>
-              <option value="male">남성</option>
+            <select id="sex" {...register('sex')}>
+              <option value="Female">여성</option>
+              <option value="Male">남성</option>
             </select>
-            {errors.gender && <div>성별을 입력하세요</div>}
+            {errors.sex && <div>성별을 입력하세요</div>}
           </div>
         </div>
         <div className="withBtn">
@@ -299,6 +317,9 @@ const SignUp = () => {
               id="email"
               type="email"
               {...register('email', { required: true })}
+              onChange={(e) => {
+                setEmailValue(e.target.value);
+              }}
             />
             {errors.email && <div>이메일을 입력하세요</div>}
           </div>
@@ -306,15 +327,15 @@ const SignUp = () => {
             value="중복 확인"
             onClick={() => {
               axios
-                .get('/members/signup/check-email/{email}')
+                .get(`/members/signup/check-email/${emailValue}`)
                 .then((res) => {
                   console.log(res);
                   if (res.data !== true) {
-                    alert('사용 불가능한 이메일입니다.');
-                    setCheckedEmail(true);
-                  } else {
                     alert('사용 가능한 이메일입니다.');
                     setCheckedEmail(false);
+                  } else {
+                    alert('사용 불가능한 이메일입니다.');
+                    setCheckedEmail(true);
                   }
                 })
                 .catch((err) => {
@@ -330,6 +351,9 @@ const SignUp = () => {
               id="phone"
               type="tel"
               {...register('phone', { required: true })}
+              onChange={(e) => {
+                setPhoneValue(e.target.value);
+              }}
             />
             {errors.phone && <div>휴대폰 번호를 입력하세요</div>}
           </div>
@@ -337,10 +361,10 @@ const SignUp = () => {
             value="중복 확인"
             onClick={() => {
               axios
-                .get('/members/signup/check-phone/{phone}')
+                .get(`/members/signup/check-phone/${phoneValue}`)
                 .then((res) => {
                   console.log(res);
-                  if (res.data === true) {
+                  if (res.data !== true) {
                     alert('사용 가능한 번호입니다.');
                     setCheckedPhone(true);
                   } else {

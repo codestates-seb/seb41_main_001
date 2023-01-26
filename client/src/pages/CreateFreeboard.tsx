@@ -1,6 +1,9 @@
 import { useForm } from 'react-hook-form';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import UseAutosizeTextArea from '../components/UseAutosaveTextArea';
 
 enum CategoryEnum {
   question = '질문',
@@ -27,6 +30,20 @@ const Background = styled.div`
   height: 100%;
 `;
 
+const WarnSet = styled.div`
+  display: flex;
+  flex-direction: column;
+  > span {
+    color: var(--neon-red);
+    font-size: 10px;
+    padding: 0.5rem 0;
+    margin-left: 1.2rem;
+    > i {
+      margin-right: 0.3rem;
+    }
+  }
+`;
+
 const CRForm = styled.form`
   width: auto;
   height: auto;
@@ -42,27 +59,47 @@ const CRForm = styled.form`
   input,
   textarea,
   select {
-    border-radius: 5px;
-    border: none;
-    width: 300px;
-    height: 30px;
-    background-color: none;
-    margin-bottom: 30px;
+    // margin-bottom: 15px;
+    background-color: var(--gray);
+    padding: 5px;
     margin-left: 20px;
+    font-size: 14px;
+    border: none;
+    border-bottom: 2px solid gray;
+    width: 15rem;
+    outline: none;
+    color: white;
+    &:focus-within {
+      border-bottom: 2px solid white;
+      transition: 0.2s ease-in-out;
+    }
+    &:-webkit-autofill {
+      box-shadow: 0 0 0 20px var(--gray) inset;
+      -webkit-text-fill-color: white;
+      color: white;
+    }
   }
+
   > div {
     width: 100%;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    > label {
+    margin-top: 1.2rem;
+    > label,
+    .label {
       width: 50px;
       text-align: right;
+      padding-top: 5px;
+      text-shadow: white 0 0 3px;
+    }
+    .label {
+      padding-top: 5px;
     }
     .select-container {
-      position:relative;
+      position: relative;
       select {
-        display:none;
+        display: none;
       }
     }
   }
@@ -78,10 +115,15 @@ const CRForm = styled.form`
     width: 180px;
     border-radius: 10px;
     margin-bottom: 30px;
+    margin-top: 5px;
     text-align: center;
     padding: 5px 10px;
     &:hover {
-      background-color: black;
+      background-color: var(--neon-yellow);
+      color: black;
+      border: 2px solid var(--neon-yellow);
+      transition: 0.2s ease-in-out;
+      cursor: pointer;
     }
   }
 
@@ -99,29 +141,84 @@ const CRForm = styled.form`
     justify-content: center;
     align-items: center;
   }
+  > label,
+  .label {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 5px;
   button {
-    margin: 10px 30px;
+    margin: 0px 30px 10px 30px;
     padding: 9px 15px;
     background-color: var(--gray);
     color: white;
     border: 2px solid white;
     border-radius: 5px;
     &:hover {
-      background-color: black;
+      background-color: var(--neon-yellow);
+      color: black;
+      border: 2px solid var(--neon-yellow);
+      transition: 0.2s ease-in-out;
+      cursor: pointer;
     }
   }
 `;
 
 const CreateFreeboard = () => {
-  const { register, handleSubmit } = useForm<FormInputFree>();
-  const onSubmit = (data: FormInputFree) => console.log(data);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormInputFree>();
+  const navigate = useNavigate();
+  const [warning, setWarning] = useState('');
+  const [content, setContent] = useState('');
 
+  const onSubmit = (data: FormInputFree) => {
+    data.content = content;
+    console.log(data);
+    if (!data.content || data.content.length === 0) {
+      setWarning('본문을 입력하세요');
+    } else {
+      axios
+        .post('/freeboards', {
+          freeTitle: data.title,
+          freeBody: data.content,
+          category: data.category,
+          // tagList: tags.reduce((r, e) => {
+          //   r.push({ tagId: e.tagId });
+          //   return r;
+          // }, []),
+          // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+        })
+        .then((res) => {
+          console.log(res);
+          navigate('/freeboard');
+        })
+        .catch((err) => {
+          console.log(err);
+          navigate('/login');
+        });
+    }
+  };
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  UseAutosizeTextArea(textAreaRef.current, content);
+
+  const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = evt.target?.value;
+    if (val.length === 0) {
+      setWarning('본문을 입력하세요');
+    } else {
+      setWarning('');
+    }
+    setContent(val);
+  };
   // const fileNums = (e:any) => {
   //   if (e.files.length > 2) {
   //     alert('file up to 2');
@@ -147,22 +244,46 @@ const CreateFreeboard = () => {
         </div>
         <div>
           <label htmlFor="title">제목</label>
-          <input
-            id="title"
-            type="text"
-            {...register('title', { required: true })}
-          />
+          <WarnSet>
+            <input
+              id="title"
+              type="text"
+              {...register('title', { required: true })}
+            />
+            {errors.title && (
+              <span>
+                <i className="fa-solid fa-circle-exclamation" />
+                제목을 입력해주세요
+              </span>
+            )}
+          </WarnSet>
         </div>
         <div>
           <label htmlFor="content">내용</label>
-          <textarea
-            id="content"
-            className="length"
-            {...register('content', { required: true })}
-          />
+          <WarnSet>
+            <textarea
+              id="content"
+              rows={1}
+              onChange={handleChange}
+              ref={textAreaRef}
+              value={content}
+              name="content"
+              // {...register('content', { required: true })}
+            />
+            {warning !== '' && (
+              <span>
+                <i className="fa-solid fa-circle-exclamation" />
+                {warning}
+              </span>
+            )}
+          </WarnSet>
         </div>
         <div>
-          <div>이미지</div>
+          <label htmlFor="tag">태그</label>
+          <input id="tag" {...register('tag')} />
+        </div>
+        <div>
+          <div className="label">이미지</div>
           <label htmlFor="image" className="imagebutton">
             + 이미지 파일 추가
           </label>
@@ -174,13 +295,9 @@ const CreateFreeboard = () => {
             {...register('image')}
           />
         </div>
-        <div>
-          <label htmlFor="tag">태그</label>
-          <input id="tag" {...register('tag', { required: true })} />
-        </div>
         <ButtonContainer>
           <button type="submit">작성하기</button>
-          <Link to="/freeboards">
+          <Link to="/freeboard">
             <button type="button">취소하기</button>
           </Link>
         </ButtonContainer>

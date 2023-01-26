@@ -18,7 +18,6 @@ const TagContainer = styled.span`
     top: 0.25rem;
     flex: 1;
   }
-
   label {
     /* width: 6rem; */
     font-size: 10px;
