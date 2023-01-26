@@ -40,6 +40,7 @@ public class RecruitController {
     @ApiOperation(value = "모집글 조회", notes = "모집글 id를 path에 붙여서 모집글을 조회한다.")
     @GetMapping("/{recruit-id}")
     public ResponseEntity getRecruit(@PathVariable("recruit-id") long recruitId) {
+        //Todo : 위치 정보도 받아올 것
         Recruit recruit = recruitService.findRecruit(recruitId);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)), HttpStatus.OK);
@@ -49,9 +50,12 @@ public class RecruitController {
     @GetMapping
     public ResponseEntity getRecruits(@RequestParam int page,
                                       @RequestParam int size,
-                                      @RequestParam(required = false, defaultValue = "all") String tag,
-                                      @RequestParam(required = false, defaultValue = "all") String status) {
-        Page<Recruit> pageRecruits = recruitService.findRecruits(page - 1, size, tag, status);
+//                                      @RequestParam(required = false, defaultValue = "all") String tag,
+//                                      @RequestParam(required = false, defaultValue = "all") String status
+                                      @RequestBody RecruitDto.Get recruitGetDto) {
+        //Todo : 위치 정보도 받아올 것, 제목으로 검색하기
+        // -> DTO 로 tag, status, lat, lon, keyword 받아오되, DTO 초기설정 -> default 할당 or mapper 에서 null 입력일 시 별도처리
+        Page<Recruit> pageRecruits = recruitService.findRecruits(page - 1, size, recruitGetDto);
         List<Recruit> recruits = pageRecruits.getContent();
         return new ResponseEntity<>(
                 new MultiResponseDto<>(recruitMapper.recruitsToRecruitResponseDtos(recruits), pageRecruits),
@@ -126,6 +130,7 @@ public class RecruitController {
         return new ResponseEntity<>(
                 new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)),
                 HttpStatus.OK);
+
 //        RecruitComment recruitComment = recruitService.updateComment(recruitId, commentId, recruitMapper.recruitCommentDtoToRecruitComment(requestBody));
 //        return new ResponseEntity<>(
 //                new SingleResponseDto<>(recruitMapper.recruitCommentToRecruitCommentResponseDto(recruitComment)),
@@ -155,9 +160,9 @@ public class RecruitController {
 
     @ApiOperation(value = "모집글에 신청하기", notes = "모집글에 회원들이 참여 신청한다.")
     @PatchMapping("/{recruit-id}/application")
-    public ResponseEntity patchRecruit(@PathVariable("recruit-id") long recruitId,
+    public ResponseEntity applyToRecruit(@PathVariable("recruit-id") long recruitId,
                                        @RequestBody ApplyDto requestBody) {
-        Recruit recruit = recruitService.createAppliment(recruitId, recruitMapper.applyDtoToApply(requestBody));
+        Recruit recruit = recruitService.updateAppliment(recruitId, recruitMapper.applyDtoToApply(requestBody));
         return new ResponseEntity<>(
                 new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)),
                 HttpStatus.CREATED);
