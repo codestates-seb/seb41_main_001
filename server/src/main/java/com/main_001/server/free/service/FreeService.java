@@ -11,8 +11,6 @@ import com.main_001.server.free.repositpry.FreeLikeRepository;
 import com.main_001.server.free.repositpry.FreeRepository;
 import com.main_001.server.member.repository.MemberRepository;
 import com.main_001.server.member.service.MemberService;
-import com.main_001.server.recruit.entity.Recruit;
-import com.main_001.server.recruit.entity.RecruitLike;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,26 +30,26 @@ public class FreeService{
     private final FreeLikeRepository freeLikeRepository;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
-    public Free createFreeboard(Free free) {
+    public Free createFreeBoard(Free free) {
         memberService.findMember(free.getMember().getMemberId());
         return freeRepository.save(free);
     }
 
-    public Free updateFreeboard(Free free, FreeDto.PatchFreeboard patchFreeboardDto) {
-        Free findFree = findVerifiedFreeboard(free.getFreeId());//BusinessLogicException 코드 수정 이후 freeboard가 없으면 경고주는 용도
-        free.setFreeBody(patchFreeboardDto.getFreeBody());
-        free.setFreeTitle(patchFreeboardDto.getFreeTitle());
-        free.setCategory(patchFreeboardDto.getCategory());
+    public Free updateFreeBoard(Free free, FreeDto.PatchFreeBoard patchFreeBoardDto) {
+        Free findFree = findVerifiedFreeBoard(free.getFreeId());//BusinessLogicException 코드 수정 이후 freeboard가 없으면 경고주는 용도
+        free.setFreeBody(patchFreeBoardDto.getFreeBody());
+        free.setFreeTitle(patchFreeBoardDto.getFreeTitle());
+        free.setCategory(patchFreeBoardDto.getCategory());
         return free;
     }
 
-    public void deleteFreeboard(long freeId, long memberId) {
+    public void deleteFreeBoard(long freeId, long memberId) {
         memberService.findMember(memberId);
         freeRepository.deleteById(freeId);
     }
 
     public Free updateLike(long FreeId, FreeLike freeLike) {
-        Free findFree = findVerifiedFreeboard(FreeId);
+        Free findFree = findVerifiedFreeBoard(FreeId);
         long FreeLikeMemberId = freeLike.getMember().getMemberId();
         long count = findFree.getFreeLikes().stream()
                 .filter(rc -> Objects.equals(rc.getMember().getMemberId(), FreeLikeMemberId))
@@ -80,7 +78,7 @@ public class FreeService{
         freeCommentReposittory.deleteById(freeComment.getCommentId());
     }
 
-    public Free findFreeboard(long freeId) {
+    public Free findFreeBoard(long freeId) {
         return freeRepository.findByFreeId(freeId);
     }
 
@@ -88,7 +86,7 @@ public class FreeService{
         return freeCommentReposittory.findFreeCommentByFreeIdAndCommentId(freeId, commentId);
     }
 
-    public Page<Free> findFreeboards(int page, int size, FreeDto.Search search) {
+    public Page<Free> findFreeBoards(int page, int size, FreeDto.Search search) {
         Page<Free> result = null;
         switch(search.getType()) {
             case "tag" : result = freeRepository.findAll(PageRequest.of(page, size,
@@ -101,12 +99,12 @@ public class FreeService{
         return result;
     }
 
-    public Page<Free> searchFreeboards(int page, int size, String string) {
+    public Page<Free> searchFreeBoards(int page, int size, String string) {
         return null;
     }
-    public Free findVerifiedFreeboard(long freeId){
-        Optional<Free> optionalFreeboard = freeRepository.findById(freeId);
-        Free free = optionalFreeboard.orElseThrow(() ->
+    public Free findVerifiedFreeBoard(long freeId){
+        Optional<Free> optionalFreeBoard = freeRepository.findById(freeId);
+        Free free = optionalFreeBoard.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.FREEBOARD_NOT_FOUND));
         return free;
     }

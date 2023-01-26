@@ -10,15 +10,15 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface FreeMapper {
-    Free freeboardPostToFree(FreeDto.PostFreeboard postFreeboard);
-    Free freeboardPachToFree(FreeDto.PatchFreeboard patchFreeboard);
+    Free freeBoardPostToFree(FreeDto.PostFreeBoard postFreeBoard);
+    Free freeBoardPatchToFree(FreeDto.PatchFreeBoard patchFreeBoard);
     FreeComment commentPostToFreeComment(FreeDto.PostComment postComment);
     FreeComment commentPatchToFreeComment(FreeDto.PatchComment patchComment);
     FreeLike freeLikeDtoToFreeLike(FreeDto.Like freeLikeDto);
     FreeDto.Response FreeToFreeResponseDto(Free free);
-    List<FreeDto.Response> FreeToFreeMultiRespnseDto(List<Free> free);
+    List<FreeDto.Response> FreeToFreeMultiResponseDto(List<Free> free);
     FreeDto.Response FreeToFreeCommentResponseDto(FreeComment freeComment);
     List<FreeDto.Like> freeLikesToFreeLikeResponseDtos(List<FreeLike> freeLike);
-    List<FreeDto.Response> FreeToFreeCommentMultiRespnseDto(List<FreeComment> freeComment);
+    List<FreeDto.Response> FreeToFreeCommentMultiResponseDto(List<FreeComment> freeComment);
 
 }

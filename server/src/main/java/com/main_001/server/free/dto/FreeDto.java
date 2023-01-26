@@ -20,7 +20,7 @@ import java.util.List;
 public class FreeDto {
     @AllArgsConstructor
     @Getter
-    public static class PostFreeboard{
+    public static class PostFreeBoard{
         @ApiModelProperty(example = "Member ID")
         private long memberId;
         @ApiModelProperty(example = "글 제목")
@@ -61,7 +61,7 @@ public class FreeDto {
 
     @AllArgsConstructor
     @Getter
-    public static class PatchFreeboard{
+    public static class PatchFreeBoard{
         @ApiModelProperty(example = "Member ID")
         private long memberId;
         @ApiModelProperty(example = "글 제목")
