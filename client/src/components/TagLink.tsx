@@ -5,7 +5,7 @@ const TagContainer = styled(Link)`
   text-decoration: none;
   color: white;
   padding: 15px 10px;
-  border: 1px solid black;
+  border: none;
   border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.4);
   display: flex;

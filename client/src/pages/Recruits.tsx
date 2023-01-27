@@ -91,6 +91,7 @@ const Recruits = () => {
       ],
       reviews: [
         {
+          reviewId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -117,7 +118,7 @@ const Recruits = () => {
       image: '',
       createdAt: '2023-01-02T16:18:48.908218',
       modifiedAt: '2023-01-02T16:18:48.908218',
-      recruitStatus: '활동종료', // 모집중/모집완료/활동종료
+      recruitStatus: '최소인원충족', // 모집중/모집완료/활동종료
       star: 0,
       views: 0,
       memberId: 1,
@@ -142,6 +143,7 @@ const Recruits = () => {
       ],
       reviews: [
         {
+          reviewId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -190,6 +192,7 @@ const Recruits = () => {
       ],
       reviews: [
         {
+          reviewId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -210,10 +213,10 @@ const Recruits = () => {
     },
   ];
   const params = new URLSearchParams(useLocation().search);
-  const [filterTag, setFilterTag] = useState(
+  const [filterTag, setFilterTag] = useState<string>(
     params.get('tag')?.replaceAll('"', '') ?? '',
   );
-  const [filterStatus, setFilterStatus] = useState(
+  const [filterStatus, setFilterStatus] = useState<string>(
     params.get('status')?.replaceAll('"', '') ?? '',
   );
   // const [filterRegion, setFilterRegion] = useState('');

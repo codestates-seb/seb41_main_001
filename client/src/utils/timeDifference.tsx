@@ -1,28 +1,28 @@
 const timeDifference = (value: string) => {
-  const future = new Date(value).getTime();
-  const now = new Date().getTime();
-  const time = Math.abs(future - now);
+  const TIME_INPUT = new Date(value).getTime();
+  const TIME_NOW = new Date().getTime();
+  const TIME_DIFF = Math.abs(TIME_INPUT - TIME_NOW);
   let timeleft;
-  if (time < 1000 * 60) {
+  if (TIME_DIFF < 1000 * 60) {
     // seconds ago
-    timeleft = `${Math.floor(time / 1000)}초`;
-  } else if (time < 1000 * 60 * 60) {
+    timeleft = `${Math.floor(TIME_DIFF / 1000)}초`;
+  } else if (TIME_DIFF < 1000 * 60 * 60) {
     // minites ago
-    timeleft = `${Math.floor(time / (1000 * 60))}분`;
-  } else if (time < 1000 * 60 * 60 * 24) {
+    timeleft = `${Math.floor(TIME_DIFF / (1000 * 60))}분`;
+  } else if (TIME_DIFF < 1000 * 60 * 60 * 24) {
     // hours ago
-    timeleft = `${Math.floor(time / (1000 * 60 * 60))}시간`;
-  } else if (time < 1000 * 60 * 60 * 24 * 30) {
+    timeleft = `${Math.floor(TIME_DIFF / (1000 * 60 * 60))}시간`;
+  } else if (TIME_DIFF < 1000 * 60 * 60 * 24 * 30) {
     // days ago
-    timeleft = `${Math.floor(time / (1000 * 60 * 60 * 24))}일`;
-  } else if (time < 1000 * 60 * 60 * 24 * 365) {
+    timeleft = `${Math.floor(TIME_DIFF / (1000 * 60 * 60 * 24))}일`;
+  } else if (TIME_DIFF < 1000 * 60 * 60 * 24 * 365) {
     // months ago
-    timeleft = `${Math.floor(time / (1000 * 60 * 60 * 24 * 30))}달`;
+    timeleft = `${Math.floor(TIME_DIFF / (1000 * 60 * 60 * 24 * 30))}달`;
   } else {
     // years ago
-    timeleft = `${Math.floor(time / (1000 * 60 * 60 * 24 * 365))}년`;
+    timeleft = `${Math.floor(TIME_DIFF / (1000 * 60 * 60 * 24 * 365))}년`;
   }
-  return future - now < 0 ? `${timeleft} 전` : `${timeleft} 후`;
+  return TIME_INPUT - TIME_NOW < 0 ? `${timeleft} 전` : `${timeleft} 후`;
 };
 
 // 남은 시간을 알려주는 함수.

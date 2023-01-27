@@ -260,9 +260,15 @@ const FreeDetail = () => {
           </div>
           {post?.freeComments &&
             post?.freeComments.map((el) => (
-              <CommentBox data={el} key={el.commentId} memberId={el.memberId} />
+              <CommentBox
+                key={el.commentId}
+                memberId={el.memberId}
+                data={el}
+                board="freeboards"
+                boardId={post.freeId}
+              />
             ))}
-          <CommentSubmitBox onClick={() => console.log('댓글등록!')} />
+          <CommentSubmitBox submitComment={`/freeboards/${post?.freeId}`} />
         </BoardContainer>
       ) : (
         <Loading />
