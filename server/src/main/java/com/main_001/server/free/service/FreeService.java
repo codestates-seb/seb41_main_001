@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -74,23 +75,33 @@ public class FreeService{
     }
 
     //Todo
-    public FreeComment createFreeComment(FreeComment freeComment) {
-        memberService.findMember(freeComment.getMember().getMemberId());
-        return freeCommentRepository.save(freeComment);
+    public Free createFreeComment(long freeId, FreeComment freeComment) {
+        Free findFree = findVerifiedFreeBoard(freeId);
+        freeComment.setCreatedAt(LocalDateTime.now());
+        freeComment.setFree(findFree);
+
+        return freeRepository.save(findFree);
     }
 
     //Todo
-    public FreeComment updateFreeComment(long freeId, long commentId, FreeDto.PatchComment patchCommentDto) {
-//        FreeComment freeComment = findFreeComment(freeId, commentId);
-//        freeComment.setCommentBody(patchCommentDto.getCommentBody());
-//        return freeComment;
-        return null;
+    public Free updateFreeComment(long freeId, long commentId, FreeComment freeComment) {
+        Free findFree = findVerifiedFreeBoard(freeId);
+        FreeComment targetComment = freeCommentRepository.findById(commentId).orElseThrow();
+        if (!Objects.equals(targetComment.getMember().getMemberId(), freeComment.getMember().getMemberId())) throw new BusinessLogicException(ExceptionCode.COMMENT_MODIFY_DENIED);
+        targetComment.setModifiedAt(freeComment.getModifiedAt());
+        targetComment.setCommentBody(freeComment.getCommentBody());
+
+        return freeRepository.save(findFree);
     }
 
     //Todo
-    public void deleteFreeComment(FreeComment freeComment) {
-        memberService.findMember(freeComment.getMember().getMemberId());
-        freeCommentRepository.deleteById(freeComment.getCommentId());
+    public void deleteFreeComment(long freeId, long commentId, long memberId) {
+        Free findFree = findVerifiedFreeBoard(freeId);
+        FreeComment targetComment = freeCommentRepository.findById(commentId).orElseThrow();
+        if (targetComment.getMember().getMemberId() != memberId) throw new BusinessLogicException(ExceptionCode.COMMENT_DELETE_DENIED);
+        freeCommentRepository.deleteById(commentId);
+
+        freeRepository.save(findFree);
     }
 
     //Todo
@@ -115,8 +126,7 @@ public class FreeService{
 
     private Free findVerifiedFreeBoard(long freeId){
         Optional<Free> optionalFreeBoard = freeRepository.findById(freeId);
-        Free free = optionalFreeBoard.orElseThrow(() ->
+        return optionalFreeBoard.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.FREEBOARD_NOT_FOUND));
-        return free;
     }
 }
