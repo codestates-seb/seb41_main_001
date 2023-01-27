@@ -57,7 +57,7 @@ public class RecruitService {
         recruit.setMember(memberRepository.findById(recruit.getMember().getMemberId()).orElseThrow());
         for (RecruitTag recruitTag : recruit.getRecruitTags()) {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
-            tag.setRecruitCount(tag.getRecruitCount()+1);
+            tag.setRecruitCount(tag.getRecruitCount() + 1);
         }
         return saveRecruit(recruit);
     }
@@ -65,17 +65,17 @@ public class RecruitService {
     public Recruit findRecruit(long recruitId) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         int views = findRecruit.getViews();
-        findRecruit.setViews(views+1);
+        findRecruit.setViews(views + 1);
         return saveRecruit(findRecruit);
     }
 
     private Recruit findVerifiedRecruit(long recruitId) {
         Optional<Recruit> optionalRecruit = recruitRepository.findById(recruitId);
-        return optionalRecruit.orElseThrow(()->
+        return optionalRecruit.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.RECRUIT_NOT_FOUND));
     }
 
-    private Recruit saveRecruit(Recruit recruit){
+    private Recruit saveRecruit(Recruit recruit) {
         return recruitRepository.save(recruit);
     }
 
@@ -91,63 +91,92 @@ public class RecruitService {
 //        return recruitComment;
     }
 
+    //Todo : 긁어오기, 필터링 한번 효율적으로 개선 ㄱㄱ
+    //Todo : 최상위부터 걸러지므로, Keyword -> 별도의 처리 필요 x, tagName, Status 기준 필터링 필요
+    // Todo : findAll -> 많은 데이터를 가져온다 -> 긁어올 때도 시간 up / memory?
+    // findAll 메서드 -> DB 와 통신이 이루어질 것 -> 이 과정(tcp or udp), 쓰레드의 상태 등 자원 효율 / 낭비 / cpu ...
+    // 찾아보고 개선 가능한 방향이 보인다면 적용
+
     public Page<Recruit> findRecruits(int page, int size, RecruitDto.Get recruitGetDto) {
-
-        //Todo : 긁어오기, 필터링 한번 효율적으로 개선 ㄱㄱ
-
         List<Recruit> recruits;
-        if(recruitGetDto.getKeyword()!=null) {
-            recruits = recruitRepository.findAllByTitleContaining(recruitGetDto.getKeyword(),Sort.by("modifiedAt").descending())
+        if (recruitGetDto.getKeyword() != null) {
+            recruits = recruitRepository.findAllByTitleContaining(recruitGetDto.getKeyword(), Sort.by("modifiedAt").descending())
                     .stream()
-                    .peek(recruit->recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
-                    .filter(recruit -> recruit.getDistance()<recruitGetDto.getDistanceLimit())
+                    .peek(recruit -> recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
+                    .filter(recruit -> recruit.getDistance() < recruitGetDto.getDistanceLimit())
                     .collect(Collectors.toList());
-        } else if(recruitGetDto.getTagName()==null) {
+
+            if (recruitGetDto.getTagName() != null) {
+                recruits = recruits.stream()
+                        .filter(recruit -> recruit.getRecruitTags()
+                                .stream()
+                                .map(RecruitTag::getTag)
+                                .map(Tag::getTagName)
+                                .anyMatch(tagName -> tagName.equals(recruitGetDto.getTagName())))
+                        .collect(Collectors.toList());
+            }
+            if(recruitGetDto.getStatus()!=null){
+                if (recruitGetDto.getStatus().equals("모집중")) {
+                    recruits = recruits.stream()
+                            .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
+                            .sorted(Comparator.comparing(Recruit::getDistance))
+                            .collect(Collectors.toList());
+                }else {
+                    recruits = recruits.stream()
+                            .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
+                            .collect(Collectors.toList());
+                }
+            }
+        } else if (recruitGetDto.getTagName() != null) {
             recruits = recruitRepository.findAll(Sort.by("modifiedAt").descending())
                     .stream()
-                    .peek(recruit->recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
-                    .filter(recruit -> recruit.getDistance()<recruitGetDto.getDistanceLimit())
-                    .collect(Collectors.toList());
-        } else {
-            // Todo : findAll -> 많은 데이터를 가져온다 -> 긁어올 때도 시간 up / memory?
-            // findAll 메서드 -> DB 와 통신이 이루어질 것 -> 이 과정(tcp or udp), 쓰레드의 상태 등 자원 효율 / 낭비 / cpu ...
-            // 찾아보고 개선 가능한 방향이 보인다면 적용
-            List<RecruitTag> recruitTags = recruitTagRepository.findAll();
-//            List<RecruitTag> recruitTags = recruitTagRepository.findAllByTag_TagName(recruitGetDto.getTagName());
-            recruits = recruitTags.stream()
-                    .filter(recruitTag -> recruitTag.getTag().getTagName().equals(recruitGetDto.getTagName()))
-                    .map(RecruitTag::getRecruit)
-                    .peek(recruit->recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
-                    .filter(recruit -> recruit.getDistance()<recruitGetDto.getDistanceLimit())
-                    .sorted(Comparator.comparing(Recruit::getModifiedAt).reversed())
+                    .filter(recruit -> recruit.getRecruitTags()
+                            .stream()
+                            .map(RecruitTag::getTag)
+                            .map(Tag::getTagName)
+                            .anyMatch(tagName -> tagName.equals(recruitGetDto.getTagName())))
+                    .peek(recruit -> recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
+                    .filter(recruit -> recruit.getDistance() < recruitGetDto.getDistanceLimit())
                     .collect(Collectors.toList());
 
-//            Comparator<Recruit> cp = new Comparator<Recruit>() {
-//                @Override
-//                public int compare(Recruit o1, Recruit o2) {
-//                    LocalDateTime a = o1.getModifiedAt();
-//                    LocalDateTime b = o2.getModifiedAt();
-//
-//                    if(a.isAfter(b)) return -1;
-//                    else return 1;
-//                }
-//            };
-//            recruits.sort(cp);
-        }
-
-        if(recruitGetDto.getStatus()!=null){
-            if(recruitGetDto.getStatus().equals("모집중")){
-                recruits = recruits.stream()
+            if(recruitGetDto.getStatus()!=null){
+                if (recruitGetDto.getStatus().equals("모집중")) {
+                    recruits = recruits.stream()
+                            .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
+                            .sorted(Comparator.comparing(Recruit::getDistance))
+                            .collect(Collectors.toList());
+                }else {
+                    recruits = recruits.stream()
+                            .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
+                            .collect(Collectors.toList());
+                }
+            }
+        } else if (recruitGetDto.getStatus() != null) {
+            if (recruitGetDto.getStatus().equals("모집중")) {
+                recruits = recruitRepository.findAllByRecruitStatus(Recruit.RecruitStatus.RECRUITING)
+                        .stream()
                         .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
                         .sorted(Comparator.comparing(Recruit::getDistance))
                         .collect(Collectors.toList());
             } else {
-                recruits = recruits.stream()
+                Recruit.RecruitStatus recruitStatus;
+                switch(recruitGetDto.getStatus()){
+                    case "최소인원충족": recruitStatus = Recruit.RecruitStatus.RECRUIT_MEET_MINIMUM;
+                    break;
+                    case "모집완료": recruitStatus = Recruit.RecruitStatus.RECRUIT_COMPLETE;
+                    break;
+                    case "활동종료": recruitStatus = Recruit.RecruitStatus.RECRUIT_END;
+                    break;
+                    default: throw new BusinessLogicException(ExceptionCode.STATUS_NOT_FOUND);
+                }
+                recruits = recruitRepository.findAllByRecruitStatus(recruitStatus, Sort.by("modifiedAt").descending())
+                        .stream()
                         .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
                         .collect(Collectors.toList());
             }
+        } else {
+            recruits = recruitRepository.findAll();
         }
-
 
         PageRequest pageRequest = PageRequest.of(page, size);
         int start = (int) pageRequest.getOffset();
@@ -155,23 +184,34 @@ public class RecruitService {
 
         return new PageImpl<>(recruits.subList(start, end), pageRequest, recruits.size());
     }
+
     public Recruit updateRecruit(long recruitId, Recruit recruit) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
-        if(!Objects.equals(findRecruit.getMember().getMemberId(), recruit.getMember().getMemberId())) throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
-        if(recruit.getBody()!=null)findRecruit.setBody(recruit.getBody());
-        if(recruit.getTitle()!=null)findRecruit.setTitle(recruit.getTitle());
-        if(recruit.getLocation()!=null)findRecruit.setLocation(recruit.getLocation());
-        if(recruit.getDate()!=null)findRecruit.setDate(recruit.getDate());
+        if (!Objects.equals(findRecruit.getMember().getMemberId(), recruit.getMember().getMemberId()))
+            throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
+        if (recruit.getBody() != null) findRecruit.setBody(recruit.getBody());
+        if (recruit.getTitle() != null) findRecruit.setTitle(recruit.getTitle());
+        if (recruit.getRequire() != 0) findRecruit.setRequire(recruit.getRequire());
+        if (recruit.getMinRequire() != 0) findRecruit.setMinRequire(recruit.getMinRequire());
+        if (recruit.getHeartLimit() != 0) findRecruit.setHeartLimit(recruit.getHeartLimit());
+        if (recruit.getSex() != null) findRecruit.setSex(recruit.getSex());
+        if (recruit.getDate() != null) findRecruit.setDate(recruit.getDate());
+        if (recruit.getLocation() != null) findRecruit.setLocation(recruit.getLocation());
+        if (recruit.getLat() != 0) findRecruit.setLat(recruit.getLat());
+        if (recruit.getLon() != 0) findRecruit.setLon(recruit.getLon());
+        if (recruit.getAgeGroupString() != null) findRecruit.setAgeGroupString(recruit.getAgeGroupString());
+        if ((recruit.getRecruitTags() != null)) findRecruit.setRecruitTags(recruit.getRecruitTags());
         return saveRecruit(findRecruit);
     }
 
     public void deleteRecruit(long recruitId, RecruitDto.Delete requestBody) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
-        if(findRecruit.getMember().getMemberId()!=requestBody.getMemberId()) throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
-        if(findRecruit.getApplies().size()!=0) throw new BusinessLogicException(ExceptionCode.RECRUIT_DELETE_DENIED);
-        for(RecruitTag recruitTag : findRecruit.getRecruitTags()){
+        if (findRecruit.getMember().getMemberId() != requestBody.getMemberId())
+            throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
+        if (findRecruit.getApplies().size() != 0) throw new BusinessLogicException(ExceptionCode.RECRUIT_DELETE_DENIED);
+        for (RecruitTag recruitTag : findRecruit.getRecruitTags()) {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
-            tag.setRecruitCount(tag.getRecruitCount()-1);
+            tag.setRecruitCount(tag.getRecruitCount() - 1);
         }
         recruitRepository.deleteById(recruitId);
     }
@@ -184,7 +224,7 @@ public class RecruitService {
         members.addAll(findRecruit.getApplies().stream()
                 .map(Apply::getMember)
                 .collect(Collectors.toList()));
-        if(!members.contains(findMember)) throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
+        if (!members.contains(findMember)) throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
         findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_END);
         return saveRecruit(findRecruit);
     }
@@ -193,12 +233,12 @@ public class RecruitService {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         long recruitLikeMemberId = recruitLike.getMember().getMemberId();
         long count = findRecruit.getRecruitLikes().stream()
-                        .filter(rc -> Objects.equals(rc.getMember().getMemberId(), recruitLikeMemberId))
-                        .count();
-        if(count==0) recruitLike.setRecruit(findRecruit);
+                .filter(rc -> Objects.equals(rc.getMember().getMemberId(), recruitLikeMemberId))
+                .count();
+        if (count == 0) recruitLike.setRecruit(findRecruit);
         else {
             findRecruit.getRecruitLikes().removeIf(rl -> Objects.equals(rl.getMember().getMemberId(), recruitLike.getMember().getMemberId()));
-            recruitLikeRepository.deleteRecruitLikeByMember_MemberIdAndRecruit_RecruitId(recruitLikeMemberId,recruitId);
+            recruitLikeRepository.deleteRecruitLikeByMember_MemberIdAndRecruit_RecruitId(recruitLikeMemberId, recruitId);
         }
         return saveRecruit(findRecruit);
     }
@@ -206,7 +246,8 @@ public class RecruitService {
     public Recruit updateComment(long recruitId, long commentId, RecruitComment recruitComment) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         RecruitComment targetComment = recruitCommentRepository.findById(commentId).orElseThrow();
-        if(!Objects.equals(targetComment.getMember().getMemberId(), recruitComment.getMember().getMemberId())) throw new BusinessLogicException(ExceptionCode.COMMENT_MODIFY_DENIED);
+        if (!Objects.equals(targetComment.getMember().getMemberId(), recruitComment.getMember().getMemberId()))
+            throw new BusinessLogicException(ExceptionCode.COMMENT_MODIFY_DENIED);
         targetComment.setModifiedAt(recruitComment.getModifiedAt());
         targetComment.setBody(recruitComment.getBody());
 
@@ -218,7 +259,8 @@ public class RecruitService {
     public Recruit deleteComment(long recruitId, long commentId, long memberId) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         RecruitComment targetComment = recruitCommentRepository.findById(commentId).orElseThrow();
-        if(targetComment.getMember().getMemberId()!=memberId) throw new BusinessLogicException(ExceptionCode.COMMENT_DELETE_DENIED);
+        if (targetComment.getMember().getMemberId() != memberId)
+            throw new BusinessLogicException(ExceptionCode.COMMENT_DELETE_DENIED);
         recruitCommentRepository.deleteById(commentId);
 
         return saveRecruit(findRecruit);
@@ -232,19 +274,21 @@ public class RecruitService {
 
     public Recruit updateAppliment(long recruitId, Apply apply) {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
-        if(findRecruit.getRecruitStatus()==Recruit.RecruitStatus.RECRUIT_COMPLETE) throw new BusinessLogicException(ExceptionCode.APPLY_MODIFY_DENIED);
+        if (findRecruit.getRecruitStatus() == Recruit.RecruitStatus.RECRUIT_COMPLETE)
+            throw new BusinessLogicException(ExceptionCode.APPLY_MODIFY_DENIED);
         long applyMemberId = apply.getMember().getMemberId();
         long count = findRecruit.getApplies().stream()
                 .filter(a -> Objects.equals(a.getMember().getMemberId(), applyMemberId))
                 .count();
-        if(count==0) {
+        if (count == 0) {
             apply.setRecruit(findRecruit);
-            if(findRecruit.getApplies().size()>=findRecruit.getMinRequire()) findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_MEET_MINIMUM);
-            if(findRecruit.getApplies().size()==findRecruit.getRequire()) findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_COMPLETE);
-        }
-        else {
+            if (findRecruit.getApplies().size() >= findRecruit.getMinRequire())
+                findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_MEET_MINIMUM);
+            if (findRecruit.getApplies().size() == findRecruit.getRequire())
+                findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_COMPLETE);
+        } else {
             findRecruit.getApplies().removeIf(a -> Objects.equals(a.getMember().getMemberId(), apply.getMember().getMemberId()));
-            recruitLikeRepository.deleteRecruitLikeByMember_MemberIdAndRecruit_RecruitId(applyMemberId,recruitId);
+            recruitLikeRepository.deleteRecruitLikeByMember_MemberIdAndRecruit_RecruitId(applyMemberId, recruitId);
         }
         return saveRecruit(findRecruit);
     }
@@ -257,12 +301,17 @@ public class RecruitService {
         members.addAll(findRecruit.getApplies().stream()
                 .map(Apply::getMember)
                 .collect(Collectors.toList()));
-        if(!members.contains(findMember)) throw new BusinessLogicException(ExceptionCode.NOT_MEMBER);
+        if (!members.contains(findMember)) throw new BusinessLogicException(ExceptionCode.NOT_MEMBER);
         long count = findRecruit.getReviews().stream()
                 .filter(r -> Objects.equals(r.getMember().getMemberId(), review.getMember().getMemberId()))
                 .count();
-        if(count==0) review.setRecruit(findRecruit);
+        if (count == 0) review.setRecruit(findRecruit);
         else throw new BusinessLogicException(ExceptionCode.ONLY_ONE_REVIEW);
+
+        findRecruit.setStar(findRecruit.getReviews()
+                .stream()
+                .mapToDouble(review1 -> review1.getStar())
+                .average().orElse(0));
 
         return saveRecruit(findRecruit);
 //        return findRecruit.getReviews();
