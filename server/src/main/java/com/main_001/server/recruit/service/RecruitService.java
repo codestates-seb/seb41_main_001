@@ -57,7 +57,7 @@ public class RecruitService {
         recruit.setMember(memberRepository.findById(recruit.getMember().getMemberId()).orElseThrow());
         for (RecruitTag recruitTag : recruit.getRecruitTags()) {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
-//            if(tag.getCount()==null) tag.setCount(0);
+//            if(tag.getRecruitCount()==null) tag.setRecruitCount(0);
             tag.setRecruitCount(tag.getRecruitCount()+1);
         }
         return saveRecruit(recruit);
@@ -81,9 +81,7 @@ public class RecruitService {
     }
 
     private void verifyRecruit(Recruit recruit) {
-        //Todo : MemberService 와 연계하여 존재하는 멤버가 보낸 요청인지 확인
-
-        //Todo : 멤버가 모집글에 등록한 태그가 유효한지 확인
+        memberService.findMember(recruit.getMember().getMemberId());
     }
 
     public Recruit createComment(long recruitId, RecruitComment recruitComment) {
@@ -106,7 +104,6 @@ public class RecruitService {
                     .filter(recruit -> recruit.getDistance()<recruitGetDto.getDistanceLimit())
                     .collect(Collectors.toList());
         } else if(recruitGetDto.getTagName()==null) {
-//            Todo : 각각의 Recruit 마다 현재 사용자의 위치를 입력받아, 각 모집 장소와의 거리를 계산하여 반영
             recruits = recruitRepository.findAll(Sort.by("modifiedAt").descending())
                     .stream()
                     .peek(recruit->recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))

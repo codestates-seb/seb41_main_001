@@ -1,13 +1,12 @@
 package com.main_001.server.free.entity;
 
-import com.main_001.server.recruit.entity.Recruit;
+import com.main_001.server.tag.entity.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -21,12 +20,12 @@ public class FreeTag {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "Free_ID")
+    @JoinColumn(name = "FREE_ID")
     private Free free;
 
-//    @ManyToOne
-//    @JoinColumn(name = "TAG_ID")
-//    private Tag tag;
+    @ManyToOne
+    @JoinColumn(name = "TAG_ID")
+    private Tag tag;
 
     public void setFree(Free free) {
         this.free = free;

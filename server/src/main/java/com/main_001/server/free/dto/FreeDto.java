@@ -1,20 +1,12 @@
 package com.main_001.server.free.dto;
 
-import com.main_001.server.free.entity.FreeLike;
-import com.main_001.server.free.entity.FreeTag;
-import com.main_001.server.member.entity.Member;
-import com.main_001.server.recruit.dto.RecruitTagDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FreeDto {
@@ -42,8 +34,8 @@ public class FreeDto {
                 "    }\n" +
                 "  ]")
         private List<FreeDto.Tag> freeTagDtos;
+
         @ApiModelProperty(example = "자유 게시글 위치정보")
-        @NotBlank(message = "위치정보를 설정하지 않을 경우 등록이 불가합니다.")
         private String location;
     }
 
@@ -64,11 +56,11 @@ public class FreeDto {
     public static class PatchFreeBoard{
         @ApiModelProperty(example = "Member ID")
         private long memberId;
+
         @ApiModelProperty(example = "글 제목")
         private String freeTitle;
 
         @ApiModelProperty(example = "내용 작성")
-        @NotBlank(message = "질문내용 수정을 하지 않을 경우 등록이 불가합니다.")
         private String freeBody;
 
         @ApiModelProperty(example = "카테고리")
@@ -102,6 +94,9 @@ public class FreeDto {
 
         @ApiModelProperty(example = "태그 이름")
         private String tagName;
+
+        @ApiModelProperty(example = "태그 이모지")
+        private String emoji;
     }
 
     @AllArgsConstructor
@@ -120,6 +115,7 @@ public class FreeDto {
 
     @AllArgsConstructor
     @Getter
+    @Builder
     public static class Response{
         @ApiModelProperty(example = "Free ID")
         private Long freeId;
@@ -137,16 +133,19 @@ public class FreeDto {
         private LocalDateTime modifiedAt;
 
         @ApiModelProperty(example = "자유글 좋아요 누른 Member ID")
-        private List<Like> freeLikes;
+        private List<ResponseDto.FreeLike> freeLikes;
 
         @ApiModelProperty(example = "자유글 운동 태그")
-        private List<Tag> freeTags;
+        private List<ResponseDto.FreeTag> freeTags;
+
+        @ApiModelProperty(example = "자유글 댓글")
+        private List<ResponseDto.FreeComment> freeComments;
 
         @ApiModelProperty(example = "조회수")
         private int views;
 
         @ApiModelProperty(example = "Member ID")
-        private Member memberId;
+        private long memberId;
 
         @ApiModelProperty(example = "카테고리")
         private String category;

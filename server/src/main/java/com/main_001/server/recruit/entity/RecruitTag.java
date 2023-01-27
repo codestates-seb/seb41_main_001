@@ -30,13 +30,6 @@ public class RecruitTag {
         }
     }
 
-    public void setTag(Tag tag) {
-        this.tag = tag;
-//        if(!this.tag.getRecruitTags().contains(this)){
-//            this.tag.addQuestionTag(this);
-//        }
-    }
-
     public Long getId() {
         return id;
     }

@@ -1,12 +1,7 @@
 package com.main_001.server.free.entity;
 
 import com.main_001.server.member.entity.Member;
-import com.main_001.server.recruit.entity.RecruitLike;
-import com.main_001.server.recruit.entity.RecruitTag;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -26,6 +21,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Free {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +36,9 @@ public class Free {
     @Column(name = "FREE_BODY")
     private String freeBody;
 
+    @OneToMany(mappedBy = "free", cascade = CascadeType.ALL)
+    private List<FreeComment> freeComments = new ArrayList<>();
+
     @CreatedDate
     @Column(name = "CREATED_AT", updatable = false)
     private LocalDateTime createdAt;
@@ -47,9 +46,6 @@ public class Free {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_AT")
     private LocalDateTime modifiedAt;
-
-    @OneToMany(mappedBy = "free", cascade = CascadeType.ALL)
-    private List<FreeComment> freeComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "free", cascade = CascadeType.ALL)
     private List<FreeLike> freeLikes = new ArrayList<>();

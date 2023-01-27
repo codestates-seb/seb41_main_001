@@ -1,6 +1,5 @@
 package com.main_001.server.recruit.dto;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
@@ -69,6 +68,9 @@ public class ResponseDto {
 
         @ApiModelProperty(example = "태그 이름")
         private String tagName;
+
+        @ApiModelProperty(example = "태그 이모지")
+        private String emoji;
     }
 
     @Builder
