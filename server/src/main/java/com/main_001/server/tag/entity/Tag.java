@@ -1,13 +1,8 @@
 package com.main_001.server.tag.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 //TODO:
 // tag_id	int
@@ -21,17 +16,25 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "tag_id")
     private long tagId;
+
+    @Column
     private boolean categoryExercise;
-    @NotNull
+
+    @Column
     private String tagName;
+
+    @Column
     private String emoji;
 
+    @Column
     private int recruitCount;
-    private int freeCount;
 
+    @Column
+    private int freeCount;
 }

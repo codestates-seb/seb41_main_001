@@ -57,7 +57,6 @@ public class RecruitService {
         recruit.setMember(memberRepository.findById(recruit.getMember().getMemberId()).orElseThrow());
         for (RecruitTag recruitTag : recruit.getRecruitTags()) {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
-//            if(tag.getRecruitCount()==null) tag.setRecruitCount(0);
             tag.setRecruitCount(tag.getRecruitCount()+1);
         }
         return saveRecruit(recruit);
@@ -170,6 +169,10 @@ public class RecruitService {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         if(findRecruit.getMember().getMemberId()!=requestBody.getMemberId()) throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
         if(findRecruit.getApplies().size()!=0) throw new BusinessLogicException(ExceptionCode.RECRUIT_DELETE_DENIED);
+        for(RecruitTag recruitTag : findRecruit.getRecruitTags()){
+            Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
+            tag.setRecruitCount(tag.getRecruitCount()-1);
+        }
         recruitRepository.deleteById(recruitId);
     }
 

@@ -1,13 +1,14 @@
 package com.main_001.server.tag.repository;
 
-import com.main_001.server.free.entity.Free;
-import com.main_001.server.recruit.entity.Recruit;
 import com.main_001.server.tag.entity.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface TagRepository extends JpaRepository<Tag, Long> {
-//    List<Tag> findAllbyFreeTag();
-//    List<Tag> finndAllbyRcruitTag();
+    Optional<Tag> findByTagName(String tagName);
+    Page<Tag> findAllByCategoryExercise(boolean category, Pageable pageable);
+
 }

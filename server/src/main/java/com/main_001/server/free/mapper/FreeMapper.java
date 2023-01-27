@@ -17,34 +17,6 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface FreeMapper {
-    default FreeComment commentPostToFreeComment(FreeCommentDto.Default postComment) {
-        Member member = new Member();
-        member.setMemberId(postComment.getMemberId());
-        return FreeComment.builder()
-                .commentBody(postComment.getCommentBody())
-                .modifiedAt(LocalDateTime.now())
-                .member(member)
-                .build();
-    }
-    default FreeComment commentPatchToFreeComment(FreeCommentDto.Default patchComment) {
-        Member member = new Member();
-        member.setMemberId(patchComment.getMemberId());
-        return FreeComment.builder()
-                .commentBody(patchComment.getCommentBody())
-                .modifiedAt(LocalDateTime.now())
-                .member(member)
-                .build();
-    }
-    default FreeLike freeLikeDtoToFreeLike(FreeDto.Like freeLikeDto) {
-        Member member = new Member();
-        member.setMemberId(freeLikeDto.getMemberId());
-        return FreeLike.builder()
-                .member(member)
-                .build();
-    }
-    FreeDto.Response FreeToFreeResponseDto(Free free);
-    List<FreeDto.Response> FreesToFreeResponseDtos(List<Free> free);
-    FreeDto.Response FreeToFreeCommentResponseDto(FreeComment freeComment);
     default Free freeBoardPostToFree(FreeDto.PostFreeBoard postFreeBoard) {
         Free free = new Free();
         Member member = new Member();
@@ -77,14 +49,8 @@ public interface FreeMapper {
         free.setFreeTitle(patchFreeBoard.getFreeTitle());
         free.setFreeBody(patchFreeBoard.getFreeBody());
         free.setCategory(patchFreeBoard.getCategory());
-
         return free;
     }
-
-    FreeComment commentPostToFreeComment(FreeDto.PostComment postComment);
-
-    FreeComment commentPatchToFreeComment(FreeDto.PatchComment patchComment);
-
 
     default FreeDto.Response freeToFreeResponseDto(Free free) {
         List<FreeTag> freeTags = free.getFreeTags();
@@ -98,8 +64,8 @@ public interface FreeMapper {
                 .createdAt(free.getCreatedAt())
                 .modifiedAt(free.getModifiedAt())
                 .freeTags(freeTagsToFreeTagResponseDtos(freeTags))
-//                .freeLikes(freeLikes -> mapper로 response로 변환)
-//                .freeComments(freeComments -> mapper로 response로 변환)
+                .freeLikes(freeLikesToFreeLikeResponseDtos(freeLikes))
+                .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
                 .views(free.getViews())
                 .memberId(free.getMember().getMemberId())
                 .category(free.getCategory())
@@ -108,9 +74,50 @@ public interface FreeMapper {
 
     List<FreeDto.Response> freesToFreeResponseDtos(List<Free> free);
 
-    FreeDto.Response freeToFreeCommentResponseDto(FreeComment freeComment);
+    default FreeLike freeLikeDtoToFreeLike(FreeDto.Like freeLikeDto) {
+        Member member = new Member();
+        member.setMemberId(freeLikeDto.getMemberId());
+        return FreeLike.builder()
+                .member(member)
+                .build();
+    }
 
-    List<FreeDto.Like> freeLikesToFreeLikeResponseDtos(List<FreeLike> freeLike);
+    default FreeComment commentPostToFreeComment(FreeCommentDto.Default postComment) {
+        Member member = new Member();
+        member.setMemberId(postComment.getMemberId());
+        return FreeComment.builder()
+                .commentBody(postComment.getCommentBody())
+                .modifiedAt(LocalDateTime.now())
+                .member(member)
+                .build();
+    }
+
+    default FreeComment commentPatchToFreeComment(FreeCommentDto.Default patchComment) {
+        Member member = new Member();
+        member.setMemberId(patchComment.getMemberId());
+        return FreeComment.builder()
+                .commentBody(patchComment.getCommentBody())
+                .modifiedAt(LocalDateTime.now())
+                .member(member)
+                .build();
+    }
+
+    default List<ResponseDto.FreeComment> freeCommentsToFreeCommentResponseDtos(List<FreeComment> freeComments){
+        return freeComments
+                .stream()
+                .map(freeComment -> ResponseDto.FreeComment
+                        .builder()
+                        .freeId(freeComment.getFree().getFreeId())
+                        .freeCommentId(freeComment.getCommentId())
+                        .memberId(freeComment.getMember().getMemberId())
+                        .nickname(freeComment.getMember().getNickname())
+                        .heart(freeComment.getMember().getHeart())
+                        .body(freeComment.getCommentBody())
+                        .createdAt(freeComment.getCreatedAt())
+                        .modifiedAt(freeComment.getModifiedAt())
+                        .build())
+                .collect(Collectors.toList());
+    }
 
     default List<ResponseDto.FreeTag> freeTagsToFreeTagResponseDtos(List<FreeTag> freeTags) {
         return freeTags
@@ -124,4 +131,13 @@ public interface FreeMapper {
                 .collect(Collectors.toList());
     }
 
+    default List<ResponseDto.FreeLike> freeLikesToFreeLikeResponseDtos(List<FreeLike> freeLikes){
+        return freeLikes
+                .stream()
+                .map(freeLike -> ResponseDto.FreeLike
+                        .builder()
+                        .memberId(freeLike.getMember().getMemberId())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

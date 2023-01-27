@@ -1,7 +1,6 @@
 package com.main_001.server.free.dto;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class FreeDto {
-    @AllArgsConstructor
     @Getter
     public static class PostFreeBoard{
         @ApiModelProperty(example = "Member ID")
@@ -39,7 +37,6 @@ public class FreeDto {
         private String location;
     }
 
-    @AllArgsConstructor
     @Getter
     public static class PostComment{
         @ApiModelProperty(example = "Member ID")
@@ -51,7 +48,6 @@ public class FreeDto {
         private String commentBody;
     }
 
-    @AllArgsConstructor
     @Getter
     public static class PatchFreeBoard{
         @ApiModelProperty(example = "Member ID")
@@ -67,7 +63,6 @@ public class FreeDto {
         private String category;
     }
 
-    @AllArgsConstructor
     @Getter
     public static class PatchComment{
         @ApiModelProperty(example = "Member ID")
@@ -79,14 +74,12 @@ public class FreeDto {
         private String commentBody;
     }
 
-    @AllArgsConstructor
     @Getter
     public static class Like{
         @ApiModelProperty(example = "Member ID")
         private long memberId;
     }
 
-    @AllArgsConstructor
     @Getter
     public static class Tag{
         @ApiModelProperty(example = "Tag ID")
@@ -99,21 +92,18 @@ public class FreeDto {
         private String emoji;
     }
 
-    @AllArgsConstructor
     @Getter
     public static class Delete{
         @ApiModelProperty(example = "Member ID")
         private long memberId;
     }
 
-    @AllArgsConstructor
     @Getter
     public static class Search{
         private String type;
         private String keyword;
     }
 
-    @AllArgsConstructor
     @Getter
     @Builder
     public static class Response{

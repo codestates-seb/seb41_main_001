@@ -15,7 +15,12 @@ public enum ExceptionCode {
     //Free
     FREEBOARD_NOT_FOUND(404, "해당 자유 게시글을 못 찾음"),
     FREEBOARD_MODIFY_DENIED(401, "작성자만 수정 가능" ),
-    APPLY_MODIFY_DENIED(401, "모집 완료시 신청 및 신청취소 불가");
+
+    BAD_REQUEST(400, "요청 이상함"),
+    APPLY_MODIFY_DENIED(401, "모집 완료시 신청 및 신청취소 불가"),
+    TAG_NOT_FOUND(404, "해당 태그 존재하지 않음" ),
+    TAG_ALREADY_EXIST(409 , "해당 태그가 이미 존재함" );
+
 
 
     @Getter

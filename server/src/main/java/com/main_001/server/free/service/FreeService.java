@@ -12,18 +12,20 @@ import com.main_001.server.free.repositpry.FreeLikeRepository;
 import com.main_001.server.free.repositpry.FreeRepository;
 import com.main_001.server.member.repository.MemberRepository;
 import com.main_001.server.member.service.MemberService;
-import com.main_001.server.recruit.repository.RecruitCommentRepository;
 import com.main_001.server.tag.entity.Tag;
 import com.main_001.server.tag.repository.TagRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,18 +37,15 @@ public class FreeService{
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
-    private final RecruitCommentRepository recruitCommentRepository;
 
     public FreeService(FreeRepository freeRepository, FreeCommentRepository freeCommentRepository, FreeLikeRepository freeLikeRepository, MemberService memberService, MemberRepository memberRepository,
-                       TagRepository tagRepository,
-                       RecruitCommentRepository recruitCommentRepository) {
+                       TagRepository tagRepository) {
         this.freeRepository = freeRepository;
         this.freeCommentRepository = freeCommentRepository;
         this.freeLikeRepository = freeLikeRepository;
         this.memberService = memberService;
         this.memberRepository = memberRepository;
         this.tagRepository = tagRepository;
-        this.recruitCommentRepository = recruitCommentRepository;
     }
 
     public Free createFreeBoard(Free free) {
@@ -74,6 +73,10 @@ public class FreeService{
     public void deleteFreeBoard(long freeId, long memberId) {
         Free findFree = findVerifiedFreeBoard(freeId);
         if(findFree.getMember().getMemberId()!=memberId) throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);
+        for(FreeTag freeTag : findFree.getFreeTags()){
+            Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
+            tag.setFreeCount(tag.getFreeCount()-1);
+        }
         freeRepository.deleteById(freeId);
     }
 
@@ -91,7 +94,6 @@ public class FreeService{
         return freeRepository.save(findFree);
     }
 
-    //Todo
     public Free createFreeComment(long freeId, FreeComment freeComment) {
         Free findFree = findVerifiedFreeBoard(freeId);
         freeComment.setCreatedAt(LocalDateTime.now());
@@ -100,7 +102,6 @@ public class FreeService{
         return freeRepository.save(findFree);
     }
 
-    //Todo
     public Free updateFreeComment(long freeId, long commentId, FreeComment freeComment) {
         Free findFree = findVerifiedFreeBoard(freeId);
         FreeComment targetComment = freeCommentRepository.findById(commentId).orElseThrow();
@@ -111,7 +112,6 @@ public class FreeService{
         return freeRepository.save(findFree);
     }
 
-    //Todo
     public void deleteFreeComment(long freeId, long commentId, long memberId) {
         Free findFree = findVerifiedFreeBoard(freeId);
         FreeComment targetComment = freeCommentRepository.findById(commentId).orElseThrow();
@@ -127,19 +127,36 @@ public class FreeService{
         return saveFree(findFree);
     }
 
-
-    //Todo 아예 새로 작성
     public Page<Free> findFreeBoards(int page, int size, FreeDto.Search search) {
-        Page<Free> result = null;
+        List<Free> frees = freeRepository.findAll(Sort.by("createdAt").descending());
         switch(search.getType()) {
-            case "tag" : result = freeRepository.findAll(PageRequest.of(page, size,
-                    Sort.by(search.getKeyword()).descending()));
-            case "category" : result = freeRepository.findAll(PageRequest.of(page, size,
-                    Sort.by(search.getKeyword()).descending()));
-            case "keyword" : result = freeRepository.findAll(PageRequest.of(page, size,
-                    Sort.by(search.getKeyword()).descending()));
+            case "tag" :
+                frees = frees.stream()
+                    .filter(free -> free.getFreeTags()
+                                    .stream()
+                                    .map(FreeTag::getTag)
+                                    .map(Tag::getTagName)
+                                    .anyMatch(tagName -> tagName.equals(search.getKeyword())))
+                        .collect(Collectors.toList());
+                break;
+            case "category" :
+                frees = frees.stream()
+                        .filter(free -> free.getCategory().equals(search.getKeyword()))
+                        .collect(Collectors.toList());
+                break;
+            case "keyword" :
+                frees = frees.stream()
+                        .filter(free -> free.getFreeTitle().contains(search.getKeyword()))
+                        .collect(Collectors.toList());
+                break;
+            default: throw new BusinessLogicException(ExceptionCode.BAD_REQUEST);
         }
-        return result;
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), frees.size());
+
+        return new PageImpl<>(frees.subList(start, end), pageRequest, frees.size());
     }
 
     private Free findVerifiedFreeBoard(long freeId){

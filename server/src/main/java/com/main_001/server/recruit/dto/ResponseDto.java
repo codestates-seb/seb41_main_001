@@ -43,13 +43,13 @@ public class ResponseDto {
         @ApiModelProperty(example = "심박수")
         private int heart;
 
-        @ApiModelProperty(example = "본문 내")
+        @ApiModelProperty(example = "댓글 내용")
         private String body;
 
-        @ApiModelProperty(example = "글 작성 일자")
+        @ApiModelProperty(example = "댓글 작성 일자")
         private LocalDateTime createdAt;
 
-        @ApiModelProperty(example = "모집글 수정 일자")
+        @ApiModelProperty(example = "댓글 수정 일자")
         private LocalDateTime modifiedAt;
     }
 

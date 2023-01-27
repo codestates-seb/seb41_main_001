@@ -21,8 +21,8 @@ import java.util.List;
 @RequestMapping("/freeboards")
 @Validated
 public class FreeController {
-    private FreeMapper freeMapper;
-    private FreeService freeService;
+    private final FreeMapper freeMapper;
+    private final FreeService freeService;
 
     public FreeController(FreeMapper freeMapper, FreeService freeService) {
         this.freeMapper = freeMapper;
@@ -40,7 +40,7 @@ public class FreeController {
                                         @RequestBody FreeCommentDto.Default postCommentDto){
         Free createFreeComment = freeService.createFreeComment(freeId, freeMapper.commentPostToFreeComment(postCommentDto));
         return new ResponseEntity<>(
-                new SingleResponseDto<>(freeMapper.FreeToFreeResponseDto(createFreeComment)),
+                new SingleResponseDto<>(freeMapper.freeToFreeResponseDto(createFreeComment)),
                 HttpStatus.CREATED);
     }
     @ApiOperation(value = "자유 게시글 조회", notes = "자유 게시글 id를 path에 붙여서 자유 게시글을 조회한다.")
@@ -77,7 +77,7 @@ public class FreeController {
                                       @RequestBody FreeCommentDto.Default patchCommentDto){
         Free updateFreeComment = freeService.updateFreeComment(freeId, commentId, freeMapper.commentPatchToFreeComment(patchCommentDto));
         return new ResponseEntity<>(
-                new SingleResponseDto<>(freeMapper.FreeToFreeResponseDto(updateFreeComment)),
+                new SingleResponseDto<>(freeMapper.freeToFreeResponseDto(updateFreeComment)),
                 HttpStatus.OK);
     }
 
@@ -88,7 +88,7 @@ public class FreeController {
         Free free = freeService.updateLike(freeId, freeMapper.freeLikeDtoToFreeLike(freeLikeDto));
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(freeMapper.FreeToFreeResponseDto(free)), HttpStatus.OK);
+                new SingleResponseDto<>(freeMapper.freeToFreeResponseDto(free)), HttpStatus.OK);
 //        List<FreeLike> freeLikes = freeService.updateLike(freeId, freeMapper.freeLikeDtoToFreeLike(freeLikeDto)).getFreeLikes();
 //
 //        return new ResponseEntity<>(
