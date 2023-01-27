@@ -41,17 +41,20 @@ public class Free {
     private String freeBody;
 
     @CreatedDate
-    @Column(name = "CREATTED_AT", updatable = false)
+    @Column(name = "CREATED_AT", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_AT")
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "free",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "free", cascade = CascadeType.ALL)
+    private List<FreeComment> freeComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "free", cascade = CascadeType.ALL)
     private List<FreeLike> freeLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "free",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "free", cascade = CascadeType.ALL)
     private List<FreeTag> freeTags = new ArrayList<>();
 
     @Column

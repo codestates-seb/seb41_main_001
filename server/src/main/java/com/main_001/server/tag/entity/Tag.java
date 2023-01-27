@@ -31,7 +31,7 @@ public class Tag {
     private String tagName;
     private String emoji;
 
-    @NotNull
-    private int count;
+    private int recruitCount;
+    private int freeCount;
 
 }

@@ -2,10 +2,7 @@ package com.main_001.server.free.entity;
 
 import com.main_001.server.member.entity.Member;
 import com.main_001.server.recruit.entity.Recruit;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class FreeLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
