@@ -69,6 +69,9 @@ public class ResponseDto {
 
         @ApiModelProperty(example = "태그 이름")
         private String tagName;
+
+        @ApiModelProperty(example = "태그 이모지")
+        private String emoji;
     }
 
     @Builder

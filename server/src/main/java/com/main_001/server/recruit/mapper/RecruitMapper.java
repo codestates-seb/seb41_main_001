@@ -42,7 +42,7 @@ public interface RecruitMapper {
         recruit.setDate(requestBody.getDate());
         recruit.setLocation(requestBody.getLocation());
         recruit.setLat(requestBody.getLat());
-        recruit.setLon(recruit.getLon());
+        recruit.setLon(requestBody.getLon());
         recruit.setAgeGroupString(requestBody.getAges().toString());
         return recruit;
     }
@@ -138,6 +138,7 @@ public interface RecruitMapper {
                         .builder()
                         .tagId(recruitTag.getTag().getTagId())
                         .tagName(recruitTag.getTag().getTagName())
+                        .emoji(recruitTag.getTag().getEmoji())
                         .build())
                 .collect(Collectors.toList());
     }

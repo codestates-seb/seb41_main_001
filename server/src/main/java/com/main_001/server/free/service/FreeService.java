@@ -6,17 +6,22 @@ import com.main_001.server.free.dto.FreeDto;
 import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.entity.FreeComment;
 import com.main_001.server.free.entity.FreeLike;
+import com.main_001.server.free.entity.FreeTag;
 import com.main_001.server.free.repositpry.FreeCommentRepository;
 import com.main_001.server.free.repositpry.FreeLikeRepository;
 import com.main_001.server.free.repositpry.FreeRepository;
 import com.main_001.server.member.repository.MemberRepository;
 import com.main_001.server.member.service.MemberService;
+import com.main_001.server.recruit.repository.RecruitCommentRepository;
+import com.main_001.server.tag.entity.Tag;
+import com.main_001.server.tag.repository.TagRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,33 +34,46 @@ public class FreeService{
     private final FreeLikeRepository freeLikeRepository;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final TagRepository tagRepository;
+    private final RecruitCommentRepository recruitCommentRepository;
 
-    public FreeService(FreeRepository freeRepository, FreeCommentRepository freeCommentRepository, FreeLikeRepository freeLikeRepository, MemberService memberService, MemberRepository memberRepository) {
+    public FreeService(FreeRepository freeRepository, FreeCommentRepository freeCommentRepository, FreeLikeRepository freeLikeRepository, MemberService memberService, MemberRepository memberRepository,
+                       TagRepository tagRepository,
+                       RecruitCommentRepository recruitCommentRepository) {
         this.freeRepository = freeRepository;
         this.freeCommentRepository = freeCommentRepository;
         this.freeLikeRepository = freeLikeRepository;
         this.memberService = memberService;
         this.memberRepository = memberRepository;
+        this.tagRepository = tagRepository;
+        this.recruitCommentRepository = recruitCommentRepository;
     }
-    //Todo
+
     public Free createFreeBoard(Free free) {
-        memberService.findMember(free.getMember().getMemberId());
-        return freeRepository.save(free);
+        verifyFree(free);
+        free.setCreatedAt(LocalDateTime.now());
+        free.setModifiedAt(LocalDateTime.now());
+        free.setMember(memberRepository.findById(free.getMember().getMemberId()).orElseThrow());
+        for(FreeTag freeTag : free.getFreeTags()){
+            Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
+            tag.setFreeCount(tag.getFreeCount()+1);
+        }
+        return saveFree(free);
     }
 
 
-    //Todo : null 입력이 주어졌을 때 조건문으로 처리
-    public Free updateFreeBoard(long freeId, FreeDto.PatchFreeBoard patchFreeBoardDto) {
+    public Free updateFreeBoard(long freeId, Free free) {
         Free findFree = findVerifiedFreeBoard(freeId);
-        findFree.setFreeBody(patchFreeBoardDto.getFreeBody());
-        findFree.setFreeTitle(patchFreeBoardDto.getFreeTitle());
-        findFree.setCategory(patchFreeBoardDto.getCategory());
-        return freeRepository.save(findFree);
+        if(!Objects.equals(findFree.getMember().getMemberId(), free.getMember().getMemberId())) throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);
+        if(free.getFreeBody()!=null) findFree.setFreeBody(free.getFreeBody());
+        if(free.getFreeTitle()!=null) findFree.setFreeTitle(free.getFreeTitle());
+        if(free.getCategory()!=null) findFree.setCategory(free.getCategory());
+        return saveFree(findFree);
     }
 
-    //Todo
     public void deleteFreeBoard(long freeId, long memberId) {
-        memberService.findMember(memberId);
+        Free findFree = findVerifiedFreeBoard(freeId);
+        if(findFree.getMember().getMemberId()!=memberId) throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);
         freeRepository.deleteById(freeId);
     }
 
@@ -93,9 +111,10 @@ public class FreeService{
         freeCommentRepository.deleteById(freeComment.getCommentId());
     }
 
-    //Todo
     public Free findFreeBoard(long freeId) {
-        return freeRepository.findByFreeId(freeId);
+        Free findFree = findVerifiedFreeBoard(freeId);
+        findFree.setViews(findFree.getViews()+1);
+        return saveFree(findFree);
     }
 
 
@@ -118,5 +137,13 @@ public class FreeService{
         Free free = optionalFreeBoard.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.FREEBOARD_NOT_FOUND));
         return free;
+    }
+
+    private void verifyFree(Free free) {
+        memberService.findMember(free.getMember().getMemberId());
+    }
+
+    private Free saveFree(Free free) {
+        return freeRepository.save(free);
     }
 }
