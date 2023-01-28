@@ -209,7 +209,7 @@ const RecruitReviewModal = ({
                     {
                       tagId: creatorId,
                       tagName: creatorNickname,
-                      tagEmoji: '👑',
+                      emoji: '👑',
                     },
                     ...APPLICANTS,
                   ]}

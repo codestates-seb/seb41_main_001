@@ -13,7 +13,11 @@ const LogInContainer = styled.div`
 `;
 
 const LogInForm = styled.form`
+<<<<<<< HEAD
   width: 25rem;
+=======
+  width: auto;
+>>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
   height: 50%;
   padding: 1rem;
   margin: 5rem;
@@ -50,6 +54,14 @@ const LogInForm = styled.form`
       }
     }
   }
+<<<<<<< HEAD
+=======
+
+  div:first-child {
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+>>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
 `;
 
 const ButtonContainer = styled.div`
@@ -57,10 +69,28 @@ const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
   button {
+<<<<<<< HEAD
     margin-left: 0.6rem;
   }
   a:nth-child(2) {
     margin-right: 2rem;
+=======
+    width: 7rem;
+    text-decoration: none;
+    background-color: var(--gray);
+    color: white;
+    border-radius: 0.3rem;
+    margin: 0.3rem;
+    padding: 0.5rem 1rem;
+    transition: 0.2s ease-in-out;
+    font-size: 16px;
+    &:hover {
+      cursor: pointer;
+      background-color: var(--neon-yellow);
+      color: black;
+      transition: 0.2s ease-in-out;
+    }
+>>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
   }
 `;
 
@@ -83,7 +113,11 @@ const LogIn = () => {
           alert(JSON.stringify(data));
         })}
       >
+<<<<<<< HEAD
         <h1>로그인</h1>
+=======
+        <div>로그인</div>
+>>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
         <div>
           <label htmlFor="email">이메일</label>
           <div>

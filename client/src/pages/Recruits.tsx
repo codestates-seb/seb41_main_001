@@ -12,8 +12,11 @@ const MainContainer = styled.main`
   display: flex;
   justify-content: center;
   margin-top: 100px;
+<<<<<<< HEAD
   > div:first-child {
   }
+=======
+>>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
 
   ul {
     list-style: none;
@@ -65,9 +68,10 @@ const Recruits = () => {
       views: 0,
       memberId: 1,
       nickname: '글자수세기TEST글자수세기TEST글자',
+      authorHeart: 50,
       likes: 0,
       location: { latitude: 37.343336, longitude: 127.1233716 },
-      heart: 50, // number, 0
+      heartLimit: 50,
       ageGroup: ['10', '20', '30', '40', '50', '60'],
       sex: 'Both', // Male, Female, Both
       applies: [
@@ -83,7 +87,7 @@ const Recruits = () => {
       minRequire: 2,
       require: 5,
       date: '2023-01-02T16:18:48.908218',
-      recruitTags: [{ tagId: 1, tagName: '축구/풋볼', tagEmoji: '⚽️' }],
+      recruitTags: [{ tagId: 1, tagName: '축구/풋볼', emoji: '⚽️' }],
       recruitLikes: [
         {
           memberId: 1,
@@ -101,6 +105,7 @@ const Recruits = () => {
       ],
       recruitComments: [
         {
+          commentId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -123,9 +128,10 @@ const Recruits = () => {
       views: 0,
       memberId: 1,
       nickname: 'aaa',
+      authorHeart: 50,
       likes: 0,
       location: { latitude: 37.343336, longitude: 127.1233716 },
-      heart: 20, // number, 0
+      heartLimit: 20, // number, 0
       ageGroup: ['10', '20', '30'],
       sex: 'Male', // Male, Female, Both
       applies: [
@@ -135,7 +141,7 @@ const Recruits = () => {
       minRequire: 2,
       require: 5,
       date: '2023-01-02T16:18:48.908218',
-      recruitTags: [{ tagId: 21, tagName: '스케이트/인라인', tagEmoji: '⛸️' }],
+      recruitTags: [{ tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' }],
       recruitLikes: [
         {
           memberId: 1,
@@ -153,6 +159,7 @@ const Recruits = () => {
       ],
       recruitComments: [
         {
+          commentId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -175,16 +182,17 @@ const Recruits = () => {
       views: 0,
       memberId: 1,
       nickname: 'aaa',
+      authorHeart: 50,
       likes: 0,
       location: { latitude: 37.343336, longitude: 127.1233716 },
-      heart: 20, // number, 0
+      heartLimit: 20, // number, 0
       ageGroup: ['10', '20', '30', '40', '50', '60', '70'],
       sex: 'Female', // Male, Female, Both
       applies: [{ memberId: 2, nickname: 'bbb', heart: 80 }],
       minRequire: 2,
       require: 5,
       date: '2023-01-02T16:18:48.908218',
-      recruitTags: [{ tagId: 11, tagName: '무술/주짓수', tagEmoji: '🥋' }],
+      recruitTags: [{ tagId: 11, tagName: '무술/주짓수', emoji: '🥋' }],
       recruitLikes: [
         {
           memberId: 1,
@@ -202,6 +210,7 @@ const Recruits = () => {
       ],
       recruitComments: [
         {
+          commentId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,

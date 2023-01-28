@@ -149,15 +149,20 @@ const RecruitDetail = () => {
     body: '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
     image: '',
     createdAt: '2023-01-02T16:18:48.908218',
+<<<<<<< HEAD
     modifiedAt: '2023-01-20T16:18:48.908218',
+=======
+    modifiedAt: '2023-01-25T16:18:48.908218',
+>>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
     recruitStatus: '활동종료', // 모집중/모집완료/최소인원충족/활동종료
     star: 0,
     views: 0,
     memberId: 1,
     nickname: '글자수세기TEST글자수세기TEST글자',
+    authorHeart: 50,
     likes: 0,
     location: { latitude: 37.343336, longitude: 127.1233716 },
-    heart: 50, // number, 0
+    heartLimit: 50, // number, 0
     ageGroup: ['10', '20', '30', '40', '50', '60'],
     sex: 'Male', // Male, Female, Both
     applies: [
@@ -173,14 +178,15 @@ const RecruitDetail = () => {
     ],
     minRequire: 2,
     require: 5,
-    date: '2023-01-02T16:18:48.908218',
-    recruitTags: [{ tagId: 1, tagName: '축구/풋볼', tagEmoji: '⚽️' }],
+    date: '2023-01-22T16:18:48.908218',
+    recruitTags: [{ tagId: 1, tagName: '축구/풋볼', emoji: '⚽️' }],
     recruitLikes: [
       {
         memberId: 1,
       },
     ],
     reviews: [
+<<<<<<< HEAD
       {
         reviewId: 1,
         memberId: 1,
@@ -197,9 +203,28 @@ const RecruitDetail = () => {
         body: '좋아요',
         star: 2,
       },
+=======
+      // {
+      //   reviewId: 1,
+      //   memberId: 1,
+      //   nickname: '닉네임',
+      //   heart: 50,
+      //   body: '글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TES',
+      //   star: 5,
+      // },
+      // {
+      //   reviewId: 2,
+      //   memberId: 3,
+      //   nickname: '글자수세기TEST글자수세기TEST글자',
+      //   heart: 50,
+      //   body: '좋아요',
+      //   star: 2,
+      // },
+>>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
     ],
     recruitComments: [
       {
+        commentId: 1,
         memberId: 1,
         nickname: 'holiday',
         heart: 50,
@@ -208,6 +233,7 @@ const RecruitDetail = () => {
         modifiedAt: '2023-01-18T17:35:10.165851',
       },
       {
+        commentId: 1,
         memberId: 2,
         nickname: '글자수세기TEST글자수세기TEST글자',
         heart: 50,
@@ -255,7 +281,7 @@ const RecruitDetail = () => {
         <CreatorCard
           memberId={DATA.memberId}
           nickname={DATA.nickname}
-          heart={DATA.heart}
+          heart={DATA.authorHeart}
         />
       </div>
       <ContentBox>{DATA.body}</ContentBox>
@@ -271,7 +297,7 @@ const RecruitDetail = () => {
             </div>
             <div>
               <i className="fa-solid fa-heart-circle-exclamation" />
-              <span>{`심박수 ${DATA.heart} 이상`}</span>
+              <span>{`심박수 ${DATA.heartLimit} 이상`}</span>
             </div>
             <div>
               <span>신청 가능 연령</span>
@@ -292,7 +318,7 @@ const RecruitDetail = () => {
       {!checkIfMeetingEnded(DATA.date) ? (
         <RecruitApplyBeforeMeeting
           applicantsId={APPLICANTS_ID}
-          heartCond={DATA.heart}
+          heartCond={DATA.heartLimit}
           ageGroup={DATA.ageGroup}
           sexCon={DATA.sex}
           recruitStatus={DATA.recruitStatus}
