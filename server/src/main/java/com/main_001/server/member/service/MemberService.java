@@ -2,53 +2,61 @@ package com.main_001.server.member.service;
 
 import com.main_001.server.auth.dto.LoginDto;
 import com.main_001.server.auth.jwt.JwtTokenizer;
-//import com.main_001.server.auth.utils.CustomAuthorityUtils;
+import com.main_001.server.auth.utils.CustomAuthorityUtils;
+import com.main_001.server.exception.BusinessLogicException;
+import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.file.FileHandler;
 import com.main_001.server.file.UploadFile;
 import com.main_001.server.member.dto.TokenDto;
-import com.main_001.server.member.entity.MemberImage;
-import com.main_001.server.member.repository.MemberImageRepository;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.SimpleMailMessage;
 import com.main_001.server.member.entity.Member;
+import com.main_001.server.member.entity.MemberImage;
+import com.main_001.server.member.entity.MemberTag;
+import com.main_001.server.member.repository.MemberImageRepository;
 import com.main_001.server.member.repository.MemberRepository;
+import com.main_001.server.tag.repository.TagRepository;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-//    private final PasswordEncoder passwordEncoder;
-//    private final CustomAuthorityUtils authorityUtils;
-//    private final JwtTokenizer jwtTokenizer;
+    private final PasswordEncoder passwordEncoder;
+    private final CustomAuthorityUtils authorityUtils;
+    private final JwtTokenizer jwtTokenizer;
     private final JavaMailSender mailSender;
     private final MemberImageRepository memberImageRepository;
     private final FileHandler fileHandler;
 
-    @Value("${file.path}")
+    private final TagRepository tagRepository;
+//    @Value("${file.path}")
     private String memberImagePath;
 
     public MemberService(MemberRepository memberRepository,
-//                         PasswordEncoder passwordEncoder,
-//                         CustomAuthorityUtils authorityUtils,
-//                         JwtTokenizer jwtTokenizer,
+                         PasswordEncoder passwordEncoder,
+                         CustomAuthorityUtils authorityUtils,
+                         JwtTokenizer jwtTokenizer,
                          JavaMailSender mailSender,
                          MemberImageRepository memberImageRepository,
-                         FileHandler fileHandler) {
+                         FileHandler fileHandler,
+                         TagRepository tagRepository) {
         this.memberRepository = memberRepository;
-//        this.passwordEncoder = passwordEncoder;
-//        this.authorityUtils = authorityUtils;
-//        this.jwtTokenizer = jwtTokenizer;
+        this.passwordEncoder = passwordEncoder;
+        this.authorityUtils = authorityUtils;
+        this.jwtTokenizer = jwtTokenizer;
         this.mailSender = mailSender;
         this.memberImageRepository = memberImageRepository;
         this.fileHandler = fileHandler;
+        this.tagRepository = tagRepository;
     }
 
     // 이메일, 닉네임, 전화번호를 따로 검사하는 로직이 있기 때문에 회원가입은 바로 저장소에 저장될 수 있다.
@@ -56,13 +64,16 @@ public class MemberService {
     public Member createMember(Member member) {
         // 비밀번호 암호화
         // TODO 개발 완료 후 봉인 해제
-//        String encryptedPassword = passwordEncoder.encode(member.getPassword());
-//        member.setPassword(encryptedPassword);
+        String encryptedPassword = passwordEncoder.encode(member.getPassword());
+        member.setPassword(encryptedPassword);
 
         // DB에 Member Role 저장
         // TODO 개발 완료 후 봉인 해제
-//        List<String> roles = authorityUtils.createRoles(member.getEmail());
-//        member.setRoles(roles);
+        List<String> roles = authorityUtils.createRoles(member.getEmail());
+        member.setRoles(roles);
+
+        // 존재하는 Tag인지 확인
+        findVerifiedTag(member.getMemberTags());
 
 //        MemberImage memberImageLocal = MemberImage.builder()
 //                .filePath(memberImagePath)
@@ -72,7 +83,14 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    //
+    // 태그 존재 여부 확인
+    private void findVerifiedTag(List<MemberTag> memberTags) {
+        for (MemberTag memberTag : memberTags) {
+            tagRepository.findById(memberTag.getTag().getTagId()).orElseThrow();
+        }
+    }
+
+    // 프로필 이미지 생성
     @SneakyThrows
     @Transactional
     public void createImage(Long memberId, List<MultipartFile> multipartFiles) {
@@ -89,6 +107,7 @@ public class MemberService {
                     .fileSize(uploadFile.getFileSize())
                     .build();
             memberImages.add(memberImage);
+            memberImageRepository.save(memberImage); // 추후 수정 필요함
         });
 
         if (!memberImages.isEmpty()) {
@@ -118,25 +137,28 @@ public class MemberService {
     // 로그인 로직
     // mapper 사용해볼 것
     // TODO 개발 완료 후 봉인 해제
-//    public TokenDto.Response loginMember(LoginDto requestBody) {
-//        Member findMember = findMemberByEmail(requestBody.getEmail());
-//        isValid(findMember, requestBody.getPassword());
-//
-//        String accessToken = jwtTokenizer.generateAccessToken(findMember);
-//        String refreshToken = jwtTokenizer.generateRefreshToken(findMember);
-//
-//        // 헤더에 추가할 내용
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Authorizaion", "Bearer " + accessToken);
-//        headers.add("Refresh", refreshToken);
-//        headers.add("member-id", findMember.getMemberId().toString());
+    public TokenDto.Response loginMember(LoginDto requestBody) {
+        Member findMember = findMemberByEmail(requestBody.getEmail());
+        isValid(findMember, requestBody.getPassword());
+
+        String accessToken = jwtTokenizer.generateAccessToken(findMember);
+        String refreshToken = jwtTokenizer.generateRefreshToken(findMember);
+
+        // 헤더에 추가할 내용
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorizaion", "Bearer " + accessToken);
+        headers.add("Refresh", refreshToken);
+        headers.add("member-id", findMember.getMemberId().toString());
 //        headers.add("Role", findMember.getRoles().toString());
-//
-//        return TokenDto.Response
-//                .builder()
-//                .headers(headers)
-//                .build();
-//    }
+        headers.add("heart", Integer.toString(findMember.getHeart()));
+        headers.add("birth", findMember.getBirth());
+        headers.add("sex", findMember.getSex());
+
+        return TokenDto.Response
+                .builder()
+                .headers(headers)
+                .build();
+    }
 
     // 임시 비밀번호 발급
     public void sendMail(String email) {
@@ -145,11 +167,10 @@ public class MemberService {
         // 비밀번호를 변경해주어야 한다.
         // email로 User를 찾아서 저장
         Member findMember = findMemberByEmail(email);
+        findMember.setPassword(passwordEncoder.encode(tempPassword));
 
-        findMember.setPassword(tempPassword);
-
-//        TODO 비밀번호 변경(security 적용 후 아래 코드로 변경)
-//        findMember.setPassword(passwordEncoder.encode(tempPassword));
+//        TODO 비밀번호 변경(security 적용 후 주석 처리함)
+//        findMember.setPassword(tempPassword);
 
         memberRepository.save(findMember);
 
@@ -168,11 +189,11 @@ public class MemberService {
         Member findMember = findVerifiedMember(memberId);
         isValid(findMember, curPassword);
 
-        findMember.setPassword(newPassword);
+//        findMember.setPassword(newPassword);
 
 //        TODO 개발 완료 후 봉인 해제
-//        String encryptedPassword = passwordEncoder.encode(newPassword);
-//        findMember.setPassword(encryptedPassword);
+        String encryptedPassword = passwordEncoder.encode(newPassword);
+        findMember.setPassword(encryptedPassword);
 
         memberRepository.save(findMember);
     }
@@ -185,8 +206,12 @@ public class MemberService {
                 .ifPresent(findMember::setNickname);
         Optional.ofNullable(member.getPhone())
                 .ifPresent(findMember::setPhone);
-        Optional.ofNullable(member.getLocationGroupString())
-                .ifPresent(findMember::setLocationGroupString);
+        Optional.ofNullable(member.getLocation())
+                .ifPresent(findMember::setLocation);
+        Optional.of(member.getLat())
+                .ifPresent(findMember::setLat);
+        Optional.of(member.getLon())
+                .ifPresent(findMember::setLon);
         Optional.ofNullable(member.getMemberTags())
                 .ifPresent(findMember::setMemberTags);
 
@@ -200,31 +225,37 @@ public class MemberService {
 
     // 회원 탈퇴
     public void deleteMember(long memberId) {
-        memberRepository.deleteById(memberId);
+        Member findMember = findVerifiedMember(memberId);
+        findMember.setPassword("");
+        findMember.setName("Member" + memberId);
+        findMember.setSex("Deleted Member");
+
+        memberRepository.save(findMember);
+//        memberRepository.deleteById(memberId);
     }
 
     // 비밀번호가 맞는지 확인
     private void isValid(Member findMember, String password) {
-        if (!findMember.getPassword().equals(password))
-            throw new RuntimeException("Different Password!");
+//        if (!findMember.getPassword().equals(password))
+//            throw new RuntimeException("Different Password!");
 
 //        TODO 개발 완료 후 봉인 해제
-//        if (!passwordEncoder.matches(password, findMember.getPassword()))
-//            throw new RuntimeException("Different Password!");
+        if (!passwordEncoder.matches(password, findMember.getPassword()))
+            throw new BusinessLogicException(ExceptionCode.DIFFERENT_PASSWORD);
     }
 
     // 회원 id가 존재하는지 확인
     private Member findVerifiedMember(long memberId) {
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         return optionalMember.orElseThrow(() ->
-                new RuntimeException("Member not found"));
+                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
     // 이메일에 해당하는 회원 반환
     private Member findMemberByEmail(String email) {
         Optional<Member> optionalUser = memberRepository.findByEmail(email);
         return optionalUser.orElseThrow(() ->
-                new RuntimeException("Member not found"));
+                new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
     // 임시 비밀번호 생성
