@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
 
 const WithdrawContainer = styled.main`
   background-color: var(--gray);
@@ -47,6 +48,30 @@ const WithdrawWrapper = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: row;
+  > button {
+    border: 1px solid white;
+    border-radius: 10px;
+    align-items: center;
+    padding: 15px;
+    margin: 10px;
+    font-size: 16px;
+    height: 50px;
+    text-align: center;
+    display: flex;
+    text-decoration: none;
+    color: white;
+    justify-content: center;
+    background-color: var(--gray);
+    &:hover {
+      background-color: var(--neon-yellow);
+      cursor: pointer;
+    }
+    &:disabled {
+      background-color: var(--gray);
+      color: gray;
+      border: 1px solid gray;
+    }
+  }
 `;
 
 const Button = styled(Link)`
@@ -63,12 +88,26 @@ const Button = styled(Link)`
   color: white;
   justify-content: center;
   &:hover {
-    background-color: black;
+    background-color: var(--neon-yellow);
   }
 `;
 
 const Withdraw = () => {
   const { id } = useParams();
+  // let checker:(HTMLElement|null) = document.getElementById('consent');
+  // let wbtn:(HTMLElement|null) = document.getElementById('withdraw');
+  // checker.onchange = function() {
+  //   wbtn.disabled = !!this.checked;
+  // };
+  const navigate = useNavigate();
+  const [agreement, setAgreement] = useState(false);
+  const changeAgreement = () => setAgreement(!agreement);
+
+  const withdrawal = () => {
+    // 여기에 axios patch 넣어주면 됨.
+    navigate('/');
+    console.log(id, ' withdrew');
+  };
   return (
     <WithdrawWrapper>
       <WithdrawContainer>
@@ -91,7 +130,13 @@ const Withdraw = () => {
         </div>
         <div>
           <label htmlFor="consent">
-            <input type="checkbox" name="consent" id="consent" value="blue" />
+            <input
+              type="checkbox"
+              name="consent"
+              id="consent"
+              value="agree"
+              onClick={changeAgreement}
+            />
             <div>
               본인은 위에 적힌 정보를 읽었으며 회원 탈퇴의 의미를 이해합니다.
               <br />
@@ -101,9 +146,14 @@ const Withdraw = () => {
           </label>
         </div>
         <ButtonContainer>
-          <Button to="/" type="button">
+          <button
+            type="button"
+            id="withdraw"
+            disabled={!agreement}
+            onClick={withdrawal}
+          >
             탈퇴하기
-          </Button>
+          </button>
           <Button to={`/members/mypage/${id}`}>돌아가기</Button>
         </ButtonContainer>
       </WithdrawContainer>

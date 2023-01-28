@@ -1,12 +1,40 @@
 import { useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
+// import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
+import useCurrentLocation from '../utils/useCurrentLocation';
+import KakaoMapClick from '../components/KakaoMapClick';
+import Button from '../components/Button';
+// import RecruitDataProps from '../interfaces/RecruitDataProps';
+
+enum GenderEnum {
+  Female = '여성',
+  Male = '남성',
+  Both = '성별 무관',
+}
+
+enum AgeEnum {
+  teenage = 10,
+  twenties = 20,
+  thirties = 30,
+  forties = 40,
+  fifties = 50,
+  sixties = 60,
+}
 
 interface IFormInput {
+  tag: string;
   title: string;
   content: string;
   date: string;
+  require: number;
+  minRequire: number;
+  genderCondition: GenderEnum;
+  ageCondition: AgeEnum;
+  heartRateCondition: number;
   location: string;
-  image: string;
+  // image: string;
 }
 
 const ERContainer = styled.div`
@@ -31,13 +59,13 @@ const ERForm = styled.form`
   justify-content: center;
   align-items: center;
 
-  div:first-child {
+  /* div:first-child {
     margin-top: 1rem;
     margin-bottom: 1.5rem;
     font-weight: bold;
-  }
+  } */
 
-  div {
+  > div {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -62,7 +90,10 @@ const ERForm = styled.form`
     }
 
     .length {
-      height: 5rem;
+      /* height: 5rem; */
+      /* height: auto; */
+      max-height: 10rem;
+      width: 15rem;
     }
   }
 
@@ -89,20 +120,61 @@ const ERForm = styled.form`
   }
 `;
 
+const MapContainer = styled.div`
+  margin-left: 4rem;
+  > div {
+    width: 20rem;
+    height: 20rem;
+  }
+`;
+
 const EditRecruit = () => {
   const { register, handleSubmit } = useForm<IFormInput>();
-  const onSubmit = (data: IFormInput) => console.log(data);
+  const navigate = useNavigate();
+  const { location: currentLocation } = useCurrentLocation();
+  const { recruitId } = useParams();
+  // const [recruitData, setRecruitData] = useState<RecruitDataProps[]>([]);
+  const onSubmit = (data: IFormInput) => {
+    axios
+      .patch(`/recruits/${recruitId}`, {
+        ...data,
+        location: {
+          latitude: currentLocation?.latitude,
+          longitude: currentLocation?.longitude,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        navigate(`/recruits/${recruitId}`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // useEffect(() => {
+  //   axios
+  //     .get(`/recruits/${recruitId}`)
+  //     .then((res) => {
+  //       setRecruitData(res.data);
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
 
   return (
     <ERContainer>
       <ERForm onSubmit={handleSubmit(onSubmit)}>
-        <div>모집 게시글 수정</div>
+        <h1>모집 게시글 수정</h1>
         <div>
           <label htmlFor="title">제목</label>
           <input
             id="title"
             type="text"
-            {...register('title', { required: true })}
+            // value={recruitData.title}
+            {...register('title', { required: '제목을 입력하세요' })}
           />
         </div>
         <div>
@@ -110,6 +182,7 @@ const EditRecruit = () => {
           <textarea
             id="content"
             className="length"
+            // value={recruitData.body}
             {...register('content', { required: true })}
           />
         </div>
@@ -118,25 +191,40 @@ const EditRecruit = () => {
           <input
             id="date"
             type="datetime-local"
+            // value={recruitData.date}
             {...register('date', { required: true })}
           />
         </div>
-        <div>
+        <MapContainer>
           <label htmlFor="location">모임 장소</label>
-          <input
+          {/* <input
             id="location"
             type="text"
             {...register('location', { required: true })}
-          />
-        </div>
-        <div>
+          /> */}
+          <div className="mapClick">
+            {/* {recruitData && (
+              <KakaoMapClick
+                latitude={recruitData.location.latitude}
+                longitude={recruitData.location.longitude}
+              />
+            )} */}
+            {currentLocation && (
+              <KakaoMapClick
+                latitude={currentLocation.latitude}
+                longitude={currentLocation.longitude}
+              />
+            )}
+          </div>
+        </MapContainer>
+        {/* <div>
           <label htmlFor="image">이미지</label>
           <input id="image" type="file" {...register('image')} />
-        </div>
+        </div> */}
         <div className="warn">
           모임 일시, 모임 장소는 모임원들과 충분한 상의 후 변경하세요
         </div>
-        <button type="submit">수정하기</button>
+        <Button onClick={() => {}} value="수정하기" type="submit" />
       </ERForm>
     </ERContainer>
   );

@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
-import { useParams, Link } from 'react-router-dom';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Tag from '../components/Tag';
+// import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
-
+import useCurrentLocation from '../utils/useCurrentLocation';
 // declare global {
 //   interface Window {
 //     kakao: any;
@@ -12,7 +12,7 @@ import KakaoMap from '../components/KakaoMap';
 //   const kakao: any;
 // }
 
-const EditContainer = styled.main`
+const EditContainer = styled.form`
   background-color: var(--gray);
   color: white;
   display: flex;
@@ -44,23 +44,6 @@ const PersonalInfo = styled.div`
   margin: 10px 0 10px 10px;
   border-radius: 20px;
   padding: 40px 0px 40px 20px;
-`;
-
-const InfoBlock = styled.label`
-  display: flex;
-  flex-direction: row;
-  padding: 5px;
-  margin: 8px;
-  > div:first-child {
-    width: 120px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
-    text-shadow: white 0 0 5px;
-    margin-right: 10px;
-    margin-top: 5px;
-    margin-left: 20px;
-  }
   input {
     margin-bottom: 15px;
     background-color: var(--gray);
@@ -78,9 +61,26 @@ const InfoBlock = styled.label`
     }
     &:-webkit-autofill {
       box-shadow: 0 0 0 20px var(--gray) inset;
-      -webkit-text-fill-color: var(--gray);
+      -webkit-text-fill-color: white;
       color: white;
     }
+  }
+`;
+
+const InfoBlock = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 5px;
+  margin: 8px;
+  > label:first-child {
+    width: 120px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    text-shadow: white 0 0 5px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-left: 20px;
   }
   > button {
     border: 1px solid white;
@@ -90,22 +90,32 @@ const InfoBlock = styled.label`
     background-color: var(--gray);
     margin: 0 2rem;
     &:hover {
-      background-color: black;
+      transition: 0.2s ease-in-out;
+      text-shadow: white 0 0 5px;
+      background-color: var(--neon-yellow);
+      color: black;
+      border: 1px solid var(--neon-yellow);
+      cursor: pointer;
     }
   }
   #map {
     width: 20rem;
     height: 21rem;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 1rem;
+    margin-left: 0.8rem;
     > #locationButton {
       padding: 1rem 2rem;
       background-color: var(--gray);
       &:hover {
-        background-color:black;
+        transition: 0.2s ease-in-out;
+        text-shadow: white 0 0 5px;
+        background-color: var(--neon-yellow);
+        color: black;
+        border: 1px solid var(--neon-yellow);
         cursor: pointer;
       }
     }
@@ -129,8 +139,10 @@ const InfoBlock = styled.label`
         font-size: 16px;
         margin-left: 15px;
         &:hover {
-          color: var(--neon-blue);
+          color: var(--neon-red);
+          text-shadow: white 0 0 2px;
           transition: 0.2s ease-in-out;
+          cursor: pointer;
         }
       }
     }
@@ -145,7 +157,35 @@ const Pfp = styled.img<PreviewPfp>`
   margin: 0 10px;
 `;
 
-const Button = styled(Link)`
+const Button = styled.button`
+  border: 1px solid white;
+  border-radius: 10px;
+  align-items: center;
+  padding: 15px;
+  margin: 15px 30px;
+  font-size: 20px;
+  height: 50px;
+  text-align: center;
+  display: flex;
+  text-decoration: none;
+  color: white;
+  justify-content: center;
+  background-color: var(--gray);
+  cursor: pointer;
+  i {
+    padding-right: 10px;
+  }
+  &:hover {
+    transition: 0.2s ease-in-out;
+    text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
+    cursor: pointer;
+  }
+`;
+
+const TempButton = styled(Link)`
   border: 1px solid white;
   border-radius: 10px;
   align-items: center;
@@ -162,11 +202,14 @@ const Button = styled(Link)`
     padding-right: 10px;
   }
   &:hover {
-    background-color: black;
-    text-shadow: white 0 0 5px;
     transition: 0.2s ease-in-out;
+    text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
+    cursor: pointer;
   }
-`;
+`; // 임시 버튼, 버튼에 기능 넣으면 navigate 쓰고 Button으로 통일하자
 
 const NoLinkButton = styled.button`
   border: 1px solid white;
@@ -187,9 +230,12 @@ const NoLinkButton = styled.button`
     padding-right: 5px;
   }
   &:hover {
-    background-color: black;
-    text-shadow: white 0 0 5px;
     transition: 0.2s ease-in-out;
+    text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
+    cursor: pointer;
   }
 `;
 
@@ -216,9 +262,12 @@ const InputButton = styled.label`
     padding-right: 5px;
   }
   &:hover {
-    background-color: black;
-    text-shadow: white 0 0 5px;
     transition: 0.2s ease-in-out;
+    text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
+    cursor: pointer;
   }
 `;
 
@@ -229,7 +278,7 @@ const TagContainer = styled.div`
     width: 25rem;
     flex-wrap: wrap;
     border: none;
-    padding-left: 0 ;
+    padding-left: 0;
     margin-left: 0;
   }
 `;
@@ -250,11 +299,18 @@ interface PreviewPfp {
 // }
 interface UserFormInput {
   nickname: string;
-  curpassword: string;
-  newpassword: string;
+  curPassword: string;
+  newPassword: string;
+  newPasswordCheck: string;
   phone: string;
-  place: string;
-  tags: string;
+
+  locations: string[];
+  memberTags: {
+    tagId: number;
+    tagName: string;
+  }[];
+  // place: string;
+  // tags: string;
 }
 
 // interface location {
@@ -264,19 +320,37 @@ interface UserFormInput {
 
 const EditUser = () => {
   const { id } = useParams();
-  // const [coordinate, setCoordinate] = useState<Coordinates>({
-  //   latitude: 126,
-  //   longitude: 126,
-  //   timestamp: 1,
+  const navigate = useNavigate();
   // });
   const [img, setImg] = useState<any>(
     'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   );
-  const { register, handleSubmit } = useForm<UserFormInput>();
-  const onSubmit = (data: UserFormInput) => console.log(data);
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('change', event.target.value);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserFormInput>();
+  const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
+    console.log('data is ', data);
+    navigate(`/members/mypage/${id}`);
   };
+
+  // const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   console.log('change', event.target.value);
+  // };
+
+  // const [location, setLocation] = useState<{
+  //   latitude: number;
+  //   longitude: number;
+  // } | null>(null);
+
+  const { location: currentLocation } = useCurrentLocation();
+
+  // useCurrentLocation().then((res) => {
+  //   if (res === undefined) return;
+  //   setLocation(res);
+  // });
 
   // const imgRef = useRef<any>();
   // function readImage(input: any) {
@@ -322,49 +396,13 @@ const EditUser = () => {
   // inputImage.addEventListener('change', (e) => {
   //   readImage(e.target);
   // });
-  // function success({ coords, timestamp }: Location) {
-  //   const { latitude, longitude } = coords;
-  //   setCoordinate({
-  //     latitude,
-  //     longitude,
-  //     timestamp,
-  //   });
-  //   console.log('actually, yeah', latitude, longitude);
-  //   console.log(
-  //     'this is what u get',
-  //     coordinate.latitude,
-  //     coordinate.longitude,
-  //   );
-  //   alert(
-  //     `위도: ${coordinate.latitude},
-  //      경도: ${coordinate.longitude},
-  //      위치 반환 시간: ${coordinate.timestamp},`
-  //   );
-  //   // location.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
-  // }
-
-  // const getUserLocation = () => {
-  //   if (!navigator.geolocation) {
-  //     throw Object.assign(new Error('위치 정보가 지원되지 않습니다.'));
-  //   }
-  //   navigator.geolocation.getCurrentPosition(success);
-  // };
-
-  // useEffect(() => {
-  //   getUserLocation();
-  //   const script = document.createElement('script');
-  //   script.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=2a51fcab7ce5015f76fc7c20fc68714c';
-  //   script.async = true;
-  //   document.body.appendChild(script);
-  // }, []);
-
   return (
-    <EditContainer onSubmit={handleSubmit(onSubmit)}>
+    <EditContainer onSubmit={handleSubmit(onSubmitHandler)}>
       <Container>
         <div>회원정보 수정</div>
         <PersonalInfo>
-          <InfoBlock htmlFor="pfp">
-            <div>프로필 사진</div>
+          <InfoBlock>
+            <label htmlFor="pfp">프로필 사진</label>
             <div>
               <Pfp id="preview-image" src={img} />
             </div>
@@ -385,47 +423,64 @@ const EditUser = () => {
               </NoLinkButton>
             </div>
           </InfoBlock>
-          <InfoBlock htmlFor="nickname">
-            <div>닉네임</div>
+          <InfoBlock>
+            <label htmlFor="nickname">닉네임</label>
             <input
+              id="nickname"
               type="text"
-              placeholder="NickName"
+              defaultValue="NickName"
               {...register('nickname', { required: true })}
             />
-            <button type="button">중복 확인</button>
+            {errors.nickname && <span>닉네임을 입력하세요</span>}
+            <NoLinkButton type="button">중복 확인</NoLinkButton>
           </InfoBlock>
-          <InfoBlock htmlFor="formerPassword">
-            <div>기존 비밀번호</div>
+          <InfoBlock>
+            <label htmlFor="formerPassword">기존 비밀번호</label>
             <input
+              id="curPassword"
               type="password"
-              {...register('curpassword', { required: true })}
+              {...register('curPassword', { required: true })}
             />
           </InfoBlock>
-          <InfoBlock htmlFor="newPassword">
-            <div>새 비밀번호</div>
-            <input type="password" {...register('newpassword')} />
-          </InfoBlock>
-          <InfoBlock htmlFor="newPasswordCheck">
-            <div>새 비밀번호 확인</div>
-            <input type="password" name="newPasswordCheck" />
-          </InfoBlock>
-          <InfoBlock htmlFor="phone">
-            <div>휴대폰 번호</div>
+          <InfoBlock>
+            <label htmlFor="newPassword">새 비밀번호</label>
             <input
+              id="newPassword"
+              type="password"
+              {...register('newPassword')}
+            />
+          </InfoBlock>
+          <InfoBlock>
+            <label htmlFor="newPasswordCheck">새 비밀번호 확인</label>
+            <input
+              id="newPasswordCheck"
+              type="password"
+              {...register('newPasswordCheck')}
+            />
+          </InfoBlock>
+          <InfoBlock>
+            <label htmlFor="phone">휴대폰 번호</label>
+            <input
+              id="phone"
               type="tel"
               placeholder="010-1234-5678"
-              {...register('phone')}
+              {...register('phone', { required: true })}
             />
-            <button type="button">중복 확인</button>
+            <NoLinkButton type="button">중복 확인</NoLinkButton>
           </InfoBlock>
-          <InfoBlock htmlFor="location">
-            <div>등록 지역 변경</div>
+          <InfoBlock>
+            <label htmlFor="location">등록 지역 변경</label>
             <div>
-              <div>
-                <div id="map">
-                  <KakaoMap longitude={127} latitude={36} />
-                  <button type="button" id="locationButton">현재 위치 추가</button>
-                </div>
+              <div id="map">
+                {currentLocation && (
+                  <KakaoMap
+                    latitude={currentLocation.latitude}
+                    longitude={currentLocation.longitude}
+                  />
+                )}
+                <button type="button" id="locationButton">
+                  현재 위치 추가
+                </button>
               </div>
               <div>
                 서울시 강서구
@@ -437,149 +492,22 @@ const EditUser = () => {
               </div>
             </div>
           </InfoBlock>
-          <InfoBlock htmlFor="tags">
-            <div>등록 태그 변경</div>
+          <InfoBlock>
+            <label htmlFor="tags">등록 태그 변경</label>
             <TagContainer>
-              <fieldset>
-                <Tag
-                  name="축구/풋살"
-                  emoji="⚽️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="농구"
-                  emoji="🏀"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="야구"
-                  emoji="⚾️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="배구"
-                  emoji="🏐"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="복싱"
-                  emoji="🥊"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="탁구"
-                  emoji="🏓"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="배드민턴"
-                  emoji="🏸"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="테니스/스쿼시"
-                  emoji="🎾"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="태권도/유도"
-                  emoji="🥋"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="검도"
-                  emoji="⚔️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="무술/주짓수"
-                  emoji="🥋"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="족구"
-                  emoji="⚽️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="러닝"
-                  emoji="🏃"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="자전거"
-                  emoji="🚴"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="등산"
-                  emoji="🏔️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="클라이밍"
-                  emoji="🧗‍♀️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="수영"
-                  emoji="🏊‍♀️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="골프"
-                  emoji="⛳️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="요가/필라테스"
-                  emoji="🧘"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="헬스/크로스핏"
-                  emoji="🏋️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="스케이트/인라인"
-                  emoji="⛸️"
-                  onChange={onChange}
-                  register={register}
-                />
-              </fieldset>
+              <fieldset />
             </TagContainer>
           </InfoBlock>
         </PersonalInfo>
         <span>
-          <Button to={`/members/mypage/${id}`}>
+          <Button type="submit">
             <i className="fa-solid fa-square-check" />
             저장하기
           </Button>
-          <Button to={`/members/mypage/${id}`}>
+          <TempButton to={`/members/mypage/${id}`}>
             <i className="fa-solid fa-xmark" />
             취소하기
-          </Button>
+          </TempButton>
         </span>
       </Container>
     </EditContainer>

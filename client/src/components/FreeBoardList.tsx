@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable no-nested-ternary */
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import CreatorMiniCard from './CreatorMiniCard';
@@ -17,17 +19,28 @@ const Board = styled.li`
   font-size: 16px;
 `;
 
+const Category = styled('div')<{ color: string }>`
+  width: 4.5rem;
+  height: 2rem;
+  border-radius: 1rem;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.color};
+`;
+
 const ContentSec = styled.section`
   display: flex;
   flex-direction: column;
   font-size: 16px;
   > div:first-child {
     display: flex;
-    > div:first-child {
-      width: 4rem;
-      height: 1.5rem;
-      border: 0.05rem solid white;
-      border-radius: 0.5rem;
+    > a {
+      width: 4.5rem;
+      height: 2rem;
+      /* border: 0.05rem solid white; */
+      border-radius: 1rem;
       display: flex;
       text-align: center;
       justify-content: center;
@@ -43,6 +56,7 @@ const ContentSec = styled.section`
       display: flex;
       align-items: center;
       margin-left: 0.3rem;
+      margin-top: 0.3rem;
     }
   }
 
@@ -51,6 +65,7 @@ const ContentSec = styled.section`
     height: auto;
     min-height: 1.5rem;
     max-height: 5rem;
+    line-height: 150%;
     padding: 0.2rem;
     margin: 0.5rem 0;
     /* border: 0.05rem solid white; */
@@ -78,7 +93,6 @@ const AuthorSec = styled.section`
   div {
     margin: 0.2rem;
     display: flex;
-    /* flex-direction: column; */
     justify-content: center;
     align-items: center;
 
@@ -88,6 +102,13 @@ const AuthorSec = styled.section`
     .view {
       color: var(--neon-blue);
     }
+    .comment {
+      color: var(--neon-green);
+    }
+  }
+  .counts {
+    display: flex;
+    flex-direction: column;
   }
 `;
 
@@ -95,7 +116,7 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
   const {
     data: {
       freeId,
-      // category,
+      category,
       freeBody,
       // freeTitle,
       createdAt,
@@ -116,11 +137,31 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
       <Board>
         <ContentSec>
           <div>
-            <div>
-              {/* {category} */}
-              <i className="fa-solid fa-dumbbell" />
-              운동
-            </div>
+            <Link to={`/freeboard?category=${category}`}>
+              <Category
+                color={
+                  category === '운동'
+                    ? '5aa1f1'
+                    : category === '정보'
+                    ? 'ee8834'
+                    : category === '질문'
+                    ? '3fb950'
+                    : '7dede1'
+                }
+              >
+                {category === '운동' ? (
+                  <i className="fa-solid fa-dumbbell" />
+                ) : category === '정보' ? (
+                  <i className="fa-solid fa-bullhorn" />
+                ) : category === '질문' ? (
+                  <i className="fa-regular fa-comments" />
+                ) : (
+                  <i className="fa-solid fa-hand-holding-heart" />
+                )}
+                {/* {category} */}
+                운동
+              </Category>
+            </Link>
             <div>
               {/* {freeTitle} */}
               안녕하세요!
@@ -141,17 +182,22 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
           </div>
         </ContentSec>
         <AuthorSec>
-          <div>
+          <div className="counts">
+            <div>
+              <i className="fa-solid fa-eye view" />
+              {views}
+            </div>
             <div>
               <i className="fa-regular fa-thumbs-up like" />
               {likes}
             </div>
             <div>
-              <i className="fa-solid fa-eye view" />
-              {views}
+              <i className="fa-regular fa-comment-dots comment" />
+              {/* {freeComments.length} */}
+              {0}
             </div>
+            <CreatorMiniCard memberId={freeId} nickname="aaa" heart={100} />
           </div>
-          <CreatorMiniCard memberId={freeId} nickname="aaa" heart={100} />
         </AuthorSec>
       </Board>
     </Link>

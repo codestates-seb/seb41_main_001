@@ -3,8 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import MyRecruitItem from '../components/MyRecruitItem';
-import Badge from '../components/Badge';
+// import Badge from '../components/Badge';
 import Loading from './Loading';
+import timeDifference from '../utils/timeDifference';
+import MiniTag from '../components/MiniTag';
+import RecruitDataProps from '../interfaces/RecruitDataProps';
 
 const Background = styled.div`
   padding-top: 7rem;
@@ -22,7 +25,7 @@ const MyPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items:center;
+  align-items: center;
   width: 100%;
 `;
 
@@ -37,7 +40,7 @@ const Pfp = styled.div`
   margin: 10px;
   border: 2px solid white;
   border-radius: 100px;
-  background-color: blue;
+  background-color: pink;
   width: 130px;
   height: 130px;
 `;
@@ -60,6 +63,9 @@ const Info = styled.div`
     padding: 10px 15px;
     text-shadow: white 0 0 3px;
     font-weight: bold;
+  }
+  span {
+    margin-left: 5px;
   }
 `;
 
@@ -86,9 +92,11 @@ const Button = styled(Link)`
     padding-right: 10px;
   }
   &:hover {
-    background-color: black;
     transition: 0.2s ease-in-out;
     text-shadow: white 0 0 5px;
+    background-color: var(--neon-yellow);
+    color: black;
+    border: 1px solid var(--neon-yellow);
   }
 `;
 const MyPageBody = styled.div`
@@ -99,7 +107,7 @@ const MyPageBody = styled.div`
   > div {
     display: flex;
     flex-direction: column;
-    span {
+    > span {
       display: flex;
       flex-direction: row;
     }
@@ -138,11 +146,23 @@ const MyBoard = styled.div`
     flex-direction: row;
     width: 100%;
     justify-content: flex-start;
-    span {
-      margin: 5px 10px;
+    .active {
+      color: var(--neon-yellow);
+      margin: 5px 0px;
+      background-color: var(--gray);
+      text-shadow: white 0 0 3px;
+      border: none;
+      font-weight: bold;
+    }
+    .inactive {
+      margin: 5px 0px;
+      background-color: var(--gray);
+      border: none;
+      color: white;
       &:hover {
         color: var(--neon-yellow);
         text-shadow: white 0 0 3px;
+        cursor: pointer;
       }
     }
   }
@@ -164,27 +184,26 @@ const RegisteredBoard = styled.div`
     margin: 20px;
   }
 `;
-const Badges = styled.div`
-  border: 2px solid white;
-  margin: 10px;
-  padding: 10px;
-  width: 25rem;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: row;
-`;
-const Tags = styled.div`
-  border: 2px solid white;
-  padding: 10px;
-  margin: 10px;
-  width: 10rem;
-  height: 120px;
-  border-radius: 10px;
-  > span {
-    margin: 5px;
-    padding: 3px 0;
-  }
-`;
+// const Badges = styled.div`
+//   border: 2px solid white;
+//   margin: 10px;
+//   padding: 10px;
+//   width: 25rem;
+//   border-radius: 10px;
+//   display: flex;
+//   flex-direction: row;
+// `;
+// const Tags = styled.div`
+//   border: 2px solid white;
+//   padding: 1rem 2rem;
+//   margin: 10px;
+//   width: 100%;
+//   border-radius: 10px;
+//   > span {
+//     margin: 5px;
+//     padding: 3px 0;
+//   }
+// `;
 const PersonalInfo = styled.div`
   border: 2px solid white;
   padding: 10px;
@@ -206,7 +225,10 @@ const InfoBlock = styled.div`
   > div {
     margin: 10px;
     > div {
-      margin: 0 5px 10px 0;
+      margin: 0 5px 8px 0;
+    }
+    span {
+      margin-right: 3px;
     }
   }
 `;
@@ -214,27 +236,45 @@ const InfoBlock = styled.div`
 const MyPage = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [wroteTab, setWroteTab] = useState('작성모집');
+  const [likedTab, setLikedTab] = useState('좋아요모집');
   const [oneUser, setOneUsers] = useState({
     memberId: 1,
-    nickname: 'NickName hey',
-    heart: 87,
-    sex: '여성',
-    // memberSince: '1 Months',
-    // email: 'kellycho1031@gmail.com',
+    name: 'Loading...',
+    birth: 'Loading...',
+    nickname: 'Loading...',
+    email: 'Loading...',
+    phone: 'Loading...',
+    sex: 'Loading...',
+    createdAt: 'Loading...',
+    heart: 50,
+    locations: ['위치'],
+    memberTags: [
+      {
+        tagId: 1,
+        tagName: 'Loading...',
+      },
+    ],
+    applies: [],
+    recruits: [],
+    recruitComments: [],
+    recruitLikes: [],
+    reviews: [],
   });
-
+  const recruitWTab = () => setWroteTab('작성모집');
+  const recruitLTab = () => setLikedTab('좋아요모집');
+  const freeWTab = () => setWroteTab('작성자유');
+  const freeLTab = () => setLikedTab('좋아요자유');
   useEffect(() => {
     const getOneUser = () => {
       axios
-        .get(
-          '/members/1',
-        )
-        .then((res:any) => {
+        .get(`/members/my-page/${id}`)
+        .then((res: any) => {
           console.log(res);
           setOneUsers(res.data);
           setIsLoading(false);
         })
-        .catch((err:any) => console.log(err));
+        .catch((err: any) => console.log(err));
     };
     getOneUser();
   }, []);
@@ -256,7 +296,9 @@ const MyPage = () => {
                   <div>
                     <i className="fa-regular fa-calendar" />
                     Member for
-                    {oneUser.sex}
+                    <span>
+                      {timeDifference(oneUser.createdAt).slice(0, -1)}
+                    </span>
                   </div>
                 </Info>
               </HeadInfo>
@@ -267,51 +309,47 @@ const MyPage = () => {
             </MyPageHeader>
             <MyPageBody>
               <div>
-                <span>
-                  <Container>
-                    <div>뱃지</div>
-                    <Badges>
-                      <Badge title="writer" icon="fa-solid fa-pen" />
-                      <Badge title="starter" icon="fa-solid fa-star" />
-                    </Badges>
-                  </Container>
-                  <Container>
-                    <div>관심 태그</div>
-                    <Tags>
-                      <span># 스쿠버다이빙</span>
-                      <span># 헬스/크로스핏</span>
-                      <span># 축구</span>
-                    </Tags>
-                  </Container>
-                </span>
                 <Container>
                   <div>개인정보</div>
                   <PersonalInfo>
                     <InfoBlock>
                       <div>이름</div>
-                      <div>우인유</div>
+                      <div>{oneUser.name}</div>
                     </InfoBlock>
                     <InfoBlock>
                       <div>생년월일</div>
-                      <div>980217</div>
+                      <div>{oneUser.birth}</div>
                     </InfoBlock>
                     <InfoBlock>
                       <div>성별</div>
-                      <div>여성</div>
+                      <div>{oneUser.sex}</div>
                     </InfoBlock>
                     <InfoBlock>
                       <div>이메일</div>
-                      <div>{oneUser.memberId}</div>
+                      <div>{oneUser.email}</div>
                     </InfoBlock>
                     <InfoBlock>
                       <div>휴대폰 번호</div>
-                      <div>010-1234-5678</div>
+                      <div>{oneUser.phone}</div>
                     </InfoBlock>
                     <InfoBlock>
                       <div>등록 지역</div>
                       <div>
-                        <div>서울시 강서구</div>
-                        <div>수원시</div>
+                        <div>{oneUser.locations[0]}</div>
+                        {oneUser.locations[1] && (
+                          <div>{oneUser.locations[1]}</div>
+                        )}
+                        {oneUser.locations[2] && (
+                          <div>{oneUser.locations[2]}</div>
+                        )}
+                      </div>
+                    </InfoBlock>
+                    <InfoBlock>
+                      <div>관심 태그</div>
+                      <div>
+                        {oneUser.memberTags.map((item) => (
+                          <MiniTag key={item.tagId} tagName={item.tagName} />
+                        ))}
                       </div>
                     </InfoBlock>
                   </PersonalInfo>
@@ -322,36 +360,102 @@ const MyPage = () => {
                   <div>작성 게시글</div>
                   <MyBoard>
                     <span>
-                      <span>모집게시판</span>
-                      <span>자유게시판</span>
+                      <button
+                        onClick={recruitWTab}
+                        type="button"
+                        className={
+                          wroteTab === '작성모집' ? 'active' : 'inactive'
+                        }
+                      >
+                        모집게시판
+                      </button>
+                      <button
+                        onClick={freeWTab}
+                        type="button"
+                        className={
+                          wroteTab === '작성자유' ? 'active' : 'inactive'
+                        }
+                      >
+                        자유게시판
+                      </button>
                     </span>
-                    <MyRecruitItem
-                      title="title"
-                      quota="quota"
-                      dueDate="dueDate"
-                      tags={['tags']}
-                    />
-                    <MyRecruitItem
-                      title="같이 농구할 사람 구해요~"
-                      quota="2/5"
-                      dueDate="2023.01.30"
-                      tags={['#농구']}
-                    />
+                    {
+                      oneUser.recruits.length === 0 ? (
+                        <div>글이 아직 없습니다</div>
+                      ) : (
+                        oneUser.recruits.map((e: RecruitDataProps) => (
+                          <MyRecruitItem
+                            key={e.recruitId}
+                            title={e.title}
+                            quota={`${e.applies.length}/${e.require}`}
+                            tags={e.recruitTags}
+                            dueDate={e.date}
+                            id={e.recruitId}
+                          />
+                        ))
+                      )
+                      // free가 생기면 여기도 위 recruits랑 똑같이 삼항 넣어주자
+                    }
+                    {/* // <MyRecruitItem
+                    //   title="title"
+                    //   quota="quota"
+                    //   dueDate="dueDate"
+                    //   tags={['tags']}
+                    // />
+                    // <MyRecruitItem
+                    //   title="같이 농구할 사람 구해요~"
+                    //   quota="2/5"
+                    //   dueDate="2023.01.30"
+                    //   tags={['#농구']}
+                    // /> */}
                   </MyBoard>
                 </Container>
                 <Container>
                   <div>좋아요한 게시글</div>
                   <MyBoard>
                     <span>
-                      <span>모집게시판</span>
-                      <span>자유게시판</span>
+                      <button
+                        onClick={recruitLTab}
+                        type="button"
+                        className={
+                          likedTab === '좋아요모집' ? 'active' : 'inactive'
+                        }
+                      >
+                        모집게시판
+                      </button>
+                      <button
+                        onClick={freeLTab}
+                        type="button"
+                        className={
+                          likedTab === '좋아요자유' ? 'active' : 'inactive'
+                        }
+                      >
+                        자유게시판
+                      </button>
                     </span>
-                    <MyRecruitItem
+                    {
+                      oneUser.recruitLikes.length === 0 ? (
+                        <div>글이 아직 없습니다</div>
+                      ) : (
+                        oneUser.recruitLikes.map((e: RecruitDataProps) => (
+                          <MyRecruitItem
+                            key={e.memberId} // 임시로 멤버아이디 넣어둠. 아래의 id도 마찬가지.
+                            title="mm title"
+                            quota="3/5"
+                            tags={[{ tagId: 1, tagName: '예시' }]}
+                            dueDate="2023-01-09"
+                            id={e.memberId}
+                          />
+                        ))
+                      )
+                      // free가 생기면 여기도 위 recruits랑 똑같이 삼항 넣어주자
+                    }
+                    {/* <MyRecruitItem
                       title="좋아요한 게시글"
                       quota="2/3"
                       dueDate="2023.01.17"
                       tags={['#좋아요']}
-                    />
+                    /> */}
                   </MyBoard>
                 </Container>
                 <Container>

@@ -84,12 +84,24 @@ const RecruitForm = styled.form`
       }
     }
   }
-
-  .mapClick {
-    width: 15rem;
-    height: 15rem;
-  }
 `;
+
+// const MapContainer = styled.div`
+//   margin-left: 5rem;
+//   .mapClick {
+//     width: 20rem;
+//     height: 20rem;
+//   }
+// `;
+// const AgeContainer = styled.div`
+//   p {
+//     width: 6rem;
+//   }
+//   div {
+//     width: 15rem;
+//     height: 15rem;
+//   }
+// `;
 
 const ErrorMessage = styled.span`
   color: red;
