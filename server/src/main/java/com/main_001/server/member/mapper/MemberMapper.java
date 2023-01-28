@@ -34,17 +34,18 @@ public interface MemberMapper {
         member.setPhone(memberPost.getPhone());
         member.setSex(memberPost.getSex());
         member.setHeart(50); // controller에서 mapper로 값을 빼주었음
-        member.setLocation(memberPost.getLocations());
+        member.setLocation(memberPost.getLocation());
         member.setLat(memberPost.getLat());
         member.setLon(memberPost.getLon());
         List<MemberTag> memberTags = memberPost.getMemberTags().stream()
                 .map(memberTagDto -> {
                     MemberTag memberTag = new MemberTag();
                     Tag tag = new Tag();
-                    tag.setTagId((int) memberTagDto.getTagId());
+                    tag.setTagId(memberTagDto.getTagId());
                     tag.setTagName(memberTagDto.getTagName());
+                    tag.setEmoji(memberTagDto.getEmoji());
                     memberTag.addMember(member);
-                    memberTag.addTag(tag);
+                    memberTag.setTag(tag);
                     return memberTag;
                 }).collect(Collectors.toList());
         member.setMemberTags(memberTags);
@@ -68,10 +69,11 @@ public interface MemberMapper {
                 .map(memberTagDto -> {
                     MemberTag memberTag = new MemberTag();
                     Tag tag = new Tag();
-                    tag.setTagId((int) memberTagDto.getTagId());
+                    tag.setTagId(memberTagDto.getTagId());
                     tag.setTagName(memberTagDto.getTagName());
+                    tag.setEmoji(memberTagDto.getEmoji());
                     memberTag.addMember(member);
-                    memberTag.addTag(tag);
+                    memberTag.setTag(tag);
                     return memberTag;
                 }).collect(Collectors.toList());
         member.setMemberTags(memberTags);

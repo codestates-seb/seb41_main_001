@@ -23,7 +23,7 @@ public enum ExceptionCode {
     STATUS_NOT_FOUND(404, "해당 상태는 존재하지 않음" ),
 
     // Member
-    DIFFERENT_PASSWORD(400, "잘못된 패스워드 입력"),
+    WRONG_PASSWORD(400, "잘못된 패스워드 입력"),
     MEMBER_NOT_FOUND(404, "존재하지 않는 회원");
 
 

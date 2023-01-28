@@ -39,7 +39,7 @@ public class MemberDto {
 
         // 지역 추가
         @ApiModelProperty(example = "지역")
-        private String locations;
+        private String location;
 
         @ApiModelProperty(example = "latitude")
         private double lat;
