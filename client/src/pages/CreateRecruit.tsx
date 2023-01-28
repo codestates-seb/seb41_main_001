@@ -152,11 +152,10 @@ const CreateRecruit = () => {
   //   longitude: number;
   // }>();
 
-  console.log('errors ', errors);
   const onSubmit = (data: RecruitFormInput) => {
     // tagSearch는 postBody에서 제외함.
     const { tagSearch, ...postBody } = data;
-    console.log(postBody);
+    console.log(JSON.stringify(postBody));
   };
 
   const TAG_DATA = [
@@ -187,6 +186,7 @@ const CreateRecruit = () => {
   //   if (res === undefined) return;
   //   setLatLon(res);
   // });
+  console.log('render');
 
   return (
     <RecruitFormContainer>
@@ -280,7 +280,7 @@ const CreateRecruit = () => {
                   id="minRequire"
                   type="number"
                   {...register('minRequire', {
-                    required: true,
+                    required: '최소충족인원은 필수항목입니다',
                     valueAsNumber: true,
                     validate: {
                       smallerThanRequire: (value) =>

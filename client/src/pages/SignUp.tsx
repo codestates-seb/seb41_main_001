@@ -256,7 +256,8 @@ const SignUp = () => {
     { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
   ];
 
-  // console.log('render');
+  console.log('render');
+
   return (
     <SignUpContainer>
       <SignUpForm onSubmit={handleSubmit(onSubmit)}>
@@ -457,12 +458,17 @@ const SignUp = () => {
                 key={el.tagId}
                 tagId={el.tagId}
                 tagName={el.tagName}
+<<<<<<< Updated upstream
                 emoji={el.tagEmoji}
                 // disabled={disabled}
                 fields={fields}
                 append={append}
                 remove={remove}
                 control={control}
+=======
+                emoji={el.emoji}
+                disabled={disabled}
+>>>>>>> Stashed changes
                 register={register}
               />
             ))}

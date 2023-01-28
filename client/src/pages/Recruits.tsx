@@ -12,12 +12,6 @@ const MainContainer = styled.main`
   display: flex;
   justify-content: center;
   margin-top: 100px;
-<<<<<<< HEAD
-  > div:first-child {
-  }
-=======
->>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
-
   ul {
     list-style: none;
     padding: 0;

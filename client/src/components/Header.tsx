@@ -59,6 +59,9 @@ const ButtonsContainer = styled.div`
       }
     }
   }
+  a {
+    margin-left: 10px;
+  }
 `;
 
 // const Button = styled(Link)`
