@@ -226,14 +226,16 @@ const RecruitApplyAfterMeeting = ({
 }: ReviewConditionProps) => {
   const { recruitId } = useParams();
   const [reviewModal, setReviewModal] = useState<boolean>(false);
-  const LOGIN_ID = 2;
+  const LOGIN_ID = 1;
   const REVIEW_STAR_NUM = reviews.reduce((res: number[], ele) => {
     res.push(ele.star);
     return res;
   }, []);
+
   const REVIEW_STAR_AVER = (
     REVIEW_STAR_NUM.reduce((r, e) => r + e, 0) / REVIEW_STAR_NUM.length
   ).toFixed(2);
+
   const REVIEW_ID = reviews.reduce((res: number[], ele) => {
     res.push(ele.memberId);
     return res;
@@ -341,9 +343,15 @@ const RecruitApplyAfterMeeting = ({
           </h3>
           <ReviewBox>
             <div>
-              <i className="fa-solid fa-star" />
-              <span>{`${REVIEW_STAR_AVER}`}</span>
-              <span>{`총 ${reviews.length}개의 리뷰`}</span>
+              {reviews.length ? (
+                <>
+                  <i className="fa-solid fa-star" />
+                  <span>{`${REVIEW_STAR_AVER}`}</span>
+                  <span>{`총 ${reviews.length}개의 리뷰`}</span>
+                </>
+              ) : (
+                <span>아직 리뷰가 작성되지 않았습니다</span>
+              )}
             </div>
             <ul>
               {reviews.map((el) => (
