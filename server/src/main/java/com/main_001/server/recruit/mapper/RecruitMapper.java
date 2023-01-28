@@ -185,13 +185,30 @@ public interface RecruitMapper {
         Recruit recruit = new Recruit();
         Member member = new Member();
         member.setMemberId(requestBody.getMemberId());
+        List<RecruitTag> recruitTags = requestBody.getRecruitTagDtos().stream()
+                .map(recruitTagDto -> {
+                    RecruitTag recruitTag = new RecruitTag();
+                    Tag tag = new Tag();
+                    tag.setTagId(recruitTagDto.getTagId());
+                    tag.setTagName(recruitTagDto.getTagName());
+                    tag.setEmoji(recruitTagDto.getEmoji());
+                    recruitTag.setRecruit(recruit);
+                    recruitTag.setTag(tag);
+                    return recruitTag;
+                }).collect(Collectors.toList());
         recruit.setMember(member);
+        recruit.setRecruitTags(recruitTags);
+        recruit.setHeartLimit(requestBody.getHeartLimit());
         recruit.setTitle(requestBody.getTitle());
         recruit.setBody(requestBody.getBody());
+        recruit.setRequire(requestBody.getRequire());
+        recruit.setMinRequire(requestBody.getMinRequire());
+        recruit.setSex(requestBody.getSex());
+        recruit.setDate(requestBody.getDate());
         recruit.setLocation(requestBody.getLocation());
         recruit.setLat(requestBody.getLat());
         recruit.setLon(requestBody.getLon());
-        recruit.setDate(requestBody.getDate());
+        recruit.setAgeGroupString(requestBody.getAges().toString());
         return recruit;
     }
 
