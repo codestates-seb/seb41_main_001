@@ -10,18 +10,18 @@ import Button from '../components/Button';
 // import UseAutosizeTextArea from '../components/UseAutosaveTextArea';
 
 enum GenderEnum {
-  female = '여성',
-  male = '남성',
-  both = '성별 무관',
+  Female = '여성',
+  Male = '남성',
+  Both = '성별 무관',
 }
 
 enum AgeEnum {
-  teenage = '10대',
-  twenties = '20대',
-  thirties = '30대',
-  forties = '40대',
-  fifties = '50대',
-  sixties = '60대',
+  teenage = 10,
+  twenties = 20,
+  thirties = 30,
+  forties = 40,
+  fifties = 50,
+  sixties = 60,
 }
 
 interface IFormInput {
@@ -84,6 +84,11 @@ const CRForm = styled.form`
       &:focus-within {
         border-bottom: 0.1rem solid white;
       }
+      &:-webkit-autofill {
+        box-shadow: 0 0 0 20px var(--gray) inset;
+        -webkit-text-fill-color: white;
+        color: white;
+      }
     }
   }
 `;
@@ -122,6 +127,9 @@ const AgeContainer = styled.div`
       label {
         width: 5rem;
       }
+      div {
+        margin-bottom: 0.5rem;
+      }
     }
   }
 `;
@@ -147,13 +155,11 @@ const CreateRecruit = () => {
     formState: { errors },
   } = useForm<IFormInput>();
   const { location: currentLocation } = useCurrentLocation();
-  // const [location, setLocation] = useState<{
-  //   latitude: number;
-  //   longitude: number;
-  // } | null>(null);
-  // const [filterTag, setFilterTag] = useState('');
-  // const [filterTagId, setFilterTagId] = useState();
   const navigate = useNavigate();
+  const [value, setValue] = useState(60);
+  const [recruitTagDtos, setRecruitTagDtos] = useState<
+    { tagId: number; tagName: string; tagEmoji: string }[]
+  >([]);
   const onSubmit = (data: IFormInput) => {
     axios
       .post('/recruits', {
@@ -162,10 +168,7 @@ const CreateRecruit = () => {
           latitude: currentLocation?.latitude,
           longitude: currentLocation?.longitude,
         },
-        recruitTagDtos: {
-          // tagId: filterTagId,
-          tagName: filterTag,
-        },
+        recruitTagDtos,
       })
       .then((res) => {
         console.log(res);
@@ -175,10 +178,6 @@ const CreateRecruit = () => {
         console.log(err);
       });
   };
-  const [value, setValue] = useState(60);
-  const [selectedTag, setSelectedTag] = useState<
-    { tagId: number; tagName: string; tagEmoji: string }[]
-  >([]);
 
   const TAG_DATA = [
     { tagId: 1, tagName: '축구/풋살', tagEmoji: '⚽️' },
@@ -229,25 +228,31 @@ const CreateRecruit = () => {
         <TagContainer>
           <label htmlFor="tag">태그</label>
           <AutoCompleteForArray
-            selectedTag={selectedTag}
-            setSelectedTag={setSelectedTag}
+            selectedTag={recruitTagDtos}
+            setSelectedTag={setRecruitTagDtos}
             tagLimit={1}
             data={TAG_DATA}
           />
         </TagContainer>
         <div>
           <label htmlFor="title">제목</label>
-          <input
-            id="title"
-            type="text"
-            {...register('title', { required: true })}
-          />
-          {errors.title && <div>제목을 입력하세요</div>}
+          <div>
+            <input
+              id="title"
+              type="text"
+              {...register('title', { required: true })}
+            />
+            {errors.title && <div>제목을 입력하세요</div>}
+          </div>
         </div>
         <div>
           <label htmlFor="content">내용</label>
-          <textarea id="content" {...register('content', { required: true })} />
-          {/* <textarea
+          <div>
+            <textarea
+              id="content"
+              {...register('content', { required: true })}
+            />
+            {/* <textarea
             {...register('content', {
               required: true,
             })}
@@ -258,49 +263,55 @@ const CreateRecruit = () => {
             value={content}
             name="content"
           /> */}
-          {errors.content && <div>내용을 입력하세요</div>}
+            {errors.content && <div>내용을 입력하세요</div>}
+          </div>
         </div>
         <div>
           <label htmlFor="date">모임 일시</label>
-          <input
-            id="date"
-            type="datetime-local"
-            {...register('date', { required: true })}
-          />
-          {errors.date && <div>모임 일시를 입력하세요</div>}
+          <div>
+            <input
+              id="date"
+              type="datetime-local"
+              {...register('date', { required: true })}
+            />
+            {errors.date && <div>모임 일시를 입력하세요</div>}
+          </div>
         </div>
         <div>
           <label htmlFor="require">모임 인원</label>
-          <input
-            id="quota"
-            type="number"
-            min={1}
-            {...register('require', { required: true })}
-          />
-          {errors.require && <div>모임 인원을 입력하세요</div>}
+          <div>
+            <input
+              id="quota"
+              type="number"
+              min={1}
+              {...register('require', { required: true })}
+            />
+            {errors.require && <div>모임 인원을 입력하세요</div>}
+          </div>
         </div>
         <div>
           <label htmlFor="minRequire">최소 인원</label>
-          <input
-            id="minRequire"
-            type="number"
-            min={1}
-            placeholder="최소 인원이 충족돼야 모임 결성!"
-            {...register('minRequire', {
-              required: true,
-              validate: {
-                checkRequire: (minValue) => {
-                  const { require } = getValues();
-                  return (
-                    // eslint-disable-next-line operator-linebreak
-                    require >= minValue ||
-                    '모임 인원은 최소 인원보다 크거나 같아야 합니다.'
-                  );
+          <div>
+            <input
+              id="minRequire"
+              type="number"
+              min={1}
+              placeholder="최소 인원이 충족돼야 모임 결성!"
+              {...register('minRequire', {
+                required: true,
+                validate: {
+                  checkRequire: (minValue) => {
+                    const { require } = getValues();
+                    return (
+                      require >= minValue ||
+                      '모임 인원은 최소 인원보다 크거나 같아야 합니다.'
+                    );
+                  },
                 },
-              },
-            })}
-          />
-          {errors.minRequire && <div>최소 인원을 입력하세요</div>}
+              })}
+            />
+            {errors.minRequire && <div>최소 인원을 입력하세요</div>}
+          </div>
         </div>
         <MapContainer>
           <label htmlFor="location">모임 장소</label>
@@ -316,9 +327,9 @@ const CreateRecruit = () => {
         <div>
           <label htmlFor="genderCondition">성별 조건</label>
           <select id="genderCondition" {...register('genderCondition')}>
-            <option value="female">여성</option>
-            <option value="male">남성</option>
-            <option value="both">성별 무관</option>
+            <option value="Female">여성</option>
+            <option value="Male">남성</option>
+            <option value="Both">성별 무관</option>
           </select>
           {errors.genderCondition && <div>성별 조건을 입력하세요</div>}
         </div>
@@ -330,7 +341,7 @@ const CreateRecruit = () => {
                 type="checkbox"
                 id="teenage"
                 // name="ageCondition"
-                value="teenage"
+                value={10}
                 {...register('ageCondition')}
               />
               <label htmlFor="teenage">10대</label>
@@ -340,7 +351,7 @@ const CreateRecruit = () => {
                 type="checkbox"
                 id="twenties"
                 // name="ageCondition"
-                value="twenties"
+                value={20}
                 {...register('ageCondition')}
               />
               <label htmlFor="twenties">20대</label>
@@ -350,7 +361,7 @@ const CreateRecruit = () => {
                 type="checkbox"
                 id="thirties"
                 // name="ageCondition"
-                value="thirties"
+                value={30}
                 {...register('ageCondition')}
               />
               <label htmlFor="thirties">30대</label>
@@ -360,7 +371,7 @@ const CreateRecruit = () => {
                 type="checkbox"
                 id="forties"
                 // name="ageCondition"
-                value="forties"
+                value={40}
                 {...register('ageCondition')}
               />
               <label htmlFor="forties">40대</label>
@@ -370,7 +381,7 @@ const CreateRecruit = () => {
                 type="checkbox"
                 id="fifties"
                 // name="ageCondition"
-                value="fifties"
+                value={50}
                 {...register('ageCondition')}
               />
               <label htmlFor="fifties">50대</label>
@@ -380,7 +391,7 @@ const CreateRecruit = () => {
                 type="checkbox"
                 id="sixties"
                 // name="ageCondition"
-                value="sixties"
+                value={50}
                 {...register('ageCondition')}
               />
               <label htmlFor="sixties">60대</label>
@@ -400,7 +411,6 @@ const CreateRecruit = () => {
               onChange={handleChangeValue}
               {...(register('heartRateCondition'), { required: true })}
             />
-            {errors.heartRateCondition && <div>심박수 조건을 입력하세요</div>}
             <span className="result">{value}</span>
           </div>
         </HeartContainer>

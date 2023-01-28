@@ -1,15 +1,38 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
+// import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import useCurrentLocation from '../utils/useCurrentLocation';
 import KakaoMapClick from '../components/KakaoMapClick';
 import Button from '../components/Button';
+// import RecruitDataProps from '../interfaces/RecruitDataProps';
+
+enum GenderEnum {
+  Female = '여성',
+  Male = '남성',
+  Both = '성별 무관',
+}
+
+enum AgeEnum {
+  teenage = 10,
+  twenties = 20,
+  thirties = 30,
+  forties = 40,
+  fifties = 50,
+  sixties = 60,
+}
 
 interface IFormInput {
+  tag: string;
   title: string;
   content: string;
   date: string;
+  require: number;
+  minRequire: number;
+  genderCondition: GenderEnum;
+  ageCondition: AgeEnum;
+  heartRateCondition: number;
   location: string;
   // image: string;
 }
@@ -110,6 +133,7 @@ const EditRecruit = () => {
   const navigate = useNavigate();
   const { location: currentLocation } = useCurrentLocation();
   const { recruitId } = useParams();
+  // const [recruitData, setRecruitData] = useState<RecruitDataProps[]>([]);
   const onSubmit = (data: IFormInput) => {
     axios
       .patch(`/recruits/${recruitId}`, {
@@ -128,6 +152,18 @@ const EditRecruit = () => {
       });
   };
 
+  // useEffect(() => {
+  //   axios
+  //     .get(`/recruits/${recruitId}`)
+  //     .then((res) => {
+  //       setRecruitData(res.data);
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, []);
+
   return (
     <ERContainer>
       <ERForm onSubmit={handleSubmit(onSubmit)}>
@@ -137,7 +173,8 @@ const EditRecruit = () => {
           <input
             id="title"
             type="text"
-            {...register('title', { required: true })}
+            // value={recruitData.title}
+            {...register('title', { required: '제목을 입력하세요' })}
           />
         </div>
         <div>
@@ -145,6 +182,7 @@ const EditRecruit = () => {
           <textarea
             id="content"
             className="length"
+            // value={recruitData.body}
             {...register('content', { required: true })}
           />
         </div>
@@ -153,6 +191,7 @@ const EditRecruit = () => {
           <input
             id="date"
             type="datetime-local"
+            // value={recruitData.date}
             {...register('date', { required: true })}
           />
         </div>
@@ -164,10 +203,16 @@ const EditRecruit = () => {
             {...register('location', { required: true })}
           /> */}
           <div className="mapClick">
+            {/* {recruitData && (
+              <KakaoMapClick
+                latitude={recruitData.location.latitude}
+                longitude={recruitData.location.longitude}
+              />
+            )} */}
             {currentLocation && (
               <KakaoMapClick
-                latitude={currentLocation?.latitude}
-                longitude={currentLocation?.longitude}
+                latitude={currentLocation.latitude}
+                longitude={currentLocation.longitude}
               />
             )}
           </div>

@@ -36,7 +36,7 @@ const ContentSec = styled.section`
   font-size: 16px;
   > div:first-child {
     display: flex;
-    > div:first-child {
+    > a {
       width: 4.5rem;
       height: 2rem;
       /* border: 0.05rem solid white; */
@@ -137,29 +137,31 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
       <Board>
         <ContentSec>
           <div>
-            <Category
-              color={
-                category === '운동'
-                  ? '5aa1f1'
-                  : category === '정보'
-                  ? 'ee8834'
-                  : category === '질문'
-                  ? '3fb950'
-                  : '7dede1'
-              }
-            >
-              {category === '운동' ? (
-                <i className="fa-solid fa-dumbbell" />
-              ) : category === '정보' ? (
-                <i className="fa-solid fa-bullhorn" />
-              ) : category === '질문' ? (
-                <i className="fa-regular fa-comments" />
-              ) : (
-                <i className="fa-solid fa-hand-holding-heart" />
-              )}
-              {/* {category} */}
-              운동
-            </Category>
+            <Link to={`/freeboard?category=${category}`}>
+              <Category
+                color={
+                  category === '운동'
+                    ? '5aa1f1'
+                    : category === '정보'
+                    ? 'ee8834'
+                    : category === '질문'
+                    ? '3fb950'
+                    : '7dede1'
+                }
+              >
+                {category === '운동' ? (
+                  <i className="fa-solid fa-dumbbell" />
+                ) : category === '정보' ? (
+                  <i className="fa-solid fa-bullhorn" />
+                ) : category === '질문' ? (
+                  <i className="fa-regular fa-comments" />
+                ) : (
+                  <i className="fa-solid fa-hand-holding-heart" />
+                )}
+                {/* {category} */}
+                운동
+              </Category>
+            </Link>
             <div>
               {/* {freeTitle} */}
               안녕하세요!

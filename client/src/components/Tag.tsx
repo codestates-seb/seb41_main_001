@@ -31,28 +31,38 @@ const TagContainer = styled.span`
 `;
 
 interface PropsType {
-  name: string;
+  tagName: string;
   emoji: string;
+  tagId: number;
   register: any;
   disabled: boolean;
 }
 
-const Tag = ({ disabled, register, name, emoji }: PropsType) => (
-  <TagContainer>
-    <input
-      disabled={disabled}
-      type="checkbox"
-      // id={name}
-      // name="tags"
-      name={name}
-      value={name}
-      {...register('tags', { required: true })}
-    />
-    <label htmlFor={name}>
-      {name}
-      <br />
-      {emoji}
-    </label>
-  </TagContainer>
-);
+const Tag = ({ disabled, register, tagName, emoji, tagId }: PropsType) => {
+  const inputValue = {
+    tagId,
+    tagName,
+    emoji,
+  };
+
+  return (
+    <TagContainer>
+      <input
+        disabled={disabled}
+        type="checkbox"
+        // id={name}
+        // name="tags"
+        name={tagName}
+        value={inputValue}
+        // value={tagName}
+        {...register('tags')}
+      />
+      <label htmlFor={tagName}>
+        {tagName}
+        <br />
+        {emoji}
+      </label>
+    </TagContainer>
+  );
+};
 export default Tag;

@@ -20,6 +20,7 @@ import FreeDetail from './pages/FreeDetail';
 import Withdraw from './pages/Withdraw';
 import RecruitTags from './pages/RecruitTags';
 import FreeboardTags from './pages/FreeboardTags';
+import SearchPassword from './pages/SearchPassword';
 import Loading from './pages/Loading';
 
 const App = () => (
@@ -34,10 +35,11 @@ const App = () => (
         <Route path="/members/edit/:id" element={<EditUser />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/search-password" element={<SearchPassword />} />
         <Route path="/recruits" element={<Recruits />} />
         <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruit/new" element={<CreateRecruit />} />
-        <Route path="/freeboard" element={<FreeBoards />} />
+        <Route path="/freeboards" element={<FreeBoards />} />
         <Route path="/freeboard/new" element={<CreateFreeboard />} />
         <Route path="/freeboard/:freeId" element={<FreeDetail />} />
         <Route path="/recruit/:recruitId/edit" element={<EditRecruit />} />
@@ -45,7 +47,7 @@ const App = () => (
         <Route path="/recruits" element={<Recruits />} />
         <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruits/tags" element={<RecruitTags />} />
-        <Route path="/freeboard/tags" element={<FreeboardTags />} />
+        <Route path="/freeboards/tags" element={<FreeboardTags />} />
         <Route path="/loading" element={<Loading />} />
       </Routes>
       <Footer />

@@ -184,10 +184,9 @@ const SignUp = () => {
     axios
       .post('/members/signup', {
         ...data,
-        locations: {
-          latitude: currentLocation?.latitude,
-          longitude: currentLocation?.longitude,
-        },
+        lat: currentLocation?.latitude,
+        lon: currentLocation?.longitude,
+        locations: '의정부시',
       })
       .then((res) => {
         // console.log(res);
@@ -200,10 +199,9 @@ const SignUp = () => {
         console.log(
           JSON.stringify({
             ...data,
-            locations: {
-              latitude: currentLocation?.latitude,
-              longitude: currentLocation?.longitude,
-            },
+            lat: currentLocation?.latitude,
+            lon: currentLocation?.longitude,
+            locations: '의정부시',
           }),
         );
       });
@@ -443,7 +441,8 @@ const SignUp = () => {
             {TAG_DATA.map((el) => (
               <Tag
                 key={el.tagId}
-                name={el.tagName}
+                tagId={el.tagId}
+                tagName={el.tagName}
                 emoji={el.tagEmoji}
                 disabled={disabled}
                 register={register}

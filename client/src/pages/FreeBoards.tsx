@@ -18,8 +18,10 @@ const FBLContainer = styled.main`
   height: 100%;
 
   h1 {
-    width: 34rem;
+    width: 35rem;
     margin-left: 1rem;
+    /* margin-top: 1rem; */
+    padding-top: 1rem;
   }
 
   span {
@@ -50,7 +52,7 @@ const FBLContainer = styled.main`
     border-radius: 1rem;
     background-color: var(--neon-yellow);
     position: sticky;
-    top: 41.5rem;
+    top: 44rem;
   }
 `;
 
@@ -104,9 +106,7 @@ const FreeBoards = () => {
 
   // 클릭하면 맨 위로
   const handleClick = () => {
-    // useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // }, []);
   };
 
   useEffect(() => {
@@ -130,7 +130,7 @@ const FreeBoards = () => {
           <i className="fa-solid fa-bars" />
           <CategoryLink
             color="#5aa1f1"
-            to="/freeboard?category=운동"
+            to="/freeboards?category=운동"
             onClick={() => {
               setFilterCategory('운동');
             }}
@@ -143,7 +143,7 @@ const FreeBoards = () => {
           </CategoryLink>
           <CategoryLink
             color="#ee8834"
-            to="/freeboard?category=정보"
+            to="/freeboards?category=정보"
             onClick={() => {
               setFilterCategory('정보');
             }}
@@ -156,7 +156,7 @@ const FreeBoards = () => {
           </CategoryLink>
           <CategoryLink
             color="#3fb950"
-            to="/freeboard?category=질문"
+            to="/freeboards?category=질문"
             onClick={() => {
               setFilterCategory('질문');
             }}
@@ -169,7 +169,7 @@ const FreeBoards = () => {
           </CategoryLink>
           <CategoryLink
             color="#7dede1"
-            to="/freeboard?category=나눔"
+            to="/freeboards?category=나눔"
             onClick={() => {
               setFilterCategory('나눔');
             }}
