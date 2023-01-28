@@ -75,7 +75,7 @@ public class MemberService {
         member.setRoles(roles);
 
         // 존재하는 Tag인지 확인
-        findVerifiedTag(member.getMemberTags());
+//        findVerifiedTag(member.getMemberTags());
 
 //        MemberImage memberImageLocal = MemberImage.builder()
 //                .filePath(memberImagePath)
@@ -244,7 +244,7 @@ public class MemberService {
 
 //        TODO 개발 완료 후 봉인 해제
         if (!passwordEncoder.matches(password, findMember.getPassword()))
-            throw new BusinessLogicException(ExceptionCode.DIFFERENT_PASSWORD);
+            throw new BusinessLogicException(ExceptionCode.WRONG_PASSWORD);
     }
 
     // 회원 id가 존재하는지 확인

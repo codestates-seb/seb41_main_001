@@ -29,8 +29,4 @@ public class MemberTag {
             this.member.getMemberTags().add(this);
         }
     }
-
-    public void addTag(Tag tag) {
-        this.tag = tag;
-    }
 }
