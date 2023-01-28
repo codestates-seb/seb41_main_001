@@ -149,11 +149,7 @@ const RecruitDetail = () => {
     body: '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
     image: '',
     createdAt: '2023-01-02T16:18:48.908218',
-<<<<<<< HEAD
-    modifiedAt: '2023-01-20T16:18:48.908218',
-=======
     modifiedAt: '2023-01-25T16:18:48.908218',
->>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
     recruitStatus: '활동종료', // 모집중/모집완료/최소인원충족/활동종료
     star: 0,
     views: 0,
@@ -186,24 +182,6 @@ const RecruitDetail = () => {
       },
     ],
     reviews: [
-<<<<<<< HEAD
-      {
-        reviewId: 1,
-        memberId: 1,
-        nickname: '닉네임',
-        heart: 50,
-        body: '글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TES',
-        star: 5,
-      },
-      {
-        reviewId: 2,
-        memberId: 3,
-        nickname: '글자수세기TEST글자수세기TEST글자',
-        heart: 50,
-        body: '좋아요',
-        star: 2,
-      },
-=======
       // {
       //   reviewId: 1,
       //   memberId: 1,
@@ -220,7 +198,6 @@ const RecruitDetail = () => {
       //   body: '좋아요',
       //   star: 2,
       // },
->>>>>>> b8277dc1be2d3c19a8a5ce3d998ab0bf96ae042e
     ],
     recruitComments: [
       {

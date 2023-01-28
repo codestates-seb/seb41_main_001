@@ -201,7 +201,7 @@ const SignUp = () => {
             ...data,
             lat: currentLocation?.latitude,
             lon: currentLocation?.longitude,
-            locations: '의정부시',
+            locations: '경기도 의정부시',
           }),
         );
       });
