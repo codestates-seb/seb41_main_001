@@ -35,10 +35,20 @@ interface PropsType {
   emoji: string;
   tagId: number;
   register: any;
-  disabled: boolean;
+  // disabled: boolean;
+  fields: { tagId: number; tagName: string }[];
+  append: any;
+  remove: any;
+  control: any;
 }
 
-const Tag = ({ disabled, register, tagName, emoji, tagId }: PropsType) => {
+const Tag = ({
+  // disabled,
+  register,
+  tagName,
+  emoji,
+  tagId,
+}: PropsType) => {
   const inputValue = {
     tagId,
     tagName,
@@ -48,13 +58,14 @@ const Tag = ({ disabled, register, tagName, emoji, tagId }: PropsType) => {
   return (
     <TagContainer>
       <input
-        disabled={disabled}
+        // disabled={disabled}
         type="checkbox"
         // id={name}
         // name="tags"
         name={tagName}
         value={inputValue}
         // value={tagName}
+        // control={control}
         {...register('tags')}
       />
       <label htmlFor={tagName}>

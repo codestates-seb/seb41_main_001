@@ -1,7 +1,14 @@
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 import ButtonLink from '../components/ButtonLink';
 import Button from '../components/Button';
+
+interface IFormInput {
+  email: string;
+  password: string;
+}
 
 const LogInContainer = styled.div`
   background-color: var(--gray);
@@ -69,20 +76,31 @@ const LogIn = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+  } = useForm<IFormInput>();
+  // ({
+  //   defaultValues: {
+  //     email: '',
+  //     password: '',
+  //   },
+  // });
+  const navigate = useNavigate();
+  const onSubmit = (data: IFormInput) => {
+    axios
+      .post('members/login', {
+        ...data,
+      })
+      .then((res) => {
+        console.log(res);
+        navigate('/');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <LogInContainer>
-      <LogInForm
-        onSubmit={handleSubmit((data) => {
-          alert(JSON.stringify(data));
-        })}
-      >
+      <LogInForm onSubmit={handleSubmit(onSubmit)}>
         <h1>로그인</h1>
         <div>
           <label htmlFor="email">이메일</label>
