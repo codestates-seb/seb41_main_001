@@ -19,8 +19,11 @@ public enum ExceptionCode {
     BAD_REQUEST(400, "요청 이상함"),
     APPLY_MODIFY_DENIED(401, "모집 완료시 신청 및 신청취소 불가"),
     TAG_NOT_FOUND(404, "해당 태그 존재하지 않음" ),
-    TAG_ALREADY_EXIST(409 , "해당 태그가 이미 존재함" );
+    TAG_ALREADY_EXIST(409 , "해당 태그가 이미 존재함" ),
 
+    // Member
+    DIFFERENT_PASSWORD(400, "잘못된 패스워드 입력"),
+    MEMBER_NOT_FOUND(404, "존재하지 않는 회원");
 
 
     @Getter

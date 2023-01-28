@@ -1,31 +1,18 @@
 package com.main_001.server.member.dto;
 
-import com.main_001.server.free.entity.Free;
-import com.main_001.server.free.entity.FreeComment;
-import com.main_001.server.free.entity.FreeLike;
-import com.main_001.server.member.entity.MemberImage;
-import com.main_001.server.recruit.dto.RecruitCommentDto;
+import com.main_001.server.free.dto.FreeDto;
 import com.main_001.server.recruit.dto.RecruitDto;
-import com.main_001.server.recruit.dto.RecruitLikeDto;
 import com.main_001.server.recruit.dto.ResponseDto;
-import com.main_001.server.recruit.entity.*;
-import com.main_001.server.tag.entity.Tag;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.persistence.CascadeType;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MemberDto {
 
-    @AllArgsConstructor
     @Getter
     public static class MemberPostDto {
         @ApiModelProperty(example = "email@gmail.com")
@@ -51,7 +38,14 @@ public class MemberDto {
         private String sex;
 
         // 지역 추가
-        private List<String> locations;
+        @ApiModelProperty(example = "지역")
+        private String locations;
+
+        @ApiModelProperty(example = "latitude")
+        private double lat;
+
+        @ApiModelProperty(example = "longitude")
+        private double lon;
 
         @ApiModelProperty(example = "[\n" +
                 "    {\n" +
@@ -62,7 +56,6 @@ public class MemberDto {
         private List<MemberTagDto> memberTags;
     }
 
-    @AllArgsConstructor
     @Getter
     public static class MemberPatchDto {
         @ApiModelProperty(example = "경로에 포함되는 값입니다.")
@@ -80,7 +73,14 @@ public class MemberDto {
         @ApiModelProperty(example = "전화번호(중복 검사 필요)")
         private String phone;
 
-        private List<String> locations;
+        @ApiModelProperty(example = "지역")
+        private String location;
+
+        @ApiModelProperty(example = "latitude")
+        private double lat;
+
+        @ApiModelProperty(example = "longitude")
+        private double lon;
 
         @ApiModelProperty(example = "[\n" +
                 "    {\n" +
@@ -95,7 +95,6 @@ public class MemberDto {
         }
     }
 
-    @AllArgsConstructor
     @Getter
     @Builder
     public static class MyResponse {
@@ -129,7 +128,14 @@ public class MemberDto {
         @ApiModelProperty(example = "프로필 이미지")
         private MemberImageResponseDto memberImage;
 
-        private List<String> locations;
+        @ApiModelProperty(example = "지역")
+        private String location;
+
+        @ApiModelProperty(example = "latitude")
+        private double lat;
+
+        @ApiModelProperty(example = "longitude")
+        private double lon;
 
         @ApiModelProperty(example = "[\n" +
                 "    {\n" +
@@ -140,24 +146,32 @@ public class MemberDto {
         private List<MemberTagResponseDto> memberTags;
 
         // TODO Recruit, FreeBoard response 추가
+
+        @ApiModelProperty(example = "모집글 지원 현황")
         private List<ResponseDto.Apply> applies;
 
+        @ApiModelProperty(example = "작성한 모집글")
         private List<RecruitDto.Response> recruits;
 
+        @ApiModelProperty(example = "모집글에 작성한 댓글")
         private List<ResponseDto.RecruitComment> recruitComments;
 
+        @ApiModelProperty(example = "좋아요 누른 모집글")
         private List<ResponseDto.RecruitLike> recruitLikes;
 
+        @ApiModelProperty(example = "작성한 리뷰")
         private List<ResponseDto.Review> reviews;
 
-//        private List<Free> frees;
-//
-//        private List<FreeLike> freeLikes;
-//
-//        private List<FreeComment> freeComments;
+        @ApiModelProperty(example = "작성한 자유글")
+        private List<FreeDto.Response> frees;
+
+        @ApiModelProperty(example = "자유글에 작성한 댓글")
+        private List<com.main_001.server.free.dto.ResponseDto.FreeComment> freeComments;
+
+        @ApiModelProperty(example = "좋아요 누른 자유글")
+        private List<com.main_001.server.free.dto.ResponseDto.FreeLike> freeLikes;
     }
 
-    @AllArgsConstructor
     @Getter
     @Builder
     public static class OtherResponse {
@@ -176,6 +190,15 @@ public class MemberDto {
         @ApiModelProperty(example = "프로필 이미지")
         private MemberImageResponseDto memberImage;
 
+        @ApiModelProperty(example = "지역")
+        private String location;
+
+        @ApiModelProperty(example = "latitude")
+        private double lat;
+
+        @ApiModelProperty(example = "longitude")
+        private double lon;
+
         @ApiModelProperty(example = "[\n" +
                 "    {\n" +
                 "      \"tagId\": 1,\n" +
@@ -185,7 +208,11 @@ public class MemberDto {
         private List<MemberTagResponseDto> memberTags;
 
         // TODO Recruit, FreeBoard response 추가
+        @ApiModelProperty(example = "작성한 모집글")
+        private List<RecruitDto.Response> recruits;
 
+        @ApiModelProperty(example = "작성한 자유글")
+        private List<FreeDto.Response> frees;
     }
 
 }

@@ -6,8 +6,6 @@ import com.main_001.server.free.entity.FreeLike;
 import com.main_001.server.recruit.entity.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -21,33 +19,48 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Setter
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE member SET deleted = true WHERE member_id=?") // SQL의 delete 재정의
-@Where(clause = "deleted = false") // where 조건에 해당하는 데이터만 불러오기
+//@SQLDelete(sql = "UPDATE member SET deleted = true WHERE member_id=?") // SQL의 delete 재정의
+//@Where(clause = "deleted = false") // where 조건에 해당하는 데이터만 불러오기
 public class Member {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "MEMBER_ID", nullable = false)
     private Long memberId;
 
+    @Column
     private String name;
 
+    @Column
     private String nickname;
 
+    @Column
     private String birth;
 
+    @Column
     private String password;
 
+    @Column
     private String email;
 
+    @Column
     private String phone;
 
+    @Column
     private String sex;
 
+    @Column
     private boolean deleted = Boolean.FALSE; // soft delete 구현을 위한 초기 값 세팅
 
     // 이미지 어떻게 받아오지?
 
-    private String locationGroupString;
+    @Column
+    private String location;
+
+    @Column
+    private double lat;
+
+    @Column
+    private double lon;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
@@ -83,14 +96,14 @@ public class Member {
     private List<Review> reviews = new ArrayList<>();
 
     // free 게시판 관련 내용
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//    private List<Free> frees = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//    private List<FreeLike> freeLikes = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-//    private List<FreeComment> freeComments = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Free> frees = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<FreeLike> freeLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<FreeComment> freeComments = new ArrayList<>();
 
     public void addMemberImage(MemberImage memberImage) {
         if (memberImage.getMember() != this) {
