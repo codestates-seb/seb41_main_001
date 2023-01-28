@@ -73,8 +73,10 @@ const KakaoMap = ({
 
     // 마커가 지도 위에 표시되도록 설정
     marker.setMap(map);
+    console.log('kakaomap useEffect');
   }, []);
 
+  // console.log('kakaomap');
   return <MapContainer id="kakao-map" ref={mapContainer} />;
 };
 
