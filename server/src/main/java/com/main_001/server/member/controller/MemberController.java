@@ -89,7 +89,10 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginDto requestBody) {
         TokenDto.Response response = memberService.loginMember(requestBody);
-        return new ResponseEntity<>(response.getHeaders(), HttpStatus.OK);
+//        return new ResponseEntity<>(response.getHeaders(), HttpStatus.OK);
+        return ResponseEntity.ok()
+                .headers(response.getHeaders())
+                .body("SUCCESS");
     }
 
     // 로그아웃

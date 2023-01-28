@@ -1,6 +1,7 @@
 package com.main_001.server.member.service;
 
 import com.main_001.server.auth.dto.LoginDto;
+import com.main_001.server.auth.filter.JwtAuthenticationFilter;
 import com.main_001.server.auth.jwt.JwtTokenizer;
 import com.main_001.server.auth.utils.CustomAuthorityUtils;
 import com.main_001.server.exception.BusinessLogicException;
@@ -18,6 +19,7 @@ import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +38,8 @@ public class MemberService {
     private final JavaMailSender mailSender;
     private final MemberImageRepository memberImageRepository;
     private final FileHandler fileHandler;
-
     private final TagRepository tagRepository;
+
 //    @Value("${file.path}")
     private String memberImagePath;
 
@@ -113,7 +115,7 @@ public class MemberService {
         if (!memberImages.isEmpty()) {
             for (MemberImage memberImage : memberImages) {
                 findMember.addMemberImage(memberImage);
-                memberRepository.save(findMember);
+                memberRepository.save(findMember); // 수정 필요
                 break;
             }
         }
@@ -146,7 +148,7 @@ public class MemberService {
 
         // 헤더에 추가할 내용
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorizaion", "Bearer " + accessToken);
+        headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Refresh", refreshToken);
         headers.add("member-id", findMember.getMemberId().toString());
 //        headers.add("Role", findMember.getRoles().toString());
@@ -187,6 +189,7 @@ public class MemberService {
     // 비밀번호가 맞는지 확인
     public void checkPassword(long memberId, String curPassword, String newPassword) {
         Member findMember = findVerifiedMember(memberId);
+
         isValid(findMember, curPassword);
 
 //        findMember.setPassword(newPassword);
