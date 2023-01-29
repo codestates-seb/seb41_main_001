@@ -21,7 +21,7 @@ const useCurrentLocation = (options = {}) => {
     }
 
     geolocation.getCurrentPosition(handleSuccess, handleError, options);
-  }, [options]);
+  }, []);
 
   return { location, error };
 };

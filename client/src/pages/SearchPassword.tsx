@@ -1,45 +1,49 @@
 import styled from 'styled-components';
 import axios from 'axios';
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import Button from '../components/Button';
 // import ButtonLink from '../components/ButtonLink';
 
 const SPContainer = styled.main`
-  background-color: var(--gray);
   color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-top: 100px;
-  /* height: 200%; */
-  height: 24.32rem;
+  align-items: center;
+  padding-top: 100px;
+  height: 100vh;
 `;
 
-const SPFormContainer = styled.div`
-  border: 1px solid white;
+const SPFormContainer = styled.form`
+  border: 1px solid rgb(170, 170, 170);
   border-radius: 1rem;
-  padding: 1rem 2rem;
-  width: 20rem;
+  padding: 20px 40px;
+  width: 400px;
+  height: 160px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  font-size: 16px;
 
-  > div:first-child {
-    font-size: 24px;
-  }
-  div {
-    margin: 1rem 0;
-    width: 18rem;
+  > div {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    > div {
+      position: relative;
+      margin-bottom: 30px;
+      &:nth-child(2) {
+        width: 100%;
+      }
+    }
     label {
-      margin-right: 0.5rem;
+      white-space: nowrap;
+      margin-right: 20px;
     }
     input {
-      width: 13rem;
+      padding: 5px;
+      width: 100%;
       outline: none;
       border: none;
       background-color: rgba(1, 1, 1, 0);
@@ -57,39 +61,62 @@ const SPFormContainer = styled.div`
   }
 `;
 
+const ErrorMessage = styled.span`
+  color: red;
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  font-size: 12px;
+`;
+
 const SearchPassword = () => {
-  const [email, setEmail] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<{ email: string }>();
+
+  const onSubmit = (data: { email: string }) => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/members/find-account`, data)
+      .then((res) => {
+        console.log(res);
+        alert('비밀번호가 발송되었습니다.');
+      })
+      .catch((err) => {
+        const errMsg = err.response.data.message;
+
+        if (errMsg === '존재하지 않는 회원') {
+          setError('email', {
+            type: 'server',
+            message: '가입된 이메일이 아닙니다',
+          });
+        }
+      });
+  };
+
   return (
     <SPContainer>
-      <SPFormContainer>
-        <div>비밀번호 찾기</div>
+      <h2>비밀번호 찾기</h2>
+      <SPFormContainer onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <label htmlFor="email">이메일</label>
-          <input
-            id="email"
-            type="email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
+          <div>
+            <label htmlFor="email">이메일</label>
+          </div>
+          <div>
+            <input
+              id="email"
+              {...register('email', { required: '이메일을 입력하세요' })}
+            />
+            <ErrorMessage>{errors?.email?.message}</ErrorMessage>
+          </div>
         </div>
         <div>
           <Button
             value="임시 비밀번호 발송"
-            onClick={() => {
-              axios
-                .post(`/members/find-account`, {
-                  email,
-                })
-                .then((res) => {
-                  console.log(res);
-                  alert('비밀번호가 발송되었습니다.');
-                })
-                .catch((err) => {
-                  console.log(err);
-                  alert('이메일이 올바르지 않습니다.');
-                });
-            }}
+            type="submit"
+            onClick={handleSubmit(onSubmit)}
           />
           {/* <ButtonLink value="로그인" to="/login" /> */}
         </div>

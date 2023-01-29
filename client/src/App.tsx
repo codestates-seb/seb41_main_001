@@ -1,6 +1,5 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { useState } from 'react';
 import Main from './pages/Main';
 import MyPage from './pages/MyPage';
 import Header from './components/Header';
@@ -24,7 +23,6 @@ import SearchPassword from './pages/SearchPassword';
 import Loading from './pages/Loading';
 
 const App = () => (
-  // const [login, setLogin] = useState(false);
   <div className="App">
     <Router>
       <Header />
