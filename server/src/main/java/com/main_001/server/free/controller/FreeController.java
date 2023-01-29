@@ -7,6 +7,7 @@ import com.main_001.server.free.dto.FreeDto;
 import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.mapper.FreeMapper;
 import com.main_001.server.free.service.FreeService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
-
+@Api(tags = { "Free" })
 @RestController
 @RequestMapping("/freeboards")
 @Validated

@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-//@Component
+@Component
 public class JwtTokenizer {
     @Getter
     @Value("${jwt.key}")
@@ -78,11 +78,10 @@ public class JwtTokenizer {
     public Jws<Claims> getClaims(String jws, String base64EncodedSecretKey) {
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
-        Jws<Claims> claims = Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(jws);
-        return claims;
     }
 
     public void verifySignature(String jws, String base64EncodedSecretKey) {

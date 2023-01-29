@@ -1,18 +1,13 @@
 package com.main_001.server.member.controller;
 
 import com.main_001.server.auth.dto.LoginDto;
-import com.main_001.server.dto.SingleResponseDto;
 import com.main_001.server.member.dto.MailDto;
 import com.main_001.server.member.dto.MemberDto;
-import com.main_001.server.member.dto.MemberStubResponse;
 import com.main_001.server.member.dto.TokenDto;
 import com.main_001.server.member.entity.Member;
 import com.main_001.server.member.mapper.MemberMapper;
 import com.main_001.server.member.service.MemberService;
-import com.main_001.server.recruit.dto.StubResponse;
 import io.swagger.annotations.*;
-import org.hibernate.annotations.Parameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -91,11 +86,14 @@ public class MemberController {
 
     // 로그인
     // TODO 개발 완료 후 봉인 해제, swagger 추가 필요
-//    @PostMapping("/login")
-//    public ResponseEntity login(@RequestBody LoginDto requestBody) {
-//        TokenDto.Response response = memberService.loginMember(requestBody);
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody LoginDto requestBody) {
+        TokenDto.Response response = memberService.loginMember(requestBody);
 //        return new ResponseEntity<>(response.getHeaders(), HttpStatus.OK);
-//    }
+        return ResponseEntity.ok()
+                .headers(response.getHeaders())
+                .body("SUCCESS");
+    }
 
     // 로그아웃
     // TODO 좀 더 찾아보자, 추후 구현 필요
