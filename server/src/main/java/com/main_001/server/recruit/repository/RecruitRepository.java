@@ -9,8 +9,7 @@ import java.util.List;
 
 @Repository
 public interface RecruitRepository extends JpaRepository<Recruit, Long> {
-    List<Recruit> findAllByTitleContaining(String keyword, Sort sort);
-
+    List<Recruit> findAllByTitleContainingIgnoreCase(String keyword, Sort sort);
     List<Recruit> findAllByRecruitStatus(Recruit.RecruitStatus recruitStatus);
     List<Recruit> findAllByRecruitStatus(Recruit.RecruitStatus recruitStatus, Sort sort);
 
