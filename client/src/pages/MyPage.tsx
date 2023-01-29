@@ -234,7 +234,7 @@ const InfoBlock = styled.div`
 `;
 
 const MyPage = () => {
-  const { id } = useParams();
+  const { memberId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [wroteTab, setWroteTab] = useState('작성모집');
   const [likedTab, setLikedTab] = useState('좋아요모집');
@@ -268,7 +268,7 @@ const MyPage = () => {
   useEffect(() => {
     const getOneUser = () => {
       axios
-        .get(`/members/my-page/${id}`)
+        .get(`/members/my-page/${memberId}`)
         .then((res: any) => {
           console.log(res);
           setOneUsers(res.data);
@@ -302,7 +302,7 @@ const MyPage = () => {
                   </div>
                 </Info>
               </HeadInfo>
-              <Button to={`/members/edit/${id}`}>
+              <Button to={`/members/edit/${memberId}`}>
                 <i className="fa-solid fa-pen" />
                 프로필 수정
               </Button>
@@ -464,7 +464,9 @@ const MyPage = () => {
                     <div>글이 아직 없습니다.</div>
                   </RegisteredBoard>
                   <span>
-                    <Button to={`/members/withdraw/${id}`}>회원 탈퇴</Button>
+                    <Button to={`/members/withdraw/${memberId}`}>
+                      회원 탈퇴
+                    </Button>
                   </span>
                 </Container>
               </div>

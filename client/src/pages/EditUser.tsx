@@ -342,13 +342,12 @@ interface UserFormInput {
   newPassword: string;
   // newPasswordCheck: string;
   phone: string;
-  tags: [];
-
-  // locations: string[];
   // memberTags: {
   //   tagId: number;
   //   tagName: string;
   // }[];
+  memberTags: string[];
+  locations: string[];
 }
 
 // interface location {
@@ -357,14 +356,14 @@ interface UserFormInput {
 // }
 
 const EditUser = () => {
-  const { id } = useParams();
+  const { memberId } = useParams();
   const navigate = useNavigate();
   // });
   const [nickCheck, setNickCheck] = useState(false);
   const [phoneCheck, setPhoneCheck] = useState(false);
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [passwordChange, setPasswordChange] = useState(false);
-  const [newPassword, setNewPassword] = useState('초깃값'); // 새 패스워드의 기본값 변경해야
+  const [newPassword, setNewPassword] = useState('');
   // const [img, setImg] = useState<string>(
   //   'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   // );
@@ -381,15 +380,19 @@ const EditUser = () => {
     formState: { errors },
   } = useForm<UserFormInput>();
   const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
+    const check = { ...data, newPassword, locations: 'example' };
+    console.log(check);
     axios
-      .patch(`/members/my-page/${id}`, {
+      .patch(`/members/my-page/${memberId}`, {
         ...data,
         newPassword,
+        locations: 'string',
+        // 멤버 태그가 객체가 아니라 string이라 오류남
       })
       .then((res) => {
         // console.log(res);
         alert(res);
-        navigate(`/members/mypage/${id}`);
+        navigate(`/members/mypage/${memberId}`);
       })
       .catch((err) => {
         console.log(err);
@@ -409,11 +412,8 @@ const EditUser = () => {
   // } | null>(null);
 
   const { location: currentLocation } = useCurrentLocation();
-  const toggles = watch('tags', []);
+  const toggles = watch('memberTags', []);
   const [disabled, setDisabled] = useState(false);
-  // if (toggles.length > 3) {
-  //   alert('최대 3개까지 선택');
-  // }
   useEffect(() => {
     if (toggles.length > 2) {
       setDisabled(true);
@@ -501,6 +501,7 @@ const EditUser = () => {
   const changePassword = () => {
     setPasswordChange(!passwordChange);
     doesMatch();
+    setNewPassword('');
   };
   const nicknameCheck = () => {
     const name = (document.getElementById('nickname') as HTMLInputElement)
@@ -620,8 +621,6 @@ const EditUser = () => {
               doesNotMatch={doesNotMatch}
               newPass={newPassword}
               setNewPass={setNewPassword}
-              register={register}
-              name="newPassword"
             />
           ) : (
             ''
@@ -694,7 +693,7 @@ const EditUser = () => {
             </div>
           </InfoBlock>
           <InfoBlock>
-            <label htmlFor="tags">등록 태그 변경</label>
+            <label htmlFor="memberTags">등록 태그 변경</label>
             <div>
               <TagList>
                 {TAG_DATA.map((el) => (
@@ -718,7 +717,7 @@ const EditUser = () => {
             <i className="fa-solid fa-square-check" />
             저장하기
           </Button>
-          <TempButton to={`/members/mypage/${id}`}>
+          <TempButton to={`/members/mypage/${memberId}`}>
             <i className="fa-solid fa-xmark" />
             취소하기
           </TempButton>

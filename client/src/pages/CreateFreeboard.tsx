@@ -9,7 +9,6 @@ enum CategoryEnum {
   question = '질문',
   info = '정보',
   exercise = '운동',
-  showoff = '자랑',
   giveaway = '나눔',
 }
 
@@ -248,7 +247,6 @@ const CreateFreeboard = () => {
               <option value="info">정보</option>
               <option value="exercise">운동</option>
               <option value="giveaway">나눔</option>
-              <option value="showoff">자랑</option>
             </select>
           </div>
         </div>

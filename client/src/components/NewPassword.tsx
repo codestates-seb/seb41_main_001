@@ -1,4 +1,3 @@
-import { useFormContext } from 'react-hook-form';
 import styled from 'styled-components';
 
 const InfoBlock = styled.div`
@@ -76,14 +75,12 @@ const NewPassword = ({
   newPass,
   setNewPass,
 }: any) => {
-  // const handleChange = (event: any) => {
-  //   // 👇 Get input value from "event"
-  //   setNewPass(event.target.value);
-  //   doesNotMatch();
-  // };
-  const { register } = useFormContext();
-  const handleMatch = (event: any) => {
+  const handleChange = (event: any) => {
+    // 👇 Get input value from "event"
     setNewPass(event.target.value);
+    doesNotMatch();
+  };
+  const handleMatch = (event: any) => {
     if (newPass === event.target.value) {
       doesMatch();
     } else {
@@ -94,12 +91,7 @@ const NewPassword = ({
     <div>
       <InfoBlock>
         <label htmlFor="newPassword">새 비밀번호</label>
-        <input
-          id="newPassword"
-          type="password"
-          // onChange={handleChange}
-          {...register('newPassword')}
-        />
+        <input id="newPassword" type="password" onChange={handleChange} />
       </InfoBlock>
       <InfoBlock>
         <label htmlFor="newPasswordCheck">새 비밀번호 확인</label>
