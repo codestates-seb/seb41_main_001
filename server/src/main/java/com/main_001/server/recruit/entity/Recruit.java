@@ -34,7 +34,7 @@ public class Recruit {
 //    시간 설정 시 참고
 //    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 //    LocalDateTime localDateTime = timestamp.toLocalDateTime();
-    @Column
+    @Column(name = "MAX_REQUIRE")
     private int require=0;
 
     @Column

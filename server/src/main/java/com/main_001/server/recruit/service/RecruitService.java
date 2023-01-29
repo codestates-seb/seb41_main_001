@@ -29,21 +29,17 @@ import java.util.stream.Collectors;
 public class RecruitService {
     private final TagRepository tagRepository;
     private final RecruitRepository recruitRepository;
-
-    private final RecruitTagRepository recruitTagRepository;
-
     private final MemberService memberService;
     private final RecruitLikeRepository recruitLikeRepository;
     private final RecruitCommentRepository recruitCommentRepository;
     private final MemberRepository memberRepository;
 
-    public RecruitService(TagRepository tagRepository, RecruitRepository recruitRepository, RecruitTagRepository recruitTagRepository, MemberService memberService,
+    public RecruitService(TagRepository tagRepository, RecruitRepository recruitRepository, MemberService memberService,
                           RecruitLikeRepository recruitLikeRepository,
                           RecruitCommentRepository recruitCommentRepository,
                           MemberRepository memberRepository) {
         this.tagRepository = tagRepository;
         this.recruitRepository = recruitRepository;
-        this.recruitTagRepository = recruitTagRepository;
         this.memberService = memberService;
         this.recruitLikeRepository = recruitLikeRepository;
         this.recruitCommentRepository = recruitCommentRepository;
@@ -96,11 +92,17 @@ public class RecruitService {
     // Todo : findAll -> 많은 데이터를 가져온다 -> 긁어올 때도 시간 up / memory?
     // findAll 메서드 -> DB 와 통신이 이루어질 것 -> 이 과정(tcp or udp), 쓰레드의 상태 등 자원 효율 / 낭비 / cpu ...
     // 찾아보고 개선 가능한 방향이 보인다면 적용
-
     public Page<Recruit> findRecruits(int page, int size, RecruitDto.Get recruitGetDto) {
         List<Recruit> recruits;
+        //findAll // 키워드 태그 상태 분리 enum, state 패턴 ..
+        // --- if else 줄이는 패턴 + 경우의 수를 별도의 메서드 등으로 분리
+        // jpql 쿼리로 실행해보는 방법
+        // 쿼리에서 condition 지정해서 가져오는 방법 - 필요에 따라 추가 filtering, index, random access, ...
+        // 쿼리 베이스가 더 좋을 가능성이 매우 높음
+        // 조회 전용으로 db를 분리하기도 함 cqrs -- 이 경우 noSQL 사용하기도 함
+        // 성능 -- 10만건 이상의 데이터를 가정 - 성능을 확인해볼 것 (tps 측정) 바꾸고 확인 .. 반복
         if (recruitGetDto.getKeyword() != null) {
-            recruits = recruitRepository.findAllByTitleContaining(recruitGetDto.getKeyword(), Sort.by("modifiedAt").descending())
+            recruits = recruitRepository.findAllByTitleContainingIgnoreCase(recruitGetDto.getKeyword(), Sort.by("modifiedAt").descending())
                     .stream()
                     .peek(recruit -> recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
                     .filter(recruit -> recruit.getDistance() < recruitGetDto.getDistanceLimit())
@@ -159,6 +161,7 @@ public class RecruitService {
                         .sorted(Comparator.comparing(Recruit::getDistance))
                         .collect(Collectors.toList());
             } else {
+                // Todo: string to enum 변환해주는 메서드 따로 분리
                 Recruit.RecruitStatus recruitStatus;
                 switch(recruitGetDto.getStatus()){
                     case "최소인원충족": recruitStatus = Recruit.RecruitStatus.RECRUIT_MEET_MINIMUM;

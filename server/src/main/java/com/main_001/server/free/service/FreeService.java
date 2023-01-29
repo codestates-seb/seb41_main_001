@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class FreeService{
+public class FreeService {
     private final FreeRepository freeRepository;
 
     private final FreeCommentRepository freeCommentRepository;
@@ -53,9 +53,9 @@ public class FreeService{
         free.setCreatedAt(LocalDateTime.now());
         free.setModifiedAt(LocalDateTime.now());
         free.setMember(memberRepository.findById(free.getMember().getMemberId()).orElseThrow());
-        for(FreeTag freeTag : free.getFreeTags()){
+        for (FreeTag freeTag : free.getFreeTags()) {
             Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
-            tag.setFreeCount(tag.getFreeCount()+1);
+            tag.setFreeCount(tag.getFreeCount() + 1);
         }
         return saveFree(free);
     }
@@ -63,19 +63,21 @@ public class FreeService{
 
     public Free updateFreeBoard(long freeId, Free free) {
         Free findFree = findVerifiedFreeBoard(freeId);
-        if(!Objects.equals(findFree.getMember().getMemberId(), free.getMember().getMemberId())) throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);
-        if(free.getFreeBody()!=null) findFree.setFreeBody(free.getFreeBody());
-        if(free.getFreeTitle()!=null) findFree.setFreeTitle(free.getFreeTitle());
-        if(free.getCategory()!=null) findFree.setCategory(free.getCategory());
+        if (!Objects.equals(findFree.getMember().getMemberId(), free.getMember().getMemberId()))
+            throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);
+        if (free.getFreeBody() != null) findFree.setFreeBody(free.getFreeBody());
+        if (free.getFreeTitle() != null) findFree.setFreeTitle(free.getFreeTitle());
+        if (free.getCategory() != null) findFree.setCategory(free.getCategory());
         return saveFree(findFree);
     }
 
     public void deleteFreeBoard(long freeId, long memberId) {
         Free findFree = findVerifiedFreeBoard(freeId);
-        if(findFree.getMember().getMemberId()!=memberId) throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);
-        for(FreeTag freeTag : findFree.getFreeTags()){
+        if (findFree.getMember().getMemberId() != memberId)
+            throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);
+        for (FreeTag freeTag : findFree.getFreeTags()) {
             Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
-            tag.setFreeCount(tag.getFreeCount()-1);
+            tag.setFreeCount(tag.getFreeCount() - 1);
         }
         freeRepository.deleteById(freeId);
     }
@@ -86,10 +88,10 @@ public class FreeService{
         long count = findFree.getFreeLikes().stream()
                 .filter(fl -> Objects.equals(fl.getMember().getMemberId(), freeLikeMemberId))
                 .count();
-        if(count==0) freeLike.setFree(findFree);
+        if (count == 0) freeLike.setFree(findFree);
         else {
             findFree.getFreeLikes().removeIf(fl -> Objects.equals(fl.getMember().getMemberId(), freeLike.getMember().getMemberId()));
-            freeLikeRepository.deleteFreeLikeByMember_MemberIdAndFree_FreeId(freeLikeMemberId,FreeId);
+            freeLikeRepository.deleteFreeLikeByMember_MemberIdAndFree_FreeId(freeLikeMemberId, FreeId);
         }
         return freeRepository.save(findFree);
     }
@@ -105,7 +107,8 @@ public class FreeService{
     public Free updateFreeComment(long freeId, long commentId, FreeComment freeComment) {
         Free findFree = findVerifiedFreeBoard(freeId);
         FreeComment targetComment = freeCommentRepository.findById(commentId).orElseThrow();
-        if (!Objects.equals(targetComment.getMember().getMemberId(), freeComment.getMember().getMemberId())) throw new BusinessLogicException(ExceptionCode.COMMENT_MODIFY_DENIED);
+        if (!Objects.equals(targetComment.getMember().getMemberId(), freeComment.getMember().getMemberId()))
+            throw new BusinessLogicException(ExceptionCode.COMMENT_MODIFY_DENIED);
         targetComment.setModifiedAt(freeComment.getModifiedAt());
         targetComment.setCommentBody(freeComment.getCommentBody());
 
@@ -115,7 +118,8 @@ public class FreeService{
     public void deleteFreeComment(long freeId, long commentId, long memberId) {
         Free findFree = findVerifiedFreeBoard(freeId);
         FreeComment targetComment = freeCommentRepository.findById(commentId).orElseThrow();
-        if (targetComment.getMember().getMemberId() != memberId) throw new BusinessLogicException(ExceptionCode.COMMENT_DELETE_DENIED);
+        if (targetComment.getMember().getMemberId() != memberId)
+            throw new BusinessLogicException(ExceptionCode.COMMENT_DELETE_DENIED);
         freeCommentRepository.deleteById(commentId);
 
         freeRepository.save(findFree);
@@ -123,33 +127,38 @@ public class FreeService{
 
     public Free findFreeBoard(long freeId) {
         Free findFree = findVerifiedFreeBoard(freeId);
-        findFree.setViews(findFree.getViews()+1);
+        findFree.setViews(findFree.getViews() + 1);
         return saveFree(findFree);
     }
 
     public Page<Free> findFreeBoards(int page, int size, FreeDto.Search search) {
-        List<Free> frees = freeRepository.findAll(Sort.by("createdAt").descending());
-        switch(search.getType()) {
-            case "tag" :
-                frees = frees.stream()
-                    .filter(free -> free.getFreeTags()
-                                    .stream()
-                                    .map(FreeTag::getTag)
-                                    .map(Tag::getTagName)
-                                    .anyMatch(tagName -> tagName.equals(search.getKeyword())))
+        List<Free> frees;
+        switch (search.getType()) {
+            case "tag":
+                frees = freeRepository.findAll(Sort.by("createdAt").descending())
+                        .stream()
+                        .filter(free -> free.getFreeTags()
+                                .stream()
+                                .map(FreeTag::getTag)
+                                .map(Tag::getTagName)
+                                .anyMatch(tagName -> tagName.equals(search.getKeyword())))
                         .collect(Collectors.toList());
                 break;
-            case "category" :
-                frees = frees.stream()
+            case "category":
+                frees = freeRepository.findAll(Sort.by("createdAt").descending())
+                        .stream()
                         .filter(free -> free.getCategory().equals(search.getKeyword()))
                         .collect(Collectors.toList());
                 break;
-            case "keyword" :
-                frees = frees.stream()
+            case "keyword":
+                frees = freeRepository.findAllByFreeTitleContainingIgnoreCase(search.getKeyword())
+                        .stream()
                         .filter(free -> free.getFreeTitle().contains(search.getKeyword()))
                         .collect(Collectors.toList());
                 break;
-            default: throw new BusinessLogicException(ExceptionCode.BAD_REQUEST);
+            default:
+                frees = freeRepository.findAll(Sort.by("createdAt").descending());
+                break;
         }
 
         PageRequest pageRequest = PageRequest.of(page, size);
@@ -159,8 +168,8 @@ public class FreeService{
         return new PageImpl<>(frees.subList(start, end), pageRequest, frees.size());
     }
 
-    private Free findVerifiedFreeBoard(long freeId){
-        Optional<Free> optionalFreeBoard = freeRepository.findById(freeId);
+    private Free findVerifiedFreeBoard(long freeId) {
+        Optional<Free> optionalFreeBoard = freeRepository.findByFreeId(freeId);
         return optionalFreeBoard.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.FREEBOARD_NOT_FOUND));
     }
