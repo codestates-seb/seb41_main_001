@@ -1,9 +1,9 @@
 // import { useState } from 'react';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 import AutoCompleteForArray from '../components/AutoCompleteForArray';
-// import useCurrentLocation from '../utils/useCurrentLocation';
-// import KakaoMapClick from '../components/KakaoMapClick';
+import useCurrentLocation from '../utils/useCurrentLocation';
+import KakaoMapClick from '../components/KakaoMapClick';
 import Button from '../components/Button';
 
 const RecruitFormContainer = styled.main`
@@ -11,6 +11,11 @@ const RecruitFormContainer = styled.main`
   width: 700px;
   color: white;
   font-size: 16px;
+
+  #kakao-map {
+    width: 100%;
+    height: 400px;
+  }
 `;
 
 const RecruitForm = styled.form`
@@ -111,12 +116,33 @@ interface RecruitFormInput {
   tagSearch: string;
 }
 
+const KakaoMapForClick = ({
+  control,
+  setValue,
+  currentLat,
+  currentLon,
+}: any) => {
+  const lat = useWatch({
+    control,
+    name: 'lat',
+    defaultValue: currentLat,
+  });
+  const lon = useWatch({
+    control,
+    name: 'lon',
+    defaultValue: currentLon,
+  });
+
+  return <KakaoMapClick latitude={lat} longitude={lon} setValue={setValue} />;
+};
+
 const CreateRecruit = () => {
   const {
     register,
     control,
     handleSubmit,
     getValues,
+    setValue,
     formState: { errors },
   } = useForm<RecruitFormInput>();
   const { fields, append, remove } = useFieldArray({
@@ -130,16 +156,14 @@ const CreateRecruit = () => {
     },
   });
 
-  // const [latlon, setLatLon] = useState<{
-  //   latitude: number;
-  //   longitude: number;
-  // }>();
-
   const onSubmit = (data: RecruitFormInput) => {
     // tagSearch는 postBody에서 제외함.
     const { tagSearch, ...postBody } = data;
     console.log(JSON.stringify(postBody));
   };
+
+  // const { location } = useCurrentLocation();
+  const { location } = useCurrentLocation();
 
   const TAG_DATA = [
     { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
@@ -165,10 +189,6 @@ const CreateRecruit = () => {
     { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
   ];
 
-  // useCurrentLocation().then((res) => {
-  //   if (res === undefined) return;
-  //   setLatLon(res);
-  // });
   console.log('render');
 
   return (
@@ -303,6 +323,14 @@ const CreateRecruit = () => {
                     longitude={latlon.longitude}
                   />
                 </div> */}
+                {location && (
+                  <KakaoMapForClick
+                    control={control}
+                    setValue={setValue}
+                    currentLat={location.latitude}
+                    currentLon={location.longitude}
+                  />
+                )}
               </td>
             </tr>
             <tr>

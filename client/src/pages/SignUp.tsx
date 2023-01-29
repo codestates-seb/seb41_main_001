@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
 import { useFieldArray, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -82,7 +82,7 @@ const SignUpForm = styled.form`
         width: 100%;
         border: none;
         outline: 1px solid rgb(120, 120, 120);
-        background-color: rgba(255, 255, 255, 0);
+        background-color: var(--gray);
         color: white;
         &:focus {
           outline: 1px solid rgb(170, 170, 170);
@@ -130,7 +130,7 @@ const SignUp = () => {
       },
     },
   });
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { location: currentLocation } = useCurrentLocation();
   const [nicknameValue, setNicknameValue] = useState('');
   const [checkedNickname, setCheckedNickname] = useState(true);
@@ -141,31 +141,31 @@ const SignUp = () => {
 
   const onSubmit = (data: IFormInput) => {
     delete data.passwordRetype;
-
-    axios
-      .post('/members/signup', {
-        ...data,
-        lat: currentLocation?.latitude,
-        lon: currentLocation?.longitude,
-        locations: '경기도 의정부시 의정부1동',
-      })
-      .then((res) => {
-        // console.log(res);
-        alert(res);
-        navigate('/login');
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(err);
-        console.log(
-          JSON.stringify({
-            ...data,
-            lat: currentLocation?.latitude,
-            lon: currentLocation?.longitude,
-            locations: '경기도 의정부시 의정부1동',
-          }),
-        );
-      });
+    console.log(data);
+    // axios
+    //   .post(`${process.env.REACT_APP_API_URL}/members/signup`, {
+    //     ...data,
+    //     lat: currentLocation?.latitude,
+    //     lon: currentLocation?.longitude,
+    //     locations: '경기도 의정부시 의정부1동',
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //     // alert(res);
+    //   })
+    //   .catch((err) => {
+    //     navigate('/login');
+    //     console.log(err);
+    //     alert(err);
+    //     console.log(
+    //       JSON.stringify({
+    //         ...data,
+    //         lat: currentLocation?.latitude,
+    //         lon: currentLocation?.longitude,
+    //         locations: '경기도 의정부시 의정부1동',
+    //       }),
+    //     );
+    //   });
   };
 
   // console.log(watch('tags'));
@@ -222,7 +222,7 @@ const SignUp = () => {
                   id="name"
                   {...register('name', { required: '이름을 입력하세요' })}
                 />
-                <ErrorMessage>{errors.name?.message}</ErrorMessage>
+                <ErrorMessage>{errors?.name?.message}</ErrorMessage>
               </td>
             </tr>
             <tr>
@@ -239,7 +239,7 @@ const SignUp = () => {
                     setNicknameValue(e.target.value);
                   }}
                 />
-                <ErrorMessage>{errors.nickname?.message}</ErrorMessage>
+                <ErrorMessage>{errors?.nickname?.message}</ErrorMessage>
                 <Button
                   value="중복 확인"
                   onClick={() => {
@@ -274,7 +274,7 @@ const SignUp = () => {
                   type="date"
                   {...register('birth', { required: '생년월일을 입력하세요.' })}
                 />
-                <ErrorMessage>{errors.birth?.message}</ErrorMessage>
+                <ErrorMessage>{errors?.birth?.message}</ErrorMessage>
               </td>
             </tr>
             <tr>
@@ -289,7 +289,7 @@ const SignUp = () => {
                   <option value="Female">여성</option>
                   <option value="Male">남성</option>
                 </select>
-                <ErrorMessage>{errors.sex?.message}</ErrorMessage>
+                <ErrorMessage>{errors?.sex?.message}</ErrorMessage>
               </td>
             </tr>
             <tr>
@@ -305,7 +305,7 @@ const SignUp = () => {
                     setEmailValue(e.target.value);
                   }}
                 />
-                <ErrorMessage>{errors.email?.message}</ErrorMessage>
+                <ErrorMessage>{errors?.email?.message}</ErrorMessage>
                 <Button
                   value="중복 확인"
                   onClick={() => {
@@ -345,7 +345,7 @@ const SignUp = () => {
                     setPhoneValue(e.target.value);
                   }}
                 />
-                <ErrorMessage>{errors.phone?.message}</ErrorMessage>
+                <ErrorMessage>{errors?.phone?.message}</ErrorMessage>
                 <Button
                   value="중복 확인"
                   onClick={() => {
@@ -418,7 +418,7 @@ const SignUp = () => {
                     },
                   })}
                 />
-                <ErrorMessage>{errors.passwordRetype?.message}</ErrorMessage>
+                <ErrorMessage>{errors?.passwordRetype?.message}</ErrorMessage>
               </td>
             </tr>
             <tr>

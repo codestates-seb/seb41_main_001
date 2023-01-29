@@ -98,7 +98,8 @@ const LogIn = () => {
     axios
       .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
       .then((res) => {
-        console.log(res.headers);
+        console.log(res.headers.authorization);
+        console.log(res.headers.refresh);
       })
       .catch((err) => {
         const errMsg = err.response.data.message;

@@ -24,12 +24,14 @@ interface KakaoMapProps {
   latitude: number;
   longitude: number;
   overlayvalue?: string;
+  setValue?: any;
 }
 
 const KakaoMapClick = ({
   latitude,
   longitude,
   overlayvalue = '현재 위치',
+  setValue,
 }: KakaoMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const { kakao } = window;
@@ -74,7 +76,6 @@ const KakaoMapClick = ({
 
     // 마커가 지도 위에 표시되도록 설정
     marker.setMap(map);
-
     kakao.maps.event.addListener(map, 'click', (mouseEvent: any) => {
       // 클릭한 위도, 경도 정보를 가져옵니다
       const latlng = mouseEvent.latLng;
@@ -84,6 +85,8 @@ const KakaoMapClick = ({
 
       let message = `클릭한 위치의 위도는 ${latlng.getLat()} 이고, `;
       message += `경도는 ${latlng.getLng()} 입니다`;
+      setValue('lat', latlng.getLat());
+      setValue('lon', latlng.getLng());
 
       const resultDiv = document.getElementById('clickLatlng');
       if (resultDiv !== null) {

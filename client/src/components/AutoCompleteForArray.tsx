@@ -113,7 +113,6 @@ const TagSearchDropBox = ({
   tagLength,
 }: DropBoxProps) => {
   const tagSearch = useWatch({ control, name: 'tagSearch', defaultValue: '' });
-
   return (
     <DropBox>
       {data
@@ -177,7 +176,12 @@ const AutoCompleteForArray = ({
       ))}
     </ul>
     <AutoCompleteBox>
-      <input type="text" defaultValue="" {...register('tagSearch')} />
+      <input
+        type="text"
+        defaultValue=""
+        autoComplete="off"
+        {...register('tagSearch')}
+      />
       <TagSearchDropBox
         control={control}
         data={data}
