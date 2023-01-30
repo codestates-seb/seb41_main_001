@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 import FilterBox from '../components/FilterBox';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
 import RecruitList from '../components/RecruitList';
@@ -223,6 +224,13 @@ const Recruits = () => {
     params.get('status')?.replaceAll('"', '') ?? '',
   );
   // const [filterRegion, setFilterRegion] = useState('');
+
+  useEffect(() => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/recruits?page=1&size=100`, {})
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log(err.response.data));
+  }, []);
 
   return (
     <MainContainer>
