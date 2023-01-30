@@ -84,7 +84,7 @@ public class MemberService {
         member.setRoles(roles);
 
         // 존재하는 Tag인지 확인
-        findVerifiedTag(member.getMemberTags());
+//        findVerifiedTag(member.getMemberTags());
 
 //        MemberImage memberImageLocal = MemberImage.builder()
 //                .filePath(memberImagePath)
