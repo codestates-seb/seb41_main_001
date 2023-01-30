@@ -8,6 +8,7 @@ import com.main_001.server.member.entity.Member;
 import com.main_001.server.member.mapper.MemberMapper;
 import com.main_001.server.member.service.MemberService;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 @Api(tags = { "Member" })
 @RestController
 @RequestMapping("/members")
+@Slf4j
 public class MemberController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
@@ -88,20 +90,34 @@ public class MemberController {
     // TODO 개발 완료 후 봉인 해제, swagger 추가 필요
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginDto requestBody) {
+//        long start = System.currentTimeMillis();      // 시간측정
         TokenDto.Response response = memberService.loginMember(requestBody);
-//        return new ResponseEntity<>(response.getHeaders(), HttpStatus.OK);
+//        long end = System.currentTimeMillis();
+
+//        log.info("캐시 적용 여부 확인 : " + (end-start));
         return ResponseEntity.ok()
                 .headers(response.getHeaders())
                 .body("SUCCESS");
+//        return new ResponseEntity<>(response.getHeaders(), HttpStatus.OK);
     }
 
     // 로그아웃
     // TODO 좀 더 찾아보자, 추후 구현 필요
-//    @PostMapping("/logout")
-//    public ResponseEntity logout(@RequestHeader("Authorization") String accessToken,
-//                                 @RequestHeader("Refresh") String refreshToken) {
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
+    @DeleteMapping("/logout")
+    public ResponseEntity logout(@RequestHeader("Authorization") String accessToken,
+                                 @RequestHeader("Refresh") String refreshToken) {
+        memberService.logoutMember(accessToken, refreshToken);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/re-issue")
+    public ResponseEntity reIssueToken(@RequestHeader("Authorization") String accessToken,
+                                       @RequestHeader("Refresh") String refreshToken) {
+        TokenDto.Response response = memberService.reIssueToken(accessToken, refreshToken);
+        return ResponseEntity.ok()
+                .headers(response.getHeaders())
+                .body("Token Re-Issue");
+    }
 
     // 회원 정보 수정
     @ApiOperation(value = "회원 정보 수정", notes = "닉네임, 비밀번호, 전화번호, 지역, 태그 중 변경하고 싶은 정보를 수정할 수 있다. 비밀번호의 경우, 현재 비밀번호와 새 비밀번호를 입력해야 한다.")
