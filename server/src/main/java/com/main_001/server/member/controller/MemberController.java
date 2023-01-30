@@ -42,11 +42,29 @@ public class MemberController {
     }
 
     // 프로필 이미지 등록(Edit 화면), 추후 token으로 인증받아서 memberId에 접근한다.
-    @PostMapping(path = "/profileImage/{member-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public void createMemberImage(@PathVariable("member-id") long memberId,
-                                  @RequestPart(value = "file", required = false) List<MultipartFile> files) {
-        memberService.createImage(memberId, files);
+    @ApiOperation(value = "회원 프로필 이미지 등록", notes = "프로필 이미지를 증록한다.")
+    @PostMapping(path = "/profileImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void createProfileImage(@RequestHeader(name = "Refresh") String refreshToken,
+                                  @RequestPart(value = "file", required = false) MultipartFile files) {
+        memberService.createProfile(refreshToken, files);
     }
+    // 추후 리팩토링 필요한 코드
+//    @PostMapping(path = "/profileImage/{member-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public void createProfileImage(@PathVariable(value = "member-id") long memberId,
+//                                   @RequestPart(value = "file", required = false) MultipartFile files) {
+//        memberService.createProfile(memberId, files);
+//    }
+
+    // 토큰 버전 프로필 사진 제거
+//    @DeleteMapping(path = "/profileImage")
+//    public void deleteProfileImage(@RequestHeader(name = "Refresh") String refreshToken) {
+//        memberService.deleteProfileImage(refreshToken);
+//    }
+    // pathvariable 버전 프로필 사진 제거
+//    @DeleteMapping(path = "/profileImage/{member-id}")
+//    public void deleteProfileImage(@PathVariable(value = "member-id") long memberId) {
+//        memberService.deleteProfileImage(memberId);
+//    }
 
     // email 중복체크
     @ApiOperation(value = "email 중복 체크", notes = "사용자가 입력한 email이 이미 가입된 정보인지 체크한다.")
@@ -88,6 +106,7 @@ public class MemberController {
 
     // 로그인
     // TODO 개발 완료 후 봉인 해제, swagger 추가 필요
+    @ApiOperation(value = "로그인", notes = "email과 password를 입력해서 로그인에 성공하면 accessToken과 refreshToken 발급")
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginDto requestBody) {
 //        long start = System.currentTimeMillis();      // 시간측정
@@ -103,11 +122,12 @@ public class MemberController {
 
     // 로그아웃
     // TODO 좀 더 찾아보자, 추후 구현 필요
+    @ApiOperation(value = "로그아웃", notes = "accessToken과 refreshToken을 검사하여 로그아웃")
     @DeleteMapping("/logout")
     public ResponseEntity logout(@RequestHeader("Authorization") String accessToken,
                                  @RequestHeader("Refresh") String refreshToken) {
         memberService.logoutMember(accessToken, refreshToken);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/re-issue")
@@ -121,14 +141,12 @@ public class MemberController {
 
     // 회원 정보 수정
     @ApiOperation(value = "회원 정보 수정", notes = "닉네임, 비밀번호, 전화번호, 지역, 태그 중 변경하고 싶은 정보를 수정할 수 있다. 비밀번호의 경우, 현재 비밀번호와 새 비밀번호를 입력해야 한다.")
-    @PatchMapping("/my-page/{member-id}")
-    public ResponseEntity patchMyPage(@PathVariable("member-id") long memberId,
+    @PatchMapping("/my-page")
+    public ResponseEntity patchMyPage(@RequestHeader(name = "Refresh") String refreshToken,
                                       @RequestBody MemberDto.MemberPatchDto memberPatch) {
-        memberPatch.setMemberId(memberId);
-
         // 비밀번호가 맞는지 검증 후 변경
         if (memberPatch.getCurPassword() != null)
-            memberService.checkPassword(memberId, memberPatch.getCurPassword(), memberPatch.getNewPassword());
+            memberService.checkPassword(refreshToken, memberPatch.getCurPassword(), memberPatch.getNewPassword());
 
         Member member = memberService.updateMember(memberMapper.memberPatchToMember(memberPatch));
 
@@ -138,9 +156,9 @@ public class MemberController {
     // 마이페이지 접속
     // 접근 권한을 로그인한 사용자한테만 준다.
     @ApiOperation(value = "회원 정보 조회(마이페이지)", notes = "로그인한 사용자가 자신의 회원 정보를 조회한다.")
-    @GetMapping("/my-page/{member-id}")
-    public ResponseEntity getMyPage(@PathVariable("member-id") long memberId) {
-        Member member = memberService.findMember(memberId);
+    @GetMapping("/my-page")
+    public ResponseEntity getMyPage(@RequestHeader(name = "Refresh") String refreshToken) {
+        Member member = memberService.findMyPage(refreshToken);
         return new ResponseEntity<>(memberMapper.memberToMemberMyResponse(member), HttpStatus.OK);
     }
 
@@ -154,9 +172,9 @@ public class MemberController {
 
     // 회원 탈퇴
     @ApiOperation(value = "회원 탈퇴", notes = "member-id에 해당하는 회원의 정보를 삭제한다.")
-    @PatchMapping("/my-page/{member-id}/withdraw")
-    public ResponseEntity withdrawal(@PathVariable("member-id") long memberId) {
-        memberService.deleteMember(memberId);
+    @PatchMapping("/my-page/withdraw")
+    public ResponseEntity withdrawal(@RequestHeader(name = "Refresh") String refreshToken) {
+        memberService.deleteMember(refreshToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

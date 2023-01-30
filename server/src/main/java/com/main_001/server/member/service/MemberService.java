@@ -8,6 +8,7 @@ import com.main_001.server.auth.utils.RedisUtils;
 import com.main_001.server.exception.BusinessLogicException;
 import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.file.FileHandler;
+import com.main_001.server.file.S3Service;
 import com.main_001.server.file.UploadFile;
 import com.main_001.server.member.dto.TokenDto;
 import com.main_001.server.member.entity.Member;
@@ -23,6 +24,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -41,6 +43,7 @@ public class MemberService {
     private final FileHandler fileHandler;
     private final TagRepository tagRepository;
     private final RedisUtils redisUtils;
+    private final S3Service s3Service;
 
 //    @Value("${file.path}")
     private String memberImagePath;
@@ -53,7 +56,8 @@ public class MemberService {
                          MemberImageRepository memberImageRepository,
                          FileHandler fileHandler,
                          TagRepository tagRepository,
-                         RedisUtils redisUtils) {
+                         RedisUtils redisUtils,
+                         S3Service s3Service) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityUtils = authorityUtils;
@@ -63,6 +67,7 @@ public class MemberService {
         this.fileHandler = fileHandler;
         this.tagRepository = tagRepository;
         this.redisUtils = redisUtils;
+        this.s3Service = s3Service;
     }
 
     // 이메일, 닉네임, 전화번호를 따로 검사하는 로직이 있기 때문에 회원가입은 바로 저장소에 저장될 수 있다.
@@ -79,7 +84,7 @@ public class MemberService {
         member.setRoles(roles);
 
         // 존재하는 Tag인지 확인
-//        findVerifiedTag(member.getMemberTags());
+        findVerifiedTag(member.getMemberTags());
 
 //        MemberImage memberImageLocal = MemberImage.builder()
 //                .filePath(memberImagePath)
@@ -99,31 +104,81 @@ public class MemberService {
     // 프로필 이미지 생성
     @SneakyThrows
     @Transactional
-    public void createImage(Long memberId, List<MultipartFile> multipartFiles) {
-        Member findMember = findMember(memberId);
+    public void createProfile(String refreshToken, MultipartFile multipartFile) {
+        Long memberId = redisUtils.getId(refreshToken);
+        Member findMember = findVerifiedMember(memberId);
 
-        List<UploadFile> uploadFiles = fileHandler.parseFileInfo(multipartFiles);
-        List<MemberImage> memberImages = new ArrayList<>();
+        UploadFile uploadFile = s3Service.uploadImage(multipartFile);
 
-        uploadFiles.forEach(uploadFile -> {
-            MemberImage memberImage = MemberImage.builder()
-                    .originalFileName(uploadFile.getOriginalFileName())
-                    .storedFileName(uploadFile.getStoredFileName())
-                    .filePath(uploadFile.getFilePath())
-                    .fileSize(uploadFile.getFileSize())
-                    .build();
-            memberImages.add(memberImage);
-            memberImageRepository.save(memberImage); // 추후 수정 필요함
-        });
+        MemberImage memberImage = MemberImage.builder()
+                .originalFileName(uploadFile.getOriginalFileName())
+                .storedFileName(uploadFile.getStoredFileName())
+                .filePath(uploadFile.getFilePath())
+                .fileSize(uploadFile.getFileSize())
+                .build();
 
-        if (!memberImages.isEmpty()) {
-            for (MemberImage memberImage : memberImages) {
-                findMember.addMemberImage(memberImage);
-                memberRepository.save(findMember); // 수정 필요
-                break;
-            }
-        }
+        findMember.addMemberImage(memberImage);
+        memberRepository.save(findMember);
     }
+
+    // 이미지 여러개 업로드(리팩토링 필요)
+//    public void createProfile(long memberId, MultipartFile multipartFile) {
+//        Member findMember = findMember(memberId);
+//        Long memberId = redisUtils.getId(refreshToken);
+//        Member findMember = findVerifiedMember(memberId);
+//
+//         memberId에 해당하는 회원이 이미지를 가지고 있으면 삭제!
+//        if(!ObjectUtils.isEmpty(findMember.getMemberImage())) {
+//            Long id = findMember.getMemberImage().getMemberImageId();
+//            memberImageRepository.deleteByMemberImageId(id);
+//        }
+
+//        UploadFile uploadFile = s3Service.uploadImage(multipartFile);
+
+//        MemberImage memberImage = MemberImage.builder()
+//                .originalFileName(uploadFile.getOriginalFileName())
+//                .storedFileName(uploadFile.getStoredFileName())
+//                .filePath(uploadFile.getFilePath())
+//                .fileSize(uploadFile.getFileSize())
+//                .build();
+//
+//        findMember.addMemberImage(memberImage);
+//        memberRepository.save(findMember);
+
+//        List<UploadFile> uploadFiles = fileHandler.parseFileInfo(multipartFiles);
+//        List<MemberImage> memberImages = new ArrayList<>();
+//
+//        uploadFiles.forEach(uploadFile -> {
+//            MemberImage memberImage = MemberImage.builder()
+//                    .originalFileName(uploadFile.getOriginalFileName())
+//                    .storedFileName(uploadFile.getStoredFileName())
+//                    .filePath(uploadFile.getFilePath())
+//                    .fileSize(uploadFile.getFileSize())
+//                    .build();
+//            memberImages.add(memberImage);
+//            memberImageRepository.save(memberImage); // 추후 수정 필요함
+//        });
+
+//        if (!memberImages.isEmpty()) {
+//            for (MemberImage memberImage : memberImages) {
+//                findMember.addMemberImage(memberImage);
+//                memberRepository.save(findMember); // 수정 필요
+//                break;
+//            }
+//        }
+//    }
+
+    // 프로필 이미지 제거(리팩토링 필요)
+//    public void deleteProfileImage(String refreshToken) {
+//        Long memberId = redisUtils.getId(refreshToken);
+//        Member findMember = findVerifiedMember(memberId);
+//
+//        if (ObjectUtils.isEmpty(findMember.getMemberImage())) {
+//            throw new BusinessLogicException(ExceptionCode.NO_PROFILE_IMAGE);
+//        }
+//
+//        memberImageRepository.deleteByMemberImageId(findMember.getMemberImage().getMemberImageId());
+//    }
 
     // 이메일 중복여부 중복이면 true, 중복이 아니면 false
     public boolean checkEmailDuplication(String email) {
@@ -248,7 +303,8 @@ public class MemberService {
     }
 
     // 비밀번호가 맞는지 확인
-    public void checkPassword(long memberId, String curPassword, String newPassword) {
+    public void checkPassword(String refreshToken, String curPassword, String newPassword) {
+        Long memberId = redisUtils.getId(refreshToken);
         Member findMember = findVerifiedMember(memberId);
 
         isValid(findMember, curPassword);
@@ -282,13 +338,20 @@ public class MemberService {
         return memberRepository.save(findMember);
     }
 
+    // 마이페이지 조회
+    public Member findMyPage(String refreshToken) {
+        Long memberId = redisUtils.getId(refreshToken);
+        return findMember(memberId);
+    }
+
     // 회원 조회
     public Member findMember(long memberId) {
         return findVerifiedMember(memberId);
     }
 
     // 회원 탈퇴
-    public void deleteMember(long memberId) {
+    public void deleteMember(String refreshToken) {
+        Long memberId = redisUtils.getId(refreshToken);
         Member findMember = findVerifiedMember(memberId);
         findMember.setPassword("");
         findMember.setName("Member" + memberId);
