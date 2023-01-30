@@ -304,7 +304,9 @@ interface UserFormInput {
   newPassword: string;
   newPasswordCheck: string;
   phone: string;
-
+  locations: string;
+  lat: number;
+  lon: number;
   // locations: string[];
   // memberTags: {
   //   tagId: number;
@@ -396,7 +398,7 @@ const EditUser = () => {
     );
   };
   const locationAdd = () => {
-    alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
+    alert(`위도 : `);
   };
   // inputImage.addEventListener('change', (e) => {
   //   readImage(e.target);
