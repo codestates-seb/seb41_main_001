@@ -240,7 +240,7 @@ public class RecruitService {
         if(count==0) {
             apply.setRecruit(findRecruit);
             if(findRecruit.getApplies().size()>=findRecruit.getMinRequire()) findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_MEET_MINIMUM);
-            if(findRecruit.getApplies().size()==findRecruit.getRequire()) findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_COMPLETE);
+            if(findRecruit.getApplies().size()==findRecruit.getApplicantsLimit()) findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_COMPLETE);
         }
         else {
             findRecruit.getApplies().removeIf(a -> Objects.equals(a.getMember().getMemberId(), apply.getMember().getMemberId()));

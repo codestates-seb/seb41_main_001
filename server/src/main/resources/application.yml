@@ -1,17 +1,27 @@
 spring:
-  h2:
-    console:
-      enabled: true
-      path: /h2
-  datasource:
-    url: jdbc:h2:mem:test
   jpa:
     hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+      ddl-auto: update
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+#    url: jdbc:h2:mem:test
+    url: jdbc:mysql://heart-db.cgl3rwqgkz8y.ap-northeast-2.rds.amazonaws.com:3306/heartdb
+    username: admin
+    password: ${MYSQL_PW}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  logging:
+    level:
+      com.zaxxer.hikari: TRACE
+      com.zaxxer.hikari.HikariConfig: DEBUG
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher #swagger 에러 해결
