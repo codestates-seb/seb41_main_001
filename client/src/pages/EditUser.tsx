@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 import axios from 'axios';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 // import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
 import useCurrentLocation from '../utils/useCurrentLocation';
+import NewPassword from '../components/NewPassword';
+import AutoCompleteForArray from '../components/AutoCompleteForArray';
 // declare global {
 //   interface Window {
 //     kakao: any;
@@ -39,25 +41,42 @@ const Container = styled.div`
   }
 `;
 
+const WarnSet = styled.div`
+  display: flex;
+  flex-direction: column;
+  > span {
+    color: var(--neon-red);
+    font-size: 10px;
+    padding: 0.5rem 0;
+    margin-left: 1.2rem;
+    > i {
+      margin-right: 0.3rem;
+    }
+  }
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+`;
+
 const PersonalInfo = styled.div`
   border: 2px solid white;
-  padding: 10px;
   margin: 10px 0 10px 10px;
   border-radius: 20px;
-  padding: 40px 0px 40px 20px;
+  padding: 40px 10px 40px 20px;
   input {
-    margin-bottom: 15px;
     background-color: var(--gray);
     padding: 5px;
-    margin-left: 10px;
     font-size: 16px;
-    border: none;
-    border-bottom: 2px solid gray;
+    border: 1px solid grey;
     width: 13rem;
     outline: none;
     color: white;
     &:focus-within {
-      border-bottom: 2px solid white;
+      border: 1px solid white;
       transition: 0.2s ease-in-out;
     }
     &:-webkit-autofill {
@@ -76,7 +95,6 @@ const InfoBlock = styled.div`
   > label:first-child {
     width: 120px;
     display: flex;
-    justify-content: flex-end;
     align-items: flex-start;
     text-shadow: white 0 0 5px;
     margin-right: 10px;
@@ -89,8 +107,8 @@ const InfoBlock = styled.div`
     border-radius: 5px;
     padding: 0 0.5rem;
     background-color: var(--gray);
-    margin: 0 2rem;
-    &:hover {
+    margin: 0 1rem;
+    &:hover:enabled {
       transition: 0.2s ease-in-out;
       text-shadow: white 0 0 5px;
       background-color: var(--neon-yellow);
@@ -100,18 +118,19 @@ const InfoBlock = styled.div`
     }
   }
   #map {
-    width: 20rem;
-    height: 21rem;
+    width: 18.5rem;
+    height: 19rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
-    margin-left: 0.8rem;
+    margin-left: 0.1rem;
+    margin-right: 5rem;
     > #locationButton {
       padding: 1rem 2rem;
       background-color: var(--gray);
-      &:hover {
+      &:hover:enabled {
         transition: 0.2s ease-in-out;
         text-shadow: white 0 0 5px;
         background-color: var(--neon-yellow);
@@ -135,11 +154,13 @@ const InfoBlock = styled.div`
     > div {
       margin: 5px 5px 0px 0;
       font-size: 15px;
+      display: flex;
+      justify-content: flex-start;
       > i {
         color: white;
         font-size: 16px;
         margin-left: 15px;
-        &:hover {
+        &:hover:enabled {
           color: var(--neon-red);
           text-shadow: white 0 0 2px;
           transition: 0.2s ease-in-out;
@@ -150,13 +171,13 @@ const InfoBlock = styled.div`
   }
 `;
 
-const Pfp = styled.img<PreviewPfp>`
-  width: 150px;
-  height: 150px;
-  border: 2px solid white;
-  border-radius: 100px;
-  margin: 0 10px;
-`;
+// const Pfp = styled.img<PreviewPfp>`
+//   width: 150px;
+//   height: 150px;
+//   border: 2px solid white;
+//   border-radius: 100px;
+//   margin: 0 10px;
+// `;
 
 const Button = styled.button`
   border: 1px solid white;
@@ -176,13 +197,17 @@ const Button = styled.button`
   i {
     padding-right: 10px;
   }
-  &:hover {
+  &:hover:enabled {
     transition: 0.2s ease-in-out;
     text-shadow: white 0 0 5px;
     background-color: var(--neon-yellow);
     color: black;
     border: 1px solid var(--neon-yellow);
     cursor: pointer;
+  }
+  &:disabled {
+    color: grey;
+    border: 1px solid grey;
   }
 `;
 
@@ -202,7 +227,7 @@ const TempButton = styled(Link)`
   i {
     padding-right: 10px;
   }
-  &:hover {
+  &:hover:enabled {
     transition: 0.2s ease-in-out;
     text-shadow: white 0 0 5px;
     background-color: var(--neon-yellow);
@@ -216,7 +241,7 @@ const NoLinkButton = styled.button`
   border: 1px solid white;
   border-radius: 10px;
   align-items: center;
-  margin: 3px 0px 15px 20px;
+  margin: 3px 0px 15px 0px;
   font-size: 14px;
   text-align: center;
   display: flex;
@@ -230,7 +255,7 @@ const NoLinkButton = styled.button`
   i {
     padding-right: 5px;
   }
-  &:hover {
+  &:hover:enabled {
     transition: 0.2s ease-in-out;
     text-shadow: white 0 0 5px;
     background-color: var(--neon-yellow);
@@ -238,55 +263,65 @@ const NoLinkButton = styled.button`
     border: 1px solid var(--neon-yellow);
     cursor: pointer;
   }
+  &:disabled {
+    color: grey;
+    border: 1px solid grey;
+  }
 `;
 
-const InputButton = styled.label`
-  border: 1px solid white;
-  border-radius: 10px;
-  align-items: center;
-  margin: 3px 0px 15px 20px;
-  font-size: 14px;
-  height: 35px;
-  text-align: center;
+// const InputButton = styled.label`
+//   border: 1px solid white;
+//   border-radius: 10px;
+//   align-items: center;
+//   margin: 3px 0px 15px 20px;
+//   font-size: 14px;
+//   height: 35px;
+//   text-align: center;
+//   display: flex;
+//   color: white;
+//   justify-content: center;
+//   align-items: center;
+//   text-align: center;
+//   background-color: var(--gray);
+//   padding: 5px 10px;
+//   cursor: pointer;
+//   > input {
+//     display: none;
+//   }
+//   i {
+//     padding-right: 5px;
+//   }
+//   &:hover {
+//     transition: 0.2s ease-in-out;
+//     text-shadow: white 0 0 5px;
+//     background-color: var(--neon-yellow);
+//     color: black;
+//     border: 1px solid var(--neon-yellow);
+//     cursor: pointer;
+//   }
+// `;
+
+// const TagContainer = styled.div`
+//   fieldset {
+//     display: flex;
+//     flex-direction: row;
+//     width: 25rem;
+//     flex-wrap: wrap;
+//     border: none;
+//     padding-left: 0;
+//     margin-left: 0;
+//   }
+// `;
+const TagList = styled.div`
+  width: 22rem;
   display: flex;
-  color: white;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background-color: var(--gray);
-  padding: 5px 10px;
-  cursor: pointer;
-  > input {
-    display: none;
-  }
-  i {
-    padding-right: 5px;
-  }
-  &:hover {
-    transition: 0.2s ease-in-out;
-    text-shadow: white 0 0 5px;
-    background-color: var(--neon-yellow);
-    color: black;
-    border: 1px solid var(--neon-yellow);
-    cursor: pointer;
-  }
+  flex-wrap: wrap;
+  margin: 0.5rem;
 `;
 
-const TagContainer = styled.div`
-  fieldset {
-    display: flex;
-    flex-direction: row;
-    width: 25rem;
-    flex-wrap: wrap;
-    border: none;
-    padding-left: 0;
-    margin-left: 0;
-  }
-`;
-
-interface PreviewPfp {
-  src: string;
-}
+// interface PreviewPfp {
+//   src: string;
+// }
 
 // interface Location {
 //   coords: any;
@@ -302,14 +337,15 @@ interface UserFormInput {
   nickname: string;
   curPassword: string;
   newPassword: string;
-  newPasswordCheck: string;
+  // newPasswordCheck: string;
   phone: string;
-
-  // locations: string[];
-  // memberTags: {
-  //   tagId: number;
-  //   tagName: string;
-  // }[];
+  memberTags: {
+    tagId: number;
+    tagName: string;
+    emoji: string;
+  }[];
+  // memberTags: string[];
+  locations: string[];
 }
 
 // interface location {
@@ -318,30 +354,68 @@ interface UserFormInput {
 // }
 
 const EditUser = () => {
-  const { id } = useParams();
+  const { memberId } = useParams();
   const navigate = useNavigate();
   // });
   const [nickCheck, setNickCheck] = useState(false);
   const [phoneCheck, setPhoneCheck] = useState(false);
-  const [img, setImg] = useState<string>(
-    'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
-  );
+  const [passwordMatch, setPasswordMatch] = useState(true);
+  const [passwordChange, setPasswordChange] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
 
+  // const [img, setImg] = useState<string>(
+  //   'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
+  // );
+  const doesMatch = () => {
+    setPasswordMatch(true);
+  };
+  const doesNotMatch = () => {
+    setPasswordMatch(false);
+  };
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<UserFormInput>();
   const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
-    console.log('data is ', data);
-    console.log('error is ', errors);
-    navigate(`/members/mypage/${id}`);
+    const check = { ...data, newPassword, locations: 'example' };
+    console.log(check);
+    axios
+      .patch(`${process.env.REACT_APP_API_URL}/members/my-page/${memberId}`, {
+        ...data,
+        newPassword,
+        locations: 'string',
+        // 멤버 태그가 객체가 아니라 string이라 오류남
+      })
+      .then((res) => {
+        // console.log(res);
+        alert(res);
+        navigate(`/members/mypage/${memberId}`);
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log(
+          JSON.stringify({
+            data,
+          }),
+        );
+      });
   };
 
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'memberTags',
+    rules: {
+      validate: {
+        moreThanOneTag: (values) =>
+          values.length > 0 ? true : '태그는 1개 이상 선택해야 합니다',
+      },
+    },
+  });
   // const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   console.log('change', event.target.value);
   // };
-
   // const [location, setLocation] = useState<{
   //   latitude: number;
   //   longitude: number;
@@ -349,6 +423,29 @@ const EditUser = () => {
 
   const { location: currentLocation } = useCurrentLocation();
 
+  const TAG_DATA = [
+    { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
+    { tagId: 2, tagName: '농구', emoji: '🏀' },
+    { tagId: 3, tagName: '야구', emoji: '⚾️' },
+    { tagId: 4, tagName: '배구', emoji: '🏐' },
+    { tagId: 5, tagName: '복싱', emoji: '🥊' },
+    { tagId: 6, tagName: '탁구', emoji: '🏓' },
+    { tagId: 7, tagName: '배드민턴', emoji: '🏸' },
+    { tagId: 8, tagName: '테니스/스쿼시', emoji: '🎾' },
+    { tagId: 9, tagName: '태권도/유도', emoji: '🥋' },
+    { tagId: 10, tagName: '검도', emoji: '⚔️' },
+    { tagId: 11, tagName: '무술/주짓수', emoji: '🥋' },
+    { tagId: 12, tagName: '족구', emoji: '⚽️' },
+    { tagId: 13, tagName: '러닝', emoji: '🏃' },
+    { tagId: 14, tagName: '자전거', emoji: '🚴' },
+    { tagId: 15, tagName: '등산', emoji: '🏔️' },
+    { tagId: 16, tagName: '클라이밍', emoji: '🧗‍♀️' },
+    { tagId: 17, tagName: '수영', emoji: '🏊‍♀️' },
+    { tagId: 18, tagName: '골프', emoji: '⛳️' },
+    { tagId: 19, tagName: '요가/필라테스', emoji: '🧘' },
+    { tagId: 20, tagName: '헬스/크로스핏', emoji: '🏋️' },
+    { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
+  ];
   // useCurrentLocation().then((res) => {
   //   if (res === undefined) return;
   //   setLocation(res);
@@ -383,30 +480,42 @@ const EditUser = () => {
   //         setImg(reader.result);
   //      };
   // };
-  const changeImg = () => {
-    const inputImage = document.getElementById(
-      'changeFile',
-    ) as HTMLInputElement;
-    setImg(inputImage.value);
-    console.log(img);
-  };
-  const deleteImg = () => {
-    setImg(
-      'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
-    );
-  };
+  // 이미지 추가할 거면 여기 두개
+  // const changeImg = () => {
+  //   const inputImage = document.getElementById(
+  //     'changeFile',
+  //   ) as HTMLInputElement;
+  //   setImg(inputImage.value);
+  //   console.log(img);
+  // };
+  // const deleteImg = () => {
+  //   setImg(
+  //     'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
+  //   );
+  // };
   const locationAdd = () => {
-    alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
-  };
+    alert(
+      `위도 : ${currentLocation?.latitude}, 경도 : ${currentLocation?.longitude}`,
+    );
+  // };
+  // const locationAdd = () => {
+  //   alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
+  // };
   // inputImage.addEventListener('change', (e) => {
   //   readImage(e.target);
   // });
-
+  const changePassword = () => {
+    setPasswordChange(!passwordChange);
+    doesMatch();
+    setNewPassword('');
+  };
   const nicknameCheck = () => {
     const name = (document.getElementById('nickname') as HTMLInputElement)
       .value;
     axios
-      .get(`/members/signup/check-nickname/${name}`)
+      .get(
+        `${process.env.REACT_APP_API_URL}/members/signup/check-nickname/${name}`,
+      )
       .then((res: any) => {
         console.log(res);
         if (res.data === true) {
@@ -420,7 +529,9 @@ const EditUser = () => {
   const phoneNumCheck = () => {
     const phone = (document.getElementById('phone') as HTMLInputElement).value;
     axios
-      .get(`/members/signup/check-phone/${phone}`)
+      .get(
+        `${process.env.REACT_APP_API_URL}/members/signup/check-phone/${phone}`,
+      )
       .then((res: any) => {
         console.log(res);
         if (res.data === true) {
@@ -436,7 +547,7 @@ const EditUser = () => {
       <Container>
         <div>회원정보 수정</div>
         <PersonalInfo>
-          <InfoBlock>
+          {/* <InfoBlock>
             <label htmlFor="pfp">프로필 사진</label>
             <div>
               <Pfp id="preview-image" src={img} />
@@ -457,32 +568,73 @@ const EditUser = () => {
                 삭제
               </NoLinkButton>
             </div>
-          </InfoBlock>
+          </InfoBlock> */}
           <InfoBlock>
             <label htmlFor="nickname">닉네임</label>
-            <input
-              id="nickname"
-              type="text"
-              defaultValue="NickName"
+            <WarnSet>
+              <input
+                id="nickname"
+                type="text"
+                defaultValue="NickName"
+                disabled={nickCheck}
+                {...register('nickname', {
+                  required: true,
+                })}
+              />
+              {errors.nickname && (
+                <span>
+                  <i className="fa-solid fa-circle-exclamation" />
+                  닉네임을 입력해주세요
+                </span>
+              )}
+            </WarnSet>
+            <NoLinkButton
+              type="button"
+              onClick={nicknameCheck}
               disabled={nickCheck}
-              {...register('nickname', {
-                required: true,
-              })}
-            />
-            {errors.nickname && <span>닉네임을 입력하세요</span>}
-            <NoLinkButton type="button" onClick={nicknameCheck}>
+            >
               {nickCheck ? '확인 완료' : '중복 확인'}
             </NoLinkButton>
           </InfoBlock>
           <InfoBlock>
-            <label htmlFor="formerPassword">기존 비밀번호</label>
-            <input
-              id="curPassword"
-              type="password"
-              {...register('curPassword', { required: true })}
-            />
-            {errors.curPassword && <span>현재 비밀번호를 입력하세요</span>}
+            <label htmlFor="curPassword">기존 비밀번호</label>
+            <WarnSet>
+              <input
+                id="curPassword"
+                type="password"
+                {...register('curPassword', { required: true })}
+              />
+              {errors.curPassword && (
+                <span>
+                  <i className="fa-solid fa-circle-exclamation" />
+                  현재 비밀번호를 입력해주세요
+                </span>
+              )}
+            </WarnSet>
           </InfoBlock>
+          <InfoBlock>
+            <label htmlFor="askNewPass">비밀번호 변경</label>
+            {passwordChange ? (
+              <NoLinkButton type="button" onClick={changePassword}>
+                변경 취소
+              </NoLinkButton>
+            ) : (
+              <NoLinkButton type="button" onClick={changePassword}>
+                비밀번호 변경
+              </NoLinkButton>
+            )}
+          </InfoBlock>
+          {passwordChange ? (
+            <NewPassword
+              passwordMatch={passwordMatch}
+              doesMatch={doesMatch}
+              doesNotMatch={doesNotMatch}
+              newPass={newPassword}
+              setNewPass={setNewPassword}
+            />
+          ) : (
+            ''
+          )}
           {/* <InfoBlock>
             <label htmlFor="newPassword">새 비밀번호</label>
             <input
@@ -501,15 +653,28 @@ const EditUser = () => {
           </InfoBlock> */}
           <InfoBlock>
             <label htmlFor="phone">휴대폰 번호</label>
-            <input
-              id="phone"
-              type="tel"
-              placeholder="010-1234-5678"
+            <WarnSet>
+              <input
+                id="phone"
+                type="number"
+                placeholder="01012345678"
+                disabled={phoneCheck}
+                {...register('phone', {
+                  required: true,
+                })}
+              />
+              {errors.phone && (
+                <span>
+                  <i className="fa-solid fa-circle-exclamation" />
+                  휴대폰 번호을 입력해주세요
+                </span>
+              )}
+            </WarnSet>
+            <NoLinkButton
+              type="button"
+              onClick={phoneNumCheck}
               disabled={phoneCheck}
-              {...register('phone', { required: true })}
-            />
-            {errors.phone && <span>핸드폰 번호를 입력하세요</span>}
-            <NoLinkButton type="button" onClick={phoneNumCheck}>
+            >
               {phoneCheck ? '확인 완료' : '중복 확인'}
             </NoLinkButton>
           </InfoBlock>
@@ -538,18 +703,31 @@ const EditUser = () => {
             </div>
           </InfoBlock>
           <InfoBlock>
-            <label htmlFor="tags">등록 태그 변경</label>
-            <TagContainer>
-              <fieldset />
-            </TagContainer>
+            <label htmlFor="memberTags">등록 태그 변경</label>
+            <div>
+              <TagList>
+                <AutoCompleteForArray
+                  fields={fields}
+                  append={append}
+                  remove={remove}
+                  register={register}
+                  control={control}
+                  data={TAG_DATA}
+                  tagLength={3}
+                />
+              </TagList>
+            </div>
           </InfoBlock>
         </PersonalInfo>
         <span>
-          <Button type="submit">
+          <Button
+            type="submit"
+            disabled={!(nickCheck && phoneCheck && passwordMatch)}
+          >
             <i className="fa-solid fa-square-check" />
             저장하기
           </Button>
-          <TempButton to={`/members/mypage/${id}`}>
+          <TempButton to={`/members/mypage/${memberId}`}>
             <i className="fa-solid fa-xmark" />
             취소하기
           </TempButton>
