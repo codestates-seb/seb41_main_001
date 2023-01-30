@@ -80,7 +80,7 @@ const CRForm = styled.form`
     outline: none;
     color: white;
     &:focus-within {
-      border: 1px solid white;
+      border: 2px solid white;
       transition: 0.2s ease-in-out;
     }
     &:-webkit-autofill {
@@ -190,22 +190,38 @@ const CreateFreeboard = () => {
   // const [content, setContent] = useState('');
 
   const onSubmit = (data: FormInputFree) => {
-    console.log(data);
+    console.log({
+      freeTitle: data.title,
+      freeBody: data.content,
+      category: data.category,
+      location: data.location,
+      freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+      memberId: 1,
+    });
     axios
-      .post(`${process.env.REACT_APP_API_URL}/freeboards`, {
-        freeTitle: data.title,
-        freeBody: data.content,
-        category: data.category,
-        location: data.location,
-        freeTagDtos: [{ tagId: 1, tagName: '축구' }],
-        memberId: 1,
-        // 태그와 멤버아이디가 고정되어있음
-        // tagList: tags.reduce((r, e) => {
-        //   r.push({ tagId: e.tagId });
-        //   return r;
-        // }, []),
-        // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
-      })
+      .post(
+        `${process.env.REACT_APP_API_URL}/freeboards`,
+        {
+          freeTitle: data.title,
+          freeBody: data.content,
+          category: data.category,
+          location: data.location,
+          freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+          memberId: 1,
+          // 태그와 멤버아이디가 고정되어있음
+          // tagList: tags.reduce((r, e) => {
+          //   r.push({ tagId: e.tagId });
+          //   return r;
+          // }, []),
+          // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem('AccessToken')}`,
+            Refresh: `${localStorage.getItem('RefreshToken')}`,
+          },
+        },
+      )
       .then((res) => {
         console.log(res);
         navigate('/freeboards');

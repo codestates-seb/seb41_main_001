@@ -359,13 +359,15 @@ const EditUser = () => {
   const { memberId } = useParams();
   const navigate = useNavigate();
   const { location: currentLocation } = useCurrentLocation();
-  // default, changed, checked
-  const [nickCheck, setNickCheck] = useState(false);
-  const [phoneCheck, setPhoneCheck] = useState(false);
+  // default, changed, done
+  const [nickCheck, setNickCheck] = useState('default');
+  const [phoneCheck, setPhoneCheck] = useState('default');
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [passwordChange, setPasswordChange] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [locationString, setLocationString] = useState('');
+  const [lat, setLat] = useState(0);
+  const [lon, setLon] = useState(0);
 
   const [oneUser, setOneUsers] = useState({
     memberId: 1,
@@ -416,8 +418,8 @@ const EditUser = () => {
       ...data,
       newPassword,
       location: locationString,
-      lat: currentLocation?.latitude,
-      lon: currentLocation?.longitude,
+      lat,
+      lon,
       // 멤버 태그가 객체가 아니라 string이라 오류남
     };
     console.log(check);
@@ -568,7 +570,7 @@ const EditUser = () => {
         if (res.data === true) {
           alert('이미 존재하는 닉네임입니다!');
         } else {
-          setNickCheck(true);
+          setNickCheck('done');
         }
       })
       .catch((err: any) => console.log(err));
@@ -586,7 +588,7 @@ const EditUser = () => {
           if (res.data === true) {
             alert('이미 존재하는 휴대폰 번호입니다!');
           } else {
-            setPhoneCheck(true);
+            setPhoneCheck('done');
           }
         })
         .catch((err: any) => console.log(err));
@@ -629,10 +631,11 @@ const EditUser = () => {
                 type="text"
                 defaultValue={oneUser.nickname}
                 className="input"
-                disabled={nickCheck}
+                disabled={nickCheck === 'done'}
                 // onChange={setNickCheck(false)}
                 {...register('nickname', {
                   required: true,
+                  onChange: () => setNickCheck('changed'),
                 })}
               />
               {errors.nickname && (
@@ -645,9 +648,9 @@ const EditUser = () => {
             <NoLinkButton
               type="button"
               onClick={nicknameCheck}
-              disabled={nickCheck}
+              disabled={nickCheck === 'done'}
             >
-              {nickCheck ? '확인 완료' : '중복 확인'}
+              {nickCheck !== 'changed' ? '확인 완료' : '중복 확인'}
             </NoLinkButton>
           </InfoBlock>
           <InfoBlock>
@@ -715,13 +718,14 @@ const EditUser = () => {
                 placeholder="010-1234-5678"
                 className="input"
                 defaultValue={oneUser.phone}
-                disabled={phoneCheck}
+                disabled={phoneCheck === 'done'}
                 {...register('phone', {
                   required: true,
                   pattern: {
                     value: /^(010)-[0-9]{3,4}-[0-9]{4}$/,
                     message: '010-0000-0000 형식에 맞춰주세요.',
                   },
+                  onChange: () => setPhoneCheck('changed'),
                 })}
               />
               {errors.phone && (
@@ -734,9 +738,9 @@ const EditUser = () => {
             <NoLinkButton
               type="button"
               onClick={phoneNumCheck}
-              disabled={phoneCheck}
+              disabled={phoneCheck === 'done'}
             >
-              {phoneCheck ? '확인 완료' : '중복 확인'}
+              {phoneCheck !== 'changed' ? '확인 완료' : '중복 확인'}
             </NoLinkButton>
           </InfoBlock>
           <InfoBlock>
@@ -749,6 +753,8 @@ const EditUser = () => {
                     longitude={currentLocation.longitude}
                     locationString={locationString}
                     setLocationString={setLocationString}
+                    setLat={setLat}
+                    setLon={setLon}
                   />
                 )}
                 {/* <button type="button" id="locationButton" onClick={locationAdd}>
@@ -798,7 +804,13 @@ const EditUser = () => {
         <span>
           <Button
             type="submit"
-            disabled={!(nickCheck && phoneCheck && passwordMatch)}
+            disabled={
+              !(
+                nickCheck !== 'changed' &&
+                phoneCheck !== 'changed' &&
+                passwordMatch
+              )
+            }
           >
             <i className="fa-solid fa-square-check" />
             저장하기

@@ -1,9 +1,8 @@
 import { useForm } from 'react-hook-form';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import UseAutosizeTextArea from '../components/UseAutosaveTextArea';
 import FreeDataProps from '../interfaces/FreeDataProps';
 
 enum CategoryEnum {
@@ -64,13 +63,12 @@ const CRForm = styled.form`
     padding: 5px;
     margin-left: 20px;
     font-size: 14px;
-    border: none;
-    border-bottom: 2px solid gray;
+    border: 1px solid gray;
     width: 15rem;
     outline: none;
     color: white;
     &:focus-within {
-      border-bottom: 2px solid white;
+      border: 2px solid white;
       transition: 0.2s ease-in-out;
     }
     &:-webkit-autofill {
@@ -176,8 +174,8 @@ const EditFreeboard = () => {
     formState: { errors },
   } = useForm<FormInputFree>();
   const navigate = useNavigate();
-  const [warning, setWarning] = useState('');
-  const [content, setContent] = useState('');
+  // const [warning, setWarning] = useState('');
+  // const [content, setContent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [posting, setPosting] = useState<FreeDataProps>({
     freeId: 1,
@@ -211,45 +209,42 @@ const EditFreeboard = () => {
   }, []);
 
   const onSubmit = (data: FormInputFree) => {
-    data.content = content;
+    // data.content = content;
     console.log(data);
-    if (!data.content || data.content.length === 0) {
-      setWarning('본문을 입력하세요');
-    } else {
-      axios
-        .post('/freeboards', {
-          freeTitle: data.title,
-          freeBody: data.content,
-          category: data.category,
-          // tagList: tags.reduce((r, e) => {
-          //   r.push({ tagId: e.tagId });
-          //   return r;
-          // }, []),
-          // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
-        })
-        .then((res) => {
-          console.log(res);
-          navigate('/freeboard');
-        })
-        .catch((err) => {
-          console.log(err);
-          navigate('/login');
-        });
-    }
+    axios
+      .post('/freeboards', {
+        freeTitle: data.title,
+        freeBody: data.content,
+        category: data.category,
+        memberId: 1,
+        // tagList: tags.reduce((r, e) => {
+        //   r.push({ tagId: e.tagId });
+        //   return r;
+        // }, []),
+        // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+      })
+      .then((res) => {
+        console.log(res);
+        navigate('/freeboards');
+      })
+      .catch((err) => {
+        console.log(err);
+        navigate('/login');
+      });
   };
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  // const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  UseAutosizeTextArea(textAreaRef.current, content);
+  // UseAutosizeTextArea(textAreaRef.current, content);
 
-  const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const val = evt.target?.value;
-    if (val.length === 0) {
-      setWarning('본문을 입력하세요');
-    } else {
-      setWarning('');
-    }
-    setContent(val);
-  };
+  // const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   const val = evt.target?.value;
+  //   if (val.length === 0) {
+  //     setWarning('본문을 입력하세요');
+  //   } else {
+  //     setWarning('');
+  //   }
+  //   setContent(val);
+  // };
   // const fileNums = (e:any) => {
   //   if (e.files.length > 2) {
   //     alert('file up to 2');
@@ -302,23 +297,20 @@ const EditFreeboard = () => {
           <WarnSet>
             <textarea
               id="content"
-              rows={1}
-              onChange={handleChange}
-              ref={textAreaRef}
-              value={content}
-              name="content"
-              defaultValue={isLoading ? posting.freeBody : '로딩완료'}
-              // {...register('content', { required: true })}
+              rows={15}
+              // ref={textAreaRef}
+              defaultValue={isLoading ? '' : posting.freeBody}
+              {...register('content', { required: true })}
             />
-            {warning !== '' && (
+            {errors.content && (
               <span>
                 <i className="fa-solid fa-circle-exclamation" />
-                {warning}
+                본문을 입력해주세요
               </span>
             )}
           </WarnSet>
         </div>
-        <div>
+        {/* <div>
           <label htmlFor="tag">태그</label>
           <input id="tag" {...register('tag')} />
         </div>
@@ -334,7 +326,7 @@ const EditFreeboard = () => {
             multiple
             {...register('image')}
           />
-        </div>
+        </div> */}
         <ButtonContainer>
           <button type="submit">저장하기</button>
           <Link to="/freeboards">

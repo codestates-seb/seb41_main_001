@@ -44,6 +44,8 @@ interface KakaoMapProps {
   overlayvalue?: string;
   locationString: string;
   setLocationString: any;
+  setLat: any;
+  setLon: any;
 }
 
 const AddMap = ({
@@ -52,6 +54,8 @@ const AddMap = ({
   overlayvalue = '현재 위치',
   locationString,
   setLocationString,
+  setLat,
+  setLon,
 }: KakaoMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const locationRemove = () => setLocationString('');
@@ -101,7 +105,8 @@ const AddMap = ({
       imageOption,
     );
     const markerPosition = new kakao.maps.LatLng(latitude, longitude);
-
+    setLon(longitude);
+    setLat(latitude);
     const marker = new kakao.maps.Marker({
       position: markerPosition,
       image: markerImage,
