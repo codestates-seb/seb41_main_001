@@ -95,9 +95,9 @@ const MyRecruitItem = ({ title, quota, dueDate, tags, id }: Item) => (
           </div>
         </div>
       </ItemWrapper>
-      <div>
+      {/* <div>
         <i className="fa-solid fa-xmark" />
-      </div>
+      </div> */}
     </ItemContainer>
   </div>
 );

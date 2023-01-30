@@ -8,7 +8,6 @@ import Loading from './Loading';
 import timeDifference from '../utils/timeDifference';
 import MiniTag from '../components/MiniTag';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
-import WroteRecruit from '../components/WroteRecruit';
 
 const Background = styled.div`
   padding-top: 7rem;
@@ -382,12 +381,28 @@ const MyPage = () => {
                         자유게시판
                       </button>
                     </span>
-                    {wroteTab === '작성모집' ? (
+                    {/* {wroteTab === '작성모집' ? (
                       <WroteRecruit data={oneUser.recruits} />
                     ) : (
                       '자유게시글'
-                    )}
-
+                    )} */}
+                    {
+                      oneUser.recruits.length === 0 ? (
+                        <div>글이 아직 없습니다</div>
+                      ) : (
+                        oneUser.recruits.map((e: RecruitDataProps) => (
+                          <MyRecruitItem
+                            key={e.recruitId}
+                            title={e.title}
+                            quota={`${e.applies.length}/${e.require}`}
+                            tags={e.recruitTags}
+                            dueDate={e.date}
+                            id={e.recruitId}
+                          />
+                        ))
+                      )
+                      // free가 생기면 여기도 위 recruits랑 똑같이 삼항 넣어주자
+                    }
                     {/* // <MyRecruitItem
                     //   title="title"
                     //   quota="quota"
