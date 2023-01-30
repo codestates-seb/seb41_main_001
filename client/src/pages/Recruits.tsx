@@ -233,21 +233,16 @@ const Recruits = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/recruits/1`,
-        // {
-        //   params: {
-        //     page: 1, // number
-        //     size: 100, // number
-        //     // keyword: '', // string
-        //     // tagName: '', // string
-        //     // status: '', // string
-        //     // distanceLimit: '', // number
-        //     // lat: '', // number
-        //     // lon: '', // number
-        //   },
-        // }
-      )
+      .get(`${process.env.REACT_APP_API_URL}/recruits?page=1&size=100`, {
+        params: {
+          keyword: '', // string
+          tagName: '', // string
+          status: '', // string
+          distanceLimit: 10, // number
+          lat: 37.757687, // number
+          lon: 128.873749, // number
+        },
+      })
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
   }, []);

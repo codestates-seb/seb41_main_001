@@ -2,25 +2,32 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { setCookie } from '../utils/cookie';
 
-const loginDb = createAsyncThunk('post/loginDb', async (db) => {
+interface LoginProps {
+  email: string;
+  password: string;
+}
+
+const loginDb = createAsyncThunk('post/loginDb', async (data: LoginProps) => {
   try {
     const response = await axios.post(
       `${process.env.REACT_APP_API_URL}/members/login`,
-      db,
+      data,
     );
     const accessToken = response.headers.authorization;
     setCookie('accessToken', `${accessToken}`);
     const refreshToken = response.headers.refresh;
     setCookie('refreshToken', `${refreshToken}`);
-    // const LOGIN_INFO = {
-    //     memberId: 11,
-    //     heart: 50,
-    //     birth: '1995.01.11',
-    //     sex: 'Male',
-    //   };
-    const login_info = {}
+    const loginInfo = {
+      memberId: response.headers.memberId,
+      heart: response.headers.heart,
+      birth: response.headers.birth,
+      sex: response.headers.sex,
+    };
+    setCookie('loginInfo', `${loginInfo}`);
+    console.log(accessToken, refreshToken, loginInfo);
     return response.headers;
-  } catch {
+  } catch (err) {
+    console.log(err);
     return 'err';
   }
 });

@@ -396,7 +396,7 @@ const EditUser = () => {
     );
   };
   const locationAdd = () => {
-    alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
+    // alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
   };
   // inputImage.addEventListener('change', (e) => {
   //   readImage(e.target);

@@ -1,7 +1,9 @@
 import { useForm } from 'react-hook-form';
 // import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import axios from 'axios';
+// import axios from 'axios';
+// import { useDispatch, useSelector } from 'react-redux';
+// import loginDb from '../modules/loginDb';
 import ButtonLink from '../components/ButtonLink';
 import Button from '../components/Button';
 
@@ -87,37 +89,44 @@ interface LoginProps {
 }
 
 const LogIn = () => {
+  // const loginStore = useSelector((state: any) => state.bucket.list);
+  // const dispatch = useDispatch();
+  // console.log(loginStore);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setError,
+    // setError,
   } = useForm<LoginProps>();
 
   const onSubmit = (data: LoginProps) => {
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
-      .then((res) => {
-        console.log(res.headers);
-        console.log(res.headers.authorization);
-        console.log(res.headers.refresh);
-      })
-      .catch((err) => {
-        const errMsg = err.response.data.message;
+    console.log(data);
+    // dispatch(loginDb(data));
 
-        if (errMsg === '존재하지 않는 회원') {
-          setError('email', {
-            type: 'server',
-            message: '가입된 이메일이 아닙니다',
-          });
-        }
-        if (errMsg === '잘못된 패스워드 입력') {
-          setError('password', {
-            type: 'server',
-            message: '비밀번호가 일치하지 않습니다',
-          });
-        }
-      });
+    // axios
+    //   .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
+    //   .then((res) => {
+    //     console.log(res.headers);
+    //     console.log(res.headers.authorization);
+    //     console.log(res.headers.refresh);
+    //   })
+    //   .catch((err) => {
+    //     const errMsg = err.response.data.message;
+
+    //     if (errMsg === '존재하지 않는 회원') {
+    //       setError('email', {
+    //         type: 'server',
+    //         message: '가입된 이메일이 아닙니다',
+    //       });
+    //     }
+    //     if (errMsg === '잘못된 패스워드 입력') {
+    //       setError('password', {
+    //         type: 'server',
+    //         message: '비밀번호가 일치하지 않습니다',
+    //       });
+    //     }
+    //   });
   };
 
   return (
