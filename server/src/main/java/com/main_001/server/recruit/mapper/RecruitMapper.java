@@ -110,6 +110,7 @@ public interface RecruitMapper {
                 .stream()
                 .map(recruitComment -> ResponseDto.RecruitComment
                         .builder()
+                        .recruitId(recruitComment.getRecruit().getRecruitId())
                         .recruitCommentId(recruitComment.getId())
                         .memberId(recruitComment.getMember().getMemberId())
                         .nickname(recruitComment.getMember().getNickname())
@@ -126,6 +127,7 @@ public interface RecruitMapper {
                 .stream()
                 .map(recruitLike -> ResponseDto.RecruitLike
                         .builder()
+                        .recruitId(recruitLike.getRecruit().getRecruitId())
                         .memberId(recruitLike.getMember().getMemberId())
                         .build())
                 .collect(Collectors.toList());
@@ -185,13 +187,32 @@ public interface RecruitMapper {
         Recruit recruit = new Recruit();
         Member member = new Member();
         member.setMemberId(requestBody.getMemberId());
+        if(requestBody.getRecruitTagDtos()!=null) {
+            List<RecruitTag> recruitTags = requestBody.getRecruitTagDtos().stream()
+                    .map(recruitTagDto -> {
+                        RecruitTag recruitTag = new RecruitTag();
+                        Tag tag = new Tag();
+                        tag.setTagId(recruitTagDto.getTagId());
+                        tag.setTagName(recruitTagDto.getTagName());
+                        tag.setEmoji(recruitTagDto.getEmoji());
+                        recruitTag.setRecruit(recruit);
+                        recruitTag.setTag(tag);
+                        return recruitTag;
+                    }).collect(Collectors.toList());
+            recruit.setRecruitTags(recruitTags);
+        }
         recruit.setMember(member);
+        recruit.setHeartLimit(requestBody.getHeartLimit());
         recruit.setTitle(requestBody.getTitle());
         recruit.setBody(requestBody.getBody());
+        recruit.setRequire(requestBody.getRequire());
+        recruit.setMinRequire(requestBody.getMinRequire());
+        recruit.setSex(requestBody.getSex());
+        recruit.setDate(requestBody.getDate());
         recruit.setLocation(requestBody.getLocation());
         recruit.setLat(requestBody.getLat());
         recruit.setLon(requestBody.getLon());
-        recruit.setDate(requestBody.getDate());
+        if(requestBody.getAges()!=null) recruit.setAgeGroupString(requestBody.getAges().toString());
         return recruit;
     }
 

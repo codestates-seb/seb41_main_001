@@ -69,29 +69,63 @@ public class RecruitDto {
     }
 
     @Getter
+    @Builder
     public static class Get{
+        @ApiModelProperty(example = "검색할 태그")
         private String tagName;
-        //모집중으로 필터링 할 경우 가까운 거리 순 정렬
+
+        @ApiModelProperty(example = "모집중, 최소인원충족, 모집완료, 활동종료")
         private String status;
-        private int distanceLimit;
+
+        @ApiModelProperty(example = "거리제한 : km 단위의 숫자로 입력(double)")
+        private double distanceLimit;
+
+        @ApiModelProperty(example = "위도 (xx.xxxxx...)")
         private Double lat;
+
+        @ApiModelProperty(example = "경도 (xx.xxxxx...)")
         private Double lon;
+
+        @ApiModelProperty(example = "검색어 입력(title 기준 검색)")
         private String keyword;
     }
 
     @Getter
     public static class Patch{
         @ApiModelProperty(example = "Member id")
-        @NotBlank
         private long memberId;
 
         @ApiModelProperty(example = "글 제목")
+        @NotBlank
         private String title;
 
         @ApiModelProperty(example = "내용 작성")
+        @NotBlank
         private String body;
 
-        @ApiModelProperty(example = "모집 장소")
+        @ApiModelProperty(example = "모집 인원")
+        @NotBlank
+        private int require;
+
+        @ApiModelProperty(example = "최소 모집 인원")
+        @NotBlank
+        private int minRequire;
+
+        @ApiModelProperty(example = "심박수 제한")
+        @NotBlank
+        private int heartLimit;
+
+        @ApiModelProperty(example = "성별")
+        @NotBlank
+        private String sex;
+
+        @ApiModelProperty(example = "모집 일시")
+        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        @NotBlank
+        private LocalDateTime date;
+
+        @ApiModelProperty(example = "장소 이름")
+        @NotBlank
         private String location;
 
         @ApiModelProperty(example = "lat")
@@ -100,9 +134,18 @@ public class RecruitDto {
         @ApiModelProperty(example = "lon")
         private double lon;
 
-        @ApiModelProperty(example = "모집 일시")
-        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        private LocalDateTime date;
+
+        @ApiModelProperty(example = "모집 연령대")
+        @NotBlank
+        private List<Integer> ages;
+
+        @ApiModelProperty(example = "[\n" +
+                "    {\n" +
+                "      \"tagId\": 숫자,\n" +
+                "      \"tagName\": \"태그 이름\"\n" +
+                "    }\n" +
+                "  ]")
+        private List<RecruitTagDto> recruitTagDtos;
     }
 
     @Getter

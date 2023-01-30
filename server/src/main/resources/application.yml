@@ -36,6 +36,9 @@ spring:
           auth: true
           starttls:
             enable: true
+  redis:
+    host: ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com # 로컬 환경에서는 localhost
+    port: 6379
   servlet:
     multipart:
       max-file-size: 5MB

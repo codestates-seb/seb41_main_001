@@ -3,6 +3,7 @@ package com.main_001.server.free.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -99,6 +100,7 @@ public class FreeDto {
     }
 
     @Getter
+    @Setter
     public static class Search{
         private String type;
         private String keyword;
@@ -136,6 +138,12 @@ public class FreeDto {
 
         @ApiModelProperty(example = "Member ID")
         private long memberId;
+
+        @ApiModelProperty(example = "닉네임")
+        private String nickname;
+
+        @ApiModelProperty(example = "심박수")
+        private int authorHeart;
 
         @ApiModelProperty(example = "카테고리")
         private String category;

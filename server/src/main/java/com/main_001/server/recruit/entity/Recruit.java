@@ -1,5 +1,7 @@
 package com.main_001.server.recruit.entity;
 
+import com.main_001.server.exception.BusinessLogicException;
+import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,8 +36,8 @@ public class Recruit {
 //    시간 설정 시 참고
 //    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 //    LocalDateTime localDateTime = timestamp.toLocalDateTime();
-    @Column
-    private int applicantsLimit=0;
+    @Column(name = "MAX_REQUIRE")
+    private int require=0;
 
     @Column
     private int minRequire=0;
@@ -117,6 +119,20 @@ public class Recruit {
         RecruitStatus(int stepNumber, String stepDescription) {
             this.stepNumber = stepNumber;
             this.stepDescription = stepDescription;
+        }
+
+        public static RecruitStatus statusStringToStatus(String stepDescription){
+            switch(stepDescription){
+                case "모집중":
+                    return RECRUITING;
+                case "최소인원충족":
+                    return Recruit.RecruitStatus.RECRUIT_MEET_MINIMUM;
+                case "모집완료":
+                    return Recruit.RecruitStatus.RECRUIT_COMPLETE;
+                case "활동종료":
+                    return Recruit.RecruitStatus.RECRUIT_END;
+                default: throw new BusinessLogicException(ExceptionCode.STATUS_NOT_FOUND);
+            }
         }
     }
 }

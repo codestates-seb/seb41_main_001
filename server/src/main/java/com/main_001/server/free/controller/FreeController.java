@@ -7,6 +7,7 @@ import com.main_001.server.free.dto.FreeDto;
 import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.mapper.FreeMapper;
 import com.main_001.server.free.service.FreeService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
-
+@Api(tags = { "Free" })
 @RestController
 @RequestMapping("/freeboards")
 @Validated
@@ -50,12 +51,13 @@ public class FreeController {
         return new ResponseEntity<>(
                 new SingleResponseDto<>(freeMapper.freeToFreeResponseDto(free)), HttpStatus.OK);
     }
-    @ApiOperation(value = "자유 게시글 전체 조회", notes = "page, size, searchDto(type=[category, tag, keyword], keyword) path에 작성하여 필터링한 전체 자유 개시글을 조회한다.")
+    @ApiOperation(value = "자유 게시글 전체 조회", notes = "page, size, searchDto(type=[category, tag, keyword], keyword) path에 작성하여 필터링한 전체 자유 게시글을 조회한다.")
     @GetMapping
     public ResponseEntity getFreeBoardPage(@RequestParam int page,
                                            @RequestParam int size,
-                                           @RequestBody FreeDto.Search searchDto){
-        Page<Free> freeBoardsPage = freeService.findFreeBoards(page - 1, size, searchDto);
+                                           @RequestParam String type,
+                                           @RequestParam String keyword){
+        Page<Free> freeBoardsPage = freeService.findFreeBoards(page - 1, size, type, keyword);
         List<Free> freeBoardsList = freeBoardsPage.getContent();
         return new ResponseEntity<>(
                 new MultiResponseDto<>(freeMapper.freesToFreeResponseDtos(freeBoardsList),freeBoardsPage), HttpStatus.OK);
