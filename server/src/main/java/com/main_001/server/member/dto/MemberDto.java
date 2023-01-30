@@ -89,10 +89,6 @@ public class MemberDto {
                 "    }\n" +
                 "  ]")
         private List<MemberTagDto> memberTags;
-
-        public void setMemberId(long memberId) {
-            this.memberId = memberId;
-        }
     }
 
     @Getter

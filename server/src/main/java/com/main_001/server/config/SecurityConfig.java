@@ -2,6 +2,7 @@ package com.main_001.server.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -40,10 +41,22 @@ public class SecurityConfig {
 //                .apply(new CustomFilterConfigurer())
 //                .and()
                 .authorizeHttpRequests(authorize -> authorize
-//                        .antMatchers(HttpMethod.POST, "/members/login").permitAll()
-//                        .antMatchers(HttpMethod.POST, "/members/logout").hasAuthority("ROLE_USER")
-//                        .antMatchers(HttpMethod.PATCH, "/members/my-page/*").hasAuthority("ROLE_USER")
-//                        .antMatchers(HttpMethod.GET, "/members/my-page").hasAuthority("ROLE_USER")
+                        // member
+                        .antMatchers(HttpMethod.POST, "/members/profileImage").hasAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.DELETE, "/members/logout").hasAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.GET, "/members/re-issue").hasAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.PATCH, "/members/*").hasAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.GET, "/members/my-page").hasAuthority("ROLE_USER")
+                        // free
+                        .antMatchers(HttpMethod.POST, "/freeboards/*").hasAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.PATCH, "/freeboards/*").hasAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.DELETE, "/freeboards/*").hasAuthority("ROLE_USER")
+                        // recruit
+                        .antMatchers(HttpMethod.POST, "recruits/*").hasAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.PATCH, "/recruits/*").hasAuthority("ROLE_USER")
+                        .antMatchers(HttpMethod.DELETE, "recruits/*").hasAuthority("ROLE_USER")
+                        // tag
+                        .antMatchers(HttpMethod.POST, "/tags").hasAuthority("ROLE_USER")
                         .anyRequest().permitAll() // 권한 설정 필요!
                 );
         return http.build();
@@ -56,17 +69,17 @@ public class SecurityConfig {
 
     // cors 설정 -> 제대로 작동하지 않아서 따로 config 만들어줌
 //    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedOrigin("http://localhost:8080");
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.addAllowedHeader("*");
+//        configuration.addAllowedOrigin("http://localhost:3000");
+//        configuration.addAllowedOrigin("http://localhost:8080");
+//        configuration.setAllowCredentials(true);
+//        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PATCH", "DELETE"));
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
 //    컨트롤러로 빼면서 제거된 부분
 //    public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {

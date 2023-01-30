@@ -1,5 +1,6 @@
 package com.main_001.server.free.service;
 
+import com.main_001.server.auth.utils.RedisUtils;
 import com.main_001.server.exception.BusinessLogicException;
 import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.free.entity.Free;
@@ -36,22 +37,26 @@ public class FreeService {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
+    private final RedisUtils redisUtils;
 
     public FreeService(FreeRepository freeRepository, FreeCommentRepository freeCommentRepository, FreeLikeRepository freeLikeRepository, MemberService memberService, MemberRepository memberRepository,
-                       TagRepository tagRepository) {
+                       TagRepository tagRepository,
+                       RedisUtils redisUtils) {
         this.freeRepository = freeRepository;
         this.freeCommentRepository = freeCommentRepository;
         this.freeLikeRepository = freeLikeRepository;
         this.memberService = memberService;
         this.memberRepository = memberRepository;
         this.tagRepository = tagRepository;
+        this.redisUtils = redisUtils;
     }
 
-    public Free createFreeBoard(Free free) {
+    public Free createFreeBoard(String refreshToken, Free free) {
+        Long memberId = redisUtils.getId(refreshToken);
         verifyFree(free);
         free.setCreatedAt(LocalDateTime.now());
         free.setModifiedAt(LocalDateTime.now());
-        free.setMember(memberRepository.findById(free.getMember().getMemberId()).orElseThrow());
+        free.setMember(memberRepository.findById(memberId).orElseThrow());
         for (FreeTag freeTag : free.getFreeTags()) {
             Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
             tag.setFreeCount(tag.getFreeCount() + 1);
@@ -95,10 +100,12 @@ public class FreeService {
         return freeRepository.save(findFree);
     }
 
-    public Free createFreeComment(long freeId, FreeComment freeComment) {
+    public Free createFreeComment(long freeId, String refreshToken, FreeComment freeComment) {
+        Long memberId = redisUtils.getId(refreshToken);
         Free findFree = findVerifiedFreeBoard(freeId);
         freeComment.setCreatedAt(LocalDateTime.now());
         freeComment.setFree(findFree);
+        freeComment.setMember(memberRepository.findById(memberId).orElseThrow());
 
         return freeRepository.save(findFree);
     }

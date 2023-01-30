@@ -30,7 +30,7 @@ public class Member {
     @Column
     private String name;
 
-    @Column
+    @Column(nullable = false, updatable = false, unique = true)
     private String nickname;
 
     @Column
@@ -39,10 +39,10 @@ public class Member {
     @Column
     private String password;
 
-    @Column
+    @Column(nullable = false, updatable = false, unique = true)
     private String email;
 
-    @Column
+    @Column(length = 13, nullable = false, unique = true)
     private String phone;
 
     @Column
@@ -50,8 +50,6 @@ public class Member {
 
     @Column
     private boolean deleted = Boolean.FALSE; // soft delete 구현을 위한 초기 값 세팅
-
-    // 이미지 어떻게 받아오지?
 
     @Column
     private String location;
