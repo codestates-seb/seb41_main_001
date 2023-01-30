@@ -10,14 +10,14 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5Dialect
   datasource:
 #    url: jdbc:h2:mem:test
-    url: jdbc:mysql://heart-db.cgl3rwqgkz8y.ap-northeast-2.rds.amazonaws.com:3306/heartdb
-    username: admin
-    password: ${MYSQL_PW}
+    url: ${ENDPOINT}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-  logging:
-    level:
-      com.zaxxer.hikari: TRACE
-      com.zaxxer.hikari.HikariConfig: DEBUG
+#  logging:
+#    level:
+#      com.zaxxer.hikari: TRACE
+#      com.zaxxer.hikari.HikariConfig: DEBUG
 #  h2:
 #    console:
 #      enabled: true

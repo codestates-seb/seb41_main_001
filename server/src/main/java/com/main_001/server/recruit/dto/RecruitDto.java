@@ -181,7 +181,7 @@ public class RecruitDto {
         private LocalDateTime modifiedAt;
 
         @ApiModelProperty(example = "모집 인원")
-        private int applicantsLimit;
+        private int require;
 
         @ApiModelProperty(example = "최소 모집 인원")
         private int minRequire;
