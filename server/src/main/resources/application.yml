@@ -28,7 +28,7 @@ spring:
           starttls:
             enable: true
   redis:
-    host: localhost # ${REDIS_HOST} # 로컬 환경에서는 localhost
+    host: ${REDIS_HOST} # 로컬 환경에서는 localhost
     port: ${REDIS_PORT}
   servlet:
     multipart:
