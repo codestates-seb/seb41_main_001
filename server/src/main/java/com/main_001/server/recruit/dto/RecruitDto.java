@@ -69,6 +69,7 @@ public class RecruitDto {
     }
 
     @Getter
+    @Builder
     public static class Get{
         @ApiModelProperty(example = "검색할 태그")
         private String tagName;

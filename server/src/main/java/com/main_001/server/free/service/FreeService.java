@@ -2,7 +2,6 @@ package com.main_001.server.free.service;
 
 import com.main_001.server.exception.BusinessLogicException;
 import com.main_001.server.exception.ExceptionCode;
-import com.main_001.server.free.dto.FreeDto;
 import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.entity.FreeComment;
 import com.main_001.server.free.entity.FreeLike;
@@ -131,9 +130,9 @@ public class FreeService {
         return saveFree(findFree);
     }
 
-    public Page<Free> findFreeBoards(int page, int size, FreeDto.Search search) {
+    public Page<Free> findFreeBoards(int page, int size, String type, String keyword) {
         List<Free> frees;
-        switch (search.getType()) {
+        switch (type) {
             case "tag":
                 frees = freeRepository.findAll(Sort.by("createdAt").descending())
                         .stream()
@@ -141,19 +140,19 @@ public class FreeService {
                                 .stream()
                                 .map(FreeTag::getTag)
                                 .map(Tag::getTagName)
-                                .anyMatch(tagName -> tagName.equals(search.getKeyword())))
+                                .anyMatch(tagName -> tagName.equals(keyword)))
                         .collect(Collectors.toList());
                 break;
             case "category":
                 frees = freeRepository.findAll(Sort.by("createdAt").descending())
                         .stream()
-                        .filter(free -> free.getCategory().equals(search.getKeyword()))
+                        .filter(free -> free.getCategory().equals(keyword))
                         .collect(Collectors.toList());
                 break;
             case "keyword":
-                frees = freeRepository.findAllByFreeTitleContainingIgnoreCase(search.getKeyword())
+                frees = freeRepository.findAllByFreeTitleContainingIgnoreCase(keyword)
                         .stream()
-                        .filter(free -> free.getFreeTitle().contains(search.getKeyword()))
+                        .filter(free -> free.getFreeTitle().contains(keyword))
                         .collect(Collectors.toList());
                 break;
             default:

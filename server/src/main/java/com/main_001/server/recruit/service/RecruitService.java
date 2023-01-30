@@ -158,6 +158,7 @@ public class RecruitService {
                         .stream()
                         .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
                         .peek(recruit -> recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
+                        .filter(recruit -> recruit.getDistance() < recruitGetDto.getDistanceLimit())
                         .sorted(Comparator.comparing(Recruit::getDistance))
                         .collect(Collectors.toList());
             } else {
@@ -166,12 +167,14 @@ public class RecruitService {
                         .stream()
                         .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
                         .peek(recruit -> recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
+                        .filter(recruit -> recruit.getDistance() < recruitGetDto.getDistanceLimit())
                         .collect(Collectors.toList());
             }
         } else {
             recruits = recruitRepository.findAll()
                     .stream()
                     .peek(recruit -> recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
+                    .filter(recruit -> recruit.getDistance() < recruitGetDto.getDistanceLimit())
                     .collect(Collectors.toList());
         }
 

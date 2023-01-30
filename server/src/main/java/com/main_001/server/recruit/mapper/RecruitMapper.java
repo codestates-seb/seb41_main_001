@@ -110,6 +110,7 @@ public interface RecruitMapper {
                 .stream()
                 .map(recruitComment -> ResponseDto.RecruitComment
                         .builder()
+                        .recruitId(recruitComment.getRecruit().getRecruitId())
                         .recruitCommentId(recruitComment.getId())
                         .memberId(recruitComment.getMember().getMemberId())
                         .nickname(recruitComment.getMember().getNickname())

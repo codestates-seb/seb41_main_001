@@ -46,15 +46,24 @@ public class RecruitController {
                 new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "모집글 전체 조회", notes = "page, size, tag, status를 path에 작성하여 필터링한 전체 모집글을 조회한다.")
+    @ApiOperation(value = "모집글 전체 조회", notes = "page, size, tagName, status, distanceLimit, lat, lon, keyword를 param으로 받아 필터링한 전체 모집글을 조회한다.(page, size, distanceLimit, lat, lon은 필수값")
     @GetMapping
     public ResponseEntity getRecruits(@RequestParam int page,
                                       @RequestParam int size,
-//                                      @RequestParam(required = false, defaultValue = "all") String tag,
-//                                      @RequestParam(required = false, defaultValue = "all") String status
-                                      @RequestBody RecruitDto.Get recruitGetDto) {
-        //Todo : 위치 정보도 받아올 것, 제목으로 검색하기
-        // -> DTO 로 tag, status, lat, lon, keyword 받아오되, DTO 초기설정 -> default 할당 or mapper 에서 null 입력일 시 별도처리
+                                      @RequestParam(required = false) String tagName,
+                                      @RequestParam(required = false) String status,
+                                      @RequestParam double distanceLimit,
+                                      @RequestParam double lat,
+                                      @RequestParam double lon,
+                                      @RequestParam(required = false) String keyword) {
+        RecruitDto.Get recruitGetDto = RecruitDto.Get.builder()
+                .tagName(tagName)
+                .status(status)
+                .distanceLimit(distanceLimit)
+                .lat(lat)
+                .lon(lon)
+                .keyword(keyword)
+                .build();
         Page<Recruit> pageRecruits = recruitService.findRecruits(page - 1, size, recruitGetDto);
         List<Recruit> recruits = pageRecruits.getContent();
         return new ResponseEntity<>(

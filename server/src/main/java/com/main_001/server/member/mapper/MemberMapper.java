@@ -281,6 +281,7 @@ public interface MemberMapper {
                 .stream()
                 .map(recruitLike -> ResponseDto.RecruitLike
                         .builder()
+                        .recruitId(recruitLike.getRecruit().getRecruitId())
                         .memberId(recruitLike.getMember().getMemberId())
                         .build())
                 .collect(Collectors.toList());
@@ -352,6 +353,7 @@ public interface MemberMapper {
                 .stream()
                 .map(freeLike -> com.main_001.server.free.dto.ResponseDto.FreeLike
                         .builder()
+                        .freeId(freeLike.getFree().getFreeId())
                         .memberId(freeLike.getMember().getMemberId())
                         .build())
                 .collect(Collectors.toList());
