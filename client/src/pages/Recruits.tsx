@@ -65,7 +65,9 @@ const Recruits = () => {
       nickname: '글자수세기TEST글자수세기TEST글자',
       authorHeart: 50,
       likes: 0,
-      location: { latitude: 37.343336, longitude: 127.1233716 },
+      location: '춘천',
+      lat: 37.343336,
+      lon: 127.1233716,
       heartLimit: 50,
       ageGroup: ['10', '20', '30', '40', '50', '60'],
       sex: 'Both', // Male, Female, Both
@@ -125,7 +127,9 @@ const Recruits = () => {
       nickname: 'aaa',
       authorHeart: 50,
       likes: 0,
-      location: { latitude: 37.343336, longitude: 127.1233716 },
+      location: '춘천',
+      lat: 37.343336,
+      lon: 127.1233716,
       heartLimit: 20, // number, 0
       ageGroup: ['10', '20', '30'],
       sex: 'Male', // Male, Female, Both
@@ -179,7 +183,9 @@ const Recruits = () => {
       nickname: 'aaa',
       authorHeart: 50,
       likes: 0,
-      location: { latitude: 37.343336, longitude: 127.1233716 },
+      location: '춘천',
+      lat: 37.343336,
+      lon: 127.1233716,
       heartLimit: 20, // number, 0
       ageGroup: ['10', '20', '30', '40', '50', '60', '70'],
       sex: 'Female', // Male, Female, Both
@@ -227,9 +233,23 @@ const Recruits = () => {
 
   useEffect(() => {
     axios
-      .post(`${process.env.REACT_APP_API_URL}/recruits?page=1&size=100`, {})
-      .then((res) => console.log(res.data))
-      .catch((err) => console.log(err.response.data));
+      .get(
+        `${process.env.REACT_APP_API_URL}/recruits/1`,
+        // {
+        //   params: {
+        //     page: 1, // number
+        //     size: 100, // number
+        //     // keyword: '', // string
+        //     // tagName: '', // string
+        //     // status: '', // string
+        //     // distanceLimit: '', // number
+        //     // lat: '', // number
+        //     // lon: '', // number
+        //   },
+        // }
+      )
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   }, []);
 
   return (

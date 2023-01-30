@@ -18,6 +18,7 @@ const AutoCompleteContainer = styled.div`
       background-color: rgba(255, 255, 255, 0.4);
       display: flex;
       align-items: center;
+      font-size: 12px;
       height: 35px;
       white-space: nowrap;
       margin-right: 10px;
@@ -48,6 +49,7 @@ const AutoCompleteBox = styled.div`
   width: 100%;
   > input {
     width: 100%;
+    // width 100%에서 변경, 8rem
     height: 35px;
     padding: 5px;
     font-size: 16px;
@@ -149,17 +151,17 @@ interface AutoCompleteForArrayProps {
   fields: { tagId: number; tagName: string; emoji: string; id: string }[];
   append: any;
   remove: any;
-  register: any;
+  // register: any;
   control: any;
   data: { tagId: number; tagName: string; emoji: string }[];
   tagLength: number;
 }
 
-const AutoCompleteForArray = ({
+const EditAuto = ({
   fields,
   append,
   remove,
-  register,
+  // register,
   control,
   data,
   tagLength,
@@ -180,7 +182,7 @@ const AutoCompleteForArray = ({
         type="text"
         defaultValue=""
         autoComplete="off"
-        {...register('tagSearch')}
+        // {...register('tagSearch')}
       />
       <TagSearchDropBox
         control={control}
@@ -193,4 +195,4 @@ const AutoCompleteForArray = ({
   </AutoCompleteContainer>
 );
 
-export default AutoCompleteForArray;
+export default EditAuto;

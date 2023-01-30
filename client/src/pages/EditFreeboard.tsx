@@ -10,7 +10,6 @@ enum CategoryEnum {
   question = '질문',
   info = '정보',
   exercise = '운동',
-  showoff = '자랑',
   giveaway = '나눔',
 }
 
@@ -200,7 +199,7 @@ const EditFreeboard = () => {
   useEffect(() => {
     const getOriginalPost = () => {
       axios
-        .get(`/freeboards/${freeId}`)
+        .get(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`)
         .then((res: any) => {
           console.log(res);
           setPosting(res.data);
@@ -278,7 +277,6 @@ const EditFreeboard = () => {
               <option value="giveaway" selected={posting.category === '나눔'}>
                 나눔
               </option>
-              <option value="showoff">자랑</option>
             </select>
           </div>
         </div>
@@ -339,7 +337,7 @@ const EditFreeboard = () => {
         </div>
         <ButtonContainer>
           <button type="submit">저장하기</button>
-          <Link to="/freeboard">
+          <Link to="/freeboards">
             <button type="button">취소하기</button>
           </Link>
         </ButtonContainer>

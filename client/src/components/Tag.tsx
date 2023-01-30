@@ -11,8 +11,8 @@ const TagContainer = styled.span`
   width: 7rem;
   height: 3rem;
   margin: 0.05rem;
-
-  input {
+  input[type='checkbox'] {
+    /* width: 0.8rem; */
     bottom: 0.5rem;
     margin-top: 0.75rem;
     top: 0.25rem;

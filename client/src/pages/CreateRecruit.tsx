@@ -189,8 +189,6 @@ const CreateRecruit = () => {
     { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
   ];
 
-  console.log('render');
-
   return (
     <RecruitFormContainer>
       <h1>모집 게시글 작성하기</h1>

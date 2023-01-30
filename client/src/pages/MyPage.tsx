@@ -2,12 +2,12 @@ import styled from 'styled-components';
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import MyRecruitItem from '../components/MyRecruitItem';
 // import Badge from '../components/Badge';
 import Loading from './Loading';
 import timeDifference from '../utils/timeDifference';
 import MiniTag from '../components/MiniTag';
-import RecruitDataProps from '../interfaces/RecruitDataProps';
+import WroteRecruit from '../components/WroteRecruit';
+import WroteFree from '../components/WroteFree';
 
 const Background = styled.div`
   padding-top: 7rem;
@@ -234,7 +234,7 @@ const InfoBlock = styled.div`
 `;
 
 const MyPage = () => {
-  const { id } = useParams();
+  const { memberId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [wroteTab, setWroteTab] = useState('작성모집');
   const [likedTab, setLikedTab] = useState('좋아요모집');
@@ -248,7 +248,7 @@ const MyPage = () => {
     sex: 'Loading...',
     createdAt: 'Loading...',
     heart: 50,
-    locations: ['위치'],
+    location: '위치',
     memberTags: [
       {
         tagId: 1,
@@ -259,6 +259,8 @@ const MyPage = () => {
     recruits: [],
     recruitComments: [],
     recruitLikes: [],
+    frees: [],
+    freeLikes: [],
     reviews: [],
   });
   const recruitWTab = () => setWroteTab('작성모집');
@@ -268,7 +270,7 @@ const MyPage = () => {
   useEffect(() => {
     const getOneUser = () => {
       axios
-        .get(`/members/my-page/${id}`)
+        .get(`${process.env.REACT_APP_API_URL}/members/my-page/${memberId}`)
         .then((res: any) => {
           console.log(res);
           setOneUsers(res.data);
@@ -302,7 +304,7 @@ const MyPage = () => {
                   </div>
                 </Info>
               </HeadInfo>
-              <Button to={`/members/edit/${id}`}>
+              <Button to={`/members/edit/${memberId}`}>
                 <i className="fa-solid fa-pen" />
                 프로필 수정
               </Button>
@@ -335,13 +337,13 @@ const MyPage = () => {
                     <InfoBlock>
                       <div>등록 지역</div>
                       <div>
-                        <div>{oneUser.locations[0]}</div>
-                        {oneUser.locations[1] && (
+                        <div>{oneUser.location}</div>
+                        {/* {oneUser.locations[1] && (
                           <div>{oneUser.locations[1]}</div>
                         )}
                         {oneUser.locations[2] && (
                           <div>{oneUser.locations[2]}</div>
-                        )}
+                        )} */}
                       </div>
                     </InfoBlock>
                     <InfoBlock>
@@ -379,7 +381,12 @@ const MyPage = () => {
                         자유게시판
                       </button>
                     </span>
-                    {
+                    {wroteTab === '작성모집' ? (
+                      <WroteRecruit data={oneUser.recruits} />
+                    ) : (
+                      <WroteFree data={oneUser.frees} />
+                    )}
+                    {/* {
                       oneUser.recruits.length === 0 ? (
                         <div>글이 아직 없습니다</div>
                       ) : (
@@ -395,7 +402,7 @@ const MyPage = () => {
                         ))
                       )
                       // free가 생기면 여기도 위 recruits랑 똑같이 삼항 넣어주자
-                    }
+                    } */}
                     {/* // <MyRecruitItem
                     //   title="title"
                     //   quota="quota"
@@ -433,7 +440,12 @@ const MyPage = () => {
                         자유게시판
                       </button>
                     </span>
-                    {
+                    {likedTab === '좋아요모집' ? (
+                      <WroteRecruit data={oneUser.recruitLikes} />
+                    ) : (
+                      <WroteFree data={oneUser.freeLikes} />
+                    )}
+                    {/* {
                       oneUser.recruitLikes.length === 0 ? (
                         <div>글이 아직 없습니다</div>
                       ) : (
@@ -449,7 +461,7 @@ const MyPage = () => {
                         ))
                       )
                       // free가 생기면 여기도 위 recruits랑 똑같이 삼항 넣어주자
-                    }
+                    } */}
                     {/* <MyRecruitItem
                       title="좋아요한 게시글"
                       quota="2/3"
@@ -464,7 +476,9 @@ const MyPage = () => {
                     <div>글이 아직 없습니다.</div>
                   </RegisteredBoard>
                   <span>
-                    <Button to={`/members/withdraw/${id}`}>회원 탈퇴</Button>
+                    <Button to={`/members/withdraw/${memberId}`}>
+                      회원 탈퇴
+                    </Button>
                   </span>
                 </Container>
               </div>
