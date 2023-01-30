@@ -68,6 +68,8 @@ public interface FreeMapper {
                 .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
                 .views(free.getViews())
                 .memberId(free.getMember().getMemberId())
+                .nickname(free.getMember().getNickname())
+                .authorHeart(free.getMember().getHeart())
                 .category(free.getCategory())
                 .build();
     }
@@ -136,6 +138,7 @@ public interface FreeMapper {
                 .stream()
                 .map(freeLike -> ResponseDto.FreeLike
                         .builder()
+                        .freeId(freeLike.getFree().getFreeId())
                         .memberId(freeLike.getMember().getMemberId())
                         .build())
                 .collect(Collectors.toList());

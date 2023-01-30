@@ -56,6 +56,8 @@ public class ResponseDto {
     @Builder
     @Getter
     public static class RecruitLike {
+        @ApiModelProperty(example = "Recruit id")
+        private long recruitId;
         @ApiModelProperty(example = "Member id")
         private long memberId;
     }
