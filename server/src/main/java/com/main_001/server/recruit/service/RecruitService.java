@@ -7,6 +7,7 @@ import com.main_001.server.member.repository.MemberRepository;
 import com.main_001.server.member.service.MemberService;
 import com.main_001.server.recruit.dto.RecruitDto;
 import com.main_001.server.recruit.entity.*;
+import com.main_001.server.recruit.repository.ApplyRepository;
 import com.main_001.server.recruit.repository.RecruitCommentRepository;
 import com.main_001.server.recruit.repository.RecruitLikeRepository;
 import com.main_001.server.recruit.repository.RecruitRepository;
@@ -32,17 +33,20 @@ public class RecruitService {
     private final RecruitLikeRepository recruitLikeRepository;
     private final RecruitCommentRepository recruitCommentRepository;
     private final MemberRepository memberRepository;
+    private final ApplyRepository applyRepository;
 
     public RecruitService(TagRepository tagRepository, RecruitRepository recruitRepository, MemberService memberService,
                           RecruitLikeRepository recruitLikeRepository,
                           RecruitCommentRepository recruitCommentRepository,
-                          MemberRepository memberRepository) {
+                          MemberRepository memberRepository,
+                          ApplyRepository applyRepository) {
         this.tagRepository = tagRepository;
         this.recruitRepository = recruitRepository;
         this.memberService = memberService;
         this.recruitLikeRepository = recruitLikeRepository;
         this.recruitCommentRepository = recruitCommentRepository;
         this.memberRepository = memberRepository;
+        this.applyRepository = applyRepository;
     }
 
     public Recruit createRecruit(Recruit recruit) {
@@ -288,7 +292,7 @@ public class RecruitService {
                 findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_COMPLETE);
         } else {
             findRecruit.getApplies().removeIf(a -> Objects.equals(a.getMember().getMemberId(), apply.getMember().getMemberId()));
-            recruitLikeRepository.deleteRecruitLikeByMember_MemberIdAndRecruit_RecruitId(applyMemberId, recruitId);
+            applyRepository.deleteApplyByMember_MemberIdAndRecruit_RecruitId(applyMemberId, recruitId);
         }
         return saveRecruit(findRecruit);
     }
