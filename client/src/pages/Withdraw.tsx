@@ -93,7 +93,7 @@ const Button = styled(Link)`
 `;
 
 const Withdraw = () => {
-  const { id } = useParams();
+  const { memberId } = useParams();
   // let checker:(HTMLElement|null) = document.getElementById('consent');
   // let wbtn:(HTMLElement|null) = document.getElementById('withdraw');
   // checker.onchange = function() {
@@ -106,7 +106,7 @@ const Withdraw = () => {
   const withdrawal = () => {
     // 여기에 axios patch 넣어주면 됨.
     navigate('/');
-    console.log(id, ' withdrew');
+    console.log(memberId, ' withdrew');
   };
   return (
     <WithdrawWrapper>
@@ -154,7 +154,7 @@ const Withdraw = () => {
           >
             탈퇴하기
           </button>
-          <Button to={`/members/mypage/${id}`}>돌아가기</Button>
+          <Button to={`/members/mypage/${memberId}`}>돌아가기</Button>
         </ButtonContainer>
       </WithdrawContainer>
     </WithdrawWrapper>

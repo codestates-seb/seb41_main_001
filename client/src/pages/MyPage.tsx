@@ -234,7 +234,7 @@ const InfoBlock = styled.div`
 `;
 
 const MyPage = () => {
-  const { id } = useParams();
+  const { memberId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [wroteTab, setWroteTab] = useState('작성모집');
   const [likedTab, setLikedTab] = useState('좋아요모집');
@@ -259,6 +259,8 @@ const MyPage = () => {
     recruits: [],
     recruitComments: [],
     recruitLikes: [],
+    frees: [],
+    freeLikes: [],
     reviews: [],
   });
   const recruitWTab = () => setWroteTab('작성모집');
@@ -268,7 +270,7 @@ const MyPage = () => {
   useEffect(() => {
     const getOneUser = () => {
       axios
-        .get(`/members/my-page/${id}`)
+        .get(`${process.env.REACT_APP_API_URL}/members/my-page/${memberId}`)
         .then((res: any) => {
           console.log(res);
           setOneUsers(res.data);
@@ -302,7 +304,7 @@ const MyPage = () => {
                   </div>
                 </Info>
               </HeadInfo>
-              <Button to={`/members/edit/${id}`}>
+              <Button to={`/members/edit/${memberId}`}>
                 <i className="fa-solid fa-pen" />
                 프로필 수정
               </Button>
@@ -335,13 +337,13 @@ const MyPage = () => {
                     <InfoBlock>
                       <div>등록 지역</div>
                       <div>
-                        <div>{oneUser.locations[0]}</div>
+                        {/* <div>{oneUser.locations[0]}</div>
                         {oneUser.locations[1] && (
                           <div>{oneUser.locations[1]}</div>
                         )}
                         {oneUser.locations[2] && (
                           <div>{oneUser.locations[2]}</div>
-                        )}
+                        )} */}
                       </div>
                     </InfoBlock>
                     <InfoBlock>
@@ -379,6 +381,11 @@ const MyPage = () => {
                         자유게시판
                       </button>
                     </span>
+                    {/* {wroteTab === '작성모집' ? (
+                      <WroteRecruit data={oneUser.recruits} />
+                    ) : (
+                      '자유게시글'
+                    )} */}
                     {
                       oneUser.recruits.length === 0 ? (
                         <div>글이 아직 없습니다</div>
@@ -464,7 +471,9 @@ const MyPage = () => {
                     <div>글이 아직 없습니다.</div>
                   </RegisteredBoard>
                   <span>
-                    <Button to={`/members/withdraw/${id}`}>회원 탈퇴</Button>
+                    <Button to={`/members/withdraw/${memberId}`}>
+                      회원 탈퇴
+                    </Button>
                   </span>
                 </Container>
               </div>
