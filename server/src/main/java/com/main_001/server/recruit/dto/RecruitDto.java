@@ -25,7 +25,7 @@ public class RecruitDto {
 
         @ApiModelProperty(example = "모집 인원")
         @NotBlank
-        private int require;
+        private int applicantsLimit;
 
         @ApiModelProperty(example = "최소 모집 인원")
         @NotBlank
