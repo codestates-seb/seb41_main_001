@@ -42,8 +42,8 @@ public class MemberController {
     }
 
     // 프로필 이미지 등록(Edit 화면), 추후 token으로 인증받아서 memberId에 접근한다.
-    @ApiOperation(value = "회원 프로필 이미지 등록", notes = "프로필 이미지를 증록한다.")
-    @PostMapping(path = "/profileImage", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "회원 프로필 이미지 등록", notes = "프로필 이미지를 등록한다.")
+    @PostMapping("/profileImage")
     public void createProfileImage(@RequestHeader(name = "Refresh") String refreshToken,
                                   @RequestPart(value = "file", required = false) MultipartFile files) {
         memberService.createProfile(refreshToken, files);
