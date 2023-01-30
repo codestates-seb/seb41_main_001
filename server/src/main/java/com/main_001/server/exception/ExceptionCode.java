@@ -24,7 +24,14 @@ public enum ExceptionCode {
 
     // Member
     WRONG_PASSWORD(400, "잘못된 패스워드 입력"),
-    MEMBER_NOT_FOUND(404, "존재하지 않는 회원");
+    MEMBER_NOT_FOUND(404, "존재하지 않는 회원"),
+
+    // Token
+    INVALID_AUTH_TOKEN(504, "유효하지 않은 토큰입니다."),
+    INVALID_REFRESH_TOKEN(504, "리프레시 토큰이 유효하지 않습니다."),
+    MISMATCH_ACCESS_TOKEN(504, "엑세스 토큰의 유저 정보가 일치하지 않습니다."),
+    BLACK_LIST(504, "로그아웃 처리된 토큰입니다."),
+    MISSING_HEADER_ACCESS_TOKEN(504,"헤더에 엑세스 토큰을 넣어주세요.");
 
 
     @Getter

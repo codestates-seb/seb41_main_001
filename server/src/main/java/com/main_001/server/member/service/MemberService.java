@@ -1,9 +1,10 @@
 package com.main_001.server.member.service;
 
 import com.main_001.server.auth.dto.LoginDto;
-import com.main_001.server.auth.filter.JwtAuthenticationFilter;
+import com.main_001.server.auth.exception.AuthException;
 import com.main_001.server.auth.jwt.JwtTokenizer;
 import com.main_001.server.auth.utils.CustomAuthorityUtils;
+import com.main_001.server.auth.utils.RedisUtils;
 import com.main_001.server.exception.BusinessLogicException;
 import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.file.FileHandler;
@@ -19,7 +20,6 @@ import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -39,6 +40,7 @@ public class MemberService {
     private final MemberImageRepository memberImageRepository;
     private final FileHandler fileHandler;
     private final TagRepository tagRepository;
+    private final RedisUtils redisUtils;
 
 //    @Value("${file.path}")
     private String memberImagePath;
@@ -50,7 +52,8 @@ public class MemberService {
                          JavaMailSender mailSender,
                          MemberImageRepository memberImageRepository,
                          FileHandler fileHandler,
-                         TagRepository tagRepository) {
+                         TagRepository tagRepository,
+                         RedisUtils redisUtils) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityUtils = authorityUtils;
@@ -59,6 +62,7 @@ public class MemberService {
         this.memberImageRepository = memberImageRepository;
         this.fileHandler = fileHandler;
         this.tagRepository = tagRepository;
+        this.redisUtils = redisUtils;
     }
 
     // 이메일, 닉네임, 전화번호를 따로 검사하는 로직이 있기 때문에 회원가입은 바로 저장소에 저장될 수 있다.
@@ -139,6 +143,7 @@ public class MemberService {
     // 로그인 로직
     // mapper 사용해볼 것
     // TODO 개발 완료 후 봉인 해제
+//    @Cacheable(value = "login")
     public TokenDto.Response loginMember(LoginDto requestBody) {
         Member findMember = findMemberByEmail(requestBody.getEmail());
         isValid(findMember, requestBody.getPassword());
@@ -146,9 +151,65 @@ public class MemberService {
         String accessToken = jwtTokenizer.generateAccessToken(findMember);
         String refreshToken = jwtTokenizer.generateRefreshToken(findMember);
 
+        redisUtils.setData(refreshToken, findMember.getMemberId(), jwtTokenizer.getRefreshTokenExpirationMinutes());
+
         // 헤더에 추가할 내용
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Refresh", refreshToken);
+        headers.add("member-id", findMember.getMemberId().toString());
+//        headers.add("Role", findMember.getRoles().toString());
+        headers.add("heart", Integer.toString(findMember.getHeart()));
+        headers.add("birth", findMember.getBirth());
+        headers.add("sex", findMember.getSex());
+
+        return TokenDto.Response
+                .builder()
+                .headers(headers)
+                .build();
+    }
+
+    // 로그아웃
+    public void logoutMember(String accessToken,
+                             String refreshToken) {
+        // accessToken parsing(Bearer ..)
+        accessToken = jwtTokenizer.parseAccessToken(accessToken);
+
+        // 복호화가 가능한지 확인
+        if (jwtTokenizer.validateToken(accessToken))
+            throw new AuthException(ExceptionCode.INVALID_AUTH_TOKEN);
+
+        // refreshToken이 존재하는 경우 리프레시 토큰 삭제
+        redisUtils.deleteData(refreshToken);
+
+        // 엑세스 토큰 만료 전까지 블랙리스트 처리
+        Long expiration = jwtTokenizer.getExpiration(accessToken);
+        redisUtils.setBlackList(accessToken, "Logout", expiration);
+    }
+
+    // 토큰 재발행
+    public TokenDto.Response reIssueToken(String accessToken,
+                                          String refreshToken) {
+        // accessToken parsing(Bearer ..)
+        accessToken = jwtTokenizer.parseAccessToken(accessToken);
+
+        // 복호화가 가능한지 확인
+        if (jwtTokenizer.validateToken(accessToken))
+            throw new AuthException(ExceptionCode.INVALID_AUTH_TOKEN);
+
+//        // refreshToken이 존재하지 않는 경우 예외를 던짐
+        if (redisUtils.getData(refreshToken) == null)
+            throw new AuthException(ExceptionCode.INVALID_AUTH_TOKEN);
+
+        // 레디스에 저장된 Id 추출
+        Long memberId = redisUtils.getId(refreshToken);
+
+        // 액세스 토큰 발행
+        Member findMember = findMember(memberId);
+        String generateToken = jwtTokenizer.generateAccessToken(findMember);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", generateToken);
         headers.add("Refresh", refreshToken);
         headers.add("member-id", findMember.getMemberId().toString());
 //        headers.add("Role", findMember.getRoles().toString());

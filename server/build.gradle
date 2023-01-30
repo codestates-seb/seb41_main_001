@@ -37,6 +37,9 @@ dependencies {
 	runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation ('it.ozimov:embedded-redis:0.7.3') { exclude group: "org.slf4j", module: "slf4j-simple" }
+
 //	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 //	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
