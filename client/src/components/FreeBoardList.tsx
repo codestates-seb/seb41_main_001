@@ -118,15 +118,14 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
       freeId,
       category,
       freeBody,
-      // freeTitle,
+      freeTitle,
       createdAt,
       // modifiedAt,
-      likes,
+      freeLikes,
       views,
       // memberId,
-      // freeLikes,
       // freeTags,
-      // freeComments,
+      freeComments,
       tagId,
       tagName,
     },
@@ -158,20 +157,12 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
                 ) : (
                   <i className="fa-solid fa-hand-holding-heart" />
                 )}
-                {/* {category} */}
-                운동
+                {category}
               </Category>
             </Link>
-            <div>
-              {/* {freeTitle} */}
-              안녕하세요!
-            </div>
+            <div>{freeTitle}</div>
           </div>
-          <div>
-            {freeBody}
-            내용내용내용내용내용 입니다입니다 내용내용내용내용내용 입니다입니다
-            내용내용내용내용내용 입니다입니다 내용내용내용내용내용 입니다입니다
-          </div>
+          <div>{freeBody}</div>
           <div>
             <TagLink value={`${tagName}`} to={`/tags/${tagId}/${tagName}`} />
             <TagLink value={`${tagName}`} to={`/tags/${tagId}/${tagName}`} />
@@ -189,12 +180,11 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
             </div>
             <div>
               <i className="fa-regular fa-thumbs-up like" />
-              {likes}
+              {freeLikes.length}
             </div>
             <div>
               <i className="fa-regular fa-comment-dots comment" />
-              {/* {freeComments.length} */}
-              {0}
+              {freeComments.length}
             </div>
             <CreatorMiniCard memberId={freeId} nickname="aaa" heart={100} />
           </div>

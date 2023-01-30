@@ -9,6 +9,11 @@ import FreeBoardList from '../components/FreeBoardList';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import ButtonLink from '../components/ButtonLink';
 
+// interface FreeBoardsProps {
+//   keyword: string;
+//   type: string;
+// }
+
 const FBLContainer = styled.main`
   background-color: var(--gray);
   color: white;
@@ -97,6 +102,28 @@ const CategoryLink = styled(Link)<{ color: string; currentColor: string }>`
   }
 `;
 
+// async function getFreeBoards() {
+//   try {
+//     const { data, status } = await axios.get<FreeBoardsProps>(
+//       `${process.env.REACT_APP_API_URL}/freeboards`,
+//       {
+//         params: {
+//           page: 1,
+//           size: 10,
+//           keyword: '',
+//           type: '',
+//         },
+//       },
+//     );
+//     console.log(data);
+//     console.log(status);
+//     return data;
+//   } catch (error) {
+//     console.log(error);
+//   }
+//   return null;
+// }
+
 const FreeBoards = () => {
   const [data, setData] = useState<FreeDataProps[]>([]);
   const [filterCategory, setFilterCategory] = useState('');
@@ -112,13 +139,15 @@ const FreeBoards = () => {
   useEffect(() => {
     axios
       .get(
-        `/freeboards?category=${filterCategory}&page=1&size=10&sort=latest&tag=all`,
+        `${process.env.REACT_APP_API_URL}/freeboards?page=1&size=10&keword=''&type=''`,
       )
       .then((res) => {
         setData(res.data.data);
         console.log(data);
       })
       .catch((err) => console.log(err));
+
+    // getFreeBoards();
   }, [filterCategory]);
 
   return (

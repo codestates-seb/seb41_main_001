@@ -1,232 +1,425 @@
-import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
-// import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+// import { useState } from 'react';
 import axios from 'axios';
-import useCurrentLocation from '../utils/useCurrentLocation';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import styled from 'styled-components';
+import AutoCompleteForArray from '../components/AutoCompleteForArray';
+// import useCurrentLocation from '../utils/useCurrentLocation';
 import KakaoMapClick from '../components/KakaoMapClick';
 import Button from '../components/Button';
-// import RecruitDataProps from '../interfaces/RecruitDataProps';
+import RecruitDataProps from '../interfaces/RecruitDataProps';
+import Loading from './Loading';
 
-enum GenderEnum {
-  Female = '여성',
-  Male = '남성',
-  Both = '성별 무관',
-}
-
-enum AgeEnum {
-  teenage = 10,
-  twenties = 20,
-  thirties = 30,
-  forties = 40,
-  fifties = 50,
-  sixties = 60,
-}
-
-interface IFormInput {
-  tag: string;
-  title: string;
-  content: string;
-  date: string;
-  require: number;
-  minRequire: number;
-  genderCondition: GenderEnum;
-  ageCondition: AgeEnum;
-  heartRateCondition: number;
-  location: string;
-  // image: string;
-}
-
-const ERContainer = styled.div`
-  background-color: var(--gray);
+const RecruitFormContainer = styled.main`
+  margin-top: 100px;
+  width: 700px;
   color: white;
-  display: flex;
-  justify-content: center;
-  margin-top: 5rem;
-  height: 100%;
+  font-size: 16px;
 `;
 
-const ERForm = styled.form`
-  width: 35rem;
-  height: auto;
-  border: 0.05rem solid white;
-  border-radius: 1rem;
-  padding: 1rem;
-  margin-top: 1.7rem;
-  margin-bottom: 1.7rem;
+const RecruitForm = styled.form`
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  > button:last-child {
+    margin-bottom: 50px;
+  }
 
-  /* div:first-child {
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
-    font-weight: bold;
-  } */
-
-  > div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 0.5rem;
-
-    input,
-    textarea {
-      width: 15rem;
-      margin: 0.5rem;
-      outline: none;
-      border: none;
-      background-color: rgba(1, 1, 1, 0);
-      border-bottom: 0.1rem solid grey;
-      color: white;
-      &:focus-within {
-        border-bottom: 0.1rem solid white;
+  table {
+    margin: 20px 0px;
+    border-spacing: 20px 30px;
+    tr {
+      > td:nth-child(1) {
+        white-space: nowrap;
+        width: 160px;
+      }
+      > td:nth-child(2) {
+        width: 100%;
+        position: relative;
       }
     }
-
-    label {
-      width: 5rem;
+    tr:nth-child(1),
+    tr:nth-child(2),
+    tr:nth-child(3),
+    tr:nth-child(4),
+    tr:nth-child(5),
+    tr:nth-child(6),
+    tr:nth-child(7) {
+      input,
+      textarea {
+        padding: 5px;
+        font-size: 16px;
+        width: 100%;
+        border: none;
+        outline: 1px solid rgb(120, 120, 120);
+        background-color: rgba(255, 255, 255, 0);
+        color: white;
+        &:focus {
+          outline: 1px solid rgb(170, 170, 170);
+        }
+        &::placeholder {
+          font-style: italic;
+          font-size: 14px;
+        }
+      }
+      textarea {
+        height: 200px;
+      }
     }
-
-    .length {
-      /* height: 5rem; */
-      /* height: auto; */
-      max-height: 10rem;
-      width: 15rem;
+    tr:nth-child(5),
+    tr:nth-child(6) {
+      input {
+        width: 100px;
+        margin-right: 10px;
+      }
     }
-  }
-
-  .warn {
-    color: var(--neon-yellow);
-  }
-
-  button {
-    width: 6rem;
-    text-decoration: none;
-    background-color: var(--gray);
-    color: white;
-    border-radius: 0.2rem;
-    margin: 0.3rem;
-    padding: 0.5rem 1rem;
-    transition: 0.2s ease-in-out;
-    font-size: 16px;
-    &:hover {
-      cursor: pointer;
-      background-color: var(--neon-yellow);
-      color: black;
-      transition: 0.2s ease-in-out;
+    tr:nth-child(9),
+    tr:nth-child(10) {
+      label {
+        margin-right: 10px;
+      }
+    }
+    tr:nth-child(11) {
+      input {
+        width: 300px;
+        margin-right: 10px;
+      }
     }
   }
 `;
 
-const MapContainer = styled.div`
-  margin-left: 4rem;
-  > div {
-    width: 20rem;
-    height: 20rem;
-  }
+const ErrorMessage = styled.span`
+  color: red;
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  font-size: 12px;
 `;
+
+interface RecruitFormInput {
+  recruitTagDtos: { tagId: number; tagName: string; emoji: string }[];
+  title: string;
+  body: string;
+  date: string;
+  require: number;
+  minRequire: number;
+  location: string;
+  lat: number;
+  lon: number;
+  sex: 'Both' | 'Male' | 'Female';
+  ages: number[];
+  heart: number;
+  image: string;
+  tagSearch: string;
+}
 
 const EditRecruit = () => {
-  const { register, handleSubmit } = useForm<IFormInput>();
-  const navigate = useNavigate();
-  const { location: currentLocation } = useCurrentLocation();
+  const [recruitData, setRecruitData] = useState<RecruitDataProps | null>();
   const { recruitId } = useParams();
-  // const [recruitData, setRecruitData] = useState<RecruitDataProps[]>([]);
-  const onSubmit = (data: IFormInput) => {
+  useEffect(() => {
     axios
-      .patch(`/recruits/${recruitId}`, {
-        ...data,
-        location: {
-          latitude: currentLocation?.latitude,
-          longitude: currentLocation?.longitude,
-        },
-      })
+      .get(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`)
       .then((res) => {
         console.log(res);
-        navigate(`/recruits/${recruitId}`);
+        setRecruitData(res.data.data);
       })
       .catch((err) => {
         console.log(err);
       });
+  }, []);
+  const {
+    register,
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<RecruitFormInput>({
+    defaultValues: {
+      recruitTagDtos: recruitData?.recruitTags,
+    },
+  });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'recruitTagDtos',
+    rules: {
+      validate: {
+        moreThanOneTag: (values) =>
+          values.length > 0 ? true : '태그는 1개 이상 선택해야 합니다',
+      },
+    },
+  });
+
+  const onSubmit = (data: RecruitFormInput) => {
+    // tagSearch는 postBody에서 제외함.
+    const { tagSearch, ...postBody } = data;
+    console.log(JSON.stringify(postBody));
   };
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`/recruits/${recruitId}`)
-  //     .then((res) => {
-  //       setRecruitData(res.data);
-  //       console.log(res);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, []);
+  const TAG_DATA = [
+    { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
+    { tagId: 2, tagName: '농구', emoji: '🏀' },
+    { tagId: 3, tagName: '야구', emoji: '⚾️' },
+    { tagId: 4, tagName: '배구', emoji: '🏐' },
+    { tagId: 5, tagName: '복싱', emoji: '🥊' },
+    { tagId: 6, tagName: '탁구', emoji: '🏓' },
+    { tagId: 7, tagName: '배드민턴', emoji: '🏸' },
+    { tagId: 8, tagName: '테니스/스쿼시', emoji: '🎾' },
+    { tagId: 9, tagName: '태권도/유도', emoji: '🥋' },
+    { tagId: 10, tagName: '검도', emoji: '⚔️' },
+    { tagId: 11, tagName: '무술/주짓수', emoji: '🥋' },
+    { tagId: 12, tagName: '족구', emoji: '⚽️' },
+    { tagId: 13, tagName: '러닝', emoji: '🏃' },
+    { tagId: 14, tagName: '자전거', emoji: '🚴' },
+    { tagId: 15, tagName: '등산', emoji: '🏔️' },
+    { tagId: 16, tagName: '클라이밍', emoji: '🧗‍♀️' },
+    { tagId: 17, tagName: '수영', emoji: '🏊‍♀️' },
+    { tagId: 18, tagName: '골프', emoji: '⛳️' },
+    { tagId: 19, tagName: '요가/필라테스', emoji: '🧘' },
+    { tagId: 20, tagName: '헬스/크로스핏', emoji: '🏋️' },
+    { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
+  ];
+
+  // useCurrentLocation().then((res) => {
+  //   if (res === undefined) return;
+  //   setLatLon(res);
+  // });
+  console.log('render');
 
   return (
-    <ERContainer>
-      <ERForm onSubmit={handleSubmit(onSubmit)}>
-        <h1>모집 게시글 수정</h1>
-        <div>
-          <label htmlFor="title">제목</label>
-          <input
-            id="title"
-            type="text"
-            // value={recruitData.title}
-            {...register('title', { required: '제목을 입력하세요' })}
+    <RecruitFormContainer>
+      <h1>모집 게시글 수정하기</h1>
+      <span>직접 모임을 만들어 보세요!</span>
+      {recruitData ? (
+        <RecruitForm onSubmit={handleSubmit(onSubmit)}>
+          <table>
+            <tbody>
+              <tr>
+                <td>태그</td>
+                <td>
+                  <AutoCompleteForArray
+                    fields={fields}
+                    append={append}
+                    remove={remove}
+                    register={register}
+                    control={control}
+                    data={TAG_DATA}
+                    tagLength={1}
+                  />
+                  <ErrorMessage>
+                    {errors?.recruitTagDtos?.root?.message}
+                  </ErrorMessage>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="title">제목</label>
+                </td>
+                <td>
+                  <input
+                    id="title"
+                    type="text"
+                    value={recruitData?.title}
+                    {...register('title', {
+                      required: '제목은 필수항목입니다',
+                    })}
+                  />
+                  <ErrorMessage>{errors?.title?.message}</ErrorMessage>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="body">내용</label>
+                </td>
+                <td>
+                  <textarea
+                    id="body"
+                    value={recruitData?.body}
+                    {...register('body', { required: '내용은 필수항목입니다' })}
+                  />
+                  <ErrorMessage>{errors?.body?.message}</ErrorMessage>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="date">모임 일시</label>
+                </td>
+                <td>
+                  <input
+                    id="date"
+                    type="datetime-local"
+                    value={recruitData?.date}
+                    {...register('date', {
+                      required: '모임 일시는 필수항목입니다',
+                    })}
+                  />
+                  <ErrorMessage>{errors?.date?.message}</ErrorMessage>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="require">총 모집 인원</label>
+                </td>
+                <td>
+                  <input
+                    id="require"
+                    type="number"
+                    value={recruitData?.require}
+                    {...register('require', {
+                      required: '총 모집 인원은 필수항목입니다',
+                      valueAsNumber: true,
+                    })}
+                  />
+                  명<ErrorMessage>{errors?.require?.message}</ErrorMessage>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="minRequire">모임의 최소충족인원</label>
+                </td>
+                <td>
+                  <input
+                    id="minRequire"
+                    type="number"
+                    value={recruitData?.minRequire}
+                    {...register('minRequire', {
+                      required: '최소충족인원은 필수항목입니다',
+                      valueAsNumber: true,
+                      validate: {
+                        smallerThanRequire: (value) =>
+                          value > getValues().require
+                            ? '최소모집인원은 총 모집인원 이하여야 합니다'
+                            : true,
+                      },
+                    })}
+                  />
+                  명<ErrorMessage>{errors?.minRequire?.message}</ErrorMessage>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="location">모임 장소</label>
+                </td>
+                <td>
+                  <input
+                    id="location"
+                    type="text"
+                    value={recruitData?.location}
+                    // placeholder="예) 000카페, 00교 다리 위 중간 엘리베이터 앞"
+                    {...register('location', {
+                      required: '모임 장소는 필수항목입니다',
+                    })}
+                  />
+                  <ErrorMessage>{errors?.location?.message}</ErrorMessage>
+                </td>
+              </tr>
+              <tr className="mapCon">
+                <td>
+                  <label htmlFor="latlon">카카오맵</label>
+                </td>
+                <td>
+                  <div className="mapClick">
+                    <KakaoMapClick
+                      latitude={recruitData?.lat}
+                      longitude={recruitData?.lon}
+                    />
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>성별 조건</td>
+                <td>
+                  {['Both', 'Male', 'Female'].map((item) => (
+                    <label key={item} htmlFor={`field-${item}`}>
+                      <input
+                        {...register('sex', {
+                          required: '성별 조건은 필수항목입니다',
+                        })}
+                        type="radio"
+                        value={item}
+                        id={`field-${item}`}
+                        name="sex"
+                      />
+                      {item === 'Both' ? '성별무관' : ''}
+                      {item === 'Male' ? '남성만' : ''}
+                      {item === 'Female' ? '여성만' : ''}
+                    </label>
+                  ))}
+                  <ErrorMessage>{errors?.sex?.message}</ErrorMessage>
+                </td>
+              </tr>
+              <tr>
+                <td>나이대 조건</td>
+                <td>
+                  {[10, 20, 30, 40, 50, 60, 70].map((el) => (
+                    <label>
+                      <input
+                        key={el}
+                        type="checkbox"
+                        value={el}
+                        {...register('ages', {
+                          required: '나이대 조건은 필수항목입니다',
+                        })}
+                      />
+                      {`${el}대`}
+                    </label>
+                  ))}
+                  <ErrorMessage>{errors?.ages?.message}</ErrorMessage>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="heart">심박수 조건</label>
+                </td>
+                <td>
+                  <Controller
+                    control={control}
+                    name="heart"
+                    // defaultValue={50}
+                    defaultValue={recruitData?.heartLimit}
+                    render={({ field: { value, onChange } }) => (
+                      <>
+                        <input
+                          id="heart"
+                          type="range"
+                          min={0}
+                          max={200}
+                          step={10}
+                          value={value}
+                          {...register('heart', {
+                            required: true,
+                            valueAsNumber: true,
+                          })}
+                          onChange={onChange}
+                        />
+                        <span className="result">현재 심박수 조건 {value}</span>
+                      </>
+                    )}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <label htmlFor="image">이미지</label>
+                </td>
+                <td>
+                  <input id="image" type="file" {...register('image')} />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <Button
+            value="글 작성하기"
+            onClick={handleSubmit(onSubmit)}
+            type="submit"
           />
-        </div>
-        <div>
-          <label htmlFor="content">내용</label>
-          <textarea
-            id="content"
-            className="length"
-            // value={recruitData.body}
-            {...register('content', { required: true })}
-          />
-        </div>
-        <div>
-          <label htmlFor="date">모임 일시</label>
-          <input
-            id="date"
-            type="datetime-local"
-            // value={recruitData.date}
-            {...register('date', { required: true })}
-          />
-        </div>
-        <MapContainer>
-          <label htmlFor="location">모임 장소</label>
-          {/* <input
-            id="location"
-            type="text"
-            {...register('location', { required: true })}
-          /> */}
-          <div className="mapClick">
-            {/* {recruitData && (
-              <KakaoMapClick
-                latitude={recruitData.location.latitude}
-                longitude={recruitData.location.longitude}
-              />
-            )} */}
-            {currentLocation && (
-              <KakaoMapClick
-                latitude={currentLocation.latitude}
-                longitude={currentLocation.longitude}
-              />
-            )}
-          </div>
-        </MapContainer>
-        {/* <div>
-          <label htmlFor="image">이미지</label>
-          <input id="image" type="file" {...register('image')} />
-        </div> */}
-        <div className="warn">
-          모임 일시, 모임 장소는 모임원들과 충분한 상의 후 변경하세요
-        </div>
-        <Button onClick={() => {}} value="수정하기" type="submit" />
-      </ERForm>
-    </ERContainer>
+        </RecruitForm>
+      ) : (
+        <Loading />
+      )}
+    </RecruitFormContainer>
   );
 };
 

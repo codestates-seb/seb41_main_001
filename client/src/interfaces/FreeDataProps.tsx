@@ -5,12 +5,13 @@ export default interface FreeDataProps {
   freeTitle: string;
   createdAt: string;
   modifiedAt: string;
-  likes: number;
+  freeLikes: [];
+  location: string;
   views: number;
   memberId: number;
-  freeLikes: {
-    memberId: number;
-  }[];
+  // freeLikes: {
+  //   memberId: number;
+  // }[];
   freeTags: { tagId: number; tagName: string }[];
   tagId: number;
   tagName: string;

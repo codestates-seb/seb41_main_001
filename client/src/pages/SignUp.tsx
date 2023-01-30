@@ -91,6 +91,11 @@ const SignUpForm = styled.form`
           font-style: italic;
           font-size: 14px;
         }
+        &:-webkit-autofill {
+          box-shadow: 0 0 0 20px var(--gray) inset;
+          -webkit-text-fill-color: white;
+          color: white;
+        }
       }
     }
     tr:nth-child(2),
@@ -101,6 +106,11 @@ const SignUpForm = styled.form`
         margin-right: 10px;
       }
     }
+  }
+  > button:last-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
 
@@ -132,11 +142,8 @@ const SignUp = () => {
   });
   const navigate = useNavigate();
   const { location: currentLocation } = useCurrentLocation();
-  const [nicknameValue, setNicknameValue] = useState('');
   const [checkedNickname, setCheckedNickname] = useState(true);
-  const [phoneValue, setPhoneValue] = useState('');
   const [checkedPhone, setCheckedPhone] = useState(true);
-  const [emailValue, setEmailValue] = useState('');
   const [checkedEmail, setCheckedEmail] = useState(true);
 
   const onSubmit = (data: IFormInput) => {
@@ -235,17 +242,15 @@ const SignUp = () => {
                   {...register('nickname', {
                     required: '닉네임을 입력하세요',
                   })}
-                  onChange={(e) => {
-                    setNicknameValue(e.target.value);
-                  }}
                 />
                 <ErrorMessage>{errors.nickname?.message}</ErrorMessage>
                 <Button
                   value="중복 확인"
                   onClick={() => {
+                    const { nickname } = getValues();
                     axios
                       .get(
-                        `${process.env.REACT_APP_API_URL}/members/signup/check-nickname/${nicknameValue}`,
+                        `${process.env.REACT_APP_API_URL}/members/signup/check-nickname/${nickname}`,
                       )
                       .then((res) => {
                         console.log(res);
@@ -301,17 +306,15 @@ const SignUp = () => {
                   id="email"
                   type="email"
                   {...register('email', { required: '이메일을 입력하세요.' })}
-                  onChange={(e) => {
-                    setEmailValue(e.target.value);
-                  }}
                 />
                 <ErrorMessage>{errors.email?.message}</ErrorMessage>
                 <Button
                   value="중복 확인"
                   onClick={() => {
+                    const { email } = getValues();
                     axios
                       .get(
-                        `${process.env.REACT_APP_API_URL}/members/signup/check-email/${emailValue}`,
+                        `${process.env.REACT_APP_API_URL}/members/signup/check-email/${email}`,
                       )
                       .then((res) => {
                         console.log(res);
@@ -340,18 +343,20 @@ const SignUp = () => {
                   type="tel"
                   {...register('phone', {
                     required: '휴대폰 번호를 입력하세요.',
+                    pattern: {
+                      value: /^(010)-[0-9]{3,4}-[0-9]{4}$/,
+                      message: '010-0000-0000 형식에 맞춰주세요.',
+                    },
                   })}
-                  onChange={(e) => {
-                    setPhoneValue(e.target.value);
-                  }}
                 />
                 <ErrorMessage>{errors.phone?.message}</ErrorMessage>
                 <Button
                   value="중복 확인"
                   onClick={() => {
+                    const { phone } = getValues();
                     axios
                       .get(
-                        `${process.env.REACT_APP_API_URL}/members/signup/check-phone/${phoneValue}`,
+                        `${process.env.REACT_APP_API_URL}/members/signup/check-phone/${phone}`,
                       )
                       .then((res) => {
                         console.log(res);
@@ -405,7 +410,6 @@ const SignUp = () => {
                 <input
                   id="passwordRetype"
                   type="password"
-                  placeholder="비밀번호를 다시 입력해주세요."
                   {...register('passwordRetype', {
                     required: '비밀번호를 확인해주세요.',
                     validate: {
@@ -452,10 +456,14 @@ const SignUp = () => {
                 />
               </td>
             </tr>
-            {/* <div className="inputCon">
+            {/* <tr>
+            <td>
           <label htmlFor="profile">프로필 사진</label>
+          <td>
+          <td>
           <input id="profile" type="file" {...register('profile')} />
-        </div> */}
+          </td>
+        </tr> */}
             <Button
               onClick={() => {}}
               value="건강한 삶 시작하기"
