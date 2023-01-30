@@ -55,6 +55,16 @@ const CRForm = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  #tagContainer {
+    display: flex;
+    flex-direction: column;
+    > span {
+      padding-left: 1.4rem;
+      padding-top: 0.3rem;
+      font-size: 12px;
+      color: lightgrey;
+    }
+  }
 
   input,
   textarea,
@@ -280,7 +290,10 @@ const CreateFreeboard = () => {
         </div>
         <div>
           <label htmlFor="tag">태그</label>
-          <input id="tag" {...register('tag')} />
+          <div id="tagContainer">
+            <input id="tag" {...register('tag')} />
+            <span>Enter to Add the tag</span>
+          </div>
         </div>
         <div>
           <div className="label">이미지</div>
