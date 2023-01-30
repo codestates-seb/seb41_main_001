@@ -497,7 +497,10 @@ const EditUser = () => {
     alert(
       `위도 : ${currentLocation?.latitude}, 경도 : ${currentLocation?.longitude}`,
     );
-  };
+  // };
+  // const locationAdd = () => {
+  //   alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
+  // };
   // inputImage.addEventListener('change', (e) => {
   //   readImage(e.target);
   // });

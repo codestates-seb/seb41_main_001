@@ -99,7 +99,7 @@ const DropBox = styled.div`
 
 interface DropBoxProps {
   data: { tagId: number; tagName: string; emoji: string }[];
-  fields: { tagId: number; tagName: string; emoji: string }[];
+  fields: { tagId: number; tagName: string; emoji: string; id?: string }[];
   control: any;
   append: any;
   tagLength: number;

@@ -6,7 +6,6 @@ const ButtonContainer = styled.button`
   color: white;
   border: 1px solid white;
   border-radius: 5px;
-  /* margin-left: 10px; */
   padding: 8px 14px;
   transition: 0.2s ease-in-out;
   font-size: 100%;
