@@ -36,7 +36,7 @@ public interface RecruitMapper {
         recruit.setHeartLimit(requestBody.getHeartLimit());
         recruit.setTitle(requestBody.getTitle());
         recruit.setBody(requestBody.getBody());
-        recruit.setRequire(requestBody.getRequire());
+        recruit.setApplicantsLimit(requestBody.getApplicantsLimit());
         recruit.setMinRequire(requestBody.getMinRequire());
         recruit.setSex(requestBody.getSex());
         recruit.setDate(requestBody.getDate());
@@ -67,7 +67,7 @@ public interface RecruitMapper {
                 .body(recruit.getBody())
                 .createdAt(recruit.getCreatedAt())
                 .modifiedAt(recruit.getModifiedAt())
-                .require(recruit.getRequire())
+                .applicantsLimit(recruit.getApplicantsLimit())
                 .minRequire(recruit.getMinRequire())
                 .recruitStatus(recruit.getRecruitStatus().getStepDescription())
                 .star(recruit.getStar())

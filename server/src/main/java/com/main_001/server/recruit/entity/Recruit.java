@@ -35,7 +35,7 @@ public class Recruit {
 //    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 //    LocalDateTime localDateTime = timestamp.toLocalDateTime();
     @Column
-    private int require=0;
+    private int applicantsLimit=0;
 
     @Column
     private int minRequire=0;
