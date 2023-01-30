@@ -172,14 +172,14 @@ public class MemberService {
     // 로그아웃
     public void logoutMember(String accessToken,
                              String refreshToken) {
-        // accessToken parsing(Bearer ..)
+        // accessToken 파싱
         accessToken = jwtTokenizer.parseAccessToken(accessToken);
 
-        // 복호화가 가능한지 확인
+        // 토큰 유효성 확인
         if (jwtTokenizer.validateToken(accessToken))
             throw new AuthException(ExceptionCode.INVALID_AUTH_TOKEN);
 
-        // refreshToken이 존재하는 경우 리프레시 토큰 삭제
+        // refreshToken이 존재하면 삭제
         redisUtils.deleteData(refreshToken);
 
         // 엑세스 토큰 만료 전까지 블랙리스트 처리
@@ -190,7 +190,7 @@ public class MemberService {
     // 토큰 재발행
     public TokenDto.Response reIssueToken(String accessToken,
                                           String refreshToken) {
-        // accessToken parsing(Bearer ..)
+        // accessToken 파싱
         accessToken = jwtTokenizer.parseAccessToken(accessToken);
 
         // 복호화가 가능한지 확인
@@ -206,10 +206,10 @@ public class MemberService {
 
         // 액세스 토큰 발행
         Member findMember = findMember(memberId);
-        String generateToken = jwtTokenizer.generateAccessToken(findMember);
+        String newAccessToken = jwtTokenizer.generateAccessToken(findMember);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", generateToken);
+        headers.add("Authorization", "Bearer " + newAccessToken);
         headers.add("Refresh", refreshToken);
         headers.add("member-id", findMember.getMemberId().toString());
 //        headers.add("Role", findMember.getRoles().toString());
