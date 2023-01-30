@@ -8,7 +8,6 @@ const InfoBlock = styled.div`
   > label:first-child {
     width: 120px;
     display: flex;
-    justify-content: flex-end;
     align-items: flex-start;
     text-shadow: white 0 0 5px;
     margin-right: 10px;

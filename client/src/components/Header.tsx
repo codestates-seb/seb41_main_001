@@ -59,6 +59,9 @@ const ButtonsContainer = styled.div`
       }
     }
   }
+  a {
+    margin-left: 10px;
+  }
 `;
 
 // const Button = styled(Link)`
@@ -117,10 +120,10 @@ const Header = () => {
           HEART
         </Logo>
         <Board>
-          <BoardLink path={path} to="/freeboard">
+          <BoardLink path={path} to="/freeboards">
             자유게시판
           </BoardLink>
-          <BoardLink path={path} to="/freeboard/tags">
+          <BoardLink path={path} to="/freeboards/tags">
             자유게시판 태그
           </BoardLink>
           <BoardLink path={path} to="/recruits">

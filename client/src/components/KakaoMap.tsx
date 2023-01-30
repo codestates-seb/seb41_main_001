@@ -39,6 +39,7 @@ const KakaoMap = ({
   };
 
   useEffect(() => {
+    console.log('kakaomap useeffect render');
     const map = new kakao.maps.Map(mapContainer.current!, mapOptions);
 
     const imageSrc = markerImg;
@@ -73,8 +74,10 @@ const KakaoMap = ({
 
     // 마커가 지도 위에 표시되도록 설정
     marker.setMap(map);
+    console.log('kakaomap useEffect');
   }, []);
 
+  console.log('kakaomap render');
   return <MapContainer id="kakao-map" ref={mapContainer} />;
 };
 

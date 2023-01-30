@@ -1,80 +1,85 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useWatch } from 'react-hook-form';
 
-const FilterTagBox = styled.div`
+const AutoCompleteContainer = styled.div`
   display: flex;
-  justify-content: center;
-  margin: 0;
-`;
-
-const Tag = styled.div`
-  padding: 5px;
-  border: none;
-  border-radius: 5px;
-  background-color: rgba(255, 255, 255, 0.4);
-  display: flex;
-  align-items: center;
-  height: 35px;
-  white-space: nowrap;
-  margin-right: 10px;
-  &:hover {
-    cursor: default;
-  }
-  button {
+  > ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
     display: flex;
-    align-items: center;
-    margin-left: 7px;
-    border: none;
-    padding: 0px 3px;
-    background-color: rgba(255, 255, 255, 0);
-    transition: 0.2s ease-in-out;
-    color: #303030;
-    &:hover {
-      cursor: pointer;
-      outline: 1px solid #303030;
-      transition: 0.2s ease-in-out;
+    > li {
+      white-space: nowrap;
+      margin-right: 10px;
+      border: 1px solid white;
+      padding: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: rgba(255, 255, 255, 0.4);
+      display: flex;
+      align-items: center;
+      height: 35px;
+      white-space: nowrap;
+      margin-right: 10px;
+      &:hover {
+        cursor: default;
+      }
+      > button {
+        display: flex;
+        align-items: center;
+        margin-left: 7px;
+        border: none;
+        padding: 0px 3px;
+        background-color: rgba(255, 255, 255, 0);
+        transition: 0.2s ease-in-out;
+        color: #303030;
+        &:hover {
+          cursor: pointer;
+          outline: 1px solid #303030;
+          transition: 0.2s ease-in-out;
+        }
+      }
     }
   }
 `;
 
 const AutoCompleteBox = styled.div`
   position: relative;
-  display: flex;
   width: 100%;
-  input {
+  > input {
     width: 100%;
     height: 35px;
+    padding: 5px;
+    font-size: 16px;
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-    background-color: rgba(1, 1, 1, 0);
+    outline: 1px solid rgb(120, 120, 120);
+    background-color: rgba(255, 255, 255, 0);
     color: white;
-    font-size: 100%;
     &:focus {
-      border-bottom: 1px solid white;
-      outline: none;
+      outline: 1px solid rgb(170, 170, 170);
     }
   }
   &:focus-within {
-    div {
+    > div {
       display: block;
     }
   }
 `;
 
-const DropDownBox = styled.div`
+const DropBox = styled.div`
   position: absolute;
-  top: 35px;
-  width: 100%;
   display: flex;
   flex-direction: column;
+  top: 100%;
   display: none;
-  height: 180px;
+  width: 100%;
+  max-height: 200px;
   overflow: scroll;
-  overflow-x: hidden;
+  z-index: 10;
   &::-webkit-scrollbar {
     display: none;
   }
-  button {
+  > button {
     width: 100%;
     padding: 5px;
     border: none;
@@ -82,7 +87,6 @@ const DropDownBox = styled.div`
     margin-top: 2px;
     background-color: rgb(197, 197, 197);
     transition: 0.2s ease-in-out;
-    font-size: 100%;
     white-space: nowrap;
     overflow: hidden;
     &:hover {
@@ -93,77 +97,96 @@ const DropDownBox = styled.div`
   }
 `;
 
-interface FilterTagProps {
-  selectedTag: { tagId: number; tagName: string; tagEmoji: string }[];
-  setSelectedTag: (
-    value: {
-      tagId: number;
-      tagName: string;
-      tagEmoji: string;
-    }[],
-  ) => void;
-  tagLimit: number;
-  data: { tagId: number; tagName: string; tagEmoji: string }[];
+interface DropBoxProps {
+  data: { tagId: number; tagName: string; emoji: string }[];
+  fields: { tagId: number; tagName: string; emoji: string }[];
+  control: any;
+  append: any;
+  tagLength: number;
+}
+
+const TagSearchDropBox = ({
+  data,
+  control,
+  append,
+  fields,
+  tagLength,
+}: DropBoxProps) => {
+  const tagSearch = useWatch({ control, name: 'tagSearch', defaultValue: '' });
+
+  return (
+    <DropBox>
+      {data
+        .filter((el) => el.tagName.includes(tagSearch))
+        .map((item) => (
+          <button
+            key={item.tagId}
+            type="button"
+            onClick={() => {
+              // 이미 등록된 태그는 추가 불가
+              if (
+                !fields
+                  .reduce((r: number[], e) => [...r, e.tagId], [])
+                  .includes(item.tagId)
+              ) {
+                append({
+                  tagId: item.tagId,
+                  tagName: item.tagName,
+                  emoji: item.emoji,
+                });
+              }
+            }}
+            // 태그 어레이의 길이를 여기서 제한
+            disabled={fields.length === tagLength}
+          >
+            {item.emoji ? `${item.emoji} ${item.tagName}` : `${item.tagName}`}
+          </button>
+        ))}
+    </DropBox>
+  );
+};
+
+interface AutoCompleteForArrayProps {
+  fields: { tagId: number; tagName: string; emoji: string; id: string }[];
+  append: any;
+  remove: any;
+  register: any;
+  control: any;
+  data: { tagId: number; tagName: string; emoji: string }[];
+  tagLength: number;
 }
 
 const AutoCompleteForArray = ({
-  selectedTag,
-  setSelectedTag,
-  tagLimit,
+  fields,
+  append,
+  remove,
+  register,
+  control,
   data,
-}: FilterTagProps) => {
-  const [inputTag, setInputTag] = useState('');
-  const handleAddTag = (t: {
-    tagId: number;
-    tagName: string;
-    tagEmoji: string;
-  }) => {
-    if (selectedTag.length < tagLimit) {
-      setSelectedTag([
-        ...selectedTag,
-        {
-          tagId: t.tagId,
-          tagName: t.tagName,
-          tagEmoji: `${t.tagEmoji ? t.tagEmoji : ''}`,
-        },
-      ]);
-    }
-    console.log(selectedTag);
-  };
-
-  return (
-    <FilterTagBox>
-      {selectedTag.map((t) => (
-        <Tag key={t.tagId}>
-          {t.tagEmoji ? `${t.tagEmoji} ${t.tagName}` : `${t.tagName}`}
-          <button
-            type="button"
-            onClick={() =>
-              setSelectedTag(selectedTag.filter((el) => el.tagId !== t.tagId))
-            }
-          >
+  tagLength,
+}: AutoCompleteForArrayProps) => (
+  <AutoCompleteContainer>
+    <ul>
+      {fields.map((item, index) => (
+        <li key={item.id}>
+          {`${item.emoji} ${item.tagName}`}
+          <button type="button" onClick={() => remove(index)}>
             <i className="fa-solid fa-xmark" />
           </button>
-        </Tag>
+        </li>
       ))}
-      <AutoCompleteBox>
-        <input value={inputTag} onChange={(e) => setInputTag(e.target.value)} />
-        <DropDownBox>
-          {data
-            .filter((el) => el.tagName.includes(inputTag))
-            .map((el) => (
-              <button
-                key={el.tagId}
-                type="button"
-                onClick={() => handleAddTag(el)}
-              >
-                {el.tagEmoji ? `${el.tagEmoji} ${el.tagName}` : `${el.tagName}`}
-              </button>
-            ))}
-        </DropDownBox>
-      </AutoCompleteBox>
-    </FilterTagBox>
-  );
-};
+    </ul>
+    <AutoCompleteBox>
+      <input type="text" defaultValue="" {...register('tagSearch')} />
+      <TagSearchDropBox
+        control={control}
+        data={data}
+        append={append}
+        fields={fields}
+        tagLength={tagLength}
+      />
+    </AutoCompleteBox>
+  </AutoCompleteContainer>
+);
 
 export default AutoCompleteForArray;

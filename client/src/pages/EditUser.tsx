@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import axios from 'axios';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 // import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
 import useCurrentLocation from '../utils/useCurrentLocation';
-import Tag from '../components/Tag';
 import NewPassword from '../components/NewPassword';
+import AutoCompleteForArray from '../components/AutoCompleteForArray';
 // declare global {
 //   interface Window {
 //     kakao: any;
@@ -64,22 +64,19 @@ const WarnSet = styled.div`
 
 const PersonalInfo = styled.div`
   border: 2px solid white;
-  padding: 10px;
   margin: 10px 0 10px 10px;
   border-radius: 20px;
-  padding: 40px 0px 40px 20px;
+  padding: 40px 10px 40px 20px;
   input {
     background-color: var(--gray);
     padding: 5px;
-    margin-left: 10px;
     font-size: 16px;
-    border: none;
-    border-bottom: 2px solid gray;
+    border: 1px solid grey;
     width: 13rem;
     outline: none;
     color: white;
     &:focus-within {
-      border-bottom: 2px solid white;
+      border: 1px solid white;
       transition: 0.2s ease-in-out;
     }
     &:-webkit-autofill {
@@ -98,7 +95,6 @@ const InfoBlock = styled.div`
   > label:first-child {
     width: 120px;
     display: flex;
-    justify-content: flex-end;
     align-items: flex-start;
     text-shadow: white 0 0 5px;
     margin-right: 10px;
@@ -129,7 +125,7 @@ const InfoBlock = styled.div`
     justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
-    margin-left: 0.8rem;
+    margin-left: 0.1rem;
     margin-right: 5rem;
     > #locationButton {
       padding: 1rem 2rem;
@@ -158,6 +154,8 @@ const InfoBlock = styled.div`
     > div {
       margin: 5px 5px 0px 0;
       font-size: 15px;
+      display: flex;
+      justify-content: flex-start;
       > i {
         color: white;
         font-size: 16px;
@@ -243,7 +241,7 @@ const NoLinkButton = styled.button`
   border: 1px solid white;
   border-radius: 10px;
   align-items: center;
-  margin: 3px 0px 15px 20px;
+  margin: 3px 0px 15px 0px;
   font-size: 14px;
   text-align: center;
   display: flex;
@@ -317,7 +315,6 @@ const NoLinkButton = styled.button`
 const TagList = styled.div`
   width: 22rem;
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   margin: 0.5rem;
 `;
@@ -342,11 +339,12 @@ interface UserFormInput {
   newPassword: string;
   // newPasswordCheck: string;
   phone: string;
-  // memberTags: {
-  //   tagId: number;
-  //   tagName: string;
-  // }[];
-  memberTags: string[];
+  memberTags: {
+    tagId: number;
+    tagName: string;
+    emoji: string;
+  }[];
+  // memberTags: string[];
   locations: string[];
 }
 
@@ -364,6 +362,7 @@ const EditUser = () => {
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [passwordChange, setPasswordChange] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+
   // const [img, setImg] = useState<string>(
   //   'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   // );
@@ -375,15 +374,15 @@ const EditUser = () => {
   };
   const {
     register,
+    control,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<UserFormInput>();
   const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
     const check = { ...data, newPassword, locations: 'example' };
     console.log(check);
     axios
-      .patch(`/members/my-page/${memberId}`, {
+      .patch(`${process.env.REACT_APP_API_URL}/members/my-page/${memberId}`, {
         ...data,
         newPassword,
         locations: 'string',
@@ -403,6 +402,17 @@ const EditUser = () => {
         );
       });
   };
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'memberTags',
+    rules: {
+      validate: {
+        moreThanOneTag: (values) =>
+          values.length > 0 ? true : '태그는 1개 이상 선택해야 합니다',
+      },
+    },
+  });
   // const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //   console.log('change', event.target.value);
   // };
@@ -412,36 +422,29 @@ const EditUser = () => {
   // } | null>(null);
 
   const { location: currentLocation } = useCurrentLocation();
-  const toggles = watch('memberTags', []);
-  const [disabled, setDisabled] = useState(false);
-  useEffect(() => {
-    if (toggles.length > 2) {
-      setDisabled(true);
-    }
-  }, [toggles]);
 
   const TAG_DATA = [
-    { tagId: 1, tagName: '축구/풋살', tagEmoji: '⚽️' },
-    { tagId: 2, tagName: '농구', tagEmoji: '🏀' },
-    { tagId: 3, tagName: '야구', tagEmoji: '⚾️' },
-    { tagId: 4, tagName: '배구', tagEmoji: '🏐' },
-    { tagId: 5, tagName: '복싱', tagEmoji: '🥊' },
-    { tagId: 6, tagName: '탁구', tagEmoji: '🏓' },
-    { tagId: 7, tagName: '배드민턴', tagEmoji: '🏸' },
-    { tagId: 8, tagName: '테니스/스쿼시', tagEmoji: '🎾' },
-    { tagId: 9, tagName: '태권도/유도', tagEmoji: '🥋' },
-    { tagId: 10, tagName: '검도', tagEmoji: '⚔️' },
-    { tagId: 11, tagName: '무술/주짓수', tagEmoji: '🥋' },
-    { tagId: 12, tagName: '족구', tagEmoji: '⚽️' },
-    { tagId: 13, tagName: '러닝', tagEmoji: '🏃' },
-    { tagId: 14, tagName: '자전거', tagEmoji: '🚴' },
-    { tagId: 15, tagName: '등산', tagEmoji: '🏔️' },
-    { tagId: 16, tagName: '클라이밍', tagEmoji: '🧗‍♀️' },
-    { tagId: 17, tagName: '수영', tagEmoji: '🏊‍♀️' },
-    { tagId: 18, tagName: '골프', tagEmoji: '⛳️' },
-    { tagId: 19, tagName: '요가/필라테스', tagEmoji: '🧘' },
-    { tagId: 20, tagName: '헬스/크로스핏', tagEmoji: '🏋️' },
-    { tagId: 21, tagName: '스케이트/인라인', tagEmoji: '⛸️' },
+    { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
+    { tagId: 2, tagName: '농구', emoji: '🏀' },
+    { tagId: 3, tagName: '야구', emoji: '⚾️' },
+    { tagId: 4, tagName: '배구', emoji: '🏐' },
+    { tagId: 5, tagName: '복싱', emoji: '🥊' },
+    { tagId: 6, tagName: '탁구', emoji: '🏓' },
+    { tagId: 7, tagName: '배드민턴', emoji: '🏸' },
+    { tagId: 8, tagName: '테니스/스쿼시', emoji: '🎾' },
+    { tagId: 9, tagName: '태권도/유도', emoji: '🥋' },
+    { tagId: 10, tagName: '검도', emoji: '⚔️' },
+    { tagId: 11, tagName: '무술/주짓수', emoji: '🥋' },
+    { tagId: 12, tagName: '족구', emoji: '⚽️' },
+    { tagId: 13, tagName: '러닝', emoji: '🏃' },
+    { tagId: 14, tagName: '자전거', emoji: '🚴' },
+    { tagId: 15, tagName: '등산', emoji: '🏔️' },
+    { tagId: 16, tagName: '클라이밍', emoji: '🧗‍♀️' },
+    { tagId: 17, tagName: '수영', emoji: '🏊‍♀️' },
+    { tagId: 18, tagName: '골프', emoji: '⛳️' },
+    { tagId: 19, tagName: '요가/필라테스', emoji: '🧘' },
+    { tagId: 20, tagName: '헬스/크로스핏', emoji: '🏋️' },
+    { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
   ];
   // useCurrentLocation().then((res) => {
   //   if (res === undefined) return;
@@ -507,7 +510,9 @@ const EditUser = () => {
     const name = (document.getElementById('nickname') as HTMLInputElement)
       .value;
     axios
-      .get(`/members/signup/check-nickname/${name}`)
+      .get(
+        `${process.env.REACT_APP_API_URL}/members/signup/check-nickname/${name}`,
+      )
       .then((res: any) => {
         console.log(res);
         if (res.data === true) {
@@ -521,7 +526,9 @@ const EditUser = () => {
   const phoneNumCheck = () => {
     const phone = (document.getElementById('phone') as HTMLInputElement).value;
     axios
-      .get(`/members/signup/check-phone/${phone}`)
+      .get(
+        `${process.env.REACT_APP_API_URL}/members/signup/check-phone/${phone}`,
+      )
       .then((res: any) => {
         console.log(res);
         if (res.data === true) {
@@ -696,15 +703,15 @@ const EditUser = () => {
             <label htmlFor="memberTags">등록 태그 변경</label>
             <div>
               <TagList>
-                {TAG_DATA.map((el) => (
-                  <Tag
-                    key={el.tagId}
-                    name={el.tagName}
-                    emoji={el.tagEmoji}
-                    disabled={disabled}
-                    register={register}
-                  />
-                ))}
+                <AutoCompleteForArray
+                  fields={fields}
+                  append={append}
+                  remove={remove}
+                  register={register}
+                  control={control}
+                  data={TAG_DATA}
+                  tagLength={3}
+                />
               </TagList>
             </div>
           </InfoBlock>

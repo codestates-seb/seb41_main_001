@@ -117,7 +117,7 @@ const CommentBox = (props: {
   return (
     <CommentContainer>
       <CreatorBox>
-        <Link to={`/users/${memberId}/${nickname}`}>
+        <Link to={`/members/mypage/${memberId}`}>
           <img
             src={`https://picsum.photos/seed/${memberId}/50/50.webp`}
             alt={`avator of ${nickname}}`}

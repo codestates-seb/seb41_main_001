@@ -44,34 +44,36 @@ const ListTitle = styled(Link)`
 const ListInfo = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   width: 20%;
   margin-right: 20px;
-  > div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-    i {
-      margin-right: 7px;
-    }
-    &:nth-child(1) {
-      font-size: 80%;
+  > div:first-child {
+    > div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
       i {
-        color: var(--neon-yellow);
+        margin-right: 7px;
       }
-    }
-    &:nth-child(2) {
-      font-size: 80%;
-      i {
-        color: var(--neon-red);
+      &:nth-child(1) {
+        font-size: 80%;
+        i {
+          color: var(--neon-yellow);
+        }
       }
-    }
-    &:nth-child(3) {
-      font-size: 80%;
-      i {
-        color: var(--neon-blue);
+      &:nth-child(2) {
+        font-size: 80%;
+        i {
+          color: var(--neon-red);
+        }
+      }
+      &:nth-child(3) {
+        font-size: 80%;
+        i {
+          color: var(--neon-blue);
+        }
       }
     }
   }
@@ -239,7 +241,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       likes,
       views,
       sex,
-      heart,
+      heartLimit,
       ageGroup,
       recruitStatus,
       applies,
@@ -248,9 +250,10 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       date,
       memberId,
       nickname,
+      authorHeart,
     },
   } = props;
-  const { tagName, tagEmoji } = recruitTags[0];
+  const { tagName, emoji } = recruitTags[0];
 
   const convertToDate = (time: string) => {
     const DATE = new Date(time);
@@ -283,7 +286,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
     <ListContainer>
       <div>
         <TagLink
-          value={`${tagEmoji} ${tagName}`}
+          value={`${emoji} ${tagName}`}
           to={`/recruits?tag="${tagName}"`}
         />
         <ListTitle to={`/recruit/${recruitId}`}>{title}</ListTitle>
@@ -291,18 +294,24 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       <div>
         <ListInfo>
           <div>
-            <i className="fa-solid fa-star" />
-            {star}
+            <div>
+              <i className="fa-solid fa-star" />
+              {star}
+            </div>
+            <div>
+              <i className="fa-solid fa-heart" />
+              {likes}
+            </div>
+            <div>
+              <i className="fa-solid fa-eye" />
+              {views}
+            </div>
           </div>
-          <div>
-            <i className="fa-solid fa-heart" />
-            {likes}
-          </div>
-          <div>
-            <i className="fa-solid fa-eye" />
-            {views}
-          </div>
-          <CreatorCard memberId={memberId} nickname={nickname} heart={heart} />
+          <CreatorCard
+            memberId={memberId}
+            nickname={nickname}
+            heart={authorHeart}
+          />
         </ListInfo>
         <ListCondition>
           <div>
@@ -314,7 +323,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
             <div>
               <span>심박수</span>
               <i className="fa-solid fa-heart-circle-exclamation" />
-              <span>{`${heart} 이상`}</span>
+              <span>{`${heartLimit} 이상`}</span>
             </div>
             <div>
               <span>나이대</span>

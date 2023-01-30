@@ -48,7 +48,6 @@ const AutoCompleteBox = styled.div`
     border-bottom: 1px solid rgba(255, 255, 255, 0.4);
     background-color: rgba(1, 1, 1, 0);
     color: white;
-    font-size: 100%;
     &:focus {
       border-bottom: 1px solid white;
       outline: none;
@@ -82,7 +81,6 @@ const DropDownBox = styled.div`
     margin-top: 2px;
     background-color: rgb(197, 197, 197);
     transition: 0.2s ease-in-out;
-    font-size: 100%;
     white-space: nowrap;
     overflow: hidden;
     &:hover {
@@ -96,7 +94,7 @@ const DropDownBox = styled.div`
 interface FilterTagProps {
   filterTag: string;
   setFilterTag: React.Dispatch<React.SetStateAction<string>>;
-  data: { tagId: number; tagName: string; tagEmoji?: string }[];
+  data: { tagId: number; tagName: string; emoji?: string }[];
 }
 
 const AutoCompleteForString = ({
@@ -111,7 +109,7 @@ const AutoCompleteForString = ({
     <FilterTagBox>
       {SELECTED_TAG.map((t) => (
         <Tag key={t.tagId}>
-          {t.tagEmoji ? `${t.tagEmoji} ${t.tagName}` : `${t.tagName}`}
+          {t.emoji ? `${t.emoji} ${t.tagName}` : `${t.tagName}`}
           <button type="button" onClick={() => setFilterTag('')}>
             <i className="fa-solid fa-xmark" />
           </button>
@@ -128,7 +126,7 @@ const AutoCompleteForString = ({
                 type="button"
                 onClick={() => setFilterTag(el.tagName)}
               >
-                {el.tagEmoji ? `${el.tagEmoji} ${el.tagName}` : `${el.tagName}`}
+                {el.emoji ? `${el.emoji} ${el.tagName}` : `${el.tagName}`}
               </button>
             ))}
         </DropDownBox>

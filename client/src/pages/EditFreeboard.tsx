@@ -199,7 +199,7 @@ const EditFreeboard = () => {
   useEffect(() => {
     const getOriginalPost = () => {
       axios
-        .get(`/freeboards/${freeId}`)
+        .get(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`)
         .then((res: any) => {
           console.log(res);
           setPosting(res.data);
