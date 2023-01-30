@@ -23,6 +23,7 @@ public class ResponseDto {
     @Builder
     @Getter
     public static class FreeLike{
+        private long freeId;
         private long memberId;
     }
 
