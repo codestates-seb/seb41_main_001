@@ -1,130 +1,166 @@
 import { useForm } from 'react-hook-form';
+// import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import ButtonLink from '../components/ButtonLink';
+import Button from '../components/Button';
 
-const LogInContainer = styled.div`
-  background-color: var(--gray);
+const LogInContainer = styled.main`
+  width: 100%;
+  height: 100vh;
+  padding-top: 100px;
   color: white;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  margin-top: 5rem;
-  height: auto;
+  align-items: center;
+  h1 {
+    margin: 0;
+  }
 `;
 
 const LogInForm = styled.form`
-  width: auto;
-  height: 50%;
-  padding: 1rem;
-  margin: 5rem;
+  margin: 40px 0px 20px 0px;
+  width: 500px;
+  padding: 20px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
-  justify-content: center;
-  border: 0.05rem solid white;
-  border-radius: 1rem;
-
-  div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    label {
-      width: 4rem;
-    }
-
-    input {
-      width: 10rem;
-      margin: 0.5rem;
-      outline: none;
-      border: none;
-      background-color: rgba(1, 1, 1, 0);
-      border-bottom: 0.1rem solid grey;
-      color: white;
-      &:focus-within {
-        border-bottom: 0.1rem solid white;
+  border: 1px solid rgb(169, 169, 169);
+  border-radius: 20px;
+  font-size: 16px;
+  table {
+    border-spacing: 5px 30px;
+    tr {
+      td:nth-child(1) {
+        width: 100px;
+        white-space: nowrap;
+      }
+      td:nth-child(2) {
+        width: 200px;
+        position: relative;
       }
     }
   }
 
-  div:first-child {
-    margin-bottom: 1rem;
-    font-weight: bold;
+  input {
+    width: 100%;
+    padding: 5px;
+    outline: none;
+    border: none;
+    background-color: rgba(1, 1, 1, 0);
+    border-bottom: 0.1rem solid grey;
+    color: white;
+    &:focus-within {
+      border-bottom: 0.1rem solid white;
+    }
+    &:-webkit-autofill {
+      box-shadow: 0 0 0 20px var(--gray) inset;
+      -webkit-text-fill-color: white;
+      color: white;
+    }
   }
+  > button {
+    height: 100px;
+  }
+`;
+
+const ErrorMessage = styled.span`
+  color: red;
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  font-size: 12px;
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 1rem;
-
-  button {
-    width: 7rem;
-    text-decoration: none;
-    background-color: var(--gray);
-    color: white;
-    border-radius: 0.3rem;
-    margin: 0.3rem;
-    padding: 0.5rem 1rem;
-    transition: 0.2s ease-in-out;
-    font-size: 16px;
-    &:hover {
-      cursor: pointer;
-      background-color: var(--neon-yellow);
-      color: black;
-      transition: 0.2s ease-in-out;
-    }
+  display: flex;
+  align-items: center;
+  a {
+    margin-left: 10px;
   }
 `;
+
+interface LoginProps {
+  email: string;
+  password: string;
+}
 
 const LogIn = () => {
   const {
     register,
     handleSubmit,
-    // watch,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
+    setError,
+  } = useForm<LoginProps>();
 
-  //   console.log(watch('Email'));
+  const onSubmit = (data: LoginProps) => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
+      .then((res) => {
+        console.log(res.headers.authorization);
+        console.log(res.headers.refresh);
+      })
+      .catch((err) => {
+        const errMsg = err.response.data.message;
+
+        if (errMsg === '존재하지 않는 회원') {
+          setError('email', {
+            type: 'server',
+            message: '가입된 이메일이 아닙니다',
+          });
+        }
+        if (errMsg === '잘못된 패스워드 입력') {
+          setError('password', {
+            type: 'server',
+            message: '비밀번호가 일치하지 않습니다',
+          });
+        }
+      });
+  };
 
   return (
     <LogInContainer>
-      <LogInForm
-        onSubmit={handleSubmit((data) => {
-          alert(JSON.stringify(data));
-        })}
-      >
-        <div>로그인</div>
-        <div>
-          <label htmlFor="email">이메일</label>
-          <input
-            id="email"
-            {...register('email', { required: true })}
-            defaultValue="abc@gmail.com"
-          />
-          {errors.email && <div>이메일을 입력하세요</div>}
-        </div>
-        <div>
-          <label htmlFor="password">비밀번호</label>
-          <input
-            id="password"
-            type="password"
-            {...register('password', { required: true, maxLength: 10 })}
-          />
-          {errors.password && <div>비밀번호를 입력하세요</div>}
-        </div>
-        <ButtonContainer>
-          <Link to="/search-password">
-            <button type="button">비밀번호 찾기</button>
-          </Link>
-          <button type="submit">로그인</button>
-          <Link to="/signup">
-            <button type="button">회원가입</button>
-          </Link>
-        </ButtonContainer>
+      <h1>로그인</h1>
+      <LogInForm onSubmit={handleSubmit(onSubmit)}>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <label htmlFor="email">이메일</label>
+              </td>
+              <td>
+                <input
+                  id="email"
+                  {...register('email', { required: '이메일을 입력하세요' })}
+                />
+                <ErrorMessage>{errors?.email?.message}</ErrorMessage>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label htmlFor="password">비밀번호</label>
+              </td>
+              <td>
+                <input
+                  id="password"
+                  type="password"
+                  {...register('password', {
+                    required: '비밀번호를 입력하세요',
+                    maxLength: 10,
+                  })}
+                />
+                <ErrorMessage>{errors?.password?.message}</ErrorMessage>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <Button type="submit" onClick={handleSubmit(onSubmit)} value="로그인" />
       </LogInForm>
+      <ButtonContainer>
+        <ButtonLink value="비밀번호 찾기" to="/search-password" />
+        <ButtonLink value="회원가입" to="/signup" />
+      </ButtonContainer>
     </LogInContainer>
   );
 };

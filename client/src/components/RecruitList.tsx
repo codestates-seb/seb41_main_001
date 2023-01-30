@@ -44,34 +44,36 @@ const ListTitle = styled(Link)`
 const ListInfo = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   width: 20%;
   margin-right: 20px;
-  > div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-    i {
-      margin-right: 7px;
-    }
-    &:nth-child(1) {
-      font-size: 80%;
+  > div:first-child {
+    > div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
       i {
-        color: var(--neon-yellow);
+        margin-right: 7px;
       }
-    }
-    &:nth-child(2) {
-      font-size: 80%;
-      i {
-        color: var(--neon-red);
+      &:nth-child(1) {
+        font-size: 80%;
+        i {
+          color: var(--neon-yellow);
+        }
       }
-    }
-    &:nth-child(3) {
-      font-size: 80%;
-      i {
-        color: var(--neon-blue);
+      &:nth-child(2) {
+        font-size: 80%;
+        i {
+          color: var(--neon-red);
+        }
+      }
+      &:nth-child(3) {
+        font-size: 80%;
+        i {
+          color: var(--neon-blue);
+        }
       }
     }
   }
@@ -113,6 +115,9 @@ const ListCondition = styled.div`
           color: var(--neon-red);
         }
         &.fa-hourglass-half {
+          color: var(--neon-orange);
+        }
+        &.fa-star-half-stroke {
           color: var(--neon-blue);
         }
         &.fa-circle-check {
@@ -226,34 +231,6 @@ const ProfileImg = styled.img<ProfileImgProps>`
   }
 `;
 
-// const DATA: RecruitDataProps[] = [
-//   {
-//     recruitId: 1,
-//     title: 'TITLE1',
-//     body: 'BODY1',
-//     image: '',
-//     createdAt: '2023-01-02T16:18:48.908218',
-//     modifiedAt: '2023-01-02T16:18:48.908218',
-//     status: '모집중', // 모집중/모집완료/활동종료
-//     star: 0,
-//     views: 0,
-//     memberId: 1,
-//     nickname: "aaa",
-//     like: 0,
-//     heart: 50, // number, 0
-//     ageGroup: [20, 30],
-//     sex: 'Both', // Male, Female, Both
-//     applies: [{memberId: 2, nickname: "bbb"},
-//                 {memberId: 3, nickname: "ccc"},{memberId: 4, nickname: "ddd"}],
-//     minRequire: 2,
-//     require: 5,
-//     date: '2023-01-02T16:18:48.908218',
-//     tagId: 1,
-//     tagName: "축구/풋볼",
-//     tagEmoji: "⚽️"
-//   },
-// ];
-
 const RecruitList = (props: { data: RecruitDataProps }) => {
   const {
     data: {
@@ -264,7 +241,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       likes,
       views,
       sex,
-      heart,
+      heartLimit,
       ageGroup,
       recruitStatus,
       applies,
@@ -273,9 +250,10 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       date,
       memberId,
       nickname,
+      authorHeart,
     },
   } = props;
-  const { tagName, tagEmoji } = recruitTags[0];
+  const { tagName, emoji } = recruitTags[0];
 
   const convertToDate = (time: string) => {
     const DATE = new Date(time);
@@ -293,10 +271,10 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
     let color;
     if (apply.length >= maximum) {
       msg = '모집이 완료되었습니다. 다음 기회에 참가해주세요!';
-      color = 'var(--neon-blue)';
+      color = 'var(--neon-green)';
     } else if (apply.length >= minimum) {
       msg = '최소인원이 충족되었습니다!';
-      color = 'var(--neon-green)';
+      color = 'var(--neon-blue)';
     } else if (apply.length < minimum) {
       msg = '최소인원이 충족되지 못했습니다';
       color = 'var(--neon-orange)';
@@ -308,7 +286,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
     <ListContainer>
       <div>
         <TagLink
-          value={`${tagEmoji} ${tagName}`}
+          value={`${emoji} ${tagName}`}
           to={`/recruits?tag="${tagName}"`}
         />
         <ListTitle to={`/recruit/${recruitId}`}>{title}</ListTitle>
@@ -316,18 +294,24 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
       <div>
         <ListInfo>
           <div>
-            <i className="fa-solid fa-star" />
-            {star}
+            <div>
+              <i className="fa-solid fa-star" />
+              {star}
+            </div>
+            <div>
+              <i className="fa-solid fa-heart" />
+              {likes}
+            </div>
+            <div>
+              <i className="fa-solid fa-eye" />
+              {views}
+            </div>
           </div>
-          <div>
-            <i className="fa-solid fa-heart" />
-            {likes}
-          </div>
-          <div>
-            <i className="fa-solid fa-eye" />
-            {views}
-          </div>
-          <CreatorCard memberId={memberId} nickname={nickname} heart={heart} />
+          <CreatorCard
+            memberId={memberId}
+            nickname={nickname}
+            heart={authorHeart}
+          />
         </ListInfo>
         <ListCondition>
           <div>
@@ -339,7 +323,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
             <div>
               <span>심박수</span>
               <i className="fa-solid fa-heart-circle-exclamation" />
-              <span>{`${heart} 이상`}</span>
+              <span>{`${heartLimit} 이상`}</span>
             </div>
             <div>
               <span>나이대</span>

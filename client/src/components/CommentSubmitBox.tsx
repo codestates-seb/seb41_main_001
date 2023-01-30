@@ -26,20 +26,31 @@ const SubmitContainter = styled.form`
 
 interface CommentSubmitProps {
   value?: string;
-  onClick: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  submitComment: string;
+  setModifying?: (value: boolean) => void;
 }
 
-const CommentSubmitBox = ({ value = '', onClick }: CommentSubmitProps) => {
+const CommentSubmitBox = ({
+  value = '',
+  submitComment,
+  setModifying,
+}: CommentSubmitProps) => {
   const [comment, setComment] = useState(value);
+  const handleCommentSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (setModifying) {
+      // 댓글을 수정하는 경우
+      console.log(`PATCH ${submitComment}`, comment);
+      setModifying(false);
+    } else {
+      // 댓글을 등록하는 경우
+      console.log(`POST ${submitComment}`, comment);
+    }
+    setComment('');
+  };
 
   return (
-    <SubmitContainter
-      //  TODO: onSubmit에 댓글등록 api.
-      onSubmit={(e: any) => {
-        e.preventDefault();
-        console.log('댓글 등록!');
-      }}
-    >
+    <SubmitContainter onSubmit={handleCommentSubmit}>
       <textarea
         required
         maxLength={500}
@@ -47,16 +58,7 @@ const CommentSubmitBox = ({ value = '', onClick }: CommentSubmitProps) => {
         placeholder="댓글을 작성해주세요"
         onChange={(e) => setComment(e.target.value)}
       />
-      {/* // TODO: onClick에 댓글등록 api. */}
-      <Button
-        value="댓글 등록"
-        onClick={(e: any) => {
-          e.preventDefault();
-          console.log(comment);
-          onClick(e);
-        }}
-        type="submit"
-      />
+      <Button value="댓글 등록" onClick={handleCommentSubmit} type="submit" />
     </SubmitContainter>
   );
 };

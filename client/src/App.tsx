@@ -1,6 +1,5 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { useState } from 'react';
 import Main from './pages/Main';
 import MyPage from './pages/MyPage';
 import Header from './components/Header';
@@ -14,17 +13,16 @@ import EditRecruit from './pages/EditRecruit';
 import EditFreeboard from './pages/EditFreeboard';
 import Recruits from './pages/Recruits';
 import RecruitDetail from './pages/RecruitDetail';
-import TaggedRecruit from './pages/TaggedRecruit';
-// import FreeBoards from './pages/FreeBoards';
+// import TaggedRecruit from './pages/TaggedRecruit';
 import FreeBoards from './pages/FreeBoards';
 import FreeDetail from './pages/FreeDetail';
-import FreeTags from './pages/FreeTags';
 import Withdraw from './pages/Withdraw';
 import RecruitTags from './pages/RecruitTags';
 import FreeboardTags from './pages/FreeboardTags';
+import SearchPassword from './pages/SearchPassword';
+import Loading from './pages/Loading';
 
 const App = () => (
-  // const [login, setLogin] = useState(false);
   <div className="App">
     <Router>
       <Header />
@@ -35,13 +33,14 @@ const App = () => (
         <Route path="/members/edit/:id" element={<EditUser />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/search-password" element={<SearchPassword />} />
         <Route path="/recruits" element={<Recruits />} />
-        <Route path="recruit/:recruitId" element={<RecruitDetail />} />
+        <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruit/new" element={<CreateRecruit />} />
-        <Route path="/freeboard" element={<FreeBoards />} />
+        <Route path="/freeboards" element={<FreeBoards />} />
         <Route path="/freeboard/new" element={<CreateFreeboard />} />
         <Route path="/freeboard/:freeId" element={<FreeDetail />} />
-        <Route path="/recruit/1/edit" element={<EditRecruit />} />
+        <Route path="/recruit/:recruitId/edit" element={<EditRecruit />} />
         <Route path="/freeboard/:freeId/edit" element={<EditFreeboard />} />
         <Route path="/freeboard/tags" element={<FreeTags />} />
         <Route
@@ -51,7 +50,8 @@ const App = () => (
         <Route path="/recruits" element={<Recruits />} />
         <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruits/tags" element={<RecruitTags />} />
-        <Route path="/freeboard/tags" element={<FreeboardTags />} />
+        <Route path="/freeboards/tags" element={<FreeboardTags />} />
+        <Route path="/loading" element={<Loading />} />
       </Routes>
       <Footer />
     </Router>

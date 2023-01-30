@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Tag from '../components/Tag';
+// import Tag from '../components/Tag';
 import KakaoMap from '../components/KakaoMap';
 import useCurrentLocation from '../utils/useCurrentLocation';
 // declare global {
@@ -337,18 +337,22 @@ const EditUser = () => {
     console.log('error is ', errors);
     navigate(`/members/mypage/${id}`);
   };
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('change', event.target.value);
-  };
-  const [location, setLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
 
-  useCurrentLocation().then((res) => {
-    if (res === undefined) return;
-    setLocation(res);
-  });
+  // const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   console.log('change', event.target.value);
+  // };
+
+  // const [location, setLocation] = useState<{
+  //   latitude: number;
+  //   longitude: number;
+  // } | null>(null);
+
+  const { location: currentLocation } = useCurrentLocation();
+
+  // useCurrentLocation().then((res) => {
+  //   if (res === undefined) return;
+  //   setLocation(res);
+  // });
 
   // const imgRef = useRef<any>();
   // function readImage(input: any) {
@@ -513,10 +517,10 @@ const EditUser = () => {
             <label htmlFor="location">등록 지역 변경</label>
             <div>
               <div id="map">
-                {location && (
+                {currentLocation && (
                   <KakaoMap
-                    latitude={location.latitude}
-                    longitude={location.longitude}
+                    latitude={currentLocation.latitude}
+                    longitude={currentLocation.longitude}
                   />
                 )}
                 <button type="button" id="locationButton" onClick={locationAdd}>
@@ -536,134 +540,7 @@ const EditUser = () => {
           <InfoBlock>
             <label htmlFor="tags">등록 태그 변경</label>
             <TagContainer>
-              <fieldset>
-                <Tag
-                  name="축구/풋살"
-                  emoji="⚽️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="농구"
-                  emoji="🏀"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="야구"
-                  emoji="⚾️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="배구"
-                  emoji="🏐"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="복싱"
-                  emoji="🥊"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="탁구"
-                  emoji="🏓"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="배드민턴"
-                  emoji="🏸"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="테니스/스쿼시"
-                  emoji="🎾"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="태권도/유도"
-                  emoji="🥋"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="검도"
-                  emoji="⚔️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="무술/주짓수"
-                  emoji="🥋"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="족구"
-                  emoji="⚽️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="러닝"
-                  emoji="🏃"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="자전거"
-                  emoji="🚴"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="등산"
-                  emoji="🏔️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="클라이밍"
-                  emoji="🧗‍♀️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="수영"
-                  emoji="🏊‍♀️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="골프"
-                  emoji="⛳️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="요가/필라테스"
-                  emoji="🧘"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="헬스/크로스핏"
-                  emoji="🏋️"
-                  onChange={onChange}
-                  register={register}
-                />
-                <Tag
-                  name="스케이트/인라인"
-                  emoji="⛸️"
-                  onChange={onChange}
-                  register={register}
-                />
-              </fieldset>
+              <fieldset />
             </TagContainer>
           </InfoBlock>
         </PersonalInfo>

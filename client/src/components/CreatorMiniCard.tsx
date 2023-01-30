@@ -47,7 +47,7 @@ const CreatorMiniCard = ({
   heart,
 }: CreatorMiniCardProps) => (
   <ListCreator className={className}>
-    <Link to={`/users/${memberId}/${nickname}`}>
+    <Link to={`/members/mypage/${memberId}`}>
       <img
         src={`https://picsum.photos/seed/${memberId}/30/30.webp`}
         alt={`avator of ${nickname}}`}

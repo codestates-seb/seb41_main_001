@@ -1,6 +1,7 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 import FilterBox from '../components/FilterBox';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
 import RecruitList from '../components/RecruitList';
@@ -12,9 +13,6 @@ const MainContainer = styled.main`
   display: flex;
   justify-content: center;
   margin-top: 100px;
-  > div:first-child {
-  }
-
   ul {
     list-style: none;
     padding: 0;
@@ -65,9 +63,10 @@ const Recruits = () => {
       views: 0,
       memberId: 1,
       nickname: '글자수세기TEST글자수세기TEST글자',
+      authorHeart: 50,
       likes: 0,
       location: { latitude: 37.343336, longitude: 127.1233716 },
-      heart: 50, // number, 0
+      heartLimit: 50,
       ageGroup: ['10', '20', '30', '40', '50', '60'],
       sex: 'Both', // Male, Female, Both
       applies: [
@@ -83,7 +82,7 @@ const Recruits = () => {
       minRequire: 2,
       require: 5,
       date: '2023-01-02T16:18:48.908218',
-      recruitTags: [{ tagId: 1, tagName: '축구/풋볼', tagEmoji: '⚽️' }],
+      recruitTags: [{ tagId: 1, tagName: '축구/풋볼', emoji: '⚽️' }],
       recruitLikes: [
         {
           memberId: 1,
@@ -91,6 +90,7 @@ const Recruits = () => {
       ],
       reviews: [
         {
+          reviewId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -100,6 +100,7 @@ const Recruits = () => {
       ],
       recruitComments: [
         {
+          commentId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -117,14 +118,15 @@ const Recruits = () => {
       image: '',
       createdAt: '2023-01-02T16:18:48.908218',
       modifiedAt: '2023-01-02T16:18:48.908218',
-      recruitStatus: '활동종료', // 모집중/모집완료/활동종료
+      recruitStatus: '최소인원충족', // 모집중/모집완료/활동종료
       star: 0,
       views: 0,
       memberId: 1,
       nickname: 'aaa',
+      authorHeart: 50,
       likes: 0,
       location: { latitude: 37.343336, longitude: 127.1233716 },
-      heart: 20, // number, 0
+      heartLimit: 20, // number, 0
       ageGroup: ['10', '20', '30'],
       sex: 'Male', // Male, Female, Both
       applies: [
@@ -134,7 +136,7 @@ const Recruits = () => {
       minRequire: 2,
       require: 5,
       date: '2023-01-02T16:18:48.908218',
-      recruitTags: [{ tagId: 21, tagName: '스케이트/인라인', tagEmoji: '⛸️' }],
+      recruitTags: [{ tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' }],
       recruitLikes: [
         {
           memberId: 1,
@@ -142,6 +144,7 @@ const Recruits = () => {
       ],
       reviews: [
         {
+          reviewId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -151,6 +154,7 @@ const Recruits = () => {
       ],
       recruitComments: [
         {
+          commentId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -173,16 +177,17 @@ const Recruits = () => {
       views: 0,
       memberId: 1,
       nickname: 'aaa',
+      authorHeart: 50,
       likes: 0,
       location: { latitude: 37.343336, longitude: 127.1233716 },
-      heart: 20, // number, 0
+      heartLimit: 20, // number, 0
       ageGroup: ['10', '20', '30', '40', '50', '60', '70'],
       sex: 'Female', // Male, Female, Both
       applies: [{ memberId: 2, nickname: 'bbb', heart: 80 }],
       minRequire: 2,
       require: 5,
       date: '2023-01-02T16:18:48.908218',
-      recruitTags: [{ tagId: 11, tagName: '무술/주짓수', tagEmoji: '🥋' }],
+      recruitTags: [{ tagId: 11, tagName: '무술/주짓수', emoji: '🥋' }],
       recruitLikes: [
         {
           memberId: 1,
@@ -190,6 +195,7 @@ const Recruits = () => {
       ],
       reviews: [
         {
+          reviewId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -199,6 +205,7 @@ const Recruits = () => {
       ],
       recruitComments: [
         {
+          commentId: 1,
           memberId: 1,
           nickname: '닉네임',
           heart: 50,
@@ -210,13 +217,20 @@ const Recruits = () => {
     },
   ];
   const params = new URLSearchParams(useLocation().search);
-  const [filterTag, setFilterTag] = useState(
+  const [filterTag, setFilterTag] = useState<string>(
     params.get('tag')?.replaceAll('"', '') ?? '',
   );
-  const [filterStatus, setFilterStatus] = useState(
+  const [filterStatus, setFilterStatus] = useState<string>(
     params.get('status')?.replaceAll('"', '') ?? '',
   );
   // const [filterRegion, setFilterRegion] = useState('');
+
+  useEffect(() => {
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/recruits?page=1&size=100`, {})
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log(err.response.data));
+  }, []);
 
   return (
     <MainContainer>

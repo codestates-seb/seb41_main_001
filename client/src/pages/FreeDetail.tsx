@@ -5,124 +5,150 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
+import CreatorCard from '../components/CreatorCard';
 import Loading from './Loading';
 import KakaoMap from '../components/KakaoMap';
 import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
-// import CreatorCard from '../components/CreatorCard';
-import preview from './preview.jpeg';
+import Button from '../components/Button';
+// import preview from '../img/preview.jpeg';
 
 const FDContainer = styled.main`
   background-color: var(--gray);
   color: white;
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 5rem;
   height: 100%;
 `;
 
 const BoardContainer = styled.div`
   width: 35rem;
   height: auto;
-  padding: 0.5rem;
-  margin: 1rem;
-  border: 0.1rem solid white;
-  border-radius: 1rem;
+  margin: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
+  h1 {
+    width: 35rem;
+  }
+
   > div:first-child {
     width: 5rem;
-    height: 1rem;
-    border: 0.1rem solid white;
+    height: 2rem;
+    border: 0.05rem solid white;
     border-radius: 0.3rem;
     background-color: white;
     color: black;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0.2rem;
-    margin-right: 26rem;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-right: 30rem;
+    /* margin-top: 0.5rem;
+    margin-bottom: 0.5rem; */
+    i {
+      margin-right: 0.3rem;
+    }
   }
-`;
 
-const CreatorContainer = styled.div`
-  border: 0.1rem solid white;
-  border-radius: 0.3rem;
-  display: flex;
-  align-items: center;
-  width: 31rem;
-  height: 4rem;
-  padding: 0.5rem;
-
-  > div {
-    > div {
+  > div:nth-child(3) {
+    display: flex;
+    width: 35rem;
+    justify-content: space-between;
+    > div:first-child {
+      width: 5.3rem;
       display: flex;
-      padding: 0.3rem;
-      > div {
-        width: 7rem;
+      align-items: center;
+      justify-content: center;
+      i {
+        margin-right: 0.3rem;
       }
     }
   }
 
-  > div:first-child {
-    width: 3rem;
-    height: 3rem;
-    border: 0.1rem solid white;
-    border-radius: 1rem;
-    margin-right: 1rem;
+  > div:nth-child(4) {
+    width: 35rem;
+    margin: 1rem 0;
+  }
+
+  .commentCount {
+    border-bottom: 1px solid white;
+    width: 35rem;
+    margin-bottom: 1rem;
+    padding: 1rem 0;
+  }
+
+  .likeDiv {
+    border: 1px solid white;
+    border-radius: 0.3rem;
+    padding: 0.5rem;
+  }
+
+  .btnCon {
+    width: 35rem;
+    display: flex;
+    justify-content: space-between;
+    > div:nth-child(2) {
+      display: flex;
+      > button:first-child {
+        margin-right: 0.5rem;
+      }
+    }
   }
 `;
 
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  /* margin-bottom: 0.5rem; */
-  div:first-child {
-    font-weight: bold;
-    /* padding: 0.3rem; */
+  justify-content: center;
+  align-items: center;
+
+  .body {
+    height: auto;
+    min-height: 3rem;
+    line-height: 150%;
   }
 
   > div {
     /* border: 0.1rem solid white; */
-    width: 33rem;
+    width: 35rem;
     height: auto;
     min-height: 3rem;
-    padding: 1rem;
 
     img {
-      width: 31rem;
+      width: 35rem;
       height: 20rem;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
+      /* padding: 1rem; */
+      margin: 1rem 0;
     }
 
     .map {
-      width: 31rem;
+      width: 35rem;
       height: 10rem;
+      display: flex;
+      margin: 1rem 0;
     }
   }
 `;
 
 const CountContainer = styled.div`
   display: flex;
-  /* border: 0.1rem solid white; */
   border-radius: 0.3rem;
-  width: 33rem;
   height: 1rem;
-  padding: 1rem;
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
 
   > div {
     margin-right: 0.5rem;
+    i {
+      margin-right: 0.3rem;
+    }
   }
 
   .view {
@@ -130,7 +156,11 @@ const CountContainer = styled.div`
   }
 
   .like {
-    color: var(--neon-red);
+    color: var(--neon-yellow);
+  }
+
+  .comment {
+    color: var(--neon-green);
   }
 `;
 
@@ -161,35 +191,34 @@ const FreeDetail = () => {
             <i className="fa-solid fa-dumbbell" />
             운동
           </div>
-          {/* {post && (
-            <CreatorCard memberId={post?.memberId} nickname="aaa" heart={100} />
-          )} */}
-          <CreatorContainer>
-            <div>profile</div>
+          <h1>{post?.freeTitle}</h1>
+          <div>
             <div>
-              <div>
-                <div>nickname</div>
-                <div>heart</div>
-              </div>
-              <div>
-                <div>
-                  게시
-                  {post && `${timeDifference(post?.createdAt)}`}
-                </div>
-                <div>
-                  수정
-                  {post && `${timeDifference(post?.modifiedAt)}`}
-                </div>
-              </div>
+              <i className="fa-regular fa-clock" />
+              {timeDifference(`${post?.createdAt}`)}
             </div>
-          </CreatorContainer>
+            <CountContainer>
+              <div>
+                <i className="fa-solid fa-eye view" />
+                {post?.views}
+              </div>
+              <div>
+                <i className="fa-regular fa-thumbs-up like" />
+                {post?.likes}
+              </div>
+              <div>
+                <i className="fa-regular fa-comment-dots comment" />
+                {0}
+                {/* <div>{post?.freeComments.length}</div> */}
+              </div>
+            </CountContainer>
+          </div>
+          <CreatorCard memberId={1} nickname="aaa" heart={100} />
           <ContentContainer>
-            <div>{post?.freeTitle}</div>
-            <div>
-              {/* img */}
+            {/* <div>
               <img src={preview} alt="preview" />
-            </div>
-            <div>
+            </div> */}
+            <div className="body">
               {post?.freeBody}
               안녕안녕안녕안녕 하세요하세요 안녕안녕안녕안녕 하세요하세요
               안녕안녕안녕안녕 하세요하세요 안녕안녕안녕안녕 하세요하세요
@@ -206,21 +235,40 @@ const FreeDetail = () => {
               </div>
             </div>
           </ContentContainer>
-          <CountContainer>
+          <div className="btnCon">
+            <Button
+              value="좋아요"
+              onClick={() => console.log('좋아요!')}
+              icon={<i className="fa-solid fa-heart" />}
+            />
             <div>
-              <i className="fa-solid fa-eye view" />
-              {post?.views}
+              <Button
+                value="수정"
+                onClick={() => console.log('수정')}
+                icon={<i className="fa-solid fa-pen-to-square" />}
+              />
+              <Button
+                value="삭제"
+                onClick={() => console.log('수정')}
+                icon={<i className="fa-solid fa-trash" />}
+              />
             </div>
-            <div>
-              <i className="fa-solid fa-heart like" />
-              {post?.likes}
-            </div>
-          </CountContainer>
+          </div>
+          <div className="commentCount">
+            {0}
+            개의 댓글이 있습니다
+          </div>
           {post?.freeComments &&
             post?.freeComments.map((el) => (
-              <CommentBox data={el} key={el.commentId} memberId={el.memberId} />
+              <CommentBox
+                key={el.commentId}
+                memberId={el.memberId}
+                data={el}
+                board="freeboards"
+                boardId={post.freeId}
+              />
             ))}
-          <CommentSubmitBox onClick={() => console.log('댓글등록!')} />
+          <CommentSubmitBox submitComment={`/freeboards/${post?.freeId}`} />
         </BoardContainer>
       ) : (
         <Loading />
