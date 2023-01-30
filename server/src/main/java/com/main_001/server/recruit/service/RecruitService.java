@@ -10,7 +10,6 @@ import com.main_001.server.recruit.entity.*;
 import com.main_001.server.recruit.repository.RecruitCommentRepository;
 import com.main_001.server.recruit.repository.RecruitLikeRepository;
 import com.main_001.server.recruit.repository.RecruitRepository;
-import com.main_001.server.recruit.repository.RecruitTagRepository;
 import com.main_001.server.tag.entity.Tag;
 import com.main_001.server.tag.repository.TagRepository;
 import org.springframework.data.domain.Page;
@@ -158,27 +157,22 @@ public class RecruitService {
                 recruits = recruitRepository.findAllByRecruitStatus(Recruit.RecruitStatus.RECRUITING)
                         .stream()
                         .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
+                        .peek(recruit -> recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
                         .sorted(Comparator.comparing(Recruit::getDistance))
                         .collect(Collectors.toList());
             } else {
-                // Todo: string to enum 변환해주는 메서드 따로 분리
-                Recruit.RecruitStatus recruitStatus;
-                switch(recruitGetDto.getStatus()){
-                    case "최소인원충족": recruitStatus = Recruit.RecruitStatus.RECRUIT_MEET_MINIMUM;
-                    break;
-                    case "모집완료": recruitStatus = Recruit.RecruitStatus.RECRUIT_COMPLETE;
-                    break;
-                    case "활동종료": recruitStatus = Recruit.RecruitStatus.RECRUIT_END;
-                    break;
-                    default: throw new BusinessLogicException(ExceptionCode.STATUS_NOT_FOUND);
-                }
+                Recruit.RecruitStatus recruitStatus = Recruit.RecruitStatus.statusStringToStatus(recruitGetDto.getStatus());
                 recruits = recruitRepository.findAllByRecruitStatus(recruitStatus, Sort.by("modifiedAt").descending())
                         .stream()
                         .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
+                        .peek(recruit -> recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
                         .collect(Collectors.toList());
             }
         } else {
-            recruits = recruitRepository.findAll();
+            recruits = recruitRepository.findAll()
+                    .stream()
+                    .peek(recruit -> recruit.setDistance(recruitGetDto.getLat(), recruitGetDto.getLon()))
+                    .collect(Collectors.toList());
         }
 
         PageRequest pageRequest = PageRequest.of(page, size);

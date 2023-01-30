@@ -126,6 +126,7 @@ public interface RecruitMapper {
                 .stream()
                 .map(recruitLike -> ResponseDto.RecruitLike
                         .builder()
+                        .recruitId(recruitLike.getRecruit().getRecruitId())
                         .memberId(recruitLike.getMember().getMemberId())
                         .build())
                 .collect(Collectors.toList());

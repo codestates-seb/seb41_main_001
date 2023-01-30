@@ -137,6 +137,12 @@ public class FreeDto {
         @ApiModelProperty(example = "Member ID")
         private long memberId;
 
+        @ApiModelProperty(example = "닉네임")
+        private String nickname;
+
+        @ApiModelProperty(example = "심박수")
+        private int authorHeart;
+
         @ApiModelProperty(example = "카테고리")
         private String category;
     }
