@@ -135,7 +135,7 @@ const KakaoMapForClick = ({
     name: 'lon',
     defaultValue: currentLon,
   });
-
+  console.log(lat, lon);
   return <KakaoMapClick latitude={lat} longitude={lon} setValue={setValue} />;
 };
 
@@ -190,7 +190,7 @@ const CreateRecruit = () => {
       });
   };
   const { location } = useCurrentLocation();
-
+  console.log(location);
   const TAG_DATA = [
     { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
     { tagId: 2, tagName: '농구', emoji: '🏀' },
@@ -400,7 +400,7 @@ const CreateRecruit = () => {
             </tr>
             <tr>
               <td>
-                <label htmlFor="heart">심박수 조건</label>
+                <label htmlFor="heartLimit">심박수 조건</label>
               </td>
               <td>
                 <Controller
@@ -410,7 +410,7 @@ const CreateRecruit = () => {
                   render={({ field: { value, onChange } }) => (
                     <>
                       <input
-                        id="heart"
+                        id="heartLimit"
                         type="range"
                         min={0}
                         max={200}

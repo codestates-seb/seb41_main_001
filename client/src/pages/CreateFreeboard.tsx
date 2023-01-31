@@ -1,15 +1,14 @@
 import { useForm } from 'react-hook-form';
-import { useRef, useState } from 'react';
+// import { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import UseAutosizeTextArea from '../components/UseAutosaveTextArea';
+// import UseAutosizeTextArea from '../components/UseAutosaveTextArea';
 
 enum CategoryEnum {
   question = '질문',
   info = '정보',
   exercise = '운동',
-  showoff = '자랑',
   giveaway = '나눔',
 }
 
@@ -17,8 +16,9 @@ interface FormInputFree {
   category: CategoryEnum;
   title: string;
   content: string;
-  image: string;
-  tag: string;
+  // image: string;
+  location: string;
+  tag: { tagId: number; tagName: string }[];
 }
 
 const Background = styled.div`
@@ -55,7 +55,7 @@ const CRForm = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  #tagContainer {
+  .tagContainer {
     display: flex;
     flex-direction: column;
     > span {
@@ -75,12 +75,12 @@ const CRForm = styled.form`
     margin-left: 20px;
     font-size: 14px;
     border: none;
-    border-bottom: 2px solid gray;
+    border: 1px solid gray;
     width: 15rem;
     outline: none;
     color: white;
     &:focus-within {
-      border-bottom: 2px solid white;
+      border: 2px solid white;
       transition: 0.2s ease-in-out;
     }
     &:-webkit-autofill {
@@ -154,8 +154,8 @@ const CRForm = styled.form`
   > label,
   .label {
     display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: flex-start;
+    align-items: flex-start;
   }
 `;
 
@@ -186,49 +186,64 @@ const CreateFreeboard = () => {
     formState: { errors },
   } = useForm<FormInputFree>();
   const navigate = useNavigate();
-  const [warning, setWarning] = useState('');
-  const [content, setContent] = useState('');
+  // const [warning, setWarning] = useState('');
+  // const [content, setContent] = useState('');
 
   const onSubmit = (data: FormInputFree) => {
-    data.content = content;
-    console.log(data);
-    if (!data.content || data.content.length === 0) {
-      setWarning('본문을 입력하세요');
-    } else {
-      axios
-        .post('/freeboards', {
+    console.log({
+      freeTitle: data.title,
+      freeBody: data.content,
+      category: data.category,
+      location: data.location,
+      freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+      memberId: 1,
+    });
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/freeboards`,
+        {
           freeTitle: data.title,
           freeBody: data.content,
           category: data.category,
+          location: data.location,
+          freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+          memberId: 1,
+          // 태그와 멤버아이디가 고정되어있음
           // tagList: tags.reduce((r, e) => {
           //   r.push({ tagId: e.tagId });
           //   return r;
           // }, []),
           // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
-        })
-        .then((res) => {
-          console.log(res);
-          navigate('/freeboard');
-        })
-        .catch((err) => {
-          console.log(err);
-          navigate('/login');
-        });
-    }
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem('AccessToken')}`,
+            Refresh: `${localStorage.getItem('RefreshToken')}`,
+          },
+        },
+      )
+      .then((res) => {
+        console.log(res);
+        navigate('/freeboards');
+      })
+      .catch((err) => {
+        console.log(err);
+        navigate('/login');
+      });
   };
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  // const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  UseAutosizeTextArea(textAreaRef.current, content);
+  // UseAutosizeTextArea(textAreaRef.current, content);
 
-  const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const val = evt.target?.value;
-    if (val.length === 0) {
-      setWarning('본문을 입력하세요');
-    } else {
-      setWarning('');
-    }
-    setContent(val);
-  };
+  // const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   const val = evt.target?.value;
+  //   if (val.length === 0) {
+  //     setWarning('본문을 입력하세요');
+  //   } else {
+  //     setWarning('');
+  //   }
+  //   setContent(val);
+  // };
   // const fileNums = (e:any) => {
   //   if (e.files.length > 2) {
   //     alert('file up to 2');
@@ -248,7 +263,6 @@ const CreateFreeboard = () => {
               <option value="info">정보</option>
               <option value="exercise">운동</option>
               <option value="giveaway">나눔</option>
-              <option value="showoff">자랑</option>
             </select>
           </div>
         </div>
@@ -273,29 +287,32 @@ const CreateFreeboard = () => {
           <WarnSet>
             <textarea
               id="content"
-              rows={1}
-              onChange={handleChange}
-              ref={textAreaRef}
-              value={content}
-              name="content"
-              // {...register('content', { required: true })}
+              rows={15}
+              {...register('content', { required: true })}
             />
-            {warning !== '' && (
+            {errors.content && (
               <span>
                 <i className="fa-solid fa-circle-exclamation" />
-                {warning}
+                본문을 입력해주세요
               </span>
             )}
           </WarnSet>
         </div>
         <div>
+          <label htmlFor="location">위치</label>
+          <div className="tagContainer">
+            <input id="location" type="text" {...register('location')} />
+            <span>장소를 공유하고 싶을 경우 위치를 적어 주세요</span>
+          </div>
+        </div>
+        <div>
           <label htmlFor="tag">태그</label>
-          <div id="tagContainer">
+          <div className="tagContainer">
             <input id="tag" {...register('tag')} />
             <span>Enter to Add the tag</span>
           </div>
         </div>
-        <div>
+        {/* <div>
           <div className="label">이미지</div>
           <label htmlFor="image" className="imagebutton">
             + 이미지 파일 추가
@@ -307,10 +324,10 @@ const CreateFreeboard = () => {
             multiple
             {...register('image')}
           />
-        </div>
+        </div> */}
         <ButtonContainer>
           <button type="submit">작성하기</button>
-          <Link to="/freeboard">
+          <Link to="/freeboards">
             <button type="button">취소하기</button>
           </Link>
         </ButtonContainer>

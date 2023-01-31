@@ -1,12 +1,13 @@
 import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useFieldArray, useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import axios from 'axios';
 // import Tag from '../components/Tag';
 import AutoCompleteForArray from '../components/AutoCompleteForArray';
 // import KakaoMap from '../components/KakaoMap';
-import KakaoMapAdd from '../components/KakaoMapAdd';
+// import KakaoMapAdd from '../components/KakaoMapAdd';
+import AddMap from '../components/AddMap';
 import useCurrentLocation from '../utils/useCurrentLocation';
 import Button from '../components/Button';
 
@@ -140,39 +141,42 @@ const SignUp = () => {
       },
     },
   });
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const { location: currentLocation } = useCurrentLocation();
   const [checkedNickname, setCheckedNickname] = useState(true);
   const [checkedPhone, setCheckedPhone] = useState(true);
   const [checkedEmail, setCheckedEmail] = useState(true);
+  const [locationString, setLocationString] = useState('');
+  const [lat, setLat] = useState(0);
+  const [lon, setLon] = useState(0);
 
   const onSubmit = (data: IFormInput) => {
     delete data.passwordRetype;
-    console.log(data);
-    // axios
-    //   .post(`${process.env.REACT_APP_API_URL}/members/signup`, {
-    //     ...data,
-    //     lat: currentLocation?.latitude,
-    //     lon: currentLocation?.longitude,
-    //     locations: '경기도 의정부시 의정부1동',
-    //   })
-    //   .then((res) => {
-    //     console.log(res);
-    //     // alert(res);
-    //   })
-    //   .catch((err) => {
-    //     navigate('/login');
-    //     console.log(err);
-    //     alert(err);
-    //     console.log(
-    //       JSON.stringify({
-    //         ...data,
-    //         lat: currentLocation?.latitude,
-    //         lon: currentLocation?.longitude,
-    //         locations: '경기도 의정부시 의정부1동',
-    //       }),
-    //     );
-    //   });
+    // console.log(data);
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/members/signup`, {
+        ...data,
+        lat,
+        lon,
+        locations: locationString,
+      })
+      .then((res) => {
+        console.log(res);
+        // alert(res);
+      })
+      .catch((err) => {
+        navigate('/login');
+        console.log(err);
+        alert(err);
+        console.log(
+          JSON.stringify({
+            ...data,
+            lat: currentLocation?.latitude,
+            lon: currentLocation?.longitude,
+            locations: '경기도 의정부시 의정부1동',
+          }),
+        );
+      });
   };
 
   // console.log(watch('tags'));
@@ -431,10 +435,20 @@ const SignUp = () => {
               </td>
               <td>
                 <div>
-                  {currentLocation && (
+                  {/* {currentLocation && (
                     <KakaoMapAdd
                       latitude={currentLocation.latitude}
                       longitude={currentLocation.longitude}
+                    />
+                  )} */}
+                  {currentLocation && (
+                    <AddMap
+                      latitude={currentLocation.latitude}
+                      longitude={currentLocation.longitude}
+                      locationString={locationString}
+                      setLocationString={setLocationString}
+                      setLat={setLat}
+                      setLon={setLon}
                     />
                   )}
                 </div>

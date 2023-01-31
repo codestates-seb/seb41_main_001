@@ -76,7 +76,7 @@ const FiltContainer = styled.div`
   }
 `;
 
-const CategoryLink = styled(Link)<{ color: string; currentColor: string }>`
+const CategoryLink = styled(Link)<{ color: string; currentcolor: string }>`
   :hover {
     > div {
       color: black;
@@ -95,7 +95,7 @@ const CategoryLink = styled(Link)<{ color: string; currentColor: string }>`
     border-radius: 1rem;
     margin-left: 0.5rem;
     margin-right: 0.2rem;
-    background-color: ${(props) => props.currentColor || '#484848'};
+    background-color: ${(props) => props.currentcolor || '#484848'};
   }
 `;
 
@@ -140,7 +140,7 @@ const FreeBoards = () => {
               setKeywordValue('category');
               setTypeValue('운동');
             }}
-            currentColor={filterCategory === '운동' ? '#5aa1f1' : '#484848'}
+            currentcolor={filterCategory === '운동' ? '#5aa1f1' : '#484848'}
           >
             <div>
               <i className="fa-solid fa-dumbbell" />
@@ -155,7 +155,7 @@ const FreeBoards = () => {
               setKeywordValue('category');
               setTypeValue('정보');
             }}
-            currentColor={filterCategory === '정보' ? '#ee8834' : '#484848'}
+            currentcolor={filterCategory === '정보' ? '#ee8834' : '#484848'}
           >
             <div>
               <i className="fa-solid fa-bullhorn" />
@@ -170,7 +170,7 @@ const FreeBoards = () => {
               setKeywordValue('category');
               setTypeValue('질문');
             }}
-            currentColor={filterCategory === '질문' ? '#3fb950' : '#484848'}
+            currentcolor={filterCategory === '질문' ? '#3fb950' : '#484848'}
           >
             <div>
               <i className="fa-regular fa-comments" />
@@ -185,7 +185,7 @@ const FreeBoards = () => {
               setKeywordValue('category');
               setTypeValue('나눔');
             }}
-            currentColor={filterCategory === '나눔' ? '#7dede1' : '#484848'}
+            currentcolor={filterCategory === '나눔' ? '#7dede1' : '#484848'}
           >
             <div>
               <i className="fa-solid fa-hand-holding-heart" />

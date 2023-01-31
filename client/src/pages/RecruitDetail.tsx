@@ -267,7 +267,7 @@ const RecruitDetail = () => {
       <LocationBox>
         <div>
           <span>{`📌 언제? ${modifyingDate(DATA.date)}`}</span>
-          <span>📌 어디서? 우측의 지도 참고</span>
+          <span>{`📌 어디서? ${DATA.location}`}</span>
           <span>📌 조건</span>
           <ConditionBox>
             <div>

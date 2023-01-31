@@ -42,8 +42,12 @@ const BoardContainer = styled.div`
 
   > div:first-child {
     width: 5rem;
+    height: 1rem;
+    border: 0.1rem solid white;
     height: 2rem;
     /* border: 0.05rem solid white; */
+    height: 2rem;
+    border: 0.05rem solid white;
     border-radius: 0.3rem;
     /* background-color: white; */
     /* color: black; */
@@ -144,6 +148,12 @@ const ContentContainer = styled.div`
     }
 
     .map {
+      width: 33rem;
+      height: 10rem;
+      display: flex;
+      margin: 1rem 0;
+      width: 31rem;
+      height: 24rem;
       width: 35rem;
       height: 10rem;
       display: flex;
