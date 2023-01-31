@@ -197,15 +197,16 @@ const FreeBoards = () => {
           <ButtonLink value="작성하기" to="/freeboard/new" />
         </div>
         <ul>
-          {data.map((el) => (
-            <FreeBoardList
-              data={el}
-              key={el.freeId}
-              setFilterCategory={setFilterCategory}
-              setKeywordValue={setKeywordValue}
-              setTypeValue={setTypeValue}
-            />
-          ))}
+          {data &&
+            data.map((el) => (
+              <FreeBoardList
+                data={el}
+                key={el.freeId}
+                setFilterCategory={setFilterCategory}
+                setKeywordValue={setKeywordValue}
+                setTypeValue={setTypeValue}
+              />
+            ))}
         </ul>
       </div>
       <button className="scrollBtn" type="button" onClick={handleClick}>

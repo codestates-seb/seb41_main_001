@@ -635,7 +635,10 @@ const EditUser = () => {
                 // onChange={setNickCheck(false)}
                 {...register('nickname', {
                   required: true,
-                  onChange: () => setNickCheck('changed'),
+                  onChange: (e) => {
+                    if (e.target.value !== oneUser.nickname)
+                      setNickCheck('changed');
+                  },
                 })}
               />
               {errors.nickname && (
