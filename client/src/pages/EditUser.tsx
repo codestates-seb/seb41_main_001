@@ -416,7 +416,7 @@ const EditUser = () => {
     register,
     control,
     handleSubmit,
-    // formState: { errors },
+    formState: { errors },
   } = useForm<UserFormInput>();
   const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
     const check = {
@@ -433,7 +433,6 @@ const EditUser = () => {
         `${process.env.REACT_APP_API_URL}/members/my-page`,
         {
           ...data,
-          curPassword: '',
           newPassword,
           location: locationString,
           lat,
@@ -658,12 +657,12 @@ const EditUser = () => {
                   },
                 })}
               />
-              {/* {errors.nickname && (
+              {errors.nickname && (
                 <span>
                   <i className="fa-solid fa-circle-exclamation" />
                   닉네임을 입력해주세요
                 </span>
-              )} */}
+              )}
             </WarnSet>
             <NoLinkButton
               type="button"
@@ -673,7 +672,7 @@ const EditUser = () => {
               {nickCheck !== 'changed' ? '확인 완료' : '중복 확인'}
             </NoLinkButton>
           </InfoBlock>
-          {/* <InfoBlock>
+          <InfoBlock>
             <label htmlFor="curPassword">기존 비밀번호</label>
             <WarnSet>
               <input
@@ -689,7 +688,7 @@ const EditUser = () => {
                 </span>
               )}
             </WarnSet>
-          </InfoBlock> */}
+          </InfoBlock>
           <InfoBlock>
             <label htmlFor="askNewPass">비밀번호 변경</label>
             {passwordChange ? (
@@ -740,7 +739,7 @@ const EditUser = () => {
                 defaultValue={oneUser.phone}
                 disabled={phoneCheck === 'done'}
                 {...register('phone', {
-                  required: true,
+                  required: '휴대폰 번호를 입력해 주세요',
                   pattern: {
                     value: /^(010)-[0-9]{3,4}-[0-9]{4}$/,
                     message: '010-0000-0000 형식에 맞춰주세요.',
@@ -748,12 +747,12 @@ const EditUser = () => {
                   onChange: () => setPhoneCheck('changed'),
                 })}
               />
-              {/* {errors.phone && (
+              {errors.phone && (
                 <span>
                   <i className="fa-solid fa-circle-exclamation" />
                   {errors.phone.message}
                 </span>
-              )} */}
+              )}
             </WarnSet>
             <NoLinkButton
               type="button"

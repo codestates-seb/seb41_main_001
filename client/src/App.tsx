@@ -20,6 +20,7 @@ import RecruitTags from './pages/RecruitTags';
 import FreeboardTags from './pages/FreeboardTags';
 import SearchPassword from './pages/SearchPassword';
 import Loading from './pages/Loading';
+import MemberPage from './pages/MemberPage';
 
 const App = () => (
   <div className="App">
@@ -28,6 +29,7 @@ const App = () => (
       <Routes>
         {/* <Route path="/" element={<Main />} /> */}
         <Route path="/members/mypage" element={<MyPage />} />
+        <Route path="/members/:memberId" element={<MemberPage />} />
         <Route path="/members/withdraw" element={<Withdraw />} />
         <Route path="/members/edit" element={<EditUser />} />
         <Route path="/login" element={<LogIn />} />
