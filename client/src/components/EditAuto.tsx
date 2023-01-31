@@ -36,7 +36,7 @@ const AutoCompleteContainer = styled.div`
         color: #303030;
         &:hover {
           cursor: pointer;
-          outline: 1px solid #303030;
+          /* outline: 1px solid #303030; */
           transition: 0.2s ease-in-out;
         }
       }
