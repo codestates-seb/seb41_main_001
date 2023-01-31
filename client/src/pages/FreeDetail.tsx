@@ -8,8 +8,8 @@ import timeDifference from '../utils/timeDifference';
 import CreatorCard from '../components/CreatorCard';
 import Loading from './Loading';
 import KakaoMap from '../components/KakaoMap';
-import CommentBox from '../components/CommentBox';
-import CommentSubmitBox from '../components/CommentSubmitBox';
+// import CommentBox from '../components/CommentBox';
+// import CommentSubmitBox from '../components/CommentSubmitBox';
 import Button from '../components/Button';
 // import preview from '../img/preview.jpeg';
 
@@ -25,40 +25,27 @@ const FDContainer = styled.main`
 const BoardContainer = styled.div`
   width: 35rem;
   height: auto;
-  margin: 2rem;
+  margin: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
   h1 {
-    width: 35rem;
+    width: 33rem;
   }
 
   > div:first-child {
     width: 5rem;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> f43a581cc4a49b17d3dbd477f796ec68b62e0c63
-    height: 1rem;
-    border: 0.1rem solid white;
-=======
     height: 2rem;
     border: 0.05rem solid white;
->>>>>>> c0bb72c19b3c6ce82e7c28d3a3a306d0e759a6b0
-=======
-    height: 2rem;
-    border: 0.05rem solid white;
->>>>>>> 40743c805b115de4f30bafd3c8cd2493a5a33a15
     border-radius: 0.3rem;
     background-color: white;
     color: black;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 30rem;
+    margin-right: 28rem;
     /* margin-top: 0.5rem;
     margin-bottom: 0.5rem; */
     i {
@@ -68,7 +55,7 @@ const BoardContainer = styled.div`
 
   > div:nth-child(3) {
     display: flex;
-    width: 35rem;
+    width: 33rem;
     justify-content: space-between;
     > div:first-child {
       width: 5.3rem;
@@ -82,13 +69,13 @@ const BoardContainer = styled.div`
   }
 
   > div:nth-child(4) {
-    width: 35rem;
+    width: 33rem;
     margin: 1rem 0;
   }
 
   .commentCount {
     border-bottom: 1px solid white;
-    width: 35rem;
+    width: 33rem;
     margin-bottom: 1rem;
     padding: 1rem 0;
   }
@@ -100,7 +87,7 @@ const BoardContainer = styled.div`
   }
 
   .btnCon {
-    width: 35rem;
+    width: 33rem;
     display: flex;
     justify-content: space-between;
     > div:nth-child(2) {
@@ -126,12 +113,12 @@ const ContentContainer = styled.div`
 
   > div {
     /* border: 0.1rem solid white; */
-    width: 35rem;
+    width: 33rem;
     height: auto;
     min-height: 3rem;
 
     img {
-      width: 35rem;
+      width: 33rem;
       height: 20rem;
       display: flex;
       align-items: center;
@@ -142,22 +129,10 @@ const ContentContainer = styled.div`
     }
 
     .map {
-<<<<<<< HEAD
-<<<<<<< HEAD
       width: 33rem;
       height: 10rem;
       display: flex;
       margin: 1rem 0;
-=======
-      width: 31rem;
-      height: 24rem;
->>>>>>> f43a581cc4a49b17d3dbd477f796ec68b62e0c63
-=======
-      width: 35rem;
-      height: 10rem;
-      display: flex;
-      margin: 1rem 0;
->>>>>>> 40743c805b115de4f30bafd3c8cd2493a5a33a15
     }
   }
 `;
@@ -229,7 +204,7 @@ const FreeDetail = () => {
               </div>
               <div>
                 <i className="fa-regular fa-thumbs-up like" />
-                {post?.likes}
+                {post?.freeLikes.length}
               </div>
               <div>
                 <i className="fa-regular fa-comment-dots comment" />
@@ -283,17 +258,11 @@ const FreeDetail = () => {
             {0}
             개의 댓글이 있습니다
           </div>
-          {post?.freeComments &&
+          {/* {post?.freeComments &&
             post?.freeComments.map((el) => (
-              <CommentBox
-                key={el.commentId}
-                memberId={el.memberId}
-                data={el}
-                board="freeboards"
-                boardId={post.freeId}
-              />
+              <CommentBox data={el} key={el.commentId} memberId={el.memberId} />
             ))}
-          <CommentSubmitBox submitComment={`/freeboards/${post?.freeId}`} />
+          <CommentSubmitBox onClick={() => console.log('댓글등록!')} /> */}
         </BoardContainer>
       ) : (
         <Loading />

@@ -121,7 +121,7 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
       // freeTitle,
       createdAt,
       // modifiedAt,
-      likes,
+      freeLikes,
       views,
       // memberId,
       // freeLikes,
@@ -189,7 +189,7 @@ const FreeBoardList = (props: { data: FreeDataProps }) => {
             </div>
             <div>
               <i className="fa-regular fa-thumbs-up like" />
-              {likes}
+              {freeLikes.length}
             </div>
             <div>
               <i className="fa-regular fa-comment-dots comment" />

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import axios from 'axios';
 import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 // import Tag from '../components/Tag';
 // import KakaoMap from '../components/KakaoMap';
@@ -356,7 +356,7 @@ interface UserFormInput {
 // }
 
 const EditUser = () => {
-  const { memberId } = useParams();
+  // const { memberId } = useParams();
   const navigate = useNavigate();
   const { location: currentLocation } = useCurrentLocation();
   // default, changed, done
@@ -387,7 +387,12 @@ const EditUser = () => {
   useEffect(() => {
     const getOneUser = () => {
       axios
-        .get(`${process.env.REACT_APP_API_URL}/members/my-page/${memberId}`)
+        .get(`${process.env.REACT_APP_API_URL}/members/my-page`, {
+          headers: {
+            Authorization: `${localStorage.getItem('AccessToken')}`,
+            Refresh: `${localStorage.getItem('RefreshToken')}`,
+          },
+        })
         .then((res: any) => {
           console.log(res);
           setOneUsers(res.data);
@@ -424,18 +429,27 @@ const EditUser = () => {
     };
     console.log(check);
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/members/my-page/${memberId}`, {
-        ...data,
-        newPassword,
-        location: locationString,
-        lat: currentLocation?.latitude,
-        lon: currentLocation?.longitude,
-        // 멤버 태그가 객체가 아니라 string이라 오류남
-      })
+      .patch(
+        `${process.env.REACT_APP_API_URL}/members/my-page`,
+        {
+          ...data,
+          newPassword,
+          location: locationString,
+          lat,
+          lon,
+          // 멤버 태그가 객체가 아니라 string이라 오류남
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem('AccessToken')}`,
+            Refresh: `${localStorage.getItem('RefreshToken')}`,
+          },
+        },
+      )
       .then((res) => {
         // console.log(res);
         alert(res);
-        navigate(`/members/mypage/${memberId}`);
+        navigate(`/members/mypage`);
       })
       .catch((err) => {
         console.log(err);
@@ -627,10 +641,11 @@ const EditUser = () => {
             <label htmlFor="nickname">닉네임</label>
             <WarnSet>
               <input
-                id="nickname"
+                // id="nickname"
                 type="text"
                 defaultValue={oneUser.nickname}
                 className="input"
+                autoComplete="off"
                 disabled={nickCheck === 'done'}
                 // onChange={setNickCheck(false)}
                 {...register('nickname', {
@@ -638,6 +653,7 @@ const EditUser = () => {
                   onChange: (e) => {
                     if (e.target.value !== oneUser.nickname)
                       setNickCheck('changed');
+                    else setNickCheck('default');
                   },
                 })}
               />
@@ -656,7 +672,7 @@ const EditUser = () => {
               {nickCheck !== 'changed' ? '확인 완료' : '중복 확인'}
             </NoLinkButton>
           </InfoBlock>
-          <InfoBlock>
+          {/* <InfoBlock>
             <label htmlFor="curPassword">기존 비밀번호</label>
             <WarnSet>
               <input
@@ -672,7 +688,7 @@ const EditUser = () => {
                 </span>
               )}
             </WarnSet>
-          </InfoBlock>
+          </InfoBlock> */}
           <InfoBlock>
             <label htmlFor="askNewPass">비밀번호 변경</label>
             {passwordChange ? (
@@ -818,7 +834,7 @@ const EditUser = () => {
             <i className="fa-solid fa-square-check" />
             저장하기
           </Button>
-          <TempButton to={`/members/mypage/${memberId}`}>
+          <TempButton to="/members/mypage">
             <i className="fa-solid fa-xmark" />
             취소하기
           </TempButton>
