@@ -312,17 +312,18 @@ const RecruitDetail = () => {
             <ul>
               {data.recruitComments.map((el) => (
                 <CommentBox
-                  key={el.commentId}
-                  commentId={el.commentId}
+                  key={el.recruitCommentId}
+                  commentId={el.recruitCommentId}
                   memberId={data.memberId}
                   board="recruits"
                   boardId={data.recruitId}
                   applicantsId={applicantsId!}
                   data={el}
+                  setData={setData}
                 />
               ))}
             </ul>
-            <CommentSubmitBox submitComment={`/recruits/${data.recruitId}`} />
+            <CommentSubmitBox submitComment={`/recruits/${data.recruitId}`} setData={setData} />
           </CommentArea>
         </>
       )}

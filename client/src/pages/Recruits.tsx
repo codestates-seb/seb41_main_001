@@ -85,7 +85,7 @@ const Recruits = () => {
     const params = {
       page,
       size: listNum,
-      distanceLimit: 10,
+      distanceLimit: 500,
       lat: location?.latitude,
       lon: location?.longitude,
     };
@@ -126,12 +126,13 @@ const Recruits = () => {
               <option value={15}>15개</option>
             </select>
           </div>
-          {data &&
+          {location &&
+            data &&
             data.map((item) => (
               <RecruitList key={item.recruitId} data={item} />
             ))}
         </ul>
-        {pageCount && (
+        {location && pageCount && (
           <PaginationLink
             pageCount={pageCount}
             active_page={page}

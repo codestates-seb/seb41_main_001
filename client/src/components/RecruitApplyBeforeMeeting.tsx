@@ -156,10 +156,10 @@ const RecruitApplyBeforeMeeting = ({
   require,
 }: ApplyConditionProps) => {
   const LOGIN_INFO = {
-    memberId: 11,
-    heart: 50,
-    birth: '1995.01.11',
-    sex: 'Male',
+    memberId: Number(localStorage.getItem('memberId')) || -1,
+    heart: Number(localStorage.getItem('heart')) || -1,
+    birth: localStorage.getItem('birth'),
+    sex: localStorage.getItem('sex'),
   };
 
   const { recruitId } = useParams();
@@ -185,7 +185,7 @@ const RecruitApplyBeforeMeeting = ({
     if (heartCond > LOGIN_INFO.heart) {
       return '심박수조건에 부합하지 않습니다';
     }
-    if (!ageGroup.includes(calculateAge(LOGIN_INFO.birth))) {
+    if (!ageGroup.includes(calculateAge(LOGIN_INFO.birth!))) {
       return '연령조건에 부합하지 않습니다';
     }
     return true;
