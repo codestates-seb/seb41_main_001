@@ -28,6 +28,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -304,9 +305,11 @@ public class MemberService {
 
     // 비밀번호가 맞는지 확인
     public void checkPassword(String refreshToken, String curPassword, String newPassword) {
+        // refreshToken에서 memberId를 꺼낸 다음, 존재하는 회원인지 확인
         Long memberId = redisUtils.getId(refreshToken);
         Member findMember = findVerifiedMember(memberId);
 
+        // 비밀번호 같은지 확인
         isValid(findMember, curPassword);
 
 //        findMember.setPassword(newPassword);

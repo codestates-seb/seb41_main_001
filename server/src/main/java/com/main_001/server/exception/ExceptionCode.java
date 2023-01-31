@@ -26,6 +26,8 @@ public enum ExceptionCode {
     WRONG_PASSWORD(400, "잘못된 패스워드 입력"),
     MEMBER_NOT_FOUND(404, "존재하지 않는 회원"),
     NO_PROFILE_IMAGE(400, "프로필 이미지가 존재하지 않습니다."),
+    NO_CUR_PASSWORD(400, "현재 비밀번호가 공백입니다."),
+    NO_NEW_PASSWORD(400, "새 비밀번호가 공백입니다."),
 
     // Token
     INVALID_AUTH_TOKEN(504, "유효하지 않은 토큰입니다."),

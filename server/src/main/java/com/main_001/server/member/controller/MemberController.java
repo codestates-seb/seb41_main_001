@@ -1,6 +1,8 @@
 package com.main_001.server.member.controller;
 
 import com.main_001.server.auth.dto.LoginDto;
+import com.main_001.server.exception.BusinessLogicException;
+import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.member.dto.MailDto;
 import com.main_001.server.member.dto.MemberDto;
 import com.main_001.server.member.dto.TokenDto;
@@ -157,7 +159,7 @@ public class MemberController {
     // 접근 권한을 로그인한 사용자한테만 준다.
     @ApiOperation(value = "회원 정보 조회(마이페이지)", notes = "로그인한 사용자가 자신의 회원 정보를 조회한다.")
     @GetMapping("/my-page")
-    public ResponseEntity getMyPage(@RequestHeader(name = "Refresh") String refreshToken) {
+    public ResponseEntity getMyPage(@RequestHeader("Refresh") String refreshToken) {
         Member member = memberService.findMyPage(refreshToken);
         return new ResponseEntity<>(memberMapper.memberToMemberMyResponse(member), HttpStatus.OK);
     }
@@ -173,7 +175,7 @@ public class MemberController {
     // 회원 탈퇴
     @ApiOperation(value = "회원 탈퇴", notes = "member-id에 해당하는 회원의 정보를 삭제한다.")
     @PatchMapping("/my-page/withdraw")
-    public ResponseEntity withdrawal(@RequestHeader(name = "Refresh") String refreshToken) {
+    public ResponseEntity withdrawal(@RequestHeader("Refresh") String refreshToken) {
         memberService.deleteMember(refreshToken);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
