@@ -17,8 +17,6 @@ export default interface RecruitDataProps {
   authorHeart: number;
   sex: 'Male' | 'Female' | 'Both'; // Male, Female, Both
   date: string;
-
-  // location: { latitude: number; longitude: number }; // TODO: { place: string; latitude: number; longitude: number}
   lat: number;
   lon: number;
   location: string;

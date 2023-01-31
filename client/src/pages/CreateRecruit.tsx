@@ -1,9 +1,12 @@
 // import { useState } from 'react';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
+// import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 import AutoCompleteForArray from '../components/AutoCompleteForArray';
-// import useCurrentLocation from '../utils/useCurrentLocation';
-// import KakaoMapClick from '../components/KakaoMapClick';
+import useCurrentLocation from '../utils/useCurrentLocation';
+import KakaoMapClick from '../components/KakaoMapClick';
 import Button from '../components/Button';
 
 const RecruitFormContainer = styled.main`
@@ -11,6 +14,11 @@ const RecruitFormContainer = styled.main`
   width: 700px;
   color: white;
   font-size: 16px;
+
+  #kakao-map {
+    width: 100%;
+    height: 400px;
+  }
 `;
 
 const RecruitForm = styled.form`
@@ -106,10 +114,30 @@ interface RecruitFormInput {
   lon: number;
   sex: 'Both' | 'Male' | 'Female';
   ages: number[];
-  heart: number;
-  image: string;
+  heartLimit: number;
+  // image: string;
   tagSearch: string;
 }
+
+const KakaoMapForClick = ({
+  control,
+  setValue,
+  currentLat,
+  currentLon,
+}: any) => {
+  const lat = useWatch({
+    control,
+    name: 'lat',
+    defaultValue: currentLat,
+  });
+  const lon = useWatch({
+    control,
+    name: 'lon',
+    defaultValue: currentLon,
+  });
+
+  return <KakaoMapClick latitude={lat} longitude={lon} setValue={setValue} />;
+};
 
 const CreateRecruit = () => {
   const {
@@ -117,6 +145,7 @@ const CreateRecruit = () => {
     control,
     handleSubmit,
     getValues,
+    setValue,
     formState: { errors },
   } = useForm<RecruitFormInput>();
   const { fields, append, remove } = useFieldArray({
@@ -130,16 +159,37 @@ const CreateRecruit = () => {
     },
   });
 
-  // const [latlon, setLatLon] = useState<{
-  //   latitude: number;
-  //   longitude: number;
-  // }>();
+  // const token = localStorage.getItem('AccessToken');
+  // const memberId = localStorage.getItem('memberId');
+  const navigate = useNavigate();
 
   const onSubmit = (data: RecruitFormInput) => {
     // tagSearch는 postBody에서 제외함.
     const { tagSearch, ...postBody } = data;
-    console.log(JSON.stringify(postBody));
+    // console.log(JSON.stringify(postBody));
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/recruits/`,
+        {
+          ...postBody,
+          memberId: 1,
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem('AccessToken')}`,
+            Refresh: `${localStorage.getItem('RefreshToken')}`,
+          },
+        },
+      )
+      .then((res) => {
+        console.log(res);
+        navigate('/recruits');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
+  const { location } = useCurrentLocation();
 
   const TAG_DATA = [
     { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
@@ -164,12 +214,6 @@ const CreateRecruit = () => {
     { tagId: 20, tagName: '헬스/크로스핏', emoji: '🏋️' },
     { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
   ];
-
-  // useCurrentLocation().then((res) => {
-  //   if (res === undefined) return;
-  //   setLatLon(res);
-  // });
-  console.log('render');
 
   return (
     <RecruitFormContainer>
@@ -303,6 +347,14 @@ const CreateRecruit = () => {
                     longitude={latlon.longitude}
                   />
                 </div> */}
+                {location && (
+                  <KakaoMapForClick
+                    control={control}
+                    setValue={setValue}
+                    currentLat={location.latitude}
+                    currentLon={location.longitude}
+                  />
+                )}
               </td>
             </tr>
             <tr>
@@ -353,7 +405,7 @@ const CreateRecruit = () => {
               <td>
                 <Controller
                   control={control}
-                  name="heart"
+                  name="heartLimit"
                   defaultValue={50}
                   render={({ field: { value, onChange } }) => (
                     <>
@@ -364,7 +416,7 @@ const CreateRecruit = () => {
                         max={200}
                         step={10}
                         value={value}
-                        {...register('heart', {
+                        {...register('heartLimit', {
                           required: true,
                           valueAsNumber: true,
                         })}
@@ -376,14 +428,14 @@ const CreateRecruit = () => {
                 />
               </td>
             </tr>
-            <tr>
+            {/* <tr>
               <td>
                 <label htmlFor="image">이미지</label>
               </td>
               <td>
                 <input id="image" type="file" {...register('image')} />
               </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
         <Button

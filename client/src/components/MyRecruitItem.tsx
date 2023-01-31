@@ -75,7 +75,7 @@ const MyRecruitItem = ({ title, quota, dueDate, tags, id }: Item) => (
     <ItemContainer to={`/recruit/${id}`}>
       <ItemWrapper>
         <div>
-          제목이 엄청 길어지면 어떻게 될까? 한번 테스트해보자
+          {/* 제목이 엄청 길어지면 어떻게 될까? 한번 테스트해보자 */}
           {title}
         </div>
         <div>

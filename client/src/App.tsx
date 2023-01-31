@@ -10,7 +10,7 @@ import SignUp from './pages/SignUp';
 import CreateRecruit from './pages/CreateRecruit';
 import CreateFreeboard from './pages/CreateFreeboard';
 import EditRecruit from './pages/EditRecruit';
-import EditFreeboard from './pages/EditFreeboard';
+// import EditFreeboard from './pages/EditFreeboard';
 import Recruits from './pages/Recruits';
 import RecruitDetail from './pages/RecruitDetail';
 // import TaggedRecruit from './pages/TaggedRecruit';
@@ -41,7 +41,7 @@ const App = () => (
         <Route path="/freeboard/new" element={<CreateFreeboard />} />
         <Route path="/freeboard/:freeId" element={<FreeDetail />} />
         <Route path="/recruit/:recruitId/edit" element={<EditRecruit />} />
-        <Route path="/freeboard/1/edit" element={<EditFreeboard />} />
+        {/* <Route path="/freeboard/:freeId/edit" element={<EditFreeboard />} /> */}
         <Route path="/recruits" element={<Recruits />} />
         <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruits/tags" element={<RecruitTags />} />

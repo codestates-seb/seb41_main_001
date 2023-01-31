@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 
 const useCurrentLocation = (options = {}) => {
   const [location, setLocation] = useState<GeolocationCoordinates>();
-
   const [error, setError] = useState();
 
   const handleSuccess = (pos: any) => {

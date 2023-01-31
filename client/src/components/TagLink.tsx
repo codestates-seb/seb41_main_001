@@ -24,10 +24,13 @@ const TagContainer = styled(Link)`
 interface TagProps {
   value: string;
   to: string;
+  onClick: (e: React.SyntheticEvent) => void;
 }
 
-const TagLink = ({ value, to }: TagProps) => (
-  <TagContainer to={to}>{value}</TagContainer>
+const TagLink = ({ value, to, onClick }: TagProps) => (
+  <TagContainer to={to} onClick={(e: any) => onClick(e)}>
+    {value}
+  </TagContainer>
 );
 
 export default TagLink;

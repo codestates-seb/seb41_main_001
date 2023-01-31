@@ -11,7 +11,7 @@ import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
 import CreatorCard from '../components/CreatorCard';
 import Loading from './Loading';
-import KakaoMap from '../components/KakaoMap';
+// import KakaoMap from '../components/KakaoMap';
 import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
 import ButtonLink from '../components/ButtonLink';
@@ -43,10 +43,10 @@ const BoardContainer = styled.div`
   > div:first-child {
     width: 5rem;
     height: 2rem;
-    border: 0.05rem solid white;
+    /* border: 0.05rem solid white; */
     border-radius: 0.3rem;
-    background-color: white;
-    color: black;
+    /* background-color: white; */
+    /* color: black; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,6 +57,8 @@ const BoardContainer = styled.div`
       margin-right: 0.3rem;
     }
     a {
+      text-decoration: none;
+      color: white;
     }
   }
 
@@ -65,10 +67,12 @@ const BoardContainer = styled.div`
     width: 35rem;
     justify-content: space-between;
     > div:first-child {
-      width: 5.3rem;
+      width: 6rem;
+      /* width: auto; */
       display: flex;
       align-items: center;
       justify-content: center;
+      /* border: 1px solid white; */
       i {
         margin-right: 0.3rem;
       }
@@ -98,10 +102,13 @@ const BoardContainer = styled.div`
     display: flex;
     justify-content: space-between;
     > div:nth-child(2) {
+      width: 10.5rem;
       display: flex;
-      > button:first-child {
+      justify-content: space-between;
+      /* border: 1px solid white; */
+      /* > button:first-child {
         margin-right: 0.5rem;
-      }
+      } */
     }
   }
 `;
@@ -116,6 +123,7 @@ const ContentContainer = styled.div`
     height: auto;
     min-height: 3rem;
     line-height: 150%;
+    margin-bottom: 1rem;
   }
 
   > div {
@@ -174,12 +182,19 @@ const CountContainer = styled.div`
 const Category = styled('div')<{ color: string }>`
   width: 4.5rem;
   height: 2rem;
-  border-radius: 1rem;
+  border-radius: 0.7rem;
   display: flex;
   text-align: center;
   justify-content: center;
   align-items: center;
-  background-color: ${(props) => props.color};
+  background-color: ${(props) =>
+    props.color === '운동'
+      ? 'var(--neon-blue)'
+      : props.color === '정보'
+      ? 'var(--neon-orange)'
+      : props.color === '질문'
+      ? 'var(--neon-green)'
+      : 'var(--neon-sky-blue)'};
 `;
 
 const FreeDetail = () => {
@@ -230,18 +245,8 @@ const FreeDetail = () => {
       {!isLoading ? (
         <BoardContainer>
           <div>
-            <Link to={`/freeboard?category=${post?.category}`}>
-              <Category
-                color={
-                  post?.category === '운동'
-                    ? '5aa1f1'
-                    : post?.category === '정보'
-                    ? 'ee8834'
-                    : post?.category === '질문'
-                    ? '3fb950'
-                    : '7dede1'
-                }
-              >
+            <Link to={`/freeboards?category=${post?.category}`}>
+              <Category color={post!.category}>
                 {post?.category === '운동' ? (
                   <i className="fa-solid fa-dumbbell" />
                 ) : post?.category === '정보' ? (
@@ -259,7 +264,7 @@ const FreeDetail = () => {
           <div>
             <div>
               <i className="fa-regular fa-clock" />
-              {timeDifference(`${post?.createdAt}`)}
+              {timeDifference(`${post?.modifiedAt}`)}
             </div>
             <CountContainer>
               <div>
@@ -276,13 +281,17 @@ const FreeDetail = () => {
               </div>
             </CountContainer>
           </div>
-          <CreatorCard memberId={1} nickname="aaa" heart={100} />
+          <CreatorCard
+            memberId={post!.memberId}
+            nickname={post!.nickname}
+            heart={post!.authorHeart}
+          />
           <ContentContainer>
             {/* <div>
               <img src={preview} alt="preview" />
             </div> */}
             <div className="body">{post?.freeBody}</div>
-            {post?.location === undefined ? (
+            {/* {post?.location === undefined ? (
               ''
             ) : (
               <div>
@@ -294,7 +303,7 @@ const FreeDetail = () => {
                   />
                 </div>
               </div>
-            )}
+            )} */}
           </ContentContainer>
           <div className="btnCon">
             <Button
@@ -315,7 +324,7 @@ const FreeDetail = () => {
             />
             <div>
               <ButtonLink
-                to={`/freeboard/${freeId}/edit`}
+                to={`/freeboards/${freeId}/edit`}
                 value="수정"
                 icon={<i className="fa-solid fa-pen-to-square" />}
               />

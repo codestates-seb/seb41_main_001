@@ -157,7 +157,9 @@ const RecruitDetail = () => {
     nickname: '글자수세기TEST글자수세기TEST글자',
     authorHeart: 50,
     likes: 0,
-    location: { latitude: 37.343336, longitude: 127.1233716 },
+    location: '춘천',
+    lat: 37.343336,
+    lon: 127.1233716,
     heartLimit: 50, // number, 0
     ageGroup: ['10', '20', '30', '40', '50', '60'],
     sex: 'Male', // Male, Female, Both
@@ -240,7 +242,6 @@ const RecruitDetail = () => {
     if (TIME_INPUT < TIME_NOW) return true; // Meeting Ended.
     return false; // Meeting Yet.
   };
-  console.log('render?');
 
   return (
     <MainContainer>
@@ -287,8 +288,8 @@ const RecruitDetail = () => {
         </div>
         <div>
           <KakaoMap
-            latitude={DATA.location.latitude}
-            longitude={DATA.location.longitude}
+            latitude={DATA.lat}
+            longitude={DATA.lon}
             overlayvalue="모임 장소"
           />
         </div>

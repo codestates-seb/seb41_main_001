@@ -9,6 +9,8 @@ export default interface FreeDataProps {
   location: string;
   views: number;
   memberId: number;
+  nickname: string;
+  authorHeart: number;
   // freeLikes: {
   //   memberId: number;
   // }[];
