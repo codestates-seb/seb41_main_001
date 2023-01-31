@@ -5,9 +5,7 @@ import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.entity.FreeComment;
 import com.main_001.server.free.entity.FreeLike;
 import com.main_001.server.free.entity.FreeTag;
-import com.main_001.server.member.dto.MemberDto;
-import com.main_001.server.member.dto.MemberImageResponseDto;
-import com.main_001.server.member.dto.MemberTagResponseDto;
+import com.main_001.server.member.dto.*;
 import com.main_001.server.member.entity.Member;
 import com.main_001.server.member.entity.MemberImage;
 import com.main_001.server.member.entity.MemberTag;
@@ -122,11 +120,11 @@ public interface MemberMapper {
                     .applies(appliesToApplyResponseDtos(applies))
                     .recruits(recruitsToRecruitResponseDtos(recruits))
                     .recruitComments(recruitCommentsToRecruitCommentResponseDtos(recruitComments))
-                    .recruitLikes(recruitLikesToRecruitLikeResponseDtos(recruitLikes))
+                    .recruitLikes(recruitLikesToMemberRecruitLikeResponseDtos(recruitLikes))
                     .reviews(reviewsToReviewResponseDtos(reviews))
 
                     .frees(freesToFreeResponseDtos(frees))
-                    .freeLikes(freeLikesToFreeLikeResponseDtos(freeLikes))
+                    .freeLikes(freeLikesToMemberFreeLikeResponseDtos(freeLikes))
                     .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
                     .build();
         }
@@ -152,11 +150,11 @@ public interface MemberMapper {
                     .applies(appliesToApplyResponseDtos(applies))
                     .recruits(recruitsToRecruitResponseDtos(recruits))
                     .recruitComments(recruitCommentsToRecruitCommentResponseDtos(recruitComments))
-                    .recruitLikes(recruitLikesToRecruitLikeResponseDtos(recruitLikes))
+                    .recruitLikes(recruitLikesToMemberRecruitLikeResponseDtos(recruitLikes))
                     .reviews(reviewsToReviewResponseDtos(reviews))
 
                     .frees(freesToFreeResponseDtos(frees))
-                    .freeLikes(freeLikesToFreeLikeResponseDtos(freeLikes))
+                    .freeLikes(freeLikesToMemberFreeLikeResponseDtos(freeLikes))
                     .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
                     .build();
         }
@@ -201,12 +199,12 @@ public interface MemberMapper {
     }
 
     // member가 작성한 모집글
-    default List<RecruitDto.Response> recruitsToRecruitResponseDtos(List<Recruit> recruits) {
+    default List<MemberRecruitResponseDto> recruitsToRecruitResponseDtos(List<Recruit> recruits) {
         if (recruits == null) {
             return null;
         }
 
-        List<RecruitDto.Response> list = new ArrayList<>(recruits.size());
+        List<MemberRecruitResponseDto> list = new ArrayList<>(recruits.size());
         for (Recruit recruit : recruits) {
             list.add(recruitToRecruitResponseDto(recruit));
         }
@@ -214,7 +212,7 @@ public interface MemberMapper {
         return list;
     }
 
-    default RecruitDto.Response recruitToRecruitResponseDto(Recruit recruit) {
+    default MemberRecruitResponseDto recruitToRecruitResponseDto(Recruit recruit) {
         if (recruit == null) {
             return null;
         }
@@ -227,7 +225,7 @@ public interface MemberMapper {
         }
 
         // TODO postman에서 값 안넘어오는 부분 builder 타입으로 한번에 return 한다.
-        return RecruitDto.Response.builder()
+        return MemberRecruitResponseDto.builder()
                 .recruitId(recruit.getRecruitId())
                 .title(recruit.getTitle())
                 .body(recruit.getBody())
@@ -251,7 +249,7 @@ public interface MemberMapper {
                 .distance(recruit.getDistance())
                 .applies(appliesToApplyResponseDtos(recruit.getApplies()))
                 .recruitComments(recruitCommentsToRecruitCommentResponseDtos(recruit.getRecruitComments()))
-                .recruitLikes(recruitLikesToRecruitLikeResponseDtos(recruit.getRecruitLikes()))
+                .recruitLikes(recruitLikesToMemberRecruitLikeResponseDtos(recruit.getRecruitLikes()))
                 .Likes(recruit.getRecruitLikes().size())
                 .recruitTags(recruitTagsToRecruitTagResponseDtos(recruit.getRecruitTags()))
                 .reviews(reviewsToReviewResponseDtos(recruit.getReviews()))
@@ -287,6 +285,23 @@ public interface MemberMapper {
                 .collect(Collectors.toList());
     }
 
+    // 좋아요 마이페이지 표시용
+    default List<MemberRecruitLikeResponseDto> recruitLikesToMemberRecruitLikeResponseDtos(List<RecruitLike> recruitLikes) {
+        return recruitLikes
+                .stream()
+                .map(recruitLike -> MemberRecruitLikeResponseDto
+                        .builder()
+                        .recruitId(recruitLike.getRecruit().getRecruitId())
+                        .memberId(recruitLike.getMember().getMemberId())
+                        .title(recruitLike.getRecruit().getTitle())
+                        .require(recruitLike.getRecruit().getRequire())
+                        .applyCount(recruitLike.getRecruit().getApplies().size())
+                        .date(recruitLike.getRecruit().getDate())
+                        .recruitTags(recruitTagsToRecruitTagResponseDtos(recruitLike.getRecruit().getRecruitTags()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
     // member가 작성한 review
     default List<ResponseDto.Review> reviewsToReviewResponseDtos(List<Review> reviews) {
         return reviews
@@ -315,12 +330,12 @@ public interface MemberMapper {
                 .collect(Collectors.toList());
     }
     // free 작성되면 입력
-    default List<FreeDto.Response> freesToFreeResponseDtos(List<Free> frees) {
+    default List<MemberFreeResponseDto> freesToFreeResponseDtos(List<Free> frees) {
         if ( frees == null ) {
             return null;
         }
 
-        List<FreeDto.Response> list = new ArrayList<>( frees.size() );
+        List<MemberFreeResponseDto> list = new ArrayList<>( frees.size() );
         for (Free free : frees) {
             list.add(freeToFreeResponseDto(free));
         }
@@ -328,22 +343,24 @@ public interface MemberMapper {
         return list;
     }
 
-    default FreeDto.Response freeToFreeResponseDto(Free free) {
+    default MemberFreeResponseDto freeToFreeResponseDto(Free free) {
         List<FreeTag> freeTags = free.getFreeTags();
         List<FreeComment> freeComments = free.getFreeComments();
         List<FreeLike> freeLikes = free.getFreeLikes();
 
-        return FreeDto.Response.builder()
+        return MemberFreeResponseDto.builder()
                 .freeId(free.getFreeId())
                 .freeTitle(free.getFreeTitle())
                 .freeBody(free.getFreeBody())
                 .createdAt(free.getCreatedAt())
                 .modifiedAt(free.getModifiedAt())
                 .freeTags(freeTagsToFreeTagResponseDtos(freeTags))
-                .freeLikes(freeLikesToFreeLikeResponseDtos(freeLikes))
+                .freeLikes(freeLikesToMemberFreeLikeResponseDtos(freeLikes))
                 .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
                 .views(free.getViews())
                 .memberId(free.getMember().getMemberId())
+                .nickname(free.getMember().getNickname())
+                .authorHeart(free.getMember().getHeart())
                 .category(free.getCategory())
                 .build();
     }
@@ -355,6 +372,20 @@ public interface MemberMapper {
                         .builder()
                         .freeId(freeLike.getFree().getFreeId())
                         .memberId(freeLike.getMember().getMemberId())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    // free 좋아요
+    default List<MemberFreeLikeResponseDto> freeLikesToMemberFreeLikeResponseDtos(List<FreeLike> freeLikes) {
+        return freeLikes
+                .stream()
+                .map(freeLike -> MemberFreeLikeResponseDto
+                        .builder()
+                        .freeId(freeLike.getFree().getFreeId())
+                        .memberId(freeLike.getMember().getMemberId())
+                        .title(freeLike.getFree().getFreeTitle())
+                        .freeTags(freeTagsToFreeTagResponseDtos(freeLike.getFree().getFreeTags()))
                         .build())
                 .collect(Collectors.toList());
     }
@@ -400,6 +431,8 @@ public interface MemberMapper {
         // Free
         List<Free> frees = member.getFrees();
 
+        List<String> roles = member.getRoles();
+
         // 이미지가 등록된 경우
         if (member.getMemberImage() != null) {
             return MemberDto.OtherResponse.builder()
@@ -431,6 +464,7 @@ public interface MemberMapper {
                     .memberTags(memberTagsToMemberTagResponseDtos(memberTags))
                     .recruits(recruitsToRecruitResponseDtos(recruits))
                     .frees(freesToFreeResponseDtos(frees))
+                    .roles(roles)
                     .build();
         }
     }
