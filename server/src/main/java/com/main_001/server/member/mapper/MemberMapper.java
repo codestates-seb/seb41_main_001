@@ -63,7 +63,8 @@ public interface MemberMapper {
         member.setLocation(memberPatch.getLocation());
         member.setLat(memberPatch.getLat());
         member.setLon(memberPatch.getLon());
-        List<MemberTag> memberTags = memberPatch.getMemberTags().stream()
+        List<MemberTag> memberTags = memberPatch.getMemberTags()
+                .stream()
                 .map(memberTagDto -> {
                     MemberTag memberTag = new MemberTag();
                     Tag tag = new Tag();
@@ -191,6 +192,7 @@ public interface MemberMapper {
                 .stream()
                 .map(apply -> ResponseDto.Apply
                         .builder()
+                        .recruitId(apply.getRecruit().getRecruitId())
                         .memberId(apply.getMember().getMemberId())
                         .nickname(apply.getMember().getNickname())
                         .heart(apply.getMember().getHeart())
@@ -262,6 +264,7 @@ public interface MemberMapper {
                 .stream()
                 .map(recruitComment -> ResponseDto.RecruitComment
                         .builder()
+                        .recruitId(recruitComment.getRecruit().getRecruitId())
                         .recruitCommentId(recruitComment.getId())
                         .memberId(recruitComment.getMember().getMemberId())
                         .nickname(recruitComment.getMember().getNickname())
@@ -273,7 +276,7 @@ public interface MemberMapper {
                 .collect(Collectors.toList());
     }
 
-    // member가 누른 좋아요
+    // member가 누른 좋아요(Deprecated)
     default List<ResponseDto.RecruitLike> recruitLikesToRecruitLikeResponseDtos(List<RecruitLike> recruitLikes) {
         return recruitLikes
                 .stream()

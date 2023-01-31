@@ -17,6 +17,7 @@ import com.main_001.server.member.entity.MemberImage;
 import com.main_001.server.member.entity.MemberTag;
 import com.main_001.server.member.repository.MemberImageRepository;
 import com.main_001.server.member.repository.MemberRepository;
+import com.main_001.server.member.repository.MemberTagRepository;
 import com.main_001.server.tag.entity.Tag;
 import com.main_001.server.tag.repository.TagRepository;
 import lombok.SneakyThrows;
@@ -48,6 +49,7 @@ public class MemberService {
     private final TagRepository tagRepository;
     private final RedisUtils redisUtils;
     private final S3Service s3Service;
+    private final MemberTagRepository memberTagRepository;
 
 //    @Value("${file.path}")
     private String memberImagePath;
@@ -61,7 +63,8 @@ public class MemberService {
                          FileHandler fileHandler,
                          TagRepository tagRepository,
                          RedisUtils redisUtils,
-                         S3Service s3Service) {
+                         S3Service s3Service,
+                         MemberTagRepository memberTagRepository) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityUtils = authorityUtils;
@@ -72,6 +75,7 @@ public class MemberService {
         this.tagRepository = tagRepository;
         this.redisUtils = redisUtils;
         this.s3Service = s3Service;
+        this.memberTagRepository = memberTagRepository;
     }
 
     // 이메일, 닉네임, 전화번호를 따로 검사하는 로직이 있기 때문에 회원가입은 바로 저장소에 저장될 수 있다.
@@ -317,12 +321,21 @@ public class MemberService {
                 .ifPresent(findMember::setPhone);
         Optional.ofNullable(member.getLocation())
                 .ifPresent(findMember::setLocation);
-        Optional.of(member.getLat())
-                .ifPresent(findMember::setLat);
-        Optional.of(member.getLon())
-                .ifPresent(findMember::setLon);
-        Optional.ofNullable(member.getMemberTags())
-                .ifPresent(findMember::setMemberTags);
+//        Optional.of(member.getLat())
+//                .ifPresent(findMember::setLat);
+//        Optional.of(member.getLon())
+//                .ifPresent(findMember::setLon);
+        if (member.getLat() != 0)
+            findMember.setLat(member.getLat());
+        if (member.getLon() != 0)
+            findMember.setLon(member.getLon());
+        if (!member.getMemberTags().isEmpty()) {
+            memberTagRepository.deleteAllByMember_MemberId(memberId);
+            findMember.setMemberTags(member.getMemberTags());
+        }
+
+//        Optional.ofNullable(member.getMemberTags())
+//                .ifPresent(findMember::setMemberTags);
 
         if (!ObjectUtils.isEmpty(curPassword) && !ObjectUtils.isEmpty(newPassword)) {
             isValid(findMember, curPassword);
