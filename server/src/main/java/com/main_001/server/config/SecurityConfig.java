@@ -28,20 +28,6 @@ public class SecurityConfig {
 
     // HttpSecurity를 통해 HTTP 요청에 대한 보안 설정을 구성한다.
 
-    private static final String[] PERMIT_URL_ARRAY = {
-            /* swagger v2 */
-            "/v2/api-docs",
-            "/swagger-resources",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-            /* swagger v3 */
-            "/v3/api-docs/**",
-            "/swagger-ui/**"
-    };
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -56,9 +42,6 @@ public class SecurityConfig {
 //                .apply(new CustomFilterConfigurer())
 //                .and()
                 .authorizeHttpRequests(authorize -> authorize
-                        .antMatchers(
-                                "/v3/api-docs",
-                                "/swagger*/**").permitAll()
                         // member
                         .antMatchers(HttpMethod.POST, "/members/profileImage").hasAuthority("ROLE_USER")
                         .antMatchers(HttpMethod.DELETE, "/members/logout").hasAuthority("ROLE_USER")
@@ -75,6 +58,9 @@ public class SecurityConfig {
                         .antMatchers(HttpMethod.DELETE, "recruits/*").hasAuthority("ROLE_USER")
                         // tag
                         .antMatchers(HttpMethod.POST, "/tags").hasAuthority("ROLE_USER")
+                        .antMatchers(
+                                "/v3/api-docs",
+                                "/swagger*/**").permitAll()
                         .anyRequest().permitAll() // 권한 설정 필요!
                 );
         return http.build();

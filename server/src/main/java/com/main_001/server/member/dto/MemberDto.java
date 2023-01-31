@@ -147,25 +147,25 @@ public class MemberDto {
         private List<ResponseDto.Apply> applies;
 
         @ApiModelProperty(example = "작성한 모집글")
-        private List<RecruitDto.Response> recruits;
+        private List<MemberRecruitResponseDto> recruits;
 
         @ApiModelProperty(example = "모집글에 작성한 댓글")
         private List<ResponseDto.RecruitComment> recruitComments;
 
         @ApiModelProperty(example = "좋아요 누른 모집글")
-        private List<ResponseDto.RecruitLike> recruitLikes;
+        private List<MemberRecruitLikeResponseDto> recruitLikes;
 
         @ApiModelProperty(example = "작성한 리뷰")
         private List<ResponseDto.Review> reviews;
 
         @ApiModelProperty(example = "작성한 자유글")
-        private List<FreeDto.Response> frees;
+        private List<MemberFreeResponseDto> frees;
 
         @ApiModelProperty(example = "자유글에 작성한 댓글")
         private List<com.main_001.server.free.dto.ResponseDto.FreeComment> freeComments;
 
         @ApiModelProperty(example = "좋아요 누른 자유글")
-        private List<com.main_001.server.free.dto.ResponseDto.FreeLike> freeLikes;
+        private List<MemberFreeLikeResponseDto> freeLikes;
     }
 
     @Getter
@@ -205,10 +205,12 @@ public class MemberDto {
 
         // TODO Recruit, FreeBoard response 추가
         @ApiModelProperty(example = "작성한 모집글")
-        private List<RecruitDto.Response> recruits;
+        private List<MemberRecruitResponseDto> recruits;
 
         @ApiModelProperty(example = "작성한 자유글")
-        private List<FreeDto.Response> frees;
+        private List<MemberFreeResponseDto> frees;
+
+        private List<String> roles;
     }
 
 }
