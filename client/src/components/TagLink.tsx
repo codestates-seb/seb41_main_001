@@ -25,11 +25,11 @@ interface TagProps {
   value: string;
   emoji?: string;
   to: string;
-  setFilterTag?: any;
+  onClick?: any;
 }
 
-const TagLink = ({ value, emoji, to, setFilterTag }: TagProps) => (
-  <TagContainer to={to} onClick={() => setFilterTag(value)}>
+const TagLink = ({ value, emoji, to, onClick }: TagProps) => (
+  <TagContainer to={to} onClick={onClick}>
     {emoji ? `${emoji} ${value}` : `${value}`}
   </TagContainer>
 );

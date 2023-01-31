@@ -290,7 +290,7 @@ const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
           value={tagName}
           emoji={emoji}
           to={`/recruits?tag="${tagName}"`}
-          setFilterTag={setFilterTag}
+          onClick={() => setFilterTag(tagName)}
         />
         <ListTitle to={`/recruit/${recruitId}`}>{title}</ListTitle>
       </div>

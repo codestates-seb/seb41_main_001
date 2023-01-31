@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import classifyingStatus from '../utils/classifyingStatus';
@@ -158,9 +158,10 @@ const RecruitApplyBeforeMeeting = ({
   require,
   setData,
 }: ApplyConditionProps) => {
+  const navigate = useNavigate();
   const LOGIN_INFO = {
-    memberId: Number(localStorage.getItem('memberId')) || -1,
-    heart: Number(localStorage.getItem('heart')) || -1,
+    memberId: Number(localStorage.getItem('memberId')),
+    heart: Number(localStorage.getItem('heart')),
     birth: localStorage.getItem('birth'),
     sex: localStorage.getItem('sex'),
   };
@@ -251,22 +252,28 @@ const RecruitApplyBeforeMeeting = ({
                     console.log(
                       `PATCH /recruits/${recruitId}/application 신청!`,
                     );
-                    axios
-                      .patch(
-                        `${process.env.REACT_APP_API_URL}/application`,
-                        { memberId: LOGIN_INFO.memberId },
-                        {
-                          headers: {
-                            Authorization: localStorage.getItem('AccessToken'),
-                            Refresh: localStorage.getItem('RefreshToken'),
+                    if (LOGIN_INFO.memberId && LOGIN_INFO.memberId !== -1) {
+                      console.log(Number(LOGIN_INFO.memberId));
+                      axios
+                        .patch(
+                          `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/application`,
+                          { memberId: LOGIN_INFO.memberId },
+                          {
+                            headers: {
+                              Authorization:
+                                localStorage.getItem('AccessToken'),
+                              Refresh: localStorage.getItem('RefreshToken'),
+                            },
                           },
-                        },
-                      )
-                      .then((res) => {
-                        console.log(res.data.data);
-                        setData(res.data.data);
-                      })
-                      .catch((err) => console.log(err));
+                        )
+                        .then((res) => {
+                          console.log(res.data.data);
+                          setData(res.data.data);
+                        })
+                        .catch((err) => console.log(err));
+                    } else {
+                      navigate('/login');
+                    }
                   }}
                 />
               </ApplyBox>
@@ -286,7 +293,7 @@ const RecruitApplyBeforeMeeting = ({
                     );
                     axios
                       .patch(
-                        `${process.env.REACT_APP_API_URL}/application`,
+                        `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/application`,
                         { memberId: LOGIN_INFO.memberId },
                         {
                           headers: {

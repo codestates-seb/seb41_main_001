@@ -175,6 +175,27 @@ const RecruitDetail = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  useEffect(() => {
+    if (data) {
+      setLikesMemberId(
+        data.recruitLikes.reduce((r: number[], e: any) => {
+          if (e.memberId) {
+            r.push(e.memberId);
+          }
+          return r;
+        }, []),
+      );
+      setApplicantsId(
+        data.applies.reduce((r: number[], e: any) => {
+          if (e.memberId) {
+            r.push(e.memberId);
+          }
+          return r;
+        }, []),
+      );
+    }
+  }, [data]);
+
   const LOGIN_ID = Number(localStorage.getItem('memberId'));
 
   const checkIfMeetingEnded = (d: string) => {

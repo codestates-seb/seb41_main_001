@@ -88,7 +88,6 @@ interface LoginProps {
 
 const LogIn = () => {
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
