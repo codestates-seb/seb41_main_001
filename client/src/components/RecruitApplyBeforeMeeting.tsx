@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 import classifyingStatus from '../utils/classifyingStatus';
 import Button from './Button';
 import maskingNickname from '../utils/maskingNickname';
@@ -142,6 +143,7 @@ interface ApplyConditionProps {
   applies: { memberId: number; nickname: string; heart: number }[];
   minRequire: number;
   require: number;
+  setData: any;
 }
 
 const RecruitApplyBeforeMeeting = ({
@@ -154,6 +156,7 @@ const RecruitApplyBeforeMeeting = ({
   applies,
   minRequire,
   require,
+  setData,
 }: ApplyConditionProps) => {
   const LOGIN_INFO = {
     memberId: Number(localStorage.getItem('memberId')) || -1,
@@ -248,6 +251,22 @@ const RecruitApplyBeforeMeeting = ({
                     console.log(
                       `PATCH /recruits/${recruitId}/application 신청!`,
                     );
+                    axios
+                      .patch(
+                        `${process.env.REACT_APP_API_URL}/application`,
+                        { memberId: LOGIN_INFO.memberId },
+                        {
+                          headers: {
+                            Authorization: localStorage.getItem('AccessToken'),
+                            Refresh: localStorage.getItem('RefreshToken'),
+                          },
+                        },
+                      )
+                      .then((res) => {
+                        console.log(res.data.data);
+                        setData(res.data.data);
+                      })
+                      .catch((err) => console.log(err));
                   }}
                 />
               </ApplyBox>
@@ -265,6 +284,22 @@ const RecruitApplyBeforeMeeting = ({
                     console.log(
                       `PATCH /recruits/${recruitId}/application 취소!`,
                     );
+                    axios
+                      .patch(
+                        `${process.env.REACT_APP_API_URL}/application`,
+                        { memberId: LOGIN_INFO.memberId },
+                        {
+                          headers: {
+                            Authorization: localStorage.getItem('AccessToken'),
+                            Refresh: localStorage.getItem('RefreshToken'),
+                          },
+                        },
+                      )
+                      .then((res) => {
+                        console.log(res.data.data);
+                        setData(res.data.data);
+                      })
+                      .catch((err) => console.log(err));
                   }}
                 />
               </ApplyBox>

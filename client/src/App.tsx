@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Main from './pages/Main';
+// import Main from './pages/Main';
 import MyPage from './pages/MyPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -13,7 +13,6 @@ import EditRecruit from './pages/EditRecruit';
 import EditFreeboard from './pages/EditFreeboard';
 import Recruits from './pages/Recruits';
 import RecruitDetail from './pages/RecruitDetail';
-// import TaggedRecruit from './pages/TaggedRecruit';
 import FreeBoards from './pages/FreeBoards';
 import FreeDetail from './pages/FreeDetail';
 import Withdraw from './pages/Withdraw';
@@ -27,7 +26,7 @@ const App = () => (
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Main />} />
+        <Route path="/" element={<Recruits />} />
         <Route path="/members/mypage/:memberId" element={<MyPage />} />
         <Route path="/members/withdraw/:memberId" element={<Withdraw />} />
         <Route path="/members/edit/:memberId" element={<EditUser />} />
@@ -43,13 +42,6 @@ const App = () => (
         <Route path="/freeboard/new" element={<CreateFreeboard />} />
         <Route path="/freeboard/:freeId" element={<FreeDetail />} />
         <Route path="/freeboard/:freeId/edit" element={<EditFreeboard />} />
-        {/* <Route path="/freeboard/tags" element={<FreeTags />} />
-        <Route
-          path="recruits/tags/:tagId/:tagName"
-          element={<TaggedRecruit />}
-        /> */}
-        <Route path="/recruits" element={<Recruits />} />
-        <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruits/tags" element={<RecruitTags />} />
         <Route path="/freeboards/tags" element={<FreeboardTags />} />
         <Route path="/loading" element={<Loading />} />

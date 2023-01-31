@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Button from './Button';
 
@@ -27,7 +26,6 @@ const SubmitContainter = styled.form`
 // TODO: handleCommentSubmit props로 받을 것.
 
 interface CommentSubmitProps {
-  commentId?: number;
   value?: string;
   submitComment: string;
   setModifying?: (value: boolean) => void;
@@ -35,7 +33,6 @@ interface CommentSubmitProps {
 }
 
 const CommentSubmitBox = ({
-  commentId,
   value = '',
   submitComment,
   setModifying,
@@ -43,18 +40,17 @@ const CommentSubmitBox = ({
 }: CommentSubmitProps) => {
   const [comment, setComment] = useState(value);
   const LOGIN_ID = localStorage.getItem('memberId');
-  const { recruitId } = useParams();
   const handleCommentSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (setModifying) {
+    if (comment.trim() !== '' && setModifying) {
       // 댓글을 수정하는 경우
       console.log(
-        `PATCH ${process.env.REACT_APP_API_URL}/recruits/${recruitId}/${commentId}`,
+        `PATCH ${process.env.REACT_APP_API_URL}${submitComment}`,
         comment,
       );
       axios
         .patch(
-          `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/${commentId}`,
+          `${process.env.REACT_APP_API_URL}${submitComment}`,
           {
             body: comment,
             memberId: LOGIN_ID,
@@ -72,12 +68,12 @@ const CommentSubmitBox = ({
         })
         .catch((err) => console.log(err));
       setModifying(false);
-    } else {
+    } else if (comment.trim() !== '') {
       // 댓글을 등록하는 경우
       console.log(`POST ${submitComment}`, comment);
       axios
         .post(
-          `${process.env.REACT_APP_API_URL}/recruits/${recruitId}`,
+          `${process.env.REACT_APP_API_URL}${submitComment}`,
           {
             body: comment,
             memberId: LOGIN_ID,
@@ -94,8 +90,8 @@ const CommentSubmitBox = ({
           setData(res.data.data);
         })
         .catch((err) => console.log(err));
+      setComment('');
     }
-    setComment('');
   };
 
   return (

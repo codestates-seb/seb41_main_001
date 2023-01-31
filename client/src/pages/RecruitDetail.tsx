@@ -249,6 +249,7 @@ const RecruitDetail = () => {
               applies={data.applies}
               minRequire={data.minRequire}
               require={data.require}
+              setData={setData}
             />
           ) : (
             <RecruitApplyAfterMeeting
@@ -260,6 +261,7 @@ const RecruitDetail = () => {
               creatorId={data.memberId}
               reviews={data.reviews}
               creatorNickname={data.nickname}
+              setData={setData}
             />
           )}
           <ButtonArea>
@@ -323,7 +325,10 @@ const RecruitDetail = () => {
                 />
               ))}
             </ul>
-            <CommentSubmitBox submitComment={`/recruits/${data.recruitId}`} setData={setData} />
+            <CommentSubmitBox
+              submitComment={`/recruits/${data.recruitId}`}
+              setData={setData}
+            />
           </CommentArea>
         </>
       )}

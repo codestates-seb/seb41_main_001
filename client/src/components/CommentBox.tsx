@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import timeDifference from '../utils/timeDifference';
 import Button from './Button';
 import CommentSubmitBox from './CommentSubmitBox';
@@ -122,6 +123,14 @@ const CommentBox = (props: {
 
   const handleCommentDelete = () => {
     console.log(`DELETE /${board}/${boardId}/${commentId}`);
+    axios
+      .delete(
+        `${process.env.REACT_APP_API_URL}/${board}/${boardId}/${commentId}`,
+      )
+      .then((res) => {
+        console.log(res);
+        setData(res.data.data);
+      });
   };
 
   return (
@@ -174,7 +183,6 @@ const CommentBox = (props: {
         <div>{body}</div>
       ) : (
         <CommentSubmitBox
-          commentId={commentId}
           value={body}
           submitComment={`/${board}/${boardId}/${commentId}`}
           setModifying={setModifying}
