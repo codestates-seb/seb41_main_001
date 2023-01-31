@@ -226,7 +226,7 @@ const RecruitApplyAfterMeeting = ({
 }: ReviewConditionProps) => {
   const { recruitId } = useParams();
   const [reviewModal, setReviewModal] = useState<boolean>(false);
-  const LOGIN_ID = 1;
+  const LOGIN_ID = Number(localStorage.getItem('memberId')) || -1;
   const REVIEW_STAR_NUM = reviews.reduce((res: number[], ele) => {
     res.push(ele.star);
     return res;

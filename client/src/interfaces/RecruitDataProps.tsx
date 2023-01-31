@@ -32,7 +32,7 @@ export default interface RecruitDataProps {
     star: number;
   }[]; // TODO: 리뷰는 수정, 삭제 불가
   recruitComments: {
-    commentId: number;
+    recruitCommentId: number;
     memberId: number;
     nickname: string;
     heart: number;

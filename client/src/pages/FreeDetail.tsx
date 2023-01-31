@@ -338,9 +338,13 @@ const FreeDetail = () => {
                 data={el}
                 board="freeboards"
                 boardId={post.freeId}
+                setData={setPost}
               />
             ))}
-          <CommentSubmitBox submitComment={`/freeboards/${post?.freeId}`} />
+          <CommentSubmitBox
+            submitComment={`/freeboards/${post?.freeId}`}
+            setData={setPost}
+          />
         </BoardContainer>
       ) : (
         <Loading />

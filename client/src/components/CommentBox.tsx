@@ -87,7 +87,8 @@ const ApplicantMark = styled(CreatorMark)`
 `;
 
 interface CommentProps {
-  commentId: number;
+  recruitCommentId?: number;
+  freeCommentId?: number;
   memberId: number;
   nickname: string;
   heart: number;
@@ -103,6 +104,7 @@ const CommentBox = (props: {
   boardId: number;
   applicantsId?: number[];
   data: CommentProps;
+  setData: any;
 }) => {
   const {
     commentId,
@@ -111,6 +113,7 @@ const CommentBox = (props: {
     boardId,
     applicantsId,
     data: { memberId, nickname, heart, body, createdAt, modifiedAt },
+    setData,
   } = props;
 
   const LOGIN_ID = Number(localStorage.getItem('memberId'));
@@ -175,6 +178,7 @@ const CommentBox = (props: {
           value={body}
           submitComment={`/${board}/${boardId}/${commentId}`}
           setModifying={setModifying}
+          setData={setData}
         />
       )}
     </CommentContainer>
