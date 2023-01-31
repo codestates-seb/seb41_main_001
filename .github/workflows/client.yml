@@ -14,9 +14,8 @@ jobs:
         working-directory: ./client
       - name: Generate Environment Variables File for Production
         run: |
-          echo "REACT_APP_KAKAO_API_KEY=$REACT_APP_KAKAO_API_KEY" >> .env.production
-          echo "REACT_APP_FONTAWESOME_KIT=$REACT_APP_FONTAWESOME_KIT" >> .env.production
-          echo "REACT_APP_API_URL=$REACT_APP_API_URL" >> .env.production
+          echo "REACT_APP_KAKAO_API_KEY=${{ secrets.REACT_APP_KAKAO_API_KEY }}" >> .env.production
+          echo "REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}" >> .env.production
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
         working-directory: ./client

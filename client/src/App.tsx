@@ -27,7 +27,7 @@ const App = () => (
     <Router>
       <Header />
       <Routes>
-        {/* <Route path="/" element={<Main />} /> */}
+        <Route path="/" element={<Recruits />} />
         <Route path="/members/mypage" element={<MyPage />} />
         <Route path="/members/:memberId" element={<MemberPage />} />
         <Route path="/members/withdraw" element={<Withdraw />} />
