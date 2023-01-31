@@ -6,7 +6,7 @@
 import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
 import CreatorCard from '../components/CreatorCard';
@@ -14,8 +14,8 @@ import Loading from './Loading';
 // import KakaoMap from '../components/KakaoMap';
 import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
-import ButtonLink from '../components/ButtonLink';
 import Button from '../components/Button';
+import FreeCreatorSelectBox from '../components/FreeCreatorSelectBox';
 // import preview from '../img/preview.jpeg';
 
 const FDContainer = styled.main`
@@ -42,12 +42,8 @@ const BoardContainer = styled.div`
 
   > div:first-child {
     width: 5rem;
-    height: 1rem;
-    border: 0.1rem solid white;
     height: 2rem;
     /* border: 0.05rem solid white; */
-    height: 2rem;
-    border: 0.05rem solid white;
     border-radius: 0.3rem;
     /* background-color: white; */
     /* color: black; */
@@ -106,9 +102,9 @@ const BoardContainer = styled.div`
     display: flex;
     justify-content: space-between;
     > div:nth-child(2) {
-      width: 10.5rem;
+      /* width: 10.5rem;
       display: flex;
-      justify-content: space-between;
+      justify-content: space-between; */
       /* border: 1px solid white; */
       /* > button:first-child {
         margin-right: 0.5rem;
@@ -148,12 +144,6 @@ const ContentContainer = styled.div`
     }
 
     .map {
-      width: 33rem;
-      height: 10rem;
-      display: flex;
-      margin: 1rem 0;
-      width: 31rem;
-      height: 24rem;
       width: 35rem;
       height: 10rem;
       display: flex;
@@ -211,7 +201,7 @@ const FreeDetail = () => {
   const { freeId } = useParams();
   const [post, setPost] = useState<FreeDataProps | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
+  const memberId = localStorage.getItem('memberId');
 
   useEffect(() => {
     axios
@@ -226,29 +216,26 @@ const FreeDetail = () => {
       });
   }, []);
 
-  const handleDeleteFree = () => {
-    {
-      confirm('삭제하시겠습니까?') === true
-        ? axios
-            .delete(
-              `${process.env.REACT_APP_API_URL}/freeboards/${freeId}`,
-              // {
-              //   headers: {
-              //     Authorization: `${localStorage.getItem('AccessToken')}`,
-              //     Refresh: `${localStorage.getItem('RefreshToken')}`,
-              //   },
-              // },
-            )
-            .then((res) => {
-              console.log(res);
-              navigate(`/freeboards`);
-            })
-            .catch((err) => {
-              console.log(err);
-            })
-        : '';
-    }
-  };
+  // const handleDeleteFree = () => {
+  //   {
+  //     confirm('삭제하시겠습니까?') === true
+  //       ? axios
+  //           .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
+  //             headers: {
+  //               Authorization: `${localStorage.getItem('AccessToken')}`,
+  //               Refresh: `${localStorage.getItem('RefreshToken')}`,
+  //             },
+  //           })
+  //           .then((res) => {
+  //             console.log(res);
+  //             navigate(`/freeboards`);
+  //           })
+  //           .catch((err) => {
+  //             console.log(err);
+  //           })
+  //       : '';
+  //   }
+  // };
 
   return (
     <FDContainer>
@@ -332,18 +319,11 @@ const FreeDetail = () => {
               }}
               icon={<i className="fa-solid fa-heart" />}
             />
-            <div>
-              <ButtonLink
-                to={`/freeboards/${freeId}/edit`}
-                value="수정"
-                icon={<i className="fa-solid fa-pen-to-square" />}
-              />
-              <Button
-                value="삭제"
-                onClick={handleDeleteFree}
-                icon={<i className="fa-solid fa-trash" />}
-              />
-            </div>
+            {post?.memberId === Number(memberId) ? (
+              <FreeCreatorSelectBox />
+            ) : (
+              ''
+            )}
           </div>
           <div className="commentCount">
             {post?.freeComments.length}
@@ -353,6 +333,7 @@ const FreeDetail = () => {
             post?.freeComments.map((el) => (
               <CommentBox
                 key={el.commentId}
+                commentId={el.commentId}
                 memberId={el.memberId}
                 data={el}
                 board="freeboards"

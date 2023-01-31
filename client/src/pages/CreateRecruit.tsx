@@ -140,6 +140,7 @@ const KakaoMapForClick = ({
 };
 
 const CreateRecruit = () => {
+  const navigate = useNavigate();
   const {
     register,
     control,
@@ -159,36 +160,28 @@ const CreateRecruit = () => {
     },
   });
 
-  // const AccessToken = localStorage.getItem('AccessToken');
-  // const RefreshToken = localStorage.getItem('RefrechToken');
-  // const memberId = localStorage.getItem('memberId');
-  const navigate = useNavigate();
-
   const onSubmit = (data: RecruitFormInput) => {
     // tagSearch는 postBody에서 제외함.
     const { tagSearch, ...postBody } = data;
-    // console.log(JSON.stringify(postBody));
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/recruits/`,
+        `${process.env.REACT_APP_API_URL}/recruits`,
         {
+          memberId: localStorage.getItem('memberId'),
           ...postBody,
-          memberId: `${localStorage.getItem('memberId')}`,
         },
         {
           headers: {
-            Authorization: `${localStorage.getItem('AccessToken')}`,
-            Refresh: `${localStorage.getItem('RefreshToken')}`,
+            Authorization: localStorage.getItem('AccessToken'),
+            Refresh: localStorage.getItem('RefreshToken'),
           },
         },
       )
       .then((res) => {
         console.log(res);
-        navigate('/recruits');
+        navigate(`/recruits`);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => console.log(err));
   };
   const { location } = useCurrentLocation();
   console.log(location);
