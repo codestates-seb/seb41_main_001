@@ -156,12 +156,20 @@ const CreateRecruit = () => {
       },
     },
   });
-
+  const { location } = useCurrentLocation();
+  console.log(location);
   const onSubmit = (data: RecruitFormInput) => {
     // tagSearch는 postBody에서 제외함.
     const { tagSearch, ...postBody } = data;
     console.log(postBody.lat, postBody.lon);
-    console.log(JSON.stringify({ memberId: 1, ...postBody }));
+    console.log(
+      JSON.stringify({
+        memberId: 1,
+        ...postBody,
+        lat: location?.latitude,
+        lon: location?.longitude,
+      }),
+    );
     // axios
     //   .post(`${process.env.REACT_APP_API_URL}/recruits`, {
     //     memberId: 1,
@@ -171,8 +179,6 @@ const CreateRecruit = () => {
     //   .catch((err) => console.log(err));
   };
 
-  const { location } = useCurrentLocation();
-  console.log(location);
   const TAG_DATA = [
     { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
     { tagId: 2, tagName: '농구', emoji: '🏀' },

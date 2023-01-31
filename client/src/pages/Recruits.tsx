@@ -6,6 +6,7 @@ import FilterBox from '../components/FilterBox';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
 import RecruitList from '../components/RecruitList';
 import ButtonLink from '../components/ButtonLink';
+import PaginationLink from '../components/PaginationLink';
 
 const MainContainer = styled.main`
   width: 1100px;
@@ -20,7 +21,22 @@ const MainContainer = styled.main`
     width: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
     align-items: center;
+
+    > div {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      select {
+        margin-bottom: 10px;
+        margin-right: 10px;
+        font-size: 14px;
+        background-color: var(--gray);
+        color: white;
+        padding: 5px;
+      }
+    }
   }
 
   aside {
@@ -49,203 +65,49 @@ const MainContainer = styled.main`
 `;
 
 const Recruits = () => {
-  const DATA: RecruitDataProps[] = [
-    {
-      recruitId: 1,
-      title:
-        '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
-      body: 'BODY1',
-      image: '',
-      createdAt: '2023-01-02T16:18:48.908218',
-      modifiedAt: '2023-01-02T16:18:48.908218',
-      recruitStatus: '모집중', // 모집중/모집완료/활동종료
-      star: 0,
-      views: 0,
-      memberId: 1,
-      nickname: '글자수세기TEST글자수세기TEST글자',
-      authorHeart: 50,
-      likes: 0,
-      location: '춘천',
-      lat: 37.343336,
-      lon: 127.1233716,
-      heartLimit: 50,
-      ageGroup: ['10', '20', '30', '40', '50', '60'],
-      sex: 'Both', // Male, Female, Both
-      applies: [
-        { memberId: 2, nickname: 'bbb', heart: 80 },
-        { memberId: 3, nickname: 'ccc', heart: 80 },
-        { memberId: 4, nickname: 'ddd', heart: 80 },
-        { memberId: 5, nickname: 'eee', heart: 80 },
-        { memberId: 6, nickname: 'fff', heart: 80 },
-        { memberId: 7, nickname: 'ggg', heart: 80 },
-        { memberId: 8, nickname: 'hhh', heart: 80 },
-        { memberId: 9, nickname: 'iii', heart: 80 },
-      ],
-      minRequire: 2,
-      require: 5,
-      date: '2023-01-02T16:18:48.908218',
-      recruitTags: [{ tagId: 1, tagName: '축구/풋볼', emoji: '⚽️' }],
-      recruitLikes: [
-        {
-          memberId: 1,
-        },
-      ],
-      reviews: [
-        {
-          reviewId: 1,
-          memberId: 1,
-          nickname: '닉네임',
-          heart: 50,
-          body: '리뷰 내용',
-          star: 5,
-        },
-      ],
-      recruitComments: [
-        {
-          commentId: 1,
-          memberId: 1,
-          nickname: '닉네임',
-          heart: 50,
-          body: '댓글 내용 작성',
-          createdAt: '2023-01-18T17:35:10.171566',
-          modifiedAt: '2023-01-18T17:35:10.165851',
-        },
-      ],
-    },
-    {
-      recruitId: 2,
-      title:
-        '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
-      body: 'BODY1',
-      image: '',
-      createdAt: '2023-01-02T16:18:48.908218',
-      modifiedAt: '2023-01-02T16:18:48.908218',
-      recruitStatus: '최소인원충족', // 모집중/모집완료/활동종료
-      star: 0,
-      views: 0,
-      memberId: 1,
-      nickname: 'aaa',
-      authorHeart: 50,
-      likes: 0,
-      location: '춘천',
-      lat: 37.343336,
-      lon: 127.1233716,
-      heartLimit: 20, // number, 0
-      ageGroup: ['10', '20', '30'],
-      sex: 'Male', // Male, Female, Both
-      applies: [
-        { memberId: 2, nickname: 'bbb', heart: 80 },
-        { memberId: 3, nickname: 'ccc', heart: 80 },
-      ],
-      minRequire: 2,
-      require: 5,
-      date: '2023-01-02T16:18:48.908218',
-      recruitTags: [{ tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' }],
-      recruitLikes: [
-        {
-          memberId: 1,
-        },
-      ],
-      reviews: [
-        {
-          reviewId: 1,
-          memberId: 1,
-          nickname: '닉네임',
-          heart: 50,
-          body: '리뷰 내용',
-          star: 5,
-        },
-      ],
-      recruitComments: [
-        {
-          commentId: 1,
-          memberId: 1,
-          nickname: '닉네임',
-          heart: 50,
-          body: '댓글 내용 작성',
-          createdAt: '2023-01-18T17:35:10.171566',
-          modifiedAt: '2023-01-18T17:35:10.165851',
-        },
-      ],
-    },
-    {
-      recruitId: 3,
-      title:
-        '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
-      body: 'BODY1',
-      image: '',
-      createdAt: '2023-01-02T16:18:48.908218',
-      modifiedAt: '2023-01-02T16:18:48.908218',
-      recruitStatus: '모집완료', // 모집중/모집완료/활동종료
-      star: 0,
-      views: 0,
-      memberId: 1,
-      nickname: 'aaa',
-      authorHeart: 50,
-      likes: 0,
-      location: '춘천',
-      lat: 37.343336,
-      lon: 127.1233716,
-      heartLimit: 20, // number, 0
-      ageGroup: ['10', '20', '30', '40', '50', '60', '70'],
-      sex: 'Female', // Male, Female, Both
-      applies: [{ memberId: 2, nickname: 'bbb', heart: 80 }],
-      minRequire: 2,
-      require: 5,
-      date: '2023-01-02T16:18:48.908218',
-      recruitTags: [{ tagId: 11, tagName: '무술/주짓수', emoji: '🥋' }],
-      recruitLikes: [
-        {
-          memberId: 1,
-        },
-      ],
-      reviews: [
-        {
-          reviewId: 1,
-          memberId: 1,
-          nickname: '닉네임',
-          heart: 50,
-          body: '리뷰 내용',
-          star: 5,
-        },
-      ],
-      recruitComments: [
-        {
-          commentId: 1,
-          memberId: 1,
-          nickname: '닉네임',
-          heart: 50,
-          body: '댓글 내용 작성',
-          createdAt: '2023-01-18T17:35:10.171566',
-          modifiedAt: '2023-01-18T17:35:10.165851',
-        },
-      ],
-    },
-  ];
-  const params = new URLSearchParams(useLocation().search);
+  const [data, setData] = useState<RecruitDataProps[]>();
+  const [pageCount, setPageCount] = useState<number>(0);
+  const [page, setPage] = useState(1);
+  const [listNum, setListNum] = useState('5');
+  const searchParams = new URLSearchParams(useLocation().search);
   const [filterTag, setFilterTag] = useState<string>(
-    params.get('tag')?.replaceAll('"', '') ?? '',
+    searchParams.get('tag')?.replaceAll('"', '') ?? '',
   );
   const [filterStatus, setFilterStatus] = useState<string>(
-    params.get('status')?.replaceAll('"', '') ?? '',
+    searchParams.get('status')?.replaceAll('"', '') ?? '',
   );
   // const [filterRegion, setFilterRegion] = useState('');
 
   useEffect(() => {
+    console.log(filterTag, filterStatus);
+    const params = {
+      page,
+      size: listNum,
+      distanceLimit: 10,
+      lat: 37.757687,
+      lon: 128.873749,
+    };
     axios
-      .get(`${process.env.REACT_APP_API_URL}/recruits?page=1&size=100`, {
-        params: {
-          keyword: '', // string
-          tagName: '', // string
-          status: '', // string
-          distanceLimit: 10, // number
-          lat: 37.757687, // number
-          lon: 128.873749, // number
-        },
+      .get(
+        `${process.env.REACT_APP_API_URL}/recruits?${
+          filterTag ? `tagName=${filterTag}` : ''
+        }&${filterStatus ? `status=${filterStatus}` : ''}`,
+        { params },
+      )
+      .then((res) => {
+        setData(res.data.data);
+        setPageCount(res.data.pageInfo.totalPages);
+        console.log(res.data.pageInfo);
       })
-      .then((res) => console.log(res))
       .catch((err) => console.log(err));
-  }, []);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [page, listNum, filterTag, filterStatus]);
+
+  const handleChangeListNum = (e: any) => {
+    setListNum(e.target.value);
+    setPage(1);
+  };
 
   return (
     <MainContainer>
@@ -253,10 +115,27 @@ const Recruits = () => {
         <h1>모집게시판</h1>
         <span>동네 이웃과 함께 운동을 즐겨보세요!</span>
         <ul>
-          {DATA.map((item) => (
-            <RecruitList key={item.recruitId} data={item} />
-          ))}
+          <div>
+            <select onChange={handleChangeListNum}>
+              <option value={5} selected>
+                5개
+              </option>
+              <option value={10}>10개</option>
+              <option value={15}>15개</option>
+            </select>
+          </div>
+          {data &&
+            data.map((item) => (
+              <RecruitList key={item.recruitId} data={item} />
+            ))}
         </ul>
+        {pageCount && (
+          <PaginationLink
+            pageCount={pageCount}
+            active_page={page}
+            setPage={setPage}
+          />
+        )}
       </div>
       <aside>
         <div>

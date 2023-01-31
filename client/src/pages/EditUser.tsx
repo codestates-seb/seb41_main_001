@@ -497,58 +497,58 @@ const EditUser = () => {
     alert(
       `위도 : ${currentLocation?.latitude}, 경도 : ${currentLocation?.longitude}`,
     );
-    // };
-    // const locationAdd = () => {
-    //   alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
-    // };
-    // inputImage.addEventListener('change', (e) => {
-    //   readImage(e.target);
-    // });
-    const changePassword = () => {
-      setPasswordChange(!passwordChange);
-      doesMatch();
-      setNewPassword('');
-    };
-    const nicknameCheck = () => {
-      const name = (document.getElementById('nickname') as HTMLInputElement)
-        .value;
-      axios
-        .get(
-          `${process.env.REACT_APP_API_URL}/members/signup/check-nickname/${name}`,
-        )
-        .then((res: any) => {
-          console.log(res);
-          if (res.data === true) {
-            alert('이미 존재하는 닉네임입니다!');
-          } else {
-            setNickCheck(true);
-          }
-        })
-        .catch((err: any) => console.log(err));
-    };
-    const phoneNumCheck = () => {
-      const phone = (document.getElementById('phone') as HTMLInputElement)
-        .value;
-      axios
-        .get(
-          `${process.env.REACT_APP_API_URL}/members/signup/check-phone/${phone}`,
-        )
-        .then((res: any) => {
-          console.log(res);
-          if (res.data === true) {
-            alert('이미 존재하는 휴대폰 번호입니다!');
-          } else {
-            setPhoneCheck(true);
-          }
-        })
-        .catch((err: any) => console.log(err));
-    };
-    return (
-      <EditContainer onSubmit={handleSubmit(onSubmitHandler)}>
-        <Container>
-          <div>회원정보 수정</div>
-          <PersonalInfo>
-            {/* <InfoBlock>
+  };
+  // };
+  // const locationAdd = () => {
+  //   alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
+  // };
+  // inputImage.addEventListener('change', (e) => {
+  //   readImage(e.target);
+  // });
+  const changePassword = () => {
+    setPasswordChange(!passwordChange);
+    doesMatch();
+    setNewPassword('');
+  };
+  const nicknameCheck = () => {
+    const name = (document.getElementById('nickname') as HTMLInputElement)
+      .value;
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/members/signup/check-nickname/${name}`,
+      )
+      .then((res: any) => {
+        console.log(res);
+        if (res.data === true) {
+          alert('이미 존재하는 닉네임입니다!');
+        } else {
+          setNickCheck(true);
+        }
+      })
+      .catch((err: any) => console.log(err));
+  };
+  const phoneNumCheck = () => {
+    const phone = (document.getElementById('phone') as HTMLInputElement).value;
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/members/signup/check-phone/${phone}`,
+      )
+      .then((res: any) => {
+        console.log(res);
+        if (res.data === true) {
+          alert('이미 존재하는 휴대폰 번호입니다!');
+        } else {
+          setPhoneCheck(true);
+        }
+      })
+      .catch((err: any) => console.log(err));
+  };
+  return (
+    <EditContainer onSubmit={handleSubmit(onSubmitHandler)}>
+      <Container>
+        <div>회원정보 수정</div>
+        <PersonalInfo>
+          {/* <InfoBlock>
             <label htmlFor="pfp">프로필 사진</label>
             <div>
               <Pfp id="preview-image" src={img} />
@@ -570,73 +570,73 @@ const EditUser = () => {
               </NoLinkButton>
             </div>
           </InfoBlock> */}
-            <InfoBlock>
-              <label htmlFor="nickname">닉네임</label>
-              <WarnSet>
-                <input
-                  id="nickname"
-                  type="text"
-                  defaultValue="NickName"
-                  disabled={nickCheck}
-                  {...register('nickname', {
-                    required: true,
-                  })}
-                />
-                {errors.nickname && (
-                  <span>
-                    <i className="fa-solid fa-circle-exclamation" />
-                    닉네임을 입력해주세요
-                  </span>
-                )}
-              </WarnSet>
-              <NoLinkButton
-                type="button"
-                onClick={nicknameCheck}
+          <InfoBlock>
+            <label htmlFor="nickname">닉네임</label>
+            <WarnSet>
+              <input
+                id="nickname"
+                type="text"
+                defaultValue="NickName"
                 disabled={nickCheck}
-              >
-                {nickCheck ? '확인 완료' : '중복 확인'}
-              </NoLinkButton>
-            </InfoBlock>
-            <InfoBlock>
-              <label htmlFor="curPassword">기존 비밀번호</label>
-              <WarnSet>
-                <input
-                  id="curPassword"
-                  type="password"
-                  {...register('curPassword', { required: true })}
-                />
-                {errors.curPassword && (
-                  <span>
-                    <i className="fa-solid fa-circle-exclamation" />
-                    현재 비밀번호를 입력해주세요
-                  </span>
-                )}
-              </WarnSet>
-            </InfoBlock>
-            <InfoBlock>
-              <label htmlFor="askNewPass">비밀번호 변경</label>
-              {passwordChange ? (
-                <NoLinkButton type="button" onClick={changePassword}>
-                  변경 취소
-                </NoLinkButton>
-              ) : (
-                <NoLinkButton type="button" onClick={changePassword}>
-                  비밀번호 변경
-                </NoLinkButton>
-              )}
-            </InfoBlock>
-            {passwordChange ? (
-              <NewPassword
-                passwordMatch={passwordMatch}
-                doesMatch={doesMatch}
-                doesNotMatch={doesNotMatch}
-                newPass={newPassword}
-                setNewPass={setNewPassword}
+                {...register('nickname', {
+                  required: true,
+                })}
               />
+              {errors.nickname && (
+                <span>
+                  <i className="fa-solid fa-circle-exclamation" />
+                  닉네임을 입력해주세요
+                </span>
+              )}
+            </WarnSet>
+            <NoLinkButton
+              type="button"
+              onClick={nicknameCheck}
+              disabled={nickCheck}
+            >
+              {nickCheck ? '확인 완료' : '중복 확인'}
+            </NoLinkButton>
+          </InfoBlock>
+          <InfoBlock>
+            <label htmlFor="curPassword">기존 비밀번호</label>
+            <WarnSet>
+              <input
+                id="curPassword"
+                type="password"
+                {...register('curPassword', { required: true })}
+              />
+              {errors.curPassword && (
+                <span>
+                  <i className="fa-solid fa-circle-exclamation" />
+                  현재 비밀번호를 입력해주세요
+                </span>
+              )}
+            </WarnSet>
+          </InfoBlock>
+          <InfoBlock>
+            <label htmlFor="askNewPass">비밀번호 변경</label>
+            {passwordChange ? (
+              <NoLinkButton type="button" onClick={changePassword}>
+                변경 취소
+              </NoLinkButton>
             ) : (
-              ''
+              <NoLinkButton type="button" onClick={changePassword}>
+                비밀번호 변경
+              </NoLinkButton>
             )}
-            {/* <InfoBlock>
+          </InfoBlock>
+          {passwordChange ? (
+            <NewPassword
+              passwordMatch={passwordMatch}
+              doesMatch={doesMatch}
+              doesNotMatch={doesNotMatch}
+              newPass={newPassword}
+              setNewPass={setNewPassword}
+            />
+          ) : (
+            ''
+          )}
+          {/* <InfoBlock>
             <label htmlFor="newPassword">새 비밀번호</label>
             <input
               id="newPassword"
@@ -652,95 +652,90 @@ const EditUser = () => {
               {...register('newPasswordCheck')}
             />
           </InfoBlock> */}
-            <InfoBlock>
-              <label htmlFor="phone">휴대폰 번호</label>
-              <WarnSet>
-                <input
-                  id="phone"
-                  type="number"
-                  placeholder="01012345678"
-                  disabled={phoneCheck}
-                  {...register('phone', {
-                    required: true,
-                  })}
-                />
-                {errors.phone && (
-                  <span>
-                    <i className="fa-solid fa-circle-exclamation" />
-                    휴대폰 번호을 입력해주세요
-                  </span>
-                )}
-              </WarnSet>
-              <NoLinkButton
-                type="button"
-                onClick={phoneNumCheck}
+          <InfoBlock>
+            <label htmlFor="phone">휴대폰 번호</label>
+            <WarnSet>
+              <input
+                id="phone"
+                type="number"
+                placeholder="01012345678"
                 disabled={phoneCheck}
-              >
-                {phoneCheck ? '확인 완료' : '중복 확인'}
-              </NoLinkButton>
-            </InfoBlock>
-            <InfoBlock>
-              <label htmlFor="location">등록 지역 변경</label>
-              <div>
-                <div id="map">
-                  {currentLocation && (
-                    <KakaoMap
-                      latitude={currentLocation.latitude}
-                      longitude={currentLocation.longitude}
-                    />
-                  )}
-                  <button
-                    type="button"
-                    id="locationButton"
-                    onClick={locationAdd}
-                  >
-                    현재 위치 추가
-                  </button>
-                </div>
-                <div>
-                  서울시 강서구
-                  <i className="fa-solid fa-xmark" />
-                </div>
-                <div>
-                  수원시
-                  <i className="fa-solid fa-xmark" />
-                </div>
-              </div>
-            </InfoBlock>
-            <InfoBlock>
-              <label htmlFor="memberTags">등록 태그 변경</label>
-              <div>
-                <TagList>
-                  <AutoCompleteForArray
-                    fields={fields}
-                    append={append}
-                    remove={remove}
-                    register={register}
-                    control={control}
-                    data={TAG_DATA}
-                    tagLength={3}
-                  />
-                </TagList>
-              </div>
-            </InfoBlock>
-          </PersonalInfo>
-          <span>
-            <Button
-              type="submit"
-              disabled={!(nickCheck && phoneCheck && passwordMatch)}
+                {...register('phone', {
+                  required: true,
+                })}
+              />
+              {errors.phone && (
+                <span>
+                  <i className="fa-solid fa-circle-exclamation" />
+                  휴대폰 번호을 입력해주세요
+                </span>
+              )}
+            </WarnSet>
+            <NoLinkButton
+              type="button"
+              onClick={phoneNumCheck}
+              disabled={phoneCheck}
             >
-              <i className="fa-solid fa-square-check" />
-              저장하기
-            </Button>
-            <TempButton to={`/members/mypage/${memberId}`}>
-              <i className="fa-solid fa-xmark" />
-              취소하기
-            </TempButton>
-          </span>
-        </Container>
-      </EditContainer>
-    );
-  };
+              {phoneCheck ? '확인 완료' : '중복 확인'}
+            </NoLinkButton>
+          </InfoBlock>
+          <InfoBlock>
+            <label htmlFor="location">등록 지역 변경</label>
+            <div>
+              <div id="map">
+                {currentLocation && (
+                  <KakaoMap
+                    latitude={currentLocation.latitude}
+                    longitude={currentLocation.longitude}
+                  />
+                )}
+                <button type="button" id="locationButton" onClick={locationAdd}>
+                  현재 위치 추가
+                </button>
+              </div>
+              <div>
+                서울시 강서구
+                <i className="fa-solid fa-xmark" />
+              </div>
+              <div>
+                수원시
+                <i className="fa-solid fa-xmark" />
+              </div>
+            </div>
+          </InfoBlock>
+          <InfoBlock>
+            <label htmlFor="memberTags">등록 태그 변경</label>
+            <div>
+              <TagList>
+                <AutoCompleteForArray
+                  fields={fields}
+                  append={append}
+                  remove={remove}
+                  register={register}
+                  control={control}
+                  data={TAG_DATA}
+                  tagLength={3}
+                />
+              </TagList>
+            </div>
+          </InfoBlock>
+        </PersonalInfo>
+        <span>
+          <Button
+            type="submit"
+            disabled={!(nickCheck && phoneCheck && passwordMatch)}
+          >
+            <i className="fa-solid fa-square-check" />
+            저장하기
+          </Button>
+          <TempButton to={`/members/mypage/${memberId}`}>
+            <i className="fa-solid fa-xmark" />
+            취소하기
+          </TempButton>
+        </span>
+      </Container>
+    </EditContainer>
+  );
 };
 
 export default EditUser;
