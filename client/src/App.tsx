@@ -41,6 +41,7 @@ const App = () => (
         <Route path="/freeboards" element={<FreeBoards />} />
         <Route path="/freeboard/new" element={<CreateFreeboard />} />
         <Route path="/freeboard/:freeId" element={<FreeDetail />} />
+        <Route path="/recruit/:recruitId/edit" element={<EditRecruit />} />
         <Route path="/freeboard/:freeId/edit" element={<EditFreeboard />} />
         <Route path="/recruits/tags" element={<RecruitTags />} />
         <Route path="/freeboards/tags" element={<FreeboardTags />} />

@@ -1,16 +1,21 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-lone-blocks */
 /* eslint-disable operator-linebreak */
 import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
 import CreatorCard from '../components/CreatorCard';
 import Loading from './Loading';
-import KakaoMap from '../components/KakaoMap';
+// import KakaoMap from '../components/KakaoMap';
 import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
 import Button from '../components/Button';
+import FreeCreatorSelectBox from '../components/FreeCreatorSelectBox';
 // import preview from '../img/preview.jpeg';
 
 const FDContainer = styled.main`
@@ -38,10 +43,10 @@ const BoardContainer = styled.div`
   > div:first-child {
     width: 5rem;
     height: 2rem;
-    border: 0.05rem solid white;
+    /* border: 0.05rem solid white; */
     border-radius: 0.3rem;
-    background-color: white;
-    color: black;
+    /* background-color: white; */
+    /* color: black; */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,6 +56,10 @@ const BoardContainer = styled.div`
     i {
       margin-right: 0.3rem;
     }
+    a {
+      text-decoration: none;
+      color: white;
+    }
   }
 
   > div:nth-child(3) {
@@ -58,10 +67,12 @@ const BoardContainer = styled.div`
     width: 35rem;
     justify-content: space-between;
     > div:first-child {
-      width: 5.3rem;
+      width: 6rem;
+      /* width: auto; */
       display: flex;
       align-items: center;
       justify-content: center;
+      /* border: 1px solid white; */
       i {
         margin-right: 0.3rem;
       }
@@ -91,10 +102,13 @@ const BoardContainer = styled.div`
     display: flex;
     justify-content: space-between;
     > div:nth-child(2) {
+      /* width: 10.5rem;
       display: flex;
-      > button:first-child {
+      justify-content: space-between; */
+      /* border: 1px solid white; */
+      /* > button:first-child {
         margin-right: 0.5rem;
-      }
+      } */
     }
   }
 `;
@@ -109,6 +123,7 @@ const ContentContainer = styled.div`
     height: auto;
     min-height: 3rem;
     line-height: 150%;
+    margin-bottom: 1rem;
   }
 
   > div {
@@ -164,14 +179,33 @@ const CountContainer = styled.div`
   }
 `;
 
+const Category = styled('div')<{ color: string }>`
+  width: 4.5rem;
+  height: 2rem;
+  border-radius: 0.7rem;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) =>
+    props.color === '운동'
+      ? 'var(--neon-blue)'
+      : props.color === '정보'
+      ? 'var(--neon-orange)'
+      : props.color === '질문'
+      ? 'var(--neon-green)'
+      : 'var(--neon-sky-blue)'};
+`;
+
 const FreeDetail = () => {
   const { freeId } = useParams();
   const [post, setPost] = useState<FreeDataProps | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const memberId = localStorage.getItem('memberId');
 
   useEffect(() => {
     axios
-      .get(`/freeboards/${freeId}`)
+      .get(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`)
       .then((res) => {
         setPost(res.data.data);
         console.log(post);
@@ -182,20 +216,52 @@ const FreeDetail = () => {
       });
   }, []);
 
+  // const handleDeleteFree = () => {
+  //   {
+  //     confirm('삭제하시겠습니까?') === true
+  //       ? axios
+  //           .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
+  //             headers: {
+  //               Authorization: `${localStorage.getItem('AccessToken')}`,
+  //               Refresh: `${localStorage.getItem('RefreshToken')}`,
+  //             },
+  //           })
+  //           .then((res) => {
+  //             console.log(res);
+  //             navigate(`/freeboards`);
+  //           })
+  //           .catch((err) => {
+  //             console.log(err);
+  //           })
+  //       : '';
+  //   }
+  // };
+
   return (
     <FDContainer>
       {!isLoading ? (
         <BoardContainer>
           <div>
-            {/* {post?.category} */}
-            <i className="fa-solid fa-dumbbell" />
-            운동
+            <Link to={`/freeboards?category=${post?.category}`}>
+              <Category color={post!.category}>
+                {post?.category === '운동' ? (
+                  <i className="fa-solid fa-dumbbell" />
+                ) : post?.category === '정보' ? (
+                  <i className="fa-solid fa-bullhorn" />
+                ) : post?.category === '질문' ? (
+                  <i className="fa-regular fa-comments" />
+                ) : (
+                  <i className="fa-solid fa-hand-holding-heart" />
+                )}
+                {post?.category}
+              </Category>
+            </Link>
           </div>
           <h1>{post?.freeTitle}</h1>
           <div>
             <div>
               <i className="fa-regular fa-clock" />
-              {timeDifference(`${post?.createdAt}`)}
+              {timeDifference(`${post?.modifiedAt}`)}
             </div>
             <CountContainer>
               <div>
@@ -204,58 +270,63 @@ const FreeDetail = () => {
               </div>
               <div>
                 <i className="fa-regular fa-thumbs-up like" />
-                {post?.likes}
+                {post?.freeLikes.length}
               </div>
               <div>
                 <i className="fa-regular fa-comment-dots comment" />
-                {0}
-                {/* <div>{post?.freeComments.length}</div> */}
+                {post?.freeComments.length}
               </div>
             </CountContainer>
           </div>
-          <CreatorCard memberId={1} nickname="aaa" heart={100} />
+          <CreatorCard
+            memberId={post!.memberId}
+            nickname={post!.nickname}
+            heart={post!.authorHeart}
+          />
           <ContentContainer>
             {/* <div>
               <img src={preview} alt="preview" />
             </div> */}
-            <div className="body">
-              {post?.freeBody}
-              안녕안녕안녕안녕 하세요하세요 안녕안녕안녕안녕 하세요하세요
-              안녕안녕안녕안녕 하세요하세요 안녕안녕안녕안녕 하세요하세요
-              안녕안녕안녕안녕 하세요하세요 안녕안녕안녕안녕 하세요하세요
-            </div>
-            <div>
-              {/* 위치 */}
-              <div className="map">
-                <KakaoMap
-                  latitude={37.7424074}
-                  longitude={127.042215}
-                  overlayvalue="운동 장소"
-                />
+            <div className="body">{post?.freeBody}</div>
+            {/* {post?.location === undefined ? (
+              ''
+            ) : (
+              <div>
+                <div className="map">
+                  <KakaoMap
+                    latitude={37.7424074}
+                    longitude={127.042215}
+                    overlayvalue="운동 장소"
+                  />
+                </div>
               </div>
-            </div>
+            )} */}
           </ContentContainer>
           <div className="btnCon">
             <Button
               value="좋아요"
-              onClick={() => console.log('좋아요!')}
+              onClick={() => {
+                axios
+                  .patch(
+                    `${process.env.REACT_APP_API_URL}/freeboards/${freeId}/likes`,
+                  )
+                  .then((res) => {
+                    console.log(res);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              }}
               icon={<i className="fa-solid fa-heart" />}
             />
-            <div>
-              <Button
-                value="수정"
-                onClick={() => console.log('수정')}
-                icon={<i className="fa-solid fa-pen-to-square" />}
-              />
-              <Button
-                value="삭제"
-                onClick={() => console.log('수정')}
-                icon={<i className="fa-solid fa-trash" />}
-              />
-            </div>
+            {post?.memberId === Number(memberId) ? (
+              <FreeCreatorSelectBox />
+            ) : (
+              ''
+            )}
           </div>
           <div className="commentCount">
-            {0}
+            {post?.freeComments.length}
             개의 댓글이 있습니다
           </div>
           {post?.freeComments &&

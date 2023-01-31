@@ -1,8 +1,9 @@
 // import { useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
+// import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import AutoCompleteForArray from '../components/AutoCompleteForArray';
 import useCurrentLocation from '../utils/useCurrentLocation';
 import KakaoMapClick from '../components/KakaoMapClick';
@@ -158,8 +159,7 @@ const CreateRecruit = () => {
       },
     },
   });
-  const { location } = useCurrentLocation();
-  console.log(location);
+
   const onSubmit = (data: RecruitFormInput) => {
     // tagSearch는 postBody에서 제외함.
     const { tagSearch, ...postBody } = data;
@@ -167,7 +167,7 @@ const CreateRecruit = () => {
       .post(
         `${process.env.REACT_APP_API_URL}/recruits`,
         {
-          memberId: 1,
+          memberId: localStorage.getItem('memberId'),
           ...postBody,
         },
         {
@@ -183,7 +183,8 @@ const CreateRecruit = () => {
       })
       .catch((err) => console.log(err));
   };
-
+  const { location } = useCurrentLocation();
+  console.log(location);
   const TAG_DATA = [
     { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
     { tagId: 2, tagName: '농구', emoji: '🏀' },

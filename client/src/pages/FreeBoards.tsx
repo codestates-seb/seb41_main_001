@@ -34,6 +34,7 @@ const FBLContainer = styled.main`
     height: 1.5rem;
     margin-left: 29rem;
     margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 
   ul {
@@ -53,6 +54,7 @@ const FBLContainer = styled.main`
     background-color: var(--neon-yellow);
     position: sticky;
     top: 44rem;
+    margin-bottom: 1rem;
   }
 `;
 
@@ -74,7 +76,7 @@ const FiltContainer = styled.div`
   }
 `;
 
-const CategoryLink = styled(Link)<{ color: string; currentColor: string }>`
+const CategoryLink = styled(Link)<{ color: string; currentcolor: string }>`
   :hover {
     > div {
       color: black;
@@ -93,13 +95,15 @@ const CategoryLink = styled(Link)<{ color: string; currentColor: string }>`
     border-radius: 1rem;
     margin-left: 0.5rem;
     margin-right: 0.2rem;
-    background-color: ${(props) => props.currentColor || '#484848'};
+    background-color: ${(props) => props.currentcolor || '#484848'};
   }
 `;
 
 const FreeBoards = () => {
   const [data, setData] = useState<FreeDataProps[]>([]);
   const [filterCategory, setFilterCategory] = useState('');
+  const [keywordValue, setKeywordValue] = useState<string>();
+  const [typeValue, setTypeValue] = useState<string>();
   const location = useLocation();
   console.log(location);
   // const params = new URLSearchParams(location.search);
@@ -112,14 +116,14 @@ const FreeBoards = () => {
   useEffect(() => {
     axios
       .get(
-        `/freeboards?category=${filterCategory}&page=1&size=10&sort=latest&tag=all`,
+        `${process.env.REACT_APP_API_URL}/freeboards?page=1&size=10&type=${keywordValue}&keyword=${typeValue}`,
       )
       .then((res) => {
         setData(res.data.data);
         console.log(data);
       })
       .catch((err) => console.log(err));
-  }, [filterCategory]);
+  }, [keywordValue, typeValue]);
 
   return (
     <FBLContainer>
@@ -133,8 +137,10 @@ const FreeBoards = () => {
             to="/freeboards?category=운동"
             onClick={() => {
               setFilterCategory('운동');
+              setKeywordValue('category');
+              setTypeValue('운동');
             }}
-            currentColor={filterCategory === '운동' ? '#5aa1f1' : '#484848'}
+            currentcolor={filterCategory === '운동' ? '#5aa1f1' : '#484848'}
           >
             <div>
               <i className="fa-solid fa-dumbbell" />
@@ -146,8 +152,10 @@ const FreeBoards = () => {
             to="/freeboards?category=정보"
             onClick={() => {
               setFilterCategory('정보');
+              setKeywordValue('category');
+              setTypeValue('정보');
             }}
-            currentColor={filterCategory === '정보' ? '#ee8834' : '#484848'}
+            currentcolor={filterCategory === '정보' ? '#ee8834' : '#484848'}
           >
             <div>
               <i className="fa-solid fa-bullhorn" />
@@ -159,8 +167,10 @@ const FreeBoards = () => {
             to="/freeboards?category=질문"
             onClick={() => {
               setFilterCategory('질문');
+              setKeywordValue('category');
+              setTypeValue('질문');
             }}
-            currentColor={filterCategory === '질문' ? '#3fb950' : '#484848'}
+            currentcolor={filterCategory === '질문' ? '#3fb950' : '#484848'}
           >
             <div>
               <i className="fa-regular fa-comments" />
@@ -172,8 +182,10 @@ const FreeBoards = () => {
             to="/freeboards?category=나눔"
             onClick={() => {
               setFilterCategory('나눔');
+              setKeywordValue('category');
+              setTypeValue('나눔');
             }}
-            currentColor={filterCategory === '나눔' ? '#7dede1' : '#484848'}
+            currentcolor={filterCategory === '나눔' ? '#7dede1' : '#484848'}
           >
             <div>
               <i className="fa-solid fa-hand-holding-heart" />
@@ -185,9 +197,16 @@ const FreeBoards = () => {
           <ButtonLink value="작성하기" to="/freeboard/new" />
         </div>
         <ul>
-          {data.map((el) => (
-            <FreeBoardList data={el} key={el.freeId} />
-          ))}
+          {data &&
+            data.map((el) => (
+              <FreeBoardList
+                data={el}
+                key={el.freeId}
+                setFilterCategory={setFilterCategory}
+                setKeywordValue={setKeywordValue}
+                setTypeValue={setTypeValue}
+              />
+            ))}
         </ul>
       </div>
       <button className="scrollBtn" type="button" onClick={handleClick}>
