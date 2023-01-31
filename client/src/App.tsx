@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Main from './pages/Main';
+// import Main from './pages/Main';
 import MyPage from './pages/MyPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -26,7 +26,7 @@ const App = () => (
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Main />} />
+        <Route path="/" element={<Recruits />} />
         <Route path="/members/mypage/:memberId" element={<MyPage />} />
         <Route path="/members/withdraw/:memberId" element={<Withdraw />} />
         <Route path="/members/edit/:memberId" element={<EditUser />} />
@@ -43,8 +43,6 @@ const App = () => (
         <Route path="/freeboard/:freeId" element={<FreeDetail />} />
         <Route path="/recruit/:recruitId/edit" element={<EditRecruit />} />
         <Route path="/freeboard/:freeId/edit" element={<EditFreeboard />} />
-        <Route path="/recruits" element={<Recruits />} />
-        <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
         <Route path="/recruits/tags" element={<RecruitTags />} />
         <Route path="/freeboards/tags" element={<FreeboardTags />} />
         <Route path="/loading" element={<Loading />} />

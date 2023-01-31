@@ -99,10 +99,7 @@ const LogIn = () => {
     axios
       .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
       .then((res) => {
-        console.log(res.headers);
-        console.log(res.headers.authorization);
-        console.log(res.headers.refresh);
-        navigate('/');
+        console.log(res);
         localStorage.setItem('AccessToken', res.headers.authorization!);
         localStorage.setItem('RefreshToken', res.headers.refresh!);
         localStorage.setItem('memberId', res.headers['member-id']!);
@@ -110,6 +107,7 @@ const LogIn = () => {
         localStorage.setItem('heart', res.headers.heart!);
         localStorage.setItem('sex', res.headers.sex!);
         navigate('/recruits');
+        window.location.reload();
       })
       .catch((err) => {
         const errMsg = err.response.data.message;

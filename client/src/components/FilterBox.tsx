@@ -46,8 +46,10 @@ const SelectBox = styled.div`
 const FilterBox = ({
   filterTag,
   filterStatus,
+  distanceLimit,
   setFilterTag,
   setFilterStatus,
+  setDistanceLimit,
 }: FilterDataProps) => {
   const [tagData, setTagData] =
     useState<{ tagId: number; tagName: string; emoji: string }[]>();
@@ -84,6 +86,20 @@ const FilterBox = ({
           <option value="최소인원충족">최소인원충족</option>
           <option value="모집완료">모집완료</option>
           <option value="활동종료">활동종료</option>
+        </select>
+      </SelectBox>
+      <div>현재위치에서부터의 거리</div>
+      <SelectBox>
+        <select
+          onChange={(e) => setDistanceLimit(Number(e.target.value))}
+          value={distanceLimit}
+        >
+          <option value={5}>5km</option>
+          <option value={10} selected>
+            10km
+          </option>
+          <option value={20}>20km</option>
+          <option value={30}>30km</option>
         </select>
       </SelectBox>
     </BoxContainer>
