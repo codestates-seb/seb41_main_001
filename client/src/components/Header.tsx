@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLink from './ButtonLink';
@@ -115,6 +115,18 @@ const BoardLink = styled(Link)<{ path: string; to: string }>`
 const Header = () => {
   const [token, setToken] = useState(localStorage.getItem('AccessToken'));
   const { pathname: path } = useLocation();
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
+        params: {
+          Authorization: localStorage.getItem('AccessToken'),
+          Refresh: localStorage.getItem('RefreshToken'),
+        },
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  }, []);
 
   const logOut = () => {
     axios
