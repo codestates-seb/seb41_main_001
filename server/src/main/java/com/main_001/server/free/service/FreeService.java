@@ -10,6 +10,7 @@ import com.main_001.server.free.entity.FreeTag;
 import com.main_001.server.free.repositpry.FreeCommentRepository;
 import com.main_001.server.free.repositpry.FreeLikeRepository;
 import com.main_001.server.free.repositpry.FreeRepository;
+import com.main_001.server.member.entity.Member;
 import com.main_001.server.member.repository.MemberRepository;
 import com.main_001.server.member.service.MemberService;
 import com.main_001.server.tag.entity.Tag;
@@ -61,6 +62,9 @@ public class FreeService {
             Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
             tag.setFreeCount(tag.getFreeCount() + 1);
         }
+        Member findMember = memberRepository.findById(memberId).orElseThrow();
+        findMember.setHeart(findMember.getHeart()+5);
+        memberRepository.save(findMember);
         return saveFree(free);
     }
 
@@ -83,20 +87,29 @@ public class FreeService {
             Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
             tag.setFreeCount(tag.getFreeCount() - 1);
         }
+        Member findMember = memberRepository.findById(memberId).orElseThrow();
+        findMember.setHeart(findMember.getHeart()-5);
+        memberRepository.save(findMember);
         freeRepository.deleteById(freeId);
     }
 
     public Free updateLike(long FreeId, FreeLike freeLike) {
         Free findFree = findVerifiedFreeBoard(FreeId);
+        Member findMember = findFree.getMember();
         long freeLikeMemberId = freeLike.getMember().getMemberId();
         long count = findFree.getFreeLikes().stream()
                 .filter(fl -> Objects.equals(fl.getMember().getMemberId(), freeLikeMemberId))
                 .count();
-        if (count == 0) freeLike.setFree(findFree);
+        if (count == 0){
+            freeLike.setFree(findFree);
+            findMember.setHeart(findMember.getHeart()+1);
+        }
         else {
             findFree.getFreeLikes().removeIf(fl -> Objects.equals(fl.getMember().getMemberId(), freeLike.getMember().getMemberId()));
             freeLikeRepository.deleteFreeLikeByMember_MemberIdAndFree_FreeId(freeLikeMemberId, FreeId);
+            findMember.setHeart(findMember.getHeart()-1);
         }
+        memberRepository.save(findMember);
         return freeRepository.save(findFree);
     }
 
@@ -106,7 +119,10 @@ public class FreeService {
         freeComment.setCreatedAt(LocalDateTime.now());
         freeComment.setFree(findFree);
         freeComment.setMember(memberRepository.findById(memberId).orElseThrow());
+        Member findMember = memberRepository.findById(memberId).orElseThrow();
+        findMember.setHeart(findMember.getHeart()+1);
 
+        memberRepository.save(findMember);
         return freeRepository.save(findFree);
     }
 
@@ -127,7 +143,10 @@ public class FreeService {
         if (targetComment.getMember().getMemberId() != memberId)
             throw new BusinessLogicException(ExceptionCode.COMMENT_DELETE_DENIED);
         freeCommentRepository.deleteById(commentId);
+        Member findMember = targetComment.getMember();
+        findMember.setHeart(findMember.getHeart()-1);
 
+        memberRepository.save(findMember);
         freeRepository.save(findFree);
     }
 

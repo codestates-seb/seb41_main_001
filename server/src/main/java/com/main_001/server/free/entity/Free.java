@@ -36,6 +36,9 @@ public class Free {
     @Column(name = "FREE_BODY")
     private String freeBody;
 
+    @Column
+    private String location;
+
     @OneToMany(mappedBy = "free", cascade = CascadeType.ALL)
     private List<FreeComment> freeComments = new ArrayList<>();
 

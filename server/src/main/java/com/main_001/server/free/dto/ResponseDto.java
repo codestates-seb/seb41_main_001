@@ -3,6 +3,7 @@ package com.main_001.server.free.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -29,6 +30,7 @@ public class ResponseDto {
 
     @Builder
     @Getter
+    @Setter
     public static class FreeComment {
         @ApiModelProperty(example = "Free id")
         private long freeId;
@@ -44,6 +46,9 @@ public class ResponseDto {
 
         @ApiModelProperty(example = "심박수")
         private int heart;
+
+        @ApiModelProperty(example = "작성자 프사 경로")
+        private String filePath;
 
         @ApiModelProperty(example = "댓글 내용")
         private String body;

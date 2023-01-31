@@ -57,12 +57,13 @@ public interface FreeMapper {
         List<FreeComment> freeComments = free.getFreeComments();
         List<FreeLike> freeLikes = free.getFreeLikes();
 
-        return FreeDto.Response.builder()
+        FreeDto.Response response = FreeDto.Response.builder()
                 .freeId(free.getFreeId())
                 .freeTitle(free.getFreeTitle())
                 .freeBody(free.getFreeBody())
                 .createdAt(free.getCreatedAt())
                 .modifiedAt(free.getModifiedAt())
+                .location(free.getLocation())
                 .freeTags(freeTagsToFreeTagResponseDtos(freeTags))
                 .freeLikes(freeLikesToFreeLikeResponseDtos(freeLikes))
                 .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
@@ -70,8 +71,12 @@ public interface FreeMapper {
                 .memberId(free.getMember().getMemberId())
                 .nickname(free.getMember().getNickname())
                 .authorHeart(free.getMember().getHeart())
+                .authorLocation(free.getMember().getLocation())
                 .category(free.getCategory())
                 .build();
+        if(free.getMember().getMemberImage()!=null) response.setFilePath(free.getMember().getMemberImage().getFilePath());
+
+        return response;
     }
 
     List<FreeDto.Response> freesToFreeResponseDtos(List<Free> free);
@@ -104,22 +109,40 @@ public interface FreeMapper {
                 .build();
     }
 
-    default List<ResponseDto.FreeComment> freeCommentsToFreeCommentResponseDtos(List<FreeComment> freeComments){
-        return freeComments
-                .stream()
-                .map(freeComment -> ResponseDto.FreeComment
-                        .builder()
-                        .freeId(freeComment.getFree().getFreeId())
-                        .freeCommentId(freeComment.getCommentId())
-                        .memberId(freeComment.getMember().getMemberId())
-                        .nickname(freeComment.getMember().getNickname())
-                        .heart(freeComment.getMember().getHeart())
-                        .body(freeComment.getCommentBody())
-                        .createdAt(freeComment.getCreatedAt())
-                        .modifiedAt(freeComment.getModifiedAt())
-                        .build())
-                .collect(Collectors.toList());
+    default ResponseDto.FreeComment freeCommentToFreeCommentResponseDto(FreeComment freeComment){
+        ResponseDto.FreeComment response = ResponseDto.FreeComment
+                .builder()
+                .freeId(freeComment.getFree().getFreeId())
+                .freeCommentId(freeComment.getCommentId())
+                .memberId(freeComment.getMember().getMemberId())
+                .nickname(freeComment.getMember().getNickname())
+                .heart(freeComment.getMember().getHeart())
+                .body(freeComment.getCommentBody())
+                .createdAt(freeComment.getCreatedAt())
+                .modifiedAt(freeComment.getModifiedAt())
+                .build();
+        if(freeComment.getMember().getMemberImage()!=null) response.setFilePath(freeComment.getMember().getMemberImage().getFilePath());
+        return response;
     }
+
+    List<ResponseDto.FreeComment> freeCommentsToFreeCommentResponseDtos(List<FreeComment> freeComments);
+//    default List<ResponseDto.FreeComment> freeCommentsToFreeCommentResponseDtos(List<FreeComment> freeComments){
+//        return freeComments
+//                .stream()
+//                .map(freeComment -> ResponseDto.FreeComment
+//                        .builder()
+//                        .freeId(freeComment.getFree().getFreeId())
+//                        .freeCommentId(freeComment.getCommentId())
+//                        .memberId(freeComment.getMember().getMemberId())
+//                        .nickname(freeComment.getMember().getNickname())
+//                        .heart(freeComment.getMember().getHeart())
+//                        .filePath(freeComment.getMember().getMemberImage().getFilePath())
+//                        .body(freeComment.getCommentBody())
+//                        .createdAt(freeComment.getCreatedAt())
+//                        .modifiedAt(freeComment.getModifiedAt())
+//                        .build())
+//                .collect(Collectors.toList());
+//    }
 
     default List<ResponseDto.FreeTag> freeTagsToFreeTagResponseDtos(List<FreeTag> freeTags) {
         return freeTags

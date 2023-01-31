@@ -61,7 +61,7 @@ public interface RecruitMapper {
             ageGroup.add(st.nextToken());
         }
 
-        return RecruitDto.Response.builder()
+        RecruitDto.Response response = RecruitDto.Response.builder()
                 .recruitId(recruit.getRecruitId())
                 .title(recruit.getTitle())
                 .body(recruit.getBody())
@@ -77,6 +77,7 @@ public interface RecruitMapper {
                 .memberId(recruit.getMember().getMemberId())
                 .nickname(recruit.getMember().getNickname())
                 .authorHeart(recruit.getMember().getHeart())
+                .authorLocation(recruit.getMember().getLocation())
                 .sex(recruit.getSex())
                 .date(recruit.getDate())
                 .location(recruit.getLocation())
@@ -90,37 +91,27 @@ public interface RecruitMapper {
                 .recruitTags(recruitTagsToRecruitTagResponseDtos(recruitTags))
                 .reviews(reviewsToReviewResponseDtos(reviews))
                 .build();
+        if(recruit.getMember().getMemberImage()!=null){
+            response.setFilePath(recruit.getMember().getMemberImage().getFilePath());
+        }
+        return response;
     }
 
-    default List<ResponseDto.Apply> appliesToApplyResponseDtos(List<Apply> applies) {
-        return applies
-                .stream()
-                .map(apply -> ResponseDto.Apply
-                        .builder()
-                        .recruitId(apply.getRecruit().getRecruitId())
-                        .memberId(apply.getMember().getMemberId())
-                        .nickname(apply.getMember().getNickname())
-                        .heart(apply.getMember().getHeart())
-                        .build())
-                .collect(Collectors.toList());
-    }
+    default ResponseDto.Apply applyToApplyResponseDto(Apply apply){
+        ResponseDto.Apply response = ResponseDto.Apply
+                .builder()
+                .recruitId(apply.getRecruit().getRecruitId())
+                .memberId(apply.getMember().getMemberId())
+                .nickname(apply.getMember().getNickname())
+                .heart(apply.getMember().getHeart())
+                .build();
+        if(apply.getMember().getMemberImage()!=null) response.setFilePath(apply.getMember().getMemberImage().getFilePath());
 
-    default List<ResponseDto.RecruitComment> recruitCommentsToRecruitCommentResponseDtos(List<RecruitComment> recruitComments) {
-        return recruitComments
-                .stream()
-                .map(recruitComment -> ResponseDto.RecruitComment
-                        .builder()
-                        .recruitId(recruitComment.getRecruit().getRecruitId())
-                        .recruitCommentId(recruitComment.getId())
-                        .memberId(recruitComment.getMember().getMemberId())
-                        .nickname(recruitComment.getMember().getNickname())
-                        .heart(recruitComment.getMember().getHeart())
-                        .body(recruitComment.getBody())
-                        .createdAt(recruitComment.getCreatedAt())
-                        .modifiedAt(recruitComment.getModifiedAt())
-                        .build())
-                .collect(Collectors.toList());
+        return response;
     }
+    List<ResponseDto.Apply> appliesToApplyResponseDtos(List<Apply> applies);
+
+    List<ResponseDto.RecruitComment> recruitCommentsToRecruitCommentResponseDtos(List<RecruitComment> recruitComments);
 
     default List<ResponseDto.RecruitLike> recruitLikesToRecruitLikeResponseDtos(List<RecruitLike> recruitLikes) {
         return recruitLikes
@@ -145,20 +136,19 @@ public interface RecruitMapper {
                 .collect(Collectors.toList());
     }
 
-    default List<ResponseDto.Review> reviewsToReviewResponseDtos(List<Review> reviews) {
-        return reviews
-                .stream()
-                .map(review -> ResponseDto.Review
-                        .builder()
-                        .reviewId(review.getId())
-                        .memberId(review.getMember().getMemberId())
-                        .nickname(review.getMember().getNickname())
-                        .heart(review.getMember().getHeart())
-                        .body(review.getBody())
-                        .star(review.getStar())
-                        .build())
-                .collect(Collectors.toList());
+    default ResponseDto.Review reviewToReviewResponseDto(Review review){
+        return ResponseDto.Review
+                .builder()
+                .reviewId(review.getId())
+                .memberId(review.getMember().getMemberId())
+                .nickname(review.getMember().getNickname())
+                .heart(review.getMember().getHeart())
+                .body(review.getBody())
+                .star(review.getStar())
+                .worstMemberNickname(review.getWorstMemberNickname())
+                .build();
     }
+    List<ResponseDto.Review> reviewsToReviewResponseDtos(List<Review> reviews);
 
     default RecruitComment recruitCommentDtoToRecruitComment(RecruitCommentDto.Default requestBody) {
         Member member = new Member();
@@ -240,7 +230,7 @@ public interface RecruitMapper {
         if (recruitComment == null) {
             return null;
         }
-        return ResponseDto.RecruitComment.builder()
+        ResponseDto.RecruitComment response = ResponseDto.RecruitComment.builder()
                 .recruitId(recruitComment.getRecruit().getRecruitId())
                 .recruitCommentId(recruitComment.getId())
                 .memberId(recruitComment.getMember().getMemberId())
@@ -250,5 +240,9 @@ public interface RecruitMapper {
                 .createdAt(recruitComment.getCreatedAt())
                 .modifiedAt(recruitComment.getModifiedAt())
                 .build();
+        if(recruitComment.getMember().getMemberImage()!=null){
+            response.setFilePath(recruitComment.getMember().getMemberImage().getFilePath());
+        }
+        return response;
     }
 }

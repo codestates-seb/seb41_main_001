@@ -3,6 +3,7 @@ package com.main_001.server.recruit.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +12,7 @@ public class ResponseDto {
 
     @Builder
     @Getter
+    @Setter
     public static class Apply{
         @ApiModelProperty(example = "Recruit id")
         private long recruitId;
@@ -23,10 +25,14 @@ public class ResponseDto {
 
         @ApiModelProperty(example = "심박수")
         private int heart;
+
+        @ApiModelProperty(example = "지원자 프사 file path")
+        private String filePath;
     }
 
     @Builder
     @Getter
+    @Setter
     public static class RecruitComment{
         @ApiModelProperty(example = "Recruit id")
         private long recruitId;
@@ -42,6 +48,9 @@ public class ResponseDto {
 
         @ApiModelProperty(example = "심박수")
         private int heart;
+
+        @ApiModelProperty(example = "작성자 프사 경로")
+        private String filePath;
 
         @ApiModelProperty(example = "댓글 내용")
         private String body;
@@ -95,5 +104,8 @@ public class ResponseDto {
 
         @ApiModelProperty(example = "별점")
         private int star;
+
+        @ApiModelProperty(example = "worst member nickname")
+        private String worstMemberNickname;
     }
 }

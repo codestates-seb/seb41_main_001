@@ -108,6 +108,7 @@ public class FreeDto {
 
     @Getter
     @Builder
+    @Setter
     public static class Response{
         @ApiModelProperty(example = "Free ID")
         private Long freeId;
@@ -118,10 +119,13 @@ public class FreeDto {
         @ApiModelProperty(example = "내용 작성")
         private String freeBody;
 
-        @ApiModelProperty(example = "모집글 작성 일자")
+        @ApiModelProperty(example = "자유글 지역 정보")
+        private String location;
+
+        @ApiModelProperty(example = "자유글 작성 일자")
         private LocalDateTime createdAt;
 
-        @ApiModelProperty(example = "모집글 수정 일자")
+        @ApiModelProperty(example = "자유글 수정 일자")
         private LocalDateTime modifiedAt;
 
         @ApiModelProperty(example = "자유글 좋아요 누른 Member ID")
@@ -144,6 +148,12 @@ public class FreeDto {
 
         @ApiModelProperty(example = "심박수")
         private int authorHeart;
+
+        @ApiModelProperty(example = "작성자 지역 정보")
+        private String authorLocation;
+
+        @ApiModelProperty(example = "작성자 프사 경로")
+        private String filePath;
 
         @ApiModelProperty(example = "카테고리")
         private String category;

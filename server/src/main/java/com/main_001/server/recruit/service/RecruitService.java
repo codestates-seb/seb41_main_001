@@ -58,6 +58,9 @@ public class RecruitService {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
             tag.setRecruitCount(tag.getRecruitCount() + 1);
         }
+        Member findMember = memberRepository.findById(recruit.getMember().getMemberId()).orElseThrow();
+        findMember.setHeart(findMember.getHeart()+5);
+        memberRepository.save(findMember);
         return saveRecruit(recruit);
     }
 
@@ -86,8 +89,10 @@ public class RecruitService {
         Recruit findRecruit = findVerifiedRecruit(recruitId);
         recruitComment.setCreatedAt(LocalDateTime.now());
         recruitComment.setRecruit(findRecruit);
+        Member findMember = memberRepository.findById(recruitComment.getMember().getMemberId()).orElseThrow();
+        findMember.setHeart(findMember.getHeart()+1);
+        memberRepository.save(findMember);
         return saveRecruit(findRecruit);
-//        return recruitComment;
     }
 
     //Todo : 긁어오기, 필터링 한번 효율적으로 개선 ㄱㄱ
@@ -217,6 +222,10 @@ public class RecruitService {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
             tag.setRecruitCount(tag.getRecruitCount() - 1);
         }
+        Member findMember = findRecruit.getMember();
+        findMember.setHeart(findMember.getHeart()-5);
+        memberRepository.save(findMember);
+
         recruitRepository.deleteById(recruitId);
     }
 
@@ -230,6 +239,10 @@ public class RecruitService {
                 .collect(Collectors.toList()));
         if (!members.contains(findMember)) throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
         findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_END);
+        List<Member> updatedMembers = members.stream()
+                .peek(member -> member.setHeart(member.getHeart()+3))
+                .collect(Collectors.toList());
+        memberRepository.saveAll(updatedMembers);
         return saveRecruit(findRecruit);
     }
 
@@ -244,6 +257,9 @@ public class RecruitService {
             findRecruit.getRecruitLikes().removeIf(rl -> Objects.equals(rl.getMember().getMemberId(), recruitLike.getMember().getMemberId()));
             recruitLikeRepository.deleteRecruitLikeByMember_MemberIdAndRecruit_RecruitId(recruitLikeMemberId, recruitId);
         }
+        Member findMember = findRecruit.getMember();
+        findMember.setHeart(findMember.getHeart()+1);
+        memberRepository.save(findMember);
         return saveRecruit(findRecruit);
     }
 
@@ -266,6 +282,10 @@ public class RecruitService {
         if (targetComment.getMember().getMemberId() != memberId)
             throw new BusinessLogicException(ExceptionCode.COMMENT_DELETE_DENIED);
         recruitCommentRepository.deleteById(commentId);
+
+        Member findMember = targetComment.getMember();
+        findMember.setHeart(findMember.getHeart()-1);
+        memberRepository.save(findMember);
 
         return saveRecruit(findRecruit);
     }
@@ -312,10 +332,18 @@ public class RecruitService {
         if (count == 0) review.setRecruit(findRecruit);
         else throw new BusinessLogicException(ExceptionCode.ONLY_ONE_REVIEW);
 
+        Member worstMember = memberRepository.findByNickname(review.getWorstMemberNickname())
+                .orElseThrow(()->new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        worstMember.setHeart(worstMember.getHeart()-10);
+        memberRepository.save(worstMember);
+
         findRecruit.setStar(findRecruit.getReviews()
                 .stream()
-                .mapToDouble(review1 -> review1.getStar())
+                .mapToDouble(Review::getStar)
                 .average().orElse(0));
+
+        findMember.setHeart(findMember.getHeart()+2);
+        memberRepository.save(findMember);
 
         return saveRecruit(findRecruit);
 //        return findRecruit.getReviews();

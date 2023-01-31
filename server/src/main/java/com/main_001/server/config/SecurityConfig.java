@@ -43,21 +43,21 @@ public class SecurityConfig {
 //                .and()
                 .authorizeHttpRequests(authorize -> authorize
                         // member
-                        .antMatchers(HttpMethod.POST, "/members/profileImage").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.DELETE, "/members/logout").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.GET, "/members/re-issue").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.PATCH, "/members/*").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.GET, "/members/my-page").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.POST, "/members/profileImage").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.DELETE, "/members/logout").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.GET, "/members/re-issue").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.PATCH, "/members/*").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.GET, "/members/my-page").hasAuthority("ROLE_USER")
                         // free
-                        .antMatchers(HttpMethod.POST, "/freeboards/*").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.PATCH, "/freeboards/*").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.DELETE, "/freeboards/*").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.POST, "/freeboards/*").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.PATCH, "/freeboards/*").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.DELETE, "/freeboards/*").hasAuthority("ROLE_USER")
                         // recruit
-                        .antMatchers(HttpMethod.POST, "recruits/*").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.PATCH, "/recruits/*").hasAuthority("ROLE_USER")
-                        .antMatchers(HttpMethod.DELETE, "recruits/*").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.POST, "recruits/*").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.PATCH, "/recruits/*").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.DELETE, "recruits/*").hasAuthority("ROLE_USER")
                         // tag
-                        .antMatchers(HttpMethod.POST, "/tags").hasAuthority("ROLE_USER")
+//                        .antMatchers(HttpMethod.POST, "/tags").hasAuthority("ROLE_USER")
                         .antMatchers(
                                 "/v3/api-docs",
                                 "/swagger*/**").permitAll()

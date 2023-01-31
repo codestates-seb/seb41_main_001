@@ -3,6 +3,7 @@ package com.main_001.server.recruit.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -93,39 +94,32 @@ public class RecruitDto {
     @Getter
     public static class Patch{
         @ApiModelProperty(example = "Member id")
+        @NotBlank
         private long memberId;
 
         @ApiModelProperty(example = "글 제목")
-        @NotBlank
         private String title;
 
         @ApiModelProperty(example = "내용 작성")
-        @NotBlank
         private String body;
 
         @ApiModelProperty(example = "모집 인원")
-        @NotBlank
         private int require;
 
         @ApiModelProperty(example = "최소 모집 인원")
-        @NotBlank
         private int minRequire;
 
         @ApiModelProperty(example = "심박수 제한")
-        @NotBlank
         private int heartLimit;
 
         @ApiModelProperty(example = "성별")
-        @NotBlank
         private String sex;
 
         @ApiModelProperty(example = "모집 일시")
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        @NotBlank
         private LocalDateTime date;
 
         @ApiModelProperty(example = "장소 이름")
-        @NotBlank
         private String location;
 
         @ApiModelProperty(example = "lat")
@@ -136,7 +130,6 @@ public class RecruitDto {
 
 
         @ApiModelProperty(example = "모집 연령대")
-        @NotBlank
         private List<Integer> ages;
 
         @ApiModelProperty(example = "[\n" +
@@ -164,6 +157,7 @@ public class RecruitDto {
 
     @Getter
     @Builder
+    @Setter
     public static class Response{
         @ApiModelProperty(example = "Recruit id")
         private long recruitId;
@@ -210,8 +204,8 @@ public class RecruitDto {
         @ApiModelProperty(example = "작성자 심박수")
         private int authorHeart;
 
-//        @ApiModelProperty()
-        //Todo 추후 작성자 프사 추가
+        @ApiModelProperty(example = "작성자 프사 file path")
+        private String filePath;
 
         @ApiModelProperty(example = "성별")
         private String sex;
@@ -230,6 +224,9 @@ public class RecruitDto {
 
         @ApiModelProperty(example = "나와의 거리")
         private double distance;
+
+        @ApiModelProperty(example = "작성자 지역")
+        private String authorLocation;
 
         @ApiModelProperty(example = "지원자 목록")
         private List<ResponseDto.Apply> applies;
