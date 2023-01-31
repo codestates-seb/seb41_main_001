@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 // import Badge from '../components/Badge';
 import Loading from './Loading';
-import timeDifference from '../utils/timeDifference';
 import MiniTag from '../components/MiniTag';
 import WroteRecruit from '../components/WroteRecruit';
 import WroteFree from '../components/WroteFree';
@@ -256,13 +255,6 @@ const MemberPage = () => {
                   <div>
                     <i className="fa-solid fa-heart" />
                     {oneUser.heart}
-                  </div>
-                  <div>
-                    <i className="fa-regular fa-calendar" />
-                    Member for
-                    <span>
-                      {timeDifference(oneUser.createdAt).slice(0, -1)}
-                    </span>
                   </div>
                 </Info>
               </HeadInfo>
