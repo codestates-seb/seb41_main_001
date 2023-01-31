@@ -1,10 +1,9 @@
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 // import Badge from '../components/Badge';
 import Loading from './Loading';
-import timeDifference from '../utils/timeDifference';
 import MiniTag from '../components/MiniTag';
 import WroteRecruit from '../components/WroteRecruit';
 import WroteFree from '../components/WroteFree';
@@ -40,7 +39,7 @@ const Pfp = styled.img`
   margin: 10px;
   border: 2px solid white;
   border-radius: 100px;
-  background-color: pink;
+  /* background-color: pink; */
   width: 130px;
   height: 130px;
 `;
@@ -75,30 +74,6 @@ const HeadInfo = styled.div`
   align-items: center;
 `;
 
-const Button = styled(Link)`
-  border: 1px solid white;
-  border-radius: 10px;
-  align-items: center;
-  padding: 15px;
-  margin: 20px;
-  font-size: 16px;
-  height: 50px;
-  text-align: center;
-  display: flex;
-  text-decoration: none;
-  color: white;
-  justify-content: center;
-  i {
-    padding-right: 10px;
-  }
-  &:hover {
-    transition: 0.2s ease-in-out;
-    text-shadow: white 0 0 5px;
-    background-color: var(--neon-yellow);
-    color: black;
-    border: 1px solid var(--neon-yellow);
-  }
-`;
 const MyPageBody = styled.div`
   width: 40rem;
   display: flex;
@@ -171,19 +146,6 @@ const MyBoard = styled.div`
   }
 `;
 
-const RegisteredBoard = styled.div`
-  border: 2px solid white;
-  border-radius: 20px;
-  margin: 10px;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  > div {
-    margin: 20px;
-  }
-`;
 // const Badges = styled.div`
 //   border: 2px solid white;
 //   margin: 10px;
@@ -233,11 +195,10 @@ const InfoBlock = styled.div`
   }
 `;
 
-const MyPage = () => {
-  // const { memberId } = useParams();
+const MemberPage = () => {
+  const { memberId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [wroteTab, setWroteTab] = useState('작성모집');
-  const [likedTab, setLikedTab] = useState('좋아요모집');
   const [oneUser, setOneUsers] = useState({
     memberId: 1,
     name: 'Loading...',
@@ -264,18 +225,11 @@ const MyPage = () => {
     reviews: [],
   });
   const recruitWTab = () => setWroteTab('작성모집');
-  const recruitLTab = () => setLikedTab('좋아요모집');
   const freeWTab = () => setWroteTab('작성자유');
-  const freeLTab = () => setLikedTab('좋아요자유');
   useEffect(() => {
     const getOneUser = () => {
       axios
-        .get(`${process.env.REACT_APP_API_URL}/members/my-page`, {
-          headers: {
-            Authorization: `${localStorage.getItem('AccessToken')}`,
-            Refresh: `${localStorage.getItem('RefreshToken')}`,
-          },
-        })
+        .get(`${process.env.REACT_APP_API_URL}/members/${memberId}`)
         .then((res: any) => {
           console.log(res);
           setOneUsers(res.data);
@@ -302,19 +256,8 @@ const MyPage = () => {
                     <i className="fa-solid fa-heart" />
                     {oneUser.heart}
                   </div>
-                  <div>
-                    <i className="fa-regular fa-calendar" />
-                    Member for
-                    <span>
-                      {timeDifference(oneUser.createdAt).slice(0, -1)}
-                    </span>
-                  </div>
                 </Info>
               </HeadInfo>
-              <Button to="/members/edit">
-                <i className="fa-solid fa-pen" />
-                프로필 수정
-              </Button>
             </MyPageHeader>
             <MyPageBody>
               <div>
@@ -322,24 +265,8 @@ const MyPage = () => {
                   <div>개인정보</div>
                   <PersonalInfo>
                     <InfoBlock>
-                      <div>이름</div>
-                      <div>{oneUser.name}</div>
-                    </InfoBlock>
-                    <InfoBlock>
-                      <div>생년월일</div>
-                      <div>{oneUser.birth}</div>
-                    </InfoBlock>
-                    <InfoBlock>
                       <div>성별</div>
                       <div>{oneUser.sex}</div>
-                    </InfoBlock>
-                    <InfoBlock>
-                      <div>이메일</div>
-                      <div>{oneUser.email}</div>
-                    </InfoBlock>
-                    <InfoBlock>
-                      <div>휴대폰 번호</div>
-                      <div>{oneUser.phone}</div>
                     </InfoBlock>
                     <InfoBlock>
                       <div>등록 지역</div>
@@ -424,68 +351,6 @@ const MyPage = () => {
                     // /> */}
                   </MyBoard>
                 </Container>
-                <Container>
-                  <div>좋아요한 게시글</div>
-                  <MyBoard>
-                    <span>
-                      <button
-                        onClick={recruitLTab}
-                        type="button"
-                        className={
-                          likedTab === '좋아요모집' ? 'active' : 'inactive'
-                        }
-                      >
-                        모집게시판
-                      </button>
-                      <button
-                        onClick={freeLTab}
-                        type="button"
-                        className={
-                          likedTab === '좋아요자유' ? 'active' : 'inactive'
-                        }
-                      >
-                        자유게시판
-                      </button>
-                    </span>
-                    {likedTab === '좋아요모집' ? (
-                      <WroteRecruit data={oneUser.recruitLikes} />
-                    ) : (
-                      <WroteFree data={oneUser.freeLikes} />
-                    )}
-                    {/* {
-                      oneUser.recruitLikes.length === 0 ? (
-                        <div>글이 아직 없습니다</div>
-                      ) : (
-                        oneUser.recruitLikes.map((e: RecruitDataProps) => (
-                          <MyRecruitItem
-                            key={e.memberId} // 임시로 멤버아이디 넣어둠. 아래의 id도 마찬가지.
-                            title="mm title"
-                            quota="3/5"
-                            tags={[{ tagId: 1, tagName: '예시' }]}
-                            dueDate="2023-01-09"
-                            id={e.memberId}
-                          />
-                        ))
-                      )
-                      // free가 생기면 여기도 위 recruits랑 똑같이 삼항 넣어주자
-                    } */}
-                    {/* <MyRecruitItem
-                      title="좋아요한 게시글"
-                      quota="2/3"
-                      dueDate="2023.01.17"
-                      tags={['#좋아요']}
-                    /> */}
-                  </MyBoard>
-                </Container>
-                <Container>
-                  <div>신청한 모집글</div>
-                  <RegisteredBoard>
-                    <div>글이 아직 없습니다.</div>
-                  </RegisteredBoard>
-                  <span>
-                    <Button to="/members/withdraw">회원 탈퇴</Button>
-                  </span>
-                </Container>
               </div>
             </MyPageBody>
           </MyPageWrapper>
@@ -496,4 +361,4 @@ const MyPage = () => {
     </div>
   );
 };
-export default MyPage;
+export default MemberPage;
