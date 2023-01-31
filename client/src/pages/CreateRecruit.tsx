@@ -1,7 +1,8 @@
 // import { useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 import styled from 'styled-components';
-// import axios from 'axios';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import AutoCompleteForArray from '../components/AutoCompleteForArray';
 import useCurrentLocation from '../utils/useCurrentLocation';
 import KakaoMapClick from '../components/KakaoMapClick';
@@ -138,6 +139,7 @@ const KakaoMapForClick = ({
 };
 
 const CreateRecruit = () => {
+  const navigate = useNavigate();
   const {
     register,
     control,
@@ -161,22 +163,25 @@ const CreateRecruit = () => {
   const onSubmit = (data: RecruitFormInput) => {
     // tagSearch는 postBody에서 제외함.
     const { tagSearch, ...postBody } = data;
-    console.log(postBody.lat, postBody.lon);
-    console.log(
-      JSON.stringify({
-        memberId: 1,
-        ...postBody,
-        lat: location?.latitude,
-        lon: location?.longitude,
-      }),
-    );
-    // axios
-    //   .post(`${process.env.REACT_APP_API_URL}/recruits`, {
-    //     memberId: 1,
-    //     ...postBody,
-    //   })
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/recruits`,
+        {
+          memberId: 1,
+          ...postBody,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem('AccessToken'),
+            Refresh: localStorage.getItem('RefreshToken'),
+          },
+        },
+      )
+      .then((res) => {
+        console.log(res);
+        navigate(`/recruits`);
+      })
+      .catch((err) => console.log(err));
   };
 
   const TAG_DATA = [

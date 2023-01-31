@@ -49,7 +49,16 @@ const RecruitCreatorSelectBox = ({
 
   const handleBringupRecruit = () => {
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}/bringup`)
+      .patch(
+        `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/bringup`,
+        {},
+        {
+          headers: {
+            Authorization: localStorage.getItem('AccessToken'),
+            Refresh: localStorage.getItem('RefreshToken'),
+          },
+        },
+      )
       .then((res) => setData(res.data.data))
       .catch((err) => console.log(err));
   };

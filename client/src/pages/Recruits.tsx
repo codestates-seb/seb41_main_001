@@ -7,6 +7,7 @@ import RecruitDataProps from '../interfaces/RecruitDataProps';
 import RecruitList from '../components/RecruitList';
 import ButtonLink from '../components/ButtonLink';
 import PaginationLink from '../components/PaginationLink';
+import useCurrentLocation from '../utils/useCurrentLocation';
 
 const MainContainer = styled.main`
   width: 1100px;
@@ -77,6 +78,7 @@ const Recruits = () => {
     searchParams.get('status')?.replaceAll('"', '') ?? '',
   );
   // const [filterRegion, setFilterRegion] = useState('');
+  const { location } = useCurrentLocation();
 
   useEffect(() => {
     console.log(filterTag, filterStatus);
@@ -84,8 +86,8 @@ const Recruits = () => {
       page,
       size: listNum,
       distanceLimit: 10,
-      lat: 37.757687,
-      lon: 128.873749,
+      lat: location?.latitude,
+      lon: location?.longitude,
     };
     axios
       .get(
@@ -102,7 +104,7 @@ const Recruits = () => {
       .catch((err) => console.log(err));
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [page, listNum, filterTag, filterStatus]);
+  }, [page, listNum, filterTag, filterStatus, location]);
 
   const handleChangeListNum = (e: any) => {
     setListNum(e.target.value);

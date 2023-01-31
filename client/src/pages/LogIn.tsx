@@ -1,9 +1,7 @@
 import { useForm } from 'react-hook-form';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
-// import { useDispatch, useSelector } from 'react-redux';
-// import loginDb from '../modules/loginDb';
 import ButtonLink from '../components/ButtonLink';
 import Button from '../components/Button';
 
@@ -89,9 +87,7 @@ interface LoginProps {
 }
 
 const LogIn = () => {
-  // const loginStore = useSelector((state: any) => state.bucket.list);
-  // const dispatch = useDispatch();
-  // console.log(loginStore);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -101,9 +97,6 @@ const LogIn = () => {
   } = useForm<LoginProps>();
 
   const onSubmit = (data: LoginProps) => {
-    // console.log(data);
-    // dispatch(loginDb(data));
-
     axios
       .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
       .then((res) => {
@@ -114,6 +107,7 @@ const LogIn = () => {
         localStorage.setItem('birth', res.headers.birth!);
         localStorage.setItem('heart', res.headers.heart!);
         localStorage.setItem('sex', res.headers.sex!);
+        navigate('/recruits');
       })
       .catch((err) => {
         const errMsg = err.response.data.message;

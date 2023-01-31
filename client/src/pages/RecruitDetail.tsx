@@ -271,6 +271,12 @@ const RecruitDetail = () => {
                   .patch(
                     `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/likes`,
                     { memberId: LOGIN_ID },
+                    {
+                      headers: {
+                        Authorization: localStorage.getItem('AccessToken'),
+                        Refresh: localStorage.getItem('RefreshToken'),
+                      },
+                    },
                   )
                   .then((res) => {
                     setData(res.data.data);
@@ -306,7 +312,8 @@ const RecruitDetail = () => {
             <ul>
               {data.recruitComments.map((el) => (
                 <CommentBox
-                  key={el.memberId}
+                  key={el.commentId}
+                  commentId={el.commentId}
                   memberId={data.memberId}
                   board="recruits"
                   boardId={data.recruitId}
