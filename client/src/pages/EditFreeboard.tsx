@@ -8,10 +8,11 @@ import Loading from './Loading';
 
 interface FormInputFree {
   category: '질문' | '정보' | '나눔' | '운동';
-  title: string;
-  content: string;
-  image: string;
-  tag: string;
+  freeTitle: string;
+  freeBody: string;
+  // memberId: number;
+  // image: string;
+  // tag: { tagId: number; tagName: string }[];
 }
 
 const Background = styled.div`
@@ -48,6 +49,7 @@ const CRForm = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   input,
   textarea,
   select {
@@ -70,6 +72,7 @@ const CRForm = styled.form`
       color: white;
     }
   }
+
   > div {
     width: 100%;
     display: flex;
@@ -116,6 +119,7 @@ const CRForm = styled.form`
       cursor: pointer;
     }
   }
+
   > div:first-child {
     text-shadow: white 0 0 5px;
     font-size: 20px;
@@ -175,6 +179,9 @@ const EditFreeboard = () => {
     freeTitle: '',
     createdAt: '',
     modifiedAt: '',
+    location: '',
+    nickname: '',
+    authorHeart: 0,
     views: 0,
     memberId: 1,
     freeLikes: [],
@@ -182,15 +189,17 @@ const EditFreeboard = () => {
     tagId: 1,
     tagName: '축구',
     freeComments: [],
-    nickname: '',
-    authorHeart: 0,
-    location: '',
   });
   const { freeId } = useParams();
   useEffect(() => {
     const getOriginalPost = () => {
       axios
-        .get(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`)
+        .get(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
+          headers: {
+            Authorization: `${localStorage.getItem('AccessToken')}`,
+            Refresh: `${localStorage.getItem('RefreshToken')}`,
+          },
+        })
         .then((res: any) => {
           setPosting(res.data.data);
           setIsLoading(false);
@@ -202,27 +211,25 @@ const EditFreeboard = () => {
 
   const onSubmit = (data: FormInputFree) => {
     // data.content = content;
+    console.log('here is ', {
+      ...data,
+      memberId: `${localStorage.getItem('memberId')}`,
+      // freeId: posting.freeId,
+    });
     axios
-      .post(
-        '/freeboards',
-        {
-          freeTitle: data.title,
-          freeBody: data.content,
-          category: data.category,
-          memberId: `${localStorage.getItem('memberId')}`,
-          // tagList: tags.reduce((r, e) => {
-          //   r.push({ tagId: e.tagId });
-          //   return r;
-          // }, []),
-          // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+      .patch(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
+        ...data,
+        memberId: `${localStorage.getItem('memberId')}`,
+        // tagList: tags.reduce((r, e) => {
+        //   r.push({ tagId: e.tagId });
+        //   return r;
+        // }, []),
+        // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+        headers: {
+          Authorization: `${localStorage.getItem('AccessToken')}`,
+          Refresh: `${localStorage.getItem('RefreshToken')}`,
         },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem('AccessToken')}`,
-            Refresh: `${localStorage.getItem('RefreshToken')}`,
-          },
-        },
-      )
+      })
       .then((res) => {
         console.log(res);
         navigate('/freeboards');
@@ -273,15 +280,15 @@ const EditFreeboard = () => {
             </div>
           </div>
           <div>
-            <label htmlFor="title">제목</label>
+            <label htmlFor="freeTitle">제목</label>
             <WarnSet>
               <input
-                id="title"
+                id="freeTitle"
                 type="text"
                 defaultValue={posting.freeTitle}
-                {...register('title', { required: true })}
+                {...register('freeTitle', { required: true })}
               />
-              {errors.title && (
+              {errors.freeTitle && (
                 <span>
                   <i className="fa-solid fa-circle-exclamation" />
                   제목을 입력해주세요
@@ -290,16 +297,16 @@ const EditFreeboard = () => {
             </WarnSet>
           </div>
           <div>
-            <label htmlFor="content">내용</label>
+            <label htmlFor="freeBody">내용</label>
             <WarnSet>
               <textarea
-                id="content"
+                id="freeBody"
                 rows={15}
                 // ref={textAreaRef}
                 defaultValue={posting.freeBody}
-                {...register('content', { required: true })}
+                {...register('freeBody', { required: true })}
               />
-              {errors.content && (
+              {errors.freeBody && (
                 <span>
                   <i className="fa-solid fa-circle-exclamation" />
                   본문을 입력해주세요

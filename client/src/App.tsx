@@ -26,10 +26,10 @@ const App = () => (
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Recruits />} />
-        <Route path="/members/mypage/:memberId" element={<MyPage />} />
-        <Route path="/members/withdraw/:memberId" element={<Withdraw />} />
-        <Route path="/members/edit/:memberId" element={<EditUser />} />
+        {/* <Route path="/" element={<Main />} /> */}
+        <Route path="/members/mypage" element={<MyPage />} />
+        <Route path="/members/withdraw" element={<Withdraw />} />
+        <Route path="/members/edit" element={<EditUser />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/search-password" element={<SearchPassword />} />

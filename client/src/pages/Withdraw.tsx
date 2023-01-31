@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -94,7 +94,7 @@ const Button = styled(Link)`
 `;
 
 const Withdraw = () => {
-  const { memberId } = useParams();
+  // const { memberId } = useParams();
   // let checker:(HTMLElement|null) = document.getElementById('consent');
   // let wbtn:(HTMLElement|null) = document.getElementById('withdraw');
   // checker.onchange = function() {
@@ -107,15 +107,18 @@ const Withdraw = () => {
   const withdrawal = () => {
     // 여기에 axios patch 넣어주면 됨.
     axios
-      .patch(
-        `${process.env.REACT_APP_API_URL}/members/my-page/${memberId}/withdraw`,
-      )
+      .patch(`${process.env.REACT_APP_API_URL}/members/my-page/withdraw`, {
+        headers: {
+          Authorization: `${localStorage.getItem('AccessToken')}`,
+          Refresh: `${localStorage.getItem('RefreshToken')}`,
+        },
+      })
       .then((res: any) => {
         console.log(res);
       })
       .catch((err: any) => console.log(err));
     navigate('/');
-    console.log(memberId, ' withdrew');
+    // console.log(memberId, ' withdrew');
   };
   return (
     <WithdrawWrapper>
@@ -163,7 +166,7 @@ const Withdraw = () => {
           >
             탈퇴하기
           </button>
-          <Button to={`/members/mypage/${memberId}`}>돌아가기</Button>
+          <Button to="/members/mypage">돌아가기</Button>
         </ButtonContainer>
       </WithdrawContainer>
     </WithdrawWrapper>

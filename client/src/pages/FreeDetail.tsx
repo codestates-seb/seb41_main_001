@@ -30,14 +30,14 @@ const FDContainer = styled.main`
 const BoardContainer = styled.div`
   width: 35rem;
   height: auto;
-  margin: 2rem;
+  margin: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
   h1 {
-    width: 35rem;
+    width: 33rem;
   }
 
   > div:first-child {
@@ -50,7 +50,7 @@ const BoardContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 30rem;
+    margin-right: 28rem;
     /* margin-top: 0.5rem;
     margin-bottom: 0.5rem; */
     i {
@@ -64,7 +64,7 @@ const BoardContainer = styled.div`
 
   > div:nth-child(3) {
     display: flex;
-    width: 35rem;
+    width: 33rem;
     justify-content: space-between;
     > div:first-child {
       width: 6rem;
@@ -80,13 +80,13 @@ const BoardContainer = styled.div`
   }
 
   > div:nth-child(4) {
-    width: 35rem;
+    width: 33rem;
     margin: 1rem 0;
   }
 
   .commentCount {
     border-bottom: 1px solid white;
-    width: 35rem;
+    width: 33rem;
     margin-bottom: 1rem;
     padding: 1rem 0;
   }
@@ -98,7 +98,7 @@ const BoardContainer = styled.div`
   }
 
   .btnCon {
-    width: 35rem;
+    width: 33rem;
     display: flex;
     justify-content: space-between;
     > div:nth-child(2) {
@@ -128,12 +128,12 @@ const ContentContainer = styled.div`
 
   > div {
     /* border: 0.1rem solid white; */
-    width: 35rem;
+    width: 33rem;
     height: auto;
     min-height: 3rem;
 
     img {
-      width: 35rem;
+      width: 33rem;
       height: 20rem;
       display: flex;
       align-items: center;

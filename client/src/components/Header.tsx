@@ -191,7 +191,10 @@ const Header = () => {
           <input placeholder="Search here..." />
         </form> */}
         {token ? (
-          <Button value="로그아웃" onClick={logOut} />
+          <>
+            <Button value="로그아웃" onClick={logOut} />
+            <ButtonLink value="마이페이지" to="/members/mypage" />
+          </>
         ) : (
           <>
             <ButtonLink value="로그인" to="/login" />
