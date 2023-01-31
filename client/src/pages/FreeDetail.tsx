@@ -197,11 +197,17 @@ const Category = styled('div')<{ color: string }>`
       : 'var(--neon-sky-blue)'};
 `;
 
+const LikeButton = styled(Button)<{ likes: boolean }>`
+  color: ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
+  border: 1px solid ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
+`;
+
 const FreeDetail = () => {
   const { freeId } = useParams();
   const [post, setPost] = useState<FreeDataProps | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const memberId = localStorage.getItem('memberId');
+  const [likesMemberId, setLikesMemberId] = useState<number[]>();
+  const LOGIN_ID = Number(localStorage.getItem('memberId'));
 
   useEffect(() => {
     axios
@@ -210,32 +216,19 @@ const FreeDetail = () => {
         setPost(res.data.data);
         console.log(post);
         setIsLoading(false);
+        setLikesMemberId(
+          res.data.data.freeLikes.reduce((r: number[], e: any) => {
+            if (e.memberId) {
+              r.push(e.memberId);
+            }
+            return r;
+          }, []),
+        );
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-
-  // const handleDeleteFree = () => {
-  //   {
-  //     confirm('삭제하시겠습니까?') === true
-  //       ? axios
-  //           .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
-  //             headers: {
-  //               Authorization: `${localStorage.getItem('AccessToken')}`,
-  //               Refresh: `${localStorage.getItem('RefreshToken')}`,
-  //             },
-  //           })
-  //           .then((res) => {
-  //             console.log(res);
-  //             navigate(`/freeboards`);
-  //           })
-  //           .catch((err) => {
-  //             console.log(err);
-  //           })
-  //       : '';
-  //   }
-  // };
 
   return (
     <FDContainer>
@@ -303,15 +296,32 @@ const FreeDetail = () => {
             )} */}
           </ContentContainer>
           <div className="btnCon">
-            <Button
-              value="좋아요"
+            <LikeButton
+              likes={likesMemberId!.includes(LOGIN_ID)}
+              value={`좋아요 ${post?.freeLikes.length}`}
               onClick={() => {
                 axios
                   .patch(
                     `${process.env.REACT_APP_API_URL}/freeboards/${freeId}/likes`,
+                    { memberId: LOGIN_ID },
+                    {
+                      headers: {
+                        Authorization: localStorage.getItem('AccessToken'),
+                        Refresh: localStorage.getItem('RefreshToken'),
+                      },
+                    },
                   )
                   .then((res) => {
                     console.log(res);
+                    setPost(res.data.data);
+                    setLikesMemberId(
+                      res.data.data.freeLikes.reduce((r: number[], e: any) => {
+                        if (e.memberId) {
+                          r.push(e.memberId);
+                        }
+                        return r;
+                      }, []),
+                    );
                   })
                   .catch((err) => {
                     console.log(err);
@@ -319,11 +329,7 @@ const FreeDetail = () => {
               }}
               icon={<i className="fa-solid fa-heart" />}
             />
-            {post?.memberId === Number(memberId) ? (
-              <FreeCreatorSelectBox />
-            ) : (
-              ''
-            )}
+            {post?.memberId === LOGIN_ID ? <FreeCreatorSelectBox /> : ''}
           </div>
           <div className="commentCount">
             {post?.freeComments.length}

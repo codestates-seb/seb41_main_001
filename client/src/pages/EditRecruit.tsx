@@ -1,7 +1,7 @@
 // import { useState } from 'react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, useWatch } from 'react-hook-form'; // Controller, useFieldArray
 import styled from 'styled-components';
 // import AutoCompleteForArray from '../components/AutoCompleteForArray';
@@ -146,6 +146,7 @@ const KakaoMapForClick = ({
 const EditRecruit = () => {
   const [recruitData, setRecruitData] = useState<RecruitDataProps | null>();
   const { recruitId } = useParams();
+  const navigate = useNavigate();
   // const token = localStorage.getItem('AccessToken');
   // const memberId = localStorage.getItem('memberId');
   useEffect(() => {
@@ -197,7 +198,7 @@ const EditRecruit = () => {
     axios
       .patch(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`, {
         ...data,
-        memberId: 1,
+        memberId: localStorage.getItem('memberId'),
         headers: {
           Authorization: `${localStorage.getItem('AccessToken')}`,
           Refresh: `${localStorage.getItem('RefreshToken')}`,
@@ -205,6 +206,7 @@ const EditRecruit = () => {
       })
       .then((res) => {
         console.log(res);
+        navigate('/recruits');
       })
       .catch((err) => {
         console.log(err);

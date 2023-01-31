@@ -16,15 +16,18 @@ const FreeCreatorSelectBox = () => {
   const navigate = useNavigate();
   const { freeId } = useParams();
 
-  //   const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  const LOGIN_ID = Number(localStorage.getItem('memberId'));
 
   const handleDeleteFree = () => {
     axios
       .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
-        headers: {
-          Authorization: `${localStorage.getItem('AccessToken')}`,
-          Refresh: `${localStorage.getItem('RefreshToken')}`,
+        data: {
+          memberId: LOGIN_ID,
         },
+        // headers: {
+        //   Authorization: `${localStorage.getItem('AccessToken')}`,
+        //   Refresh: `${localStorage.getItem('RefreshToken')}`,
+        // },
       })
       .then(() => navigate(`/freeboards`))
       .catch((err) => console.log(err));
