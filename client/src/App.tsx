@@ -43,6 +43,14 @@ const App = () => (
         <Route path="/freeboard/new" element={<CreateFreeboard />} />
         <Route path="/freeboard/:freeId" element={<FreeDetail />} />
         <Route path="/freeboard/:freeId/edit" element={<EditFreeboard />} />
+        {/* <Route path="/freeboard/tags" element={<FreeTags />} />
+        <Route
+          path="recruits/tags/:tagId/:tagName"
+          element={<TaggedRecruit />}
+        /> */}
+        <Route path="/recruits" element={<Recruits />} />
+        <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
+        <Route path="/recruits/tags" element={<RecruitTags />} />
         <Route path="/freeboards/tags" element={<FreeboardTags />} />
         <Route path="/loading" element={<Loading />} />
       </Routes>

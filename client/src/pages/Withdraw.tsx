@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
+import axios from 'axios';
 
 const WithdrawContainer = styled.main`
   background-color: var(--gray);
@@ -105,6 +106,14 @@ const Withdraw = () => {
 
   const withdrawal = () => {
     // 여기에 axios patch 넣어주면 됨.
+    axios
+      .patch(
+        `${process.env.REACT_APP_API_URL}/members/my-page/${memberId}/withdraw`,
+      )
+      .then((res: any) => {
+        console.log(res);
+      })
+      .catch((err: any) => console.log(err));
     navigate('/');
     console.log(memberId, ' withdrew');
   };

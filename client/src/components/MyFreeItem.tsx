@@ -72,9 +72,9 @@ interface Item {
   id: number;
 }
 
-const MyRecruitItem = ({ title, quota, dueDate, tags, id }: Item) => (
+const MyFreeItem = ({ title, quota, dueDate, tags, id }: Item) => (
   <div>
-    <ItemContainer to={`/recruit/${id}`}>
+    <ItemContainer to={`/freeboard/${id}`}>
       <ItemWrapper>
         <div>
           {/* 제목이 엄청 길어지면 어떻게 될까? 한번 테스트해보자 */}
@@ -104,4 +104,4 @@ const MyRecruitItem = ({ title, quota, dueDate, tags, id }: Item) => (
   </div>
 );
 
-export default MyRecruitItem;
+export default MyFreeItem;

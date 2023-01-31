@@ -2,12 +2,15 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // import Tag from '../components/Tag';
-import KakaoMap from '../components/KakaoMap';
+// import KakaoMap from '../components/KakaoMap';
 import useCurrentLocation from '../utils/useCurrentLocation';
 import NewPassword from '../components/NewPassword';
-import AutoCompleteForArray from '../components/AutoCompleteForArray';
+// import AutoCompleteForArray from '../components/AutoCompleteForArray';
+import EditAuto from '../components/EditAuto';
+// import KakaoMapAdd from '../components/KakaoMapAdd';
+import AddMap from '../components/AddMap';
 // declare global {
 //   interface Window {
 //     kakao: any;
@@ -63,16 +66,20 @@ const WarnSet = styled.div`
 `;
 
 const PersonalInfo = styled.div`
-  border: 2px solid white;
+  /* border: 2px solid white; */
   margin: 10px 0 10px 10px;
   border-radius: 20px;
-  padding: 40px 10px 40px 20px;
+  padding: 40px 50px 40px 20px;
   input {
+    /* width: 7.5rem; */
+    width: 7.5rem;
+  }
+  .input {
     background-color: var(--gray);
     padding: 5px;
     font-size: 16px;
     border: 1px solid grey;
-    width: 13rem;
+    width: 18.5rem;
     outline: none;
     color: white;
     &:focus-within {
@@ -97,7 +104,7 @@ const InfoBlock = styled.div`
     display: flex;
     align-items: flex-start;
     text-shadow: white 0 0 5px;
-    margin-right: 10px;
+    margin-right: 30px;
     margin-top: 5px;
     margin-left: 20px;
   }
@@ -119,7 +126,7 @@ const InfoBlock = styled.div`
   }
   #map {
     width: 18.5rem;
-    height: 19rem;
+    height: 23rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -127,18 +134,6 @@ const InfoBlock = styled.div`
     margin-bottom: 1rem;
     margin-left: 0.1rem;
     margin-right: 5rem;
-    > #locationButton {
-      padding: 1rem 2rem;
-      background-color: var(--gray);
-      &:hover:enabled {
-        transition: 0.2s ease-in-out;
-        text-shadow: white 0 0 5px;
-        background-color: var(--neon-yellow);
-        color: black;
-        border: 1px solid var(--neon-yellow);
-        cursor: pointer;
-      }
-    }
     > button {
       margin-top: 1rem;
       border: 1px solid white;
@@ -156,7 +151,7 @@ const InfoBlock = styled.div`
       font-size: 15px;
       display: flex;
       justify-content: flex-start;
-      > i {
+      i {
         color: white;
         font-size: 16px;
         margin-left: 15px;
@@ -227,7 +222,7 @@ const TempButton = styled(Link)`
   i {
     padding-right: 10px;
   }
-  &:hover:enabled {
+  &:hover {
     transition: 0.2s ease-in-out;
     text-shadow: white 0 0 5px;
     background-color: var(--neon-yellow);
@@ -313,7 +308,7 @@ const NoLinkButton = styled.button`
 //   }
 // `;
 const TagList = styled.div`
-  width: 22rem;
+  width: 10rem;
   display: flex;
   flex-wrap: wrap;
   margin: 0.5rem;
@@ -339,13 +334,20 @@ interface UserFormInput {
   newPassword: string;
   // newPasswordCheck: string;
   phone: string;
+  location: string;
+  lat: number;
+  lon: number;
+  // locations: string[];
+  // memberTags: {
+  //   tagId: number;
+  //   tagName: string;
+  // }[];
   memberTags: {
     tagId: number;
     tagName: string;
     emoji: string;
   }[];
   // memberTags: string[];
-  locations: string[];
 }
 
 // interface location {
@@ -356,13 +358,46 @@ interface UserFormInput {
 const EditUser = () => {
   const { memberId } = useParams();
   const navigate = useNavigate();
-  // });
-  const [nickCheck, setNickCheck] = useState(false);
-  const [phoneCheck, setPhoneCheck] = useState(false);
+  const { location: currentLocation } = useCurrentLocation();
+  // default, changed, done
+  const [nickCheck, setNickCheck] = useState('default');
+  const [phoneCheck, setPhoneCheck] = useState('default');
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [passwordChange, setPasswordChange] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+  const [locationString, setLocationString] = useState('');
+  const [lat, setLat] = useState(0);
+  const [lon, setLon] = useState(0);
 
+  const [oneUser, setOneUsers] = useState({
+    memberId: 1,
+    name: '',
+    birth: '',
+    nickname: '',
+    email: '',
+    phone: '',
+    location: '',
+    memberTags: [
+      {
+        tagId: 1,
+        tagName: '',
+      },
+    ],
+  });
+  useEffect(() => {
+    const getOneUser = () => {
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/members/my-page/${memberId}`)
+        .then((res: any) => {
+          console.log(res);
+          setOneUsers(res.data);
+          setLocationString(res.data.location);
+          // setIsLoading(false);
+        })
+        .catch((err: any) => console.log(err));
+    };
+    getOneUser();
+  }, []);
   // const [img, setImg] = useState<string>(
   //   'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   // );
@@ -379,13 +414,22 @@ const EditUser = () => {
     formState: { errors },
   } = useForm<UserFormInput>();
   const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
-    const check = { ...data, newPassword, locations: 'example' };
+    const check = {
+      ...data,
+      newPassword,
+      location: locationString,
+      lat,
+      lon,
+      // 멤버 태그가 객체가 아니라 string이라 오류남
+    };
     console.log(check);
     axios
       .patch(`${process.env.REACT_APP_API_URL}/members/my-page/${memberId}`, {
         ...data,
         newPassword,
-        locations: 'string',
+        location: locationString,
+        lat: currentLocation?.latitude,
+        lon: currentLocation?.longitude,
         // 멤버 태그가 객체가 아니라 string이라 오류남
       })
       .then((res) => {
@@ -420,8 +464,6 @@ const EditUser = () => {
   //   latitude: number;
   //   longitude: number;
   // } | null>(null);
-
-  const { location: currentLocation } = useCurrentLocation();
 
   const TAG_DATA = [
     { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
@@ -493,11 +535,17 @@ const EditUser = () => {
   //     'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
   //   );
   // };
-  const locationAdd = () => {
-    alert(
-      `위도 : ${currentLocation?.latitude}, 경도 : ${currentLocation?.longitude}`,
-    );
-  };
+  // const locationAdd = () => {
+  //   if (locationString === '') {
+  //     alert(
+  //       `위도 : ${currentLocation?.latitude}, 경도 : ${currentLocation?.longitude}`,
+  //     );
+  //   } else {
+  //     alert('위치는 하나만 저장할 수 있습니다');
+  //   }
+  // };
+  // const locationRemove = () => {
+  //   setLocationString('');
   // };
   // const locationAdd = () => {
   //   alert(`위도 : ${location?.latitude}, 경도 : ${location?.longitude}`);
@@ -522,26 +570,31 @@ const EditUser = () => {
         if (res.data === true) {
           alert('이미 존재하는 닉네임입니다!');
         } else {
-          setNickCheck(true);
+          setNickCheck('done');
         }
       })
       .catch((err: any) => console.log(err));
   };
   const phoneNumCheck = () => {
     const phone = (document.getElementById('phone') as HTMLInputElement).value;
-    axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/members/signup/check-phone/${phone}`,
-      )
-      .then((res: any) => {
-        console.log(res);
-        if (res.data === true) {
-          alert('이미 존재하는 휴대폰 번호입니다!');
-        } else {
-          setPhoneCheck(true);
-        }
-      })
-      .catch((err: any) => console.log(err));
+    const phoneTest = /^(010)-[0-9]{3,4}-[0-9]{4}$/;
+    if (phoneTest.test(phone)) {
+      axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/members/signup/check-phone/${phone}`,
+        )
+        .then((res: any) => {
+          console.log(res);
+          if (res.data === true) {
+            alert('이미 존재하는 휴대폰 번호입니다!');
+          } else {
+            setPhoneCheck('done');
+          }
+        })
+        .catch((err: any) => console.log(err));
+    } else {
+      alert('010-0000-0000 형식에 맞춰주세요.');
+    }
   };
   return (
     <EditContainer onSubmit={handleSubmit(onSubmitHandler)}>
@@ -576,10 +629,13 @@ const EditUser = () => {
               <input
                 id="nickname"
                 type="text"
-                defaultValue="NickName"
-                disabled={nickCheck}
+                defaultValue={oneUser.nickname}
+                className="input"
+                disabled={nickCheck === 'done'}
+                // onChange={setNickCheck(false)}
                 {...register('nickname', {
                   required: true,
+                  onChange: () => setNickCheck('changed'),
                 })}
               />
               {errors.nickname && (
@@ -592,9 +648,9 @@ const EditUser = () => {
             <NoLinkButton
               type="button"
               onClick={nicknameCheck}
-              disabled={nickCheck}
+              disabled={nickCheck === 'done'}
             >
-              {nickCheck ? '확인 완료' : '중복 확인'}
+              {nickCheck !== 'changed' ? '확인 완료' : '중복 확인'}
             </NoLinkButton>
           </InfoBlock>
           <InfoBlock>
@@ -603,6 +659,7 @@ const EditUser = () => {
               <input
                 id="curPassword"
                 type="password"
+                className="input"
                 {...register('curPassword', { required: true })}
               />
               {errors.curPassword && (
@@ -657,26 +714,33 @@ const EditUser = () => {
             <WarnSet>
               <input
                 id="phone"
-                type="number"
-                placeholder="01012345678"
-                disabled={phoneCheck}
+                type="tel"
+                placeholder="010-1234-5678"
+                className="input"
+                defaultValue={oneUser.phone}
+                disabled={phoneCheck === 'done'}
                 {...register('phone', {
                   required: true,
+                  pattern: {
+                    value: /^(010)-[0-9]{3,4}-[0-9]{4}$/,
+                    message: '010-0000-0000 형식에 맞춰주세요.',
+                  },
+                  onChange: () => setPhoneCheck('changed'),
                 })}
               />
               {errors.phone && (
                 <span>
                   <i className="fa-solid fa-circle-exclamation" />
-                  휴대폰 번호을 입력해주세요
+                  {errors.phone.message}
                 </span>
               )}
             </WarnSet>
             <NoLinkButton
               type="button"
               onClick={phoneNumCheck}
-              disabled={phoneCheck}
+              disabled={phoneCheck === 'done'}
             >
-              {phoneCheck ? '확인 완료' : '중복 확인'}
+              {phoneCheck !== 'changed' ? '확인 완료' : '중복 확인'}
             </NoLinkButton>
           </InfoBlock>
           <InfoBlock>
@@ -684,34 +748,51 @@ const EditUser = () => {
             <div>
               <div id="map">
                 {currentLocation && (
-                  <KakaoMap
+                  <AddMap
                     latitude={currentLocation.latitude}
                     longitude={currentLocation.longitude}
+                    locationString={locationString}
+                    setLocationString={setLocationString}
+                    setLat={setLat}
+                    setLon={setLon}
                   />
                 )}
-                <button type="button" id="locationButton" onClick={locationAdd}>
+                {/* <button type="button" id="locationButton" onClick={locationAdd}>
                   현재 위치 추가
-                </button>
+                </button> */}
               </div>
-              <div>
-                서울시 강서구
-                <i className="fa-solid fa-xmark" />
-              </div>
-              <div>
+              {/* <div>
+                {locationString === ''
+                  ? '저장된 위치가 없습니다'
+                  : locationString}
+                <div
+                  role="button"
+                  onClick={locationRemove}
+                  onKeyDown={locationRemove}
+                  tabIndex={0}
+                >
+                  {locationString === '' ? (
+                    ''
+                  ) : (
+                    <i className="fa-solid fa-xmark" />
+                  )}
+                </div>
+              </div> */}
+              {/* <div>
                 수원시
                 <i className="fa-solid fa-xmark" />
-              </div>
+              </div> */}
             </div>
           </InfoBlock>
           <InfoBlock>
             <label htmlFor="memberTags">등록 태그 변경</label>
             <div>
               <TagList>
-                <AutoCompleteForArray
+                <EditAuto
                   fields={fields}
                   append={append}
                   remove={remove}
-                  register={register}
+                  // register={register}
                   control={control}
                   data={TAG_DATA}
                   tagLength={3}
@@ -723,7 +804,13 @@ const EditUser = () => {
         <span>
           <Button
             type="submit"
-            disabled={!(nickCheck && phoneCheck && passwordMatch)}
+            disabled={
+              !(
+                nickCheck !== 'changed' &&
+                phoneCheck !== 'changed' &&
+                passwordMatch
+              )
+            }
           >
             <i className="fa-solid fa-square-check" />
             저장하기

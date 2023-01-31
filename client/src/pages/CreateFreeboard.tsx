@@ -16,8 +16,9 @@ interface FormInputFree {
   category: CategoryEnum;
   title: string;
   content: string;
-  image: string;
-  tag: string;
+  // image: string;
+  location: string;
+  tag: { tagId: number; tagName: string }[];
 }
 
 const Background = styled.div`
@@ -54,7 +55,7 @@ const CRForm = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  #tagContainer {
+  .tagContainer {
     display: flex;
     flex-direction: column;
     > span {
@@ -79,7 +80,7 @@ const CRForm = styled.form`
     outline: none;
     color: white;
     &:focus-within {
-      border: 1px solid white;
+      border: 2px solid white;
       transition: 0.2s ease-in-out;
     }
     &:-webkit-autofill {
@@ -189,21 +190,41 @@ const CreateFreeboard = () => {
   // const [content, setContent] = useState('');
 
   const onSubmit = (data: FormInputFree) => {
-    console.log(data);
+    console.log({
+      freeTitle: data.title,
+      freeBody: data.content,
+      category: data.category,
+      location: data.location,
+      freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+      memberId: 1,
+    });
     axios
-      .post(`${process.env.REACT_APP_API_URL}/freeboards`, {
-        freeTitle: data.title,
-        freeBody: data.content,
-        category: data.category,
-        // tagList: tags.reduce((r, e) => {
-        //   r.push({ tagId: e.tagId });
-        //   return r;
-        // }, []),
-        // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
-      })
+      .post(
+        `${process.env.REACT_APP_API_URL}/freeboards`,
+        {
+          freeTitle: data.title,
+          freeBody: data.content,
+          category: data.category,
+          location: data.location,
+          freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+          memberId: 1,
+          // 태그와 멤버아이디가 고정되어있음
+          // tagList: tags.reduce((r, e) => {
+          //   r.push({ tagId: e.tagId });
+          //   return r;
+          // }, []),
+          // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem('AccessToken')}`,
+            Refresh: `${localStorage.getItem('RefreshToken')}`,
+          },
+        },
+      )
       .then((res) => {
         console.log(res);
-        navigate('/freeboard');
+        navigate('/freeboards');
       })
       .catch((err) => {
         console.log(err);
@@ -278,13 +299,20 @@ const CreateFreeboard = () => {
           </WarnSet>
         </div>
         <div>
+          <label htmlFor="location">위치</label>
+          <div className="tagContainer">
+            <input id="location" type="text" {...register('location')} />
+            <span>장소를 공유하고 싶을 경우 위치를 적어 주세요</span>
+          </div>
+        </div>
+        <div>
           <label htmlFor="tag">태그</label>
-          <div id="tagContainer">
+          <div className="tagContainer">
             <input id="tag" {...register('tag')} />
             <span>Enter to Add the tag</span>
           </div>
         </div>
-        <div>
+        {/* <div>
           <div className="label">이미지</div>
           <label htmlFor="image" className="imagebutton">
             + 이미지 파일 추가
@@ -296,10 +324,10 @@ const CreateFreeboard = () => {
             multiple
             {...register('image')}
           />
-        </div>
+        </div> */}
         <ButtonContainer>
           <button type="submit">작성하기</button>
-          <Link to="/freeboard">
+          <Link to="/freeboards">
             <button type="button">취소하기</button>
           </Link>
         </ButtonContainer>

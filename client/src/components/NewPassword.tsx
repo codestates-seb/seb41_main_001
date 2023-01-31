@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 const InfoBlock = styled.div`
@@ -10,7 +11,7 @@ const InfoBlock = styled.div`
     display: flex;
     align-items: flex-start;
     text-shadow: white 0 0 5px;
-    margin-right: 10px;
+    margin-right: 30px;
     margin-top: 5px;
     margin-left: 20px;
   }
@@ -60,7 +61,7 @@ const WarnSet = styled.div`
     color: var(--neon-red);
     font-size: 10px;
     padding: 0.5rem 0;
-    margin-left: 1.2rem;
+    margin-left: 0.2rem;
     > i {
       margin-right: 0.3rem;
     }
@@ -74,9 +75,16 @@ const NewPassword = ({
   newPass,
   setNewPass,
 }: any) => {
+  const [condition, setCondition] = useState(false);
   const handleChange = (event: any) => {
     // 👇 Get input value from "event"
-    setNewPass(event.target.value);
+    const testing = /^(?=.*\d)(?=.*[a-zA-ZS]).{8,16}/;
+    if (testing.test(event.target.value)) {
+      setNewPass(event.target.value);
+      setCondition(true);
+    } else {
+      setCondition(false);
+    }
     doesNotMatch();
   };
   const handleMatch = (event: any) => {
@@ -90,12 +98,32 @@ const NewPassword = ({
     <div>
       <InfoBlock>
         <label htmlFor="newPassword">새 비밀번호</label>
-        <input id="newPassword" type="password" onChange={handleChange} />
+        <WarnSet>
+          <input
+            id="newPassword"
+            type="password"
+            className="input"
+            onChange={handleChange}
+          />
+          {condition ? (
+            ''
+          ) : (
+            <span>
+              <i className="fa-solid fa-circle-exclamation" />
+              비밀번호는 8자 이상, 영문과 숫자 혼용이어야 합니다
+            </span>
+          )}
+        </WarnSet>
       </InfoBlock>
       <InfoBlock>
         <label htmlFor="newPasswordCheck">새 비밀번호 확인</label>
         <WarnSet>
-          <input id="newPasswordCheck" type="password" onChange={handleMatch} />
+          <input
+            id="newPasswordCheck"
+            type="password"
+            className="input"
+            onChange={handleMatch}
+          />
           {passwordMatch ? (
             ''
           ) : (

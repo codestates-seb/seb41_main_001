@@ -1,7 +1,7 @@
 import MyRecruitItem from './MyRecruitItem';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
 
-const WroteRecruit = (data: any) => (
+const WroteRecruit = ({ data }: any) => (
   <div>
     {
       data.length === 0 ? (
