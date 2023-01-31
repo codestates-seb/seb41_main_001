@@ -112,6 +112,12 @@ const LogIn = () => {
         console.log(res.headers.authorization);
         console.log(res.headers.refresh);
         navigate('/');
+        localStorage.setItem('AccessToken', res.headers.authorization!);
+        localStorage.setItem('RefreshToken', res.headers.refresh!);
+        localStorage.setItem('memberId', res.headers['member-id']!);
+        localStorage.setItem('birth', res.headers.birth!);
+        localStorage.setItem('heart', res.headers.heart!);
+        localStorage.setItem('sex', res.headers.sex!);
       })
       .catch((err) => {
         const errMsg = err.response.data.message;

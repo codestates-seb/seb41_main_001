@@ -171,9 +171,9 @@ const SignUp = () => {
         console.log(
           JSON.stringify({
             ...data,
-            lat: currentLocation?.latitude,
-            lon: currentLocation?.longitude,
-            locations: '경기도 의정부시 의정부1동',
+            lat,
+            lon,
+            locations: locationString,
           }),
         );
       });

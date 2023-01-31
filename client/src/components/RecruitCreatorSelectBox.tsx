@@ -1,7 +1,9 @@
-import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Button from './Button';
 import ButtonLink from './ButtonLink';
+import RecruitDataProps from '../interfaces/RecruitDataProps';
 
 const CreatorSelectBox = styled.div`
   display: flex;
@@ -14,19 +16,42 @@ const CreatorSelectBox = styled.div`
 interface ApplicantsDataProps {
   applies: { memberId: number; nickname: string; heart: number }[];
   modifiedAt: string;
+  setData: (value: RecruitDataProps) => void;
 }
 
 const RecruitCreatorSelectBox = ({
   applies,
   modifiedAt,
+  setData,
 }: ApplicantsDataProps) => {
+  const navigate = useNavigate();
   const { recruitId } = useParams();
+
+  const LOGIN_ID = Number(localStorage.getItem('memberId'));
 
   const checkIfBringUpPossible = (d: string) => {
     const TIME_MODIFIED = new Date(d).getTime();
     const TIME_NOW = new Date().getTime();
     if (TIME_NOW - TIME_MODIFIED > 24 * 60 * 60 * 1000) return true;
     return false;
+  };
+
+  const handleDeleteRecruit = () => {
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`, {
+        data: {
+          memberId: LOGIN_ID,
+        },
+      })
+      .then(() => navigate(`/recruits`))
+      .catch((err) => console.log(err));
+  };
+
+  const handleBringupRecruit = () => {
+    axios
+      .patch(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}/bringup`)
+      .then((res) => setData(res.data.data))
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -38,13 +63,13 @@ const RecruitCreatorSelectBox = ({
       />
       <Button
         value="삭제"
-        onClick={() => console.log(`DELETE /recruits/${recruitId}`)}
+        onClick={handleDeleteRecruit}
         disabled={applies.length >= 1}
         icon={<i className="fa-solid fa-trash" />}
       />
       <Button
         value="끌어올리기"
-        onClick={() => console.log(`PATCH /recruits/${recruitId}/bringup`)}
+        onClick={handleBringupRecruit}
         disabled={!checkIfBringUpPossible(modifiedAt)}
         icon={<i className="fa-solid fa-circle-up" />}
       />

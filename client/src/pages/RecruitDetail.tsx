@@ -1,4 +1,7 @@
 import styled from 'styled-components';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
 import CreatorCard from '../components/CreatorCard';
 import KakaoMap from '../components/KakaoMap';
@@ -142,98 +145,37 @@ const CommentArea = styled.div`
 `;
 
 const RecruitDetail = () => {
-  const DATA: RecruitDataProps = {
-    recruitId: 1,
-    title:
-      '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
-    body: '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
-    image: '',
-    createdAt: '2023-01-02T16:18:48.908218',
-    modifiedAt: '2023-01-25T16:18:48.908218',
-    recruitStatus: '활동종료', // 모집중/모집완료/최소인원충족/활동종료
-    star: 0,
-    views: 0,
-    memberId: 1,
-    nickname: '글자수세기TEST글자수세기TEST글자',
-    authorHeart: 50,
-    likes: 0,
-    location: '춘천',
-    lat: 37.343336,
-    lon: 127.1233716,
-    heartLimit: 50, // number, 0
-    ageGroup: ['10', '20', '30', '40', '50', '60'],
-    sex: 'Male', // Male, Female, Both
-    applies: [
-      // { memberId: 1, nickname: 'aaa', heart: 80 },
-      { memberId: 2, nickname: 'blueblueblueblue', heart: 80 },
-      { memberId: 3, nickname: 'coolcirclecar', heart: 80 },
-      { memberId: 4, nickname: 'doordoordoor', heart: 80 },
-      { memberId: 5, nickname: 'element', heart: 80 },
-      { memberId: 6, nickname: 'frifrifriday', heart: 80 },
-      { memberId: 7, nickname: 'goodgamegone', heart: 80 },
-      { memberId: 8, nickname: 'hihihi', heart: 80 },
-      { memberId: 9, nickname: 'icyiceice', heart: 80 },
-    ],
-    minRequire: 2,
-    require: 5,
-    date: '2023-01-22T16:18:48.908218',
-    recruitTags: [{ tagId: 1, tagName: '축구/풋볼', emoji: '⚽️' }],
-    recruitLikes: [
-      {
-        memberId: 1,
-      },
-    ],
-    reviews: [
-      // {
-      //   reviewId: 1,
-      //   memberId: 1,
-      //   nickname: '닉네임',
-      //   heart: 50,
-      //   body: '글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TEST글자수TES',
-      //   star: 5,
-      // },
-      // {
-      //   reviewId: 2,
-      //   memberId: 3,
-      //   nickname: '글자수세기TEST글자수세기TEST글자',
-      //   heart: 50,
-      //   body: '좋아요',
-      //   star: 2,
-      // },
-    ],
-    recruitComments: [
-      {
-        commentId: 1,
-        memberId: 1,
-        nickname: 'holiday',
-        heart: 50,
-        body: '안녕하세요',
-        createdAt: '2023-01-18T17:35:10.171566',
-        modifiedAt: '2023-01-18T17:35:10.165851',
-      },
-      {
-        commentId: 1,
-        memberId: 2,
-        nickname: '글자수세기TEST글자수세기TEST글자',
-        heart: 50,
-        body: '글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기TEST글자수세기',
-        createdAt: '2023-01-18T17:35:10.171566',
-        modifiedAt: '2023-01-18T17:35:10.165851',
-      },
-    ],
-  };
+  const { recruitId } = useParams();
+  const [data, setData] = useState<RecruitDataProps>();
+  const [likesMemberId, setLikesMemberId] = useState<number[]>();
+  const [applicantsId, setApplicantsId] = useState<number[]>();
 
-  const LOGIN_ID = 1;
-  // 좋아요를 누른 멤버아이디만 모아둠 [1, 2, 3, 4...]
-  const LIKES_MEMBER_ID = DATA.recruitLikes.reduce((res: number[], ele) => {
-    res.push(ele.memberId);
-    return res;
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`)
+      .then((res) => {
+        setData(res.data.data);
+        setLikesMemberId(
+          res.data.data.recruitLikes.reduce((r: number[], e: any) => {
+            if (e.memberId) {
+              r.push(e.memberId);
+            }
+            return r;
+          }, []),
+        );
+        setApplicantsId(
+          res.data.data.applies.reduce((r: number[], e: any) => {
+            if (e.memberId) {
+              r.push(e.memberId);
+            }
+            return r;
+          }, []),
+        );
+      })
+      .catch((err) => console.log(err));
   }, []);
 
-  const APPLICANTS_ID = DATA.applies.reduce((res: number[], ele) => {
-    res.push(ele.memberId);
-    return res;
-  }, []);
+  const LOGIN_ID = Number(localStorage.getItem('memberId'));
 
   const checkIfMeetingEnded = (d: string) => {
     const TIME_INPUT = new Date(d).getTime();
@@ -245,114 +187,138 @@ const RecruitDetail = () => {
 
   return (
     <MainContainer>
-      <h1>{DATA.title}</h1>
-      <div>
-        <div>
-          <span>
-            <i className="fa-regular fa-clock" />
-            {`${modifyingDate(DATA.modifiedAt)}`}
-          </span>
-          <span>
-            <i className="fa-solid fa-eye" />
-            {DATA.views}
-          </span>
-        </div>
-        <CreatorCard
-          memberId={DATA.memberId}
-          nickname={DATA.nickname}
-          heart={DATA.authorHeart}
-        />
-      </div>
-      <ContentBox>{DATA.body}</ContentBox>
-      <LocationBox>
-        <div>
-          <span>{`📌 언제? ${modifyingDate(DATA.date)}`}</span>
-          <span>{`📌 어디서? ${DATA.location}`}</span>
-          <span>📌 조건</span>
-          <ConditionBox>
+      {data && (
+        <>
+          <h1>{data.title}</h1>
+          <div>
             <div>
-              <i className={`${classifyingGender(DATA.sex).icon}`} />
-              {classifyingGender(DATA.sex).text}
+              <span>
+                <i className="fa-regular fa-clock" />
+                {`${modifyingDate(data.modifiedAt)}`}
+              </span>
+              <span>
+                <i className="fa-solid fa-eye" />
+                {data.views}
+              </span>
             </div>
-            <div>
-              <i className="fa-solid fa-heart-circle-exclamation" />
-              <span>{`심박수 ${DATA.heartLimit} 이상`}</span>
-            </div>
-            <div>
-              <span>신청 가능 연령</span>
-              {classifyingAge(DATA.ageGroup).map((el) => (
-                <span key={el}>{el}</span>
-              ))}
-            </div>
-          </ConditionBox>
-        </div>
-        <div>
-          <KakaoMap
-            latitude={DATA.lat}
-            longitude={DATA.lon}
-            overlayvalue="모임 장소"
-          />
-        </div>
-      </LocationBox>
-      {!checkIfMeetingEnded(DATA.date) ? (
-        <RecruitApplyBeforeMeeting
-          applicantsId={APPLICANTS_ID}
-          heartCond={DATA.heartLimit}
-          ageGroup={DATA.ageGroup}
-          sexCon={DATA.sex}
-          recruitStatus={DATA.recruitStatus}
-          creatorId={DATA.memberId}
-          applies={DATA.applies}
-          minRequire={DATA.minRequire}
-          require={DATA.require}
-        />
-      ) : (
-        <RecruitApplyAfterMeeting
-          recruitStatus={DATA.recruitStatus}
-          applies={DATA.applies}
-          minRequire={DATA.minRequire}
-          require={DATA.require}
-          applicantsId={APPLICANTS_ID}
-          creatorId={DATA.memberId}
-          reviews={DATA.reviews}
-          creatorNickname={DATA.nickname}
-        />
-      )}
-      <ButtonArea>
-        <LikeButton
-          likes={LIKES_MEMBER_ID.includes(LOGIN_ID)}
-          value={`좋아요 ${LIKES_MEMBER_ID.length}`}
-          onClick={() => {
-            console.log(`/recruits/${DATA.recruitId}/likes`, '좋아요!');
-          }}
-          icon={<i className="fa-solid fa-heart" />}
-        />
-
-        {DATA.memberId === LOGIN_ID ? (
-          <RecruitCreatorSelectBox
-            applies={DATA.applies}
-            modifiedAt={DATA.modifiedAt}
-          />
-        ) : (
-          ''
-        )}
-      </ButtonArea>
-      <CommentArea>
-        <h3>{`${DATA.recruitComments.length}개의 댓글이 있습니다`}</h3>
-        <ul>
-          {DATA.recruitComments.map((el) => (
-            <CommentBox
-              key={el.memberId}
-              memberId={DATA.memberId}
-              board="recruits"
-              boardId={DATA.recruitId}
-              applicantsId={APPLICANTS_ID}
-              data={el}
+            <CreatorCard
+              memberId={data.memberId}
+              nickname={data.nickname}
+              heart={data.authorHeart}
             />
-          ))}
-        </ul>
-        <CommentSubmitBox submitComment={`/recruits/${DATA.recruitId}`} />
-      </CommentArea>
+          </div>
+          <ContentBox>{data.body}</ContentBox>
+          <LocationBox>
+            <div>
+              <span>{`📌 언제? ${modifyingDate(data.date)}`}</span>
+              <span>{`📌 어디서? ${data.location}`}</span>
+              <span>📌 조건</span>
+              <ConditionBox>
+                <div>
+                  <i className={`${classifyingGender(data.sex).icon}`} />
+                  {classifyingGender(data.sex).text}
+                </div>
+                <div>
+                  <i className="fa-solid fa-heart-circle-exclamation" />
+                  <span>{`심박수 ${data.heartLimit} 이상`}</span>
+                </div>
+                <div>
+                  <span>신청 가능 연령</span>
+                  {classifyingAge(data.ageGroup).map((el) => (
+                    <span key={el}>{el}</span>
+                  ))}
+                </div>
+              </ConditionBox>
+            </div>
+            <div>
+              <KakaoMap
+                latitude={data.lat}
+                longitude={data.lon}
+                overlayvalue="모임 장소"
+              />
+            </div>
+          </LocationBox>
+          {!checkIfMeetingEnded(data.date) ? (
+            <RecruitApplyBeforeMeeting
+              applicantsId={applicantsId!}
+              heartCond={data.heartLimit}
+              ageGroup={data.ageGroup}
+              sexCon={data.sex}
+              recruitStatus={data.recruitStatus}
+              creatorId={data.memberId}
+              applies={data.applies}
+              minRequire={data.minRequire}
+              require={data.require}
+            />
+          ) : (
+            <RecruitApplyAfterMeeting
+              recruitStatus={data.recruitStatus}
+              applies={data.applies}
+              minRequire={data.minRequire}
+              require={data.require}
+              applicantsId={applicantsId!}
+              creatorId={data.memberId}
+              reviews={data.reviews}
+              creatorNickname={data.nickname}
+            />
+          )}
+          <ButtonArea>
+            <LikeButton
+              likes={likesMemberId!.includes(LOGIN_ID)}
+              value={`좋아요 ${data.likes}`}
+              onClick={() => {
+                axios
+                  .patch(
+                    `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/likes`,
+                    { memberId: LOGIN_ID },
+                  )
+                  .then((res) => {
+                    setData(res.data.data);
+                    setLikesMemberId(
+                      res.data.data.recruitLikes.reduce(
+                        (r: number[], e: any) => {
+                          if (e.memberId) {
+                            r.push(e.memberId);
+                          }
+                          return r;
+                        },
+                        [],
+                      ),
+                    );
+                  })
+                  .catch((err) => console.log(err));
+              }}
+              icon={<i className="fa-solid fa-heart" />}
+            />
+
+            {data.memberId === LOGIN_ID ? (
+              <RecruitCreatorSelectBox
+                applies={data.applies}
+                modifiedAt={data.modifiedAt}
+                setData={setData}
+              />
+            ) : (
+              ''
+            )}
+          </ButtonArea>
+          <CommentArea>
+            <h3>{`${data.recruitComments.length}개의 댓글이 있습니다`}</h3>
+            <ul>
+              {data.recruitComments.map((el) => (
+                <CommentBox
+                  key={el.memberId}
+                  memberId={data.memberId}
+                  board="recruits"
+                  boardId={data.recruitId}
+                  applicantsId={applicantsId!}
+                  data={el}
+                />
+              ))}
+            </ul>
+            <CommentSubmitBox submitComment={`/recruits/${data.recruitId}`} />
+          </CommentArea>
+        </>
+      )}
     </MainContainer>
   );
 };

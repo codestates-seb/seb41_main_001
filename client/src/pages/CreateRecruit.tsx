@@ -159,7 +159,8 @@ const CreateRecruit = () => {
     },
   });
 
-  // const token = localStorage.getItem('AccessToken');
+  // const AccessToken = localStorage.getItem('AccessToken');
+  // const RefreshToken = localStorage.getItem('RefrechToken');
   // const memberId = localStorage.getItem('memberId');
   const navigate = useNavigate();
 
@@ -172,7 +173,7 @@ const CreateRecruit = () => {
         `${process.env.REACT_APP_API_URL}/recruits/`,
         {
           ...postBody,
-          memberId: 1,
+          memberId: `${localStorage.getItem('memberId')}`,
         },
         {
           headers: {
