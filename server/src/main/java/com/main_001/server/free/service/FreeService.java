@@ -52,8 +52,8 @@ public class FreeService {
         this.redisUtils = redisUtils;
     }
 
-    public Free createFreeBoard(String refreshToken, Free free) {
-        Long memberId = redisUtils.getId(refreshToken);
+    public Free createFreeBoard(Free free) {
+        Long memberId = free.getMember().getMemberId();
         verifyFree(free);
         free.setCreatedAt(LocalDateTime.now());
         free.setModifiedAt(LocalDateTime.now());
@@ -113,8 +113,8 @@ public class FreeService {
         return freeRepository.save(findFree);
     }
 
-    public Free createFreeComment(long freeId, String refreshToken, FreeComment freeComment) {
-        Long memberId = redisUtils.getId(refreshToken);
+    public Free createFreeComment(long freeId, FreeComment freeComment) {
+        Long memberId = freeComment.getMember().getMemberId();
         Free findFree = findVerifiedFreeBoard(freeId);
         freeComment.setCreatedAt(LocalDateTime.now());
         freeComment.setFree(findFree);
