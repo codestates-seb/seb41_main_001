@@ -1,6 +1,5 @@
 package com.main_001.server.tag.controller;
 
-import com.main_001.server.dto.MultiResponseDto;
 import com.main_001.server.dto.SingleResponseDto;
 import com.main_001.server.tag.dto.TagDto;
 import com.main_001.server.tag.entity.Tag;
@@ -8,7 +7,6 @@ import com.main_001.server.tag.mapper.TagMapper;
 import com.main_001.server.tag.service.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -39,21 +37,17 @@ public class TagController {
 
     @ApiOperation(value = "모집글 관련 태그 조회", notes = "모집글을 기준으로 관련 태그를 조회한다.")
     @GetMapping("/recruits")
-    public ResponseEntity getTagsFromRecruit(@RequestParam int page,
-                                             @RequestParam int size){
-        Page<Tag> recruitTags = tagService.findRecruitTags(page-1, size);
-        List<Tag> content = recruitTags.getContent();
+    public ResponseEntity getTagsFromRecruit(){
+        List<Tag> recruitTags = tagService.findRecruitTags();
         return new ResponseEntity<>(
-                new MultiResponseDto<>(tagMapper.tagsToTagResponseDtos(content), recruitTags),HttpStatus.OK);
+                new SingleResponseDto<>(tagMapper.tagsToTagResponseDtos(recruitTags)),HttpStatus.OK);
     }
 
     @ApiOperation(value = "자유 게시글 관련 태그 조회", notes = "자유 게시글을 기준으로 관련 태그를 조회한다.")
     @GetMapping("/freeboards")
-    public ResponseEntity getTagsFromFreeBoard(@RequestParam int page,
-                                               @RequestParam int size){
-        Page<Tag> freeTags = tagService.findFreeTags(page-1, size);
-        List<Tag> content = freeTags.getContent();
+    public ResponseEntity getTagsFromFreeBoard(){
+        List<Tag> freeTags = tagService.findFreeTags();
         return new ResponseEntity<>(
-                new MultiResponseDto<>(tagMapper.tagsToTagResponseDtos(content), freeTags),HttpStatus.OK);
+                new SingleResponseDto<>(tagMapper.tagsToTagResponseDtos(freeTags)),HttpStatus.OK);
     }
 }

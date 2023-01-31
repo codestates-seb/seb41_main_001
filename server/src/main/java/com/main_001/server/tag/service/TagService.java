@@ -5,11 +5,9 @@ import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.tag.entity.Tag;
 import com.main_001.server.tag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,11 +25,11 @@ public class TagService {
         if(findTag.isPresent()) throw new BusinessLogicException(ExceptionCode.TAG_ALREADY_EXIST);
     }
 
-    public Page<Tag> findRecruitTags(int page, int size){
-        return tagRepository.findAllByCategoryExercise(true, PageRequest.of(page, size, Sort.by("recruitCount").descending()));
+    public List<Tag> findRecruitTags(){
+        return tagRepository.findAllByCategoryExercise(true);
     }
 
-    public Page<Tag> findFreeTags(int page, int size){
-        return tagRepository.findAll(PageRequest.of(page, size, Sort.by("freeCount").descending()));
+    public List<Tag> findFreeTags(){
+        return tagRepository.findAll();
     }
 }
