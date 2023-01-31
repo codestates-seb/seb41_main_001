@@ -35,6 +35,7 @@ public interface FreeMapper {
         free.setFreeTitle(postFreeBoard.getFreeTitle());
         free.setFreeBody(postFreeBoard.getFreeBody());
         free.setCategory(postFreeBoard.getCategory());
+        free.setLocation(postFreeBoard.getLocation());
         free.setFreeTags(freeTags);
         free.setMember(member);
         return free;
