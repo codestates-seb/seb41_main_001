@@ -10,12 +10,14 @@ import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.file.FileHandler;
 import com.main_001.server.file.S3Service;
 import com.main_001.server.file.UploadFile;
+import com.main_001.server.member.dto.MemberDto;
 import com.main_001.server.member.dto.TokenDto;
 import com.main_001.server.member.entity.Member;
 import com.main_001.server.member.entity.MemberImage;
 import com.main_001.server.member.entity.MemberTag;
 import com.main_001.server.member.repository.MemberImageRepository;
 import com.main_001.server.member.repository.MemberRepository;
+import com.main_001.server.tag.entity.Tag;
 import com.main_001.server.tag.repository.TagRepository;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -303,27 +306,10 @@ public class MemberService {
         mailSender.send(message);
     }
 
-    // 비밀번호가 맞는지 확인
-    public void checkPassword(String refreshToken, String curPassword, String newPassword) {
-        // refreshToken에서 memberId를 꺼낸 다음, 존재하는 회원인지 확인
+    // 마이페이지 수정 로직, tag는 하나씩만 존재하도록 체크 필요함
+    public Member updateMember(String refreshToken, Member member, String curPassword, String newPassword) {
         Long memberId = redisUtils.getId(refreshToken);
         Member findMember = findVerifiedMember(memberId);
-
-        // 비밀번호 같은지 확인
-        isValid(findMember, curPassword);
-
-//        findMember.setPassword(newPassword);
-
-//        TODO 개발 완료 후 봉인 해제
-        String encryptedPassword = passwordEncoder.encode(newPassword);
-        findMember.setPassword(encryptedPassword);
-
-        memberRepository.save(findMember);
-    }
-
-    // 마이페이지 수정 로직, tag는 하나씩만 존재하도록 체크 필요함
-    public Member updateMember(Member member) {
-        Member findMember = findVerifiedMember(member.getMemberId());
 
         Optional.ofNullable(member.getNickname())
                 .ifPresent(findMember::setNickname);
@@ -337,6 +323,13 @@ public class MemberService {
                 .ifPresent(findMember::setLon);
         Optional.ofNullable(member.getMemberTags())
                 .ifPresent(findMember::setMemberTags);
+
+        if (!ObjectUtils.isEmpty(curPassword) && !ObjectUtils.isEmpty(newPassword)) {
+            isValid(findMember, curPassword);
+
+            String encryptedPassword = passwordEncoder.encode(newPassword);
+            findMember.setPassword(encryptedPassword);
+        }
 
         return memberRepository.save(findMember);
     }

@@ -146,11 +146,14 @@ public class MemberController {
     @PatchMapping("/my-page")
     public ResponseEntity patchMyPage(@RequestHeader(name = "Refresh") String refreshToken,
                                       @RequestBody MemberDto.MemberPatchDto memberPatch) {
-        // 비밀번호가 맞는지 검증 후 변경
-        if (memberPatch.getCurPassword() != null)
-            memberService.checkPassword(refreshToken, memberPatch.getCurPassword(), memberPatch.getNewPassword());
+        Long memberId = memberService.findMyPage(refreshToken).getMemberId();
+        memberPatch.setMemberId(memberId);
 
-        Member member = memberService.updateMember(memberMapper.memberPatchToMember(memberPatch));
+        Member member = memberService.updateMember(
+                refreshToken,
+                memberMapper.memberPatchToMember(memberPatch),
+                memberPatch.getCurPassword(),
+                memberPatch.getNewPassword());
 
         return new ResponseEntity<>(memberMapper.memberToMemberMyResponse(member), HttpStatus.OK);
     }
