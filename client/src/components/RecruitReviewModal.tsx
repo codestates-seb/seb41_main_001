@@ -1,4 +1,5 @@
 /* eslint-disable react/no-array-index-key */
+import axios from 'axios';
 import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -112,6 +113,7 @@ interface ReviewDataProps {
   creatorNickname: string;
   applies: { memberId: number; nickname: string; heart: number }[];
   setReviewModal: (value: boolean) => void;
+  setData: any;
 }
 
 const RecruitReviewModal = ({
@@ -119,12 +121,13 @@ const RecruitReviewModal = ({
   creatorNickname,
   applies,
   setReviewModal,
+  setData,
 }: ReviewDataProps) => {
   const { recruitId } = useParams();
   const [filterTag, setFilterTag] = useState<string>('');
   const [star, setStar] = useState<number>(5);
   const reviewBody = useRef('');
-  const LOGIN_ID = 1;
+  const LOGIN_ID = localStorage.getItem('memberId');
   const APPLICANTS = applies.reduce(
     (r: { tagId: number; tagName: string }[], e) => [
       ...r,
@@ -135,13 +138,34 @@ const RecruitReviewModal = ({
 
   const handleReviewSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (reviewBody.current) {
+    if (reviewBody.current.trim()) {
       console.log(`POST /recruits/${recruitId}/reviews, {
             "body": ${reviewBody.current},
             "memberId": ${LOGIN_ID},
             "star": ${star},
             "worstMemberNickname": ${filterTag}
           }`);
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/reviews`,
+          {
+            body: reviewBody.current,
+            memberId: LOGIN_ID,
+            star,
+            worstMemberNickname: filterTag,
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem('AccessToken'),
+              Refresh: localStorage.getItem('RefreshToken'),
+            },
+          },
+        )
+        .then((res) => {
+          console.log(res.data.data);
+          setData(res.data.data);
+        })
+        .catch((err) => console.log(err));
       setReviewModal(false);
     }
   };

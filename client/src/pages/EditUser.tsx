@@ -416,7 +416,7 @@ const EditUser = () => {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<UserFormInput>();
   const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
     const check = {
@@ -433,6 +433,7 @@ const EditUser = () => {
         `${process.env.REACT_APP_API_URL}/members/my-page`,
         {
           ...data,
+          curPassword: '',
           newPassword,
           location: locationString,
           lat,
@@ -657,12 +658,12 @@ const EditUser = () => {
                   },
                 })}
               />
-              {errors.nickname && (
+              {/* {errors.nickname && (
                 <span>
                   <i className="fa-solid fa-circle-exclamation" />
                   닉네임을 입력해주세요
                 </span>
-              )}
+              )} */}
             </WarnSet>
             <NoLinkButton
               type="button"
@@ -747,12 +748,12 @@ const EditUser = () => {
                   onChange: () => setPhoneCheck('changed'),
                 })}
               />
-              {errors.phone && (
+              {/* {errors.phone && (
                 <span>
                   <i className="fa-solid fa-circle-exclamation" />
                   {errors.phone.message}
                 </span>
-              )}
+              )} */}
             </WarnSet>
             <NoLinkButton
               type="button"

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import timeDifference from '../utils/timeDifference';
 import Button from './Button';
 import CommentSubmitBox from './CommentSubmitBox';
@@ -87,6 +88,8 @@ const ApplicantMark = styled(CreatorMark)`
 `;
 
 interface CommentProps {
+  recruitCommentId?: number;
+  freeCommentId?: number;
   memberId: number;
   nickname: string;
   heart: number;
@@ -96,23 +99,46 @@ interface CommentProps {
 }
 
 const CommentBox = (props: {
+  commentId: number;
   memberId: number;
   board: string;
   boardId: number;
   applicantsId?: number[];
   data: CommentProps;
+  setData: any;
 }) => {
   const {
+    commentId,
     memberId: creatorId,
     board,
     boardId,
     applicantsId,
     data: { memberId, nickname, heart, body, createdAt, modifiedAt },
+    setData,
   } = props;
 
-  const LOGIN_ID = 1;
+  const LOGIN_ID = Number(localStorage.getItem('memberId'));
 
   const [modifying, setModifying] = useState<boolean>(false);
+
+  const handleCommentDelete = () => {
+    console.log(`DELETE /${board}/${boardId}/${commentId}`);
+    axios
+      .delete(
+        `${process.env.REACT_APP_API_URL}/${board}/${boardId}/${commentId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem('AccessToken'),
+            Refresh: localStorage.getItem('RefreshToken'),
+          },
+          data: { memberId: LOGIN_ID },
+        },
+      )
+      .then((res) => {
+        console.log(res);
+        setData(res.data.data);
+      });
+  };
 
   return (
     <CommentContainer>
@@ -153,13 +179,7 @@ const CommentBox = (props: {
               ) : (
                 <Button value="닫기" onClick={() => setModifying(false)} />
               )}
-              {/* // TODO: 댓글삭제 api */}
-              <Button
-                value="삭제"
-                onClick={() => {
-                  console.log(`DELETE /${board}/${boardId}/commentId`);
-                }}
-              />
+              <Button value="삭제" onClick={handleCommentDelete} />
             </>
           ) : (
             ''
@@ -169,11 +189,11 @@ const CommentBox = (props: {
       {modifying === false ? (
         <div>{body}</div>
       ) : (
-        // TODO: submitComment에 댓글수정 api.
         <CommentSubmitBox
           value={body}
-          submitComment={`/${board}/${boardId}/commentId`}
+          submitComment={`/${board}/${boardId}/${commentId}`}
           setModifying={setModifying}
+          setData={setData}
         />
       )}
     </CommentContainer>

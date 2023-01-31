@@ -1,7 +1,9 @@
 // import { useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
+// import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-// import axios from 'axios';
+import axios from 'axios';
 import AutoCompleteForArray from '../components/AutoCompleteForArray';
 import useCurrentLocation from '../utils/useCurrentLocation';
 import KakaoMapClick from '../components/KakaoMapClick';
@@ -138,6 +140,7 @@ const KakaoMapForClick = ({
 };
 
 const CreateRecruit = () => {
+  const navigate = useNavigate();
   const {
     register,
     control,
@@ -156,29 +159,32 @@ const CreateRecruit = () => {
       },
     },
   });
-  const { location } = useCurrentLocation();
-  console.log(location);
+
   const onSubmit = (data: RecruitFormInput) => {
     // tagSearch는 postBody에서 제외함.
     const { tagSearch, ...postBody } = data;
-    console.log(postBody.lat, postBody.lon);
-    console.log(
-      JSON.stringify({
-        memberId: 1,
-        ...postBody,
-        lat: location?.latitude,
-        lon: location?.longitude,
-      }),
-    );
-    // axios
-    //   .post(`${process.env.REACT_APP_API_URL}/recruits`, {
-    //     memberId: 1,
-    //     ...postBody,
-    //   })
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/recruits`,
+        {
+          memberId: localStorage.getItem('memberId'),
+          ...postBody,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem('AccessToken'),
+            Refresh: localStorage.getItem('RefreshToken'),
+          },
+        },
+      )
+      .then((res) => {
+        console.log(res);
+        navigate(`/recruits`);
+      })
+      .catch((err) => console.log(err));
   };
-
+  const { location } = useCurrentLocation();
+  console.log(location);
   const TAG_DATA = [
     { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
     { tagId: 2, tagName: '농구', emoji: '🏀' },

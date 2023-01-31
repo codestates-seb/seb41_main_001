@@ -4,8 +4,41 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import CreatorMiniCard from './CreatorMiniCard';
 import TagLink from './TagLink';
-import FreeDataProps from '../interfaces/FreeDataProps';
+// import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
+
+interface FreeBoardListProps {
+  setTypeValue: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setKeywordValue: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setFilterCategory: React.Dispatch<React.SetStateAction<string>>;
+  data: {
+    freeId: number;
+    category: string;
+    freeBody: string;
+    freeTitle: string;
+    // createdAt;
+    modifiedAt: string;
+    freeLikes: [];
+    views: number;
+    memberId: number;
+    freeTags: { tagId: number; tagName: string }[];
+    freeComments: {
+      commentId: number;
+      freeId: number;
+      commentBody: string;
+      createdAt: string;
+      modifiedAt: string;
+      memberId: number;
+      nickname: string;
+      heart: number;
+      body: string;
+    }[];
+    // tagId,
+    // tagName,
+    nickname: string;
+    authorHeart: number;
+  };
+}
 
 const Board = styled.li`
   width: 35rem;
@@ -22,17 +55,27 @@ const Board = styled.li`
 const Category = styled('div')<{ color: string }>`
   width: 4.5rem;
   height: 2rem;
+  padding: 1rem;
   border-radius: 1rem;
   display: flex;
   text-align: center;
   justify-content: center;
   align-items: center;
-  background-color: ${(props) => props.color};
+  background-color: ${(props) =>
+    props.color === '운동'
+      ? 'var(--neon-blue)'
+      : props.color === '정보'
+      ? 'var(--neon-orange)'
+      : props.color === '질문'
+      ? 'var(--neon-green)'
+      : 'var(--neon-sky-blue)'};
 `;
 
 const ContentSec = styled.section`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  height: 10rem;
   font-size: 16px;
   > div:first-child {
     display: flex;
@@ -45,7 +88,7 @@ const ContentSec = styled.section`
       text-align: center;
       justify-content: center;
       align-items: center;
-      background-color: var(--neon-blue);
+      /* background-color: var(--neon-blue); */
       /* i {
         color: var(--neon-blue);
       } */
@@ -112,95 +155,99 @@ const AuthorSec = styled.section`
   }
 `;
 
-const FreeBoardList = (props: { data: FreeDataProps }) => {
-  const {
-    data: {
-      freeId,
-      category,
-      freeBody,
-      // freeTitle,
-      createdAt,
-      // modifiedAt,
-      freeLikes,
-      views,
-      // memberId,
-      // freeLikes,
-      // freeTags,
-      // freeComments,
-      tagId,
-      tagName,
-    },
-  } = props;
+const FreeBoardList = ({
+  setTypeValue,
+  setKeywordValue,
+  setFilterCategory,
+  data,
+}: FreeBoardListProps) => (
+  // const {
+  //   data: {
+  //     freeId,
+  //     category,
+  //     freeBody,
+  //     freeTitle,
+  //     // createdAt,
+  //     modifiedAt,
+  //     freeLikes,
+  //     views,
+  //     memberId,
+  //     freeTags,
+  //     freeComments,
+  //     nickname,
+  //     authorHeart,
+  //   },
+  // } = props;
 
-  return (
-    <Link to={`/freeboard/${freeId}`}>
-      <Board>
-        <ContentSec>
+  <Link to={`/freeboard/${data.freeId}`}>
+    <Board>
+      <ContentSec>
+        <div>
+          <Link
+            to={`/freeboards?category=${data.category}`}
+            onClick={() => {
+              setTypeValue(data.category);
+              setKeywordValue('category');
+              setFilterCategory(data.category);
+            }}
+          >
+            <Category color={data.category}>
+              {data.category === '운동' ? (
+                <i className="fa-solid fa-dumbbell" />
+              ) : data.category === '정보' ? (
+                <i className="fa-solid fa-bullhorn" />
+              ) : data.category === '질문' ? (
+                <i className="fa-regular fa-comments" />
+              ) : (
+                <i className="fa-solid fa-hand-holding-heart" />
+              )}
+              {data.category}
+            </Category>
+          </Link>
+          <div>{data.freeTitle}</div>
+        </div>
+        <div>{data.freeBody}</div>
+        <div>
+          {data.freeTags.map((el) => (
+            <TagLink
+              onClick={() => {
+                setTypeValue(el.tagName);
+                setKeywordValue('tag');
+                setFilterCategory('');
+              }}
+              key={el.tagId}
+              value={`${el.tagName}`}
+              to={`?tag=${el.tagName}`}
+            />
+          ))}
+        </div>
+        <div>
+          {/* {`${convertToDate(createdAt)}`} */}
+          {`${timeDifference(data.modifiedAt)}`}
+        </div>
+      </ContentSec>
+      <AuthorSec>
+        <div className="counts">
           <div>
-            <Link to={`/freeboard?category=${category}`}>
-              <Category
-                color={
-                  category === '운동'
-                    ? '5aa1f1'
-                    : category === '정보'
-                    ? 'ee8834'
-                    : category === '질문'
-                    ? '3fb950'
-                    : '7dede1'
-                }
-              >
-                {category === '운동' ? (
-                  <i className="fa-solid fa-dumbbell" />
-                ) : category === '정보' ? (
-                  <i className="fa-solid fa-bullhorn" />
-                ) : category === '질문' ? (
-                  <i className="fa-regular fa-comments" />
-                ) : (
-                  <i className="fa-solid fa-hand-holding-heart" />
-                )}
-                {/* {category} */}
-                운동
-              </Category>
-            </Link>
-            <div>
-              {/* {freeTitle} */}
-              안녕하세요!
-            </div>
+            <i className="fa-solid fa-eye view" />
+            {data.views}
           </div>
           <div>
-            {freeBody}
-            내용내용내용내용내용 입니다입니다 내용내용내용내용내용 입니다입니다
-            내용내용내용내용내용 입니다입니다 내용내용내용내용내용 입니다입니다
+            <i className="fa-regular fa-thumbs-up like" />
+            {data.freeLikes.length}
           </div>
           <div>
-            <TagLink value={`${tagName}`} to={`/tags/${tagId}/${tagName}`} />
-            <TagLink value={`${tagName}`} to={`/tags/${tagId}/${tagName}`} />
+            <i className="fa-regular fa-comment-dots comment" />
+            {data.freeComments.length}
           </div>
-          <div>
-            {/* {`${convertToDate(createdAt)}`} */}
-            {`${timeDifference(createdAt)}`}
-          </div>
-        </ContentSec>
-        <AuthorSec>
-          <div className="counts">
-            <div>
-              <i className="fa-solid fa-eye view" />
-              {views}
-            </div>
-            <div>
-              <i className="fa-regular fa-thumbs-up like" />
-              {freeLikes.length}
-            </div>
-            <div>
-              <i className="fa-regular fa-comment-dots comment" />
-              {/* {freeComments.length} */}
-              {0}
-            </div>
-            <CreatorMiniCard memberId={freeId} nickname="aaa" heart={100} />
-          </div>
-        </AuthorSec>
-      </Board>
-    </Link>
-  );
-};
+          <CreatorMiniCard
+            memberId={data.memberId}
+            nickname={data.nickname}
+            heart={data.authorHeart}
+          />
+        </div>
+      </AuthorSec>
+    </Board>
+  </Link>
+);
 export default FreeBoardList;

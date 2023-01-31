@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import axios from 'axios';
 import classifyingStatus from '../utils/classifyingStatus';
 import Button from './Button';
 import maskingNickname from '../utils/maskingNickname';
@@ -142,6 +143,7 @@ interface ApplyConditionProps {
   applies: { memberId: number; nickname: string; heart: number }[];
   minRequire: number;
   require: number;
+  setData: any;
 }
 
 const RecruitApplyBeforeMeeting = ({
@@ -154,12 +156,13 @@ const RecruitApplyBeforeMeeting = ({
   applies,
   minRequire,
   require,
+  setData,
 }: ApplyConditionProps) => {
   const LOGIN_INFO = {
-    memberId: 11,
-    heart: 50,
-    birth: '1995.01.11',
-    sex: 'Male',
+    memberId: Number(localStorage.getItem('memberId')) || -1,
+    heart: Number(localStorage.getItem('heart')) || -1,
+    birth: localStorage.getItem('birth'),
+    sex: localStorage.getItem('sex'),
   };
 
   const { recruitId } = useParams();
@@ -185,7 +188,7 @@ const RecruitApplyBeforeMeeting = ({
     if (heartCond > LOGIN_INFO.heart) {
       return '심박수조건에 부합하지 않습니다';
     }
-    if (!ageGroup.includes(calculateAge(LOGIN_INFO.birth))) {
+    if (!ageGroup.includes(calculateAge(LOGIN_INFO.birth!))) {
       return '연령조건에 부합하지 않습니다';
     }
     return true;
@@ -248,6 +251,22 @@ const RecruitApplyBeforeMeeting = ({
                     console.log(
                       `PATCH /recruits/${recruitId}/application 신청!`,
                     );
+                    axios
+                      .patch(
+                        `${process.env.REACT_APP_API_URL}/application`,
+                        { memberId: LOGIN_INFO.memberId },
+                        {
+                          headers: {
+                            Authorization: localStorage.getItem('AccessToken'),
+                            Refresh: localStorage.getItem('RefreshToken'),
+                          },
+                        },
+                      )
+                      .then((res) => {
+                        console.log(res.data.data);
+                        setData(res.data.data);
+                      })
+                      .catch((err) => console.log(err));
                   }}
                 />
               </ApplyBox>
@@ -265,6 +284,22 @@ const RecruitApplyBeforeMeeting = ({
                     console.log(
                       `PATCH /recruits/${recruitId}/application 취소!`,
                     );
+                    axios
+                      .patch(
+                        `${process.env.REACT_APP_API_URL}/application`,
+                        { memberId: LOGIN_INFO.memberId },
+                        {
+                          headers: {
+                            Authorization: localStorage.getItem('AccessToken'),
+                            Refresh: localStorage.getItem('RefreshToken'),
+                          },
+                        },
+                      )
+                      .then((res) => {
+                        console.log(res.data.data);
+                        setData(res.data.data);
+                      })
+                      .catch((err) => console.log(err));
                   }}
                 />
               </ApplyBox>

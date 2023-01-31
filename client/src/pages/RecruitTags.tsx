@@ -34,13 +34,13 @@ interface RecruitTagsProps {
 
 const RecruitTags = () => {
   const [tagData, setTagData] = useState<RecruitTagsProps[]>();
+  
 
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=50`)
       .then((res) => {
         setTagData(res.data.data);
-        console.log(res.data.data);
       })
       .catch((err) => console.log(err));
   }, []);

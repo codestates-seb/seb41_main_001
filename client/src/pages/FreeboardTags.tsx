@@ -40,7 +40,6 @@ const FreeboardTags = () => {
       .get(`${process.env.REACT_APP_API_URL}/tags/freeboards?page=1&size=50`)
       .then((res) => {
         setTagData(res.data.data);
-        console.log(res.data.data);
       })
       .catch((err) => console.log(err));
   }, []);

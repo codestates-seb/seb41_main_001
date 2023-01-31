@@ -249,6 +249,7 @@ const RecruitDetail = () => {
               applies={data.applies}
               minRequire={data.minRequire}
               require={data.require}
+              setData={setData}
             />
           ) : (
             <RecruitApplyAfterMeeting
@@ -260,6 +261,7 @@ const RecruitDetail = () => {
               creatorId={data.memberId}
               reviews={data.reviews}
               creatorNickname={data.nickname}
+              setData={setData}
             />
           )}
           <ButtonArea>
@@ -271,6 +273,12 @@ const RecruitDetail = () => {
                   .patch(
                     `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/likes`,
                     { memberId: LOGIN_ID },
+                    {
+                      headers: {
+                        Authorization: localStorage.getItem('AccessToken'),
+                        Refresh: localStorage.getItem('RefreshToken'),
+                      },
+                    },
                   )
                   .then((res) => {
                     setData(res.data.data);
@@ -306,16 +314,21 @@ const RecruitDetail = () => {
             <ul>
               {data.recruitComments.map((el) => (
                 <CommentBox
-                  key={el.memberId}
+                  key={el.recruitCommentId}
+                  commentId={el.recruitCommentId}
                   memberId={data.memberId}
                   board="recruits"
                   boardId={data.recruitId}
                   applicantsId={applicantsId!}
                   data={el}
+                  setData={setData}
                 />
               ))}
             </ul>
-            <CommentSubmitBox submitComment={`/recruits/${data.recruitId}`} />
+            <CommentSubmitBox
+              submitComment={`/recruits/${data.recruitId}`}
+              setData={setData}
+            />
           </CommentArea>
         </>
       )}

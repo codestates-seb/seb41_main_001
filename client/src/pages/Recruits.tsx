@@ -7,6 +7,8 @@ import RecruitDataProps from '../interfaces/RecruitDataProps';
 import RecruitList from '../components/RecruitList';
 import ButtonLink from '../components/ButtonLink';
 import PaginationLink from '../components/PaginationLink';
+import useCurrentLocation from '../utils/useCurrentLocation';
+import Loading from './Loading';
 
 const MainContainer = styled.main`
   width: 1100px;
@@ -68,6 +70,7 @@ const Recruits = () => {
   const [data, setData] = useState<RecruitDataProps[]>();
   const [pageCount, setPageCount] = useState<number>(0);
   const [page, setPage] = useState(1);
+  const [isLoading, setLoading] = useState(true);
   const [listNum, setListNum] = useState('5');
   const searchParams = new URLSearchParams(useLocation().search);
   const [filterTag, setFilterTag] = useState<string>(
@@ -76,16 +79,17 @@ const Recruits = () => {
   const [filterStatus, setFilterStatus] = useState<string>(
     searchParams.get('status')?.replaceAll('"', '') ?? '',
   );
-  // const [filterRegion, setFilterRegion] = useState('');
+  const { location } = useCurrentLocation();
+  const [distanceLimit, setDistanceLimit] = useState(10);
 
   useEffect(() => {
     console.log(filterTag, filterStatus);
     const params = {
       page,
       size: listNum,
-      distanceLimit: 10,
-      lat: 37.757687,
-      lon: 128.873749,
+      distanceLimit,
+      lat: location?.latitude,
+      lon: location?.longitude,
     };
     axios
       .get(
@@ -97,12 +101,13 @@ const Recruits = () => {
       .then((res) => {
         setData(res.data.data);
         setPageCount(res.data.pageInfo.totalPages);
+        setLoading(false);
         console.log(res.data.pageInfo);
       })
       .catch((err) => console.log(err));
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [page, listNum, filterTag, filterStatus]);
+  }, [page, listNum, filterTag, filterStatus, location, distanceLimit]);
 
   const handleChangeListNum = (e: any) => {
     setListNum(e.target.value);
@@ -124,12 +129,13 @@ const Recruits = () => {
               <option value={15}>15개</option>
             </select>
           </div>
-          {data &&
-            data.map((item) => (
-              <RecruitList key={item.recruitId} data={item} />
-            ))}
+          {location && data && !isLoading ? (
+            data.map((item) => <RecruitList key={item.recruitId} data={item} />)
+          ) : (
+            <Loading />
+          )}
         </ul>
-        {pageCount && (
+        {location && pageCount && (
           <PaginationLink
             pageCount={pageCount}
             active_page={page}
@@ -142,9 +148,10 @@ const Recruits = () => {
           <FilterBox
             filterTag={filterTag}
             filterStatus={filterStatus}
+            distanceLimit={distanceLimit}
             setFilterTag={setFilterTag}
             setFilterStatus={setFilterStatus}
-            // setFilterRegion={setFilterRegion}
+            setDistanceLimit={setDistanceLimit}
           />
         </div>
         <div>

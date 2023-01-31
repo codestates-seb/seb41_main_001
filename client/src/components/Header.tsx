@@ -1,6 +1,9 @@
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import ButtonLink from './ButtonLink';
+import Button from './Button';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -110,7 +113,44 @@ const BoardLink = styled(Link)<{ path: string; to: string }>`
 `;
 
 const Header = () => {
+  const [token, setToken] = useState(localStorage.getItem('AccessToken'));
   const { pathname: path } = useLocation();
+
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
+        params: {
+          Authorization: localStorage.getItem('AccessToken'),
+          Refresh: localStorage.getItem('RefreshToken'),
+        },
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  }, []);
+
+  const logOut = () => {
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/members/logout`, {
+        headers: {
+          Authorization: localStorage.getItem('AccessToken'),
+          Refresh: localStorage.getItem('RefreshToken'),
+        },
+        params: {
+          Authorization: localStorage.getItem('AccessToken'),
+          Refresh: localStorage.getItem('RefreshToken'),
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        localStorage.removeItem('AccessToken');
+        localStorage.removeItem('RefreshToken');
+        localStorage.removeItem('memberId');
+        localStorage.removeItem('birth');
+        localStorage.removeItem('heart');
+        localStorage.removeItem('sex');
+        setToken(null);
+      });
+  };
 
   return (
     <HeaderContainer>
@@ -120,27 +160,36 @@ const Header = () => {
           HEART
         </Logo>
         <Board>
-          <BoardLink path={path} to="/freeboards">
-            자유게시판
-          </BoardLink>
-          <BoardLink path={path} to="/freeboards/tags">
-            자유게시판 태그
-          </BoardLink>
           <BoardLink path={path} to="/recruits">
             모집게시판
           </BoardLink>
           <BoardLink path={path} to="/recruits/tags">
             모집게시판 태그
           </BoardLink>
+          <BoardLink path={path} to="/freeboards">
+            자유게시판
+          </BoardLink>
+          <BoardLink path={path} to="/freeboards/tags">
+            자유게시판 태그
+          </BoardLink>
         </Board>
       </div>
       <ButtonsContainer>
-        <form>
+        {/* <form>
           <i className="fa-solid fa-magnifying-glass" />
           <input placeholder="Search here..." />
-        </form>
-        <ButtonLink value="로그인" to="/login" />
-        <ButtonLink value="회원가입" to="/signup" />
+        </form> */}
+        {token ? (
+          <>
+            <Button value="로그아웃" onClick={logOut} />
+            <ButtonLink value="마이페이지" to="/members/mypage" />
+          </>
+        ) : (
+          <>
+            <ButtonLink value="로그인" to="/login" />
+            <ButtonLink value="회원가입" to="/signup" />
+          </>
+        )}
       </ButtonsContainer>
     </HeaderContainer>
   );

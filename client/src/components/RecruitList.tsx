@@ -286,6 +286,7 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
     <ListContainer>
       <div>
         <TagLink
+          onClick={() => {}}
           value={`${emoji} ${tagName}`}
           to={`/recruits?tag="${tagName}"`}
         />

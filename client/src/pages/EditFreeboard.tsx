@@ -217,21 +217,19 @@ const EditFreeboard = () => {
       // freeId: posting.freeId,
     });
     axios
-      .patch(
-        `/freeboards/${freeId}`,
-        {
-          category: '나눔',
-          freeBody: 'ahhhhjhs plasdfs',
-          freeTitle: 'hesdaㄴㅇlp me flskd',
-          memberId: 2,
+      .patch(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
+        ...data,
+        memberId: `${localStorage.getItem('memberId')}`,
+        // tagList: tags.reduce((r, e) => {
+        //   r.push({ tagId: e.tagId });
+        //   return r;
+        // }, []),
+        // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+        headers: {
+          Authorization: `${localStorage.getItem('AccessToken')}`,
+          Refresh: `${localStorage.getItem('RefreshToken')}`,
         },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem('AccessToken')}`,
-            Refresh: `${localStorage.getItem('RefreshToken')}`,
-          },
-        },
-      )
+      })
       .then((res) => {
         console.log(res);
         navigate('/freeboards');

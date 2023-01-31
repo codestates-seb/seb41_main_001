@@ -1,4 +1,5 @@
 /* eslint-disable react/no-array-index-key */
+import axios from 'axios';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -212,6 +213,7 @@ interface ReviewConditionProps {
     star: number;
   }[];
   creatorNickname: string;
+  setData: any;
 }
 
 const RecruitApplyAfterMeeting = ({
@@ -223,10 +225,11 @@ const RecruitApplyAfterMeeting = ({
   creatorId,
   reviews,
   creatorNickname,
+  setData,
 }: ReviewConditionProps) => {
   const { recruitId } = useParams();
   const [reviewModal, setReviewModal] = useState<boolean>(false);
-  const LOGIN_ID = 1;
+  const LOGIN_ID = Number(localStorage.getItem('memberId')) || -1;
   const REVIEW_STAR_NUM = reviews.reduce((res: number[], ele) => {
     res.push(ele.star);
     return res;
@@ -249,6 +252,7 @@ const RecruitApplyAfterMeeting = ({
           creatorNickname={creatorNickname}
           applies={applies}
           setReviewModal={setReviewModal}
+          setData={setData}
         />
       ) : (
         ''
@@ -295,9 +299,25 @@ const RecruitApplyAfterMeeting = ({
                 <div>활동이 종료되었나요?</div>
                 <Button
                   value="활동 종료"
-                  onClick={() =>
-                    console.log(`PATCH /recruits/${recruitId}/status`)
-                  }
+                  onClick={() => {
+                    console.log(`PATCH /recruits/${recruitId}/status`);
+                    axios
+                      .patch(
+                        `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/status`,
+                        {},
+                        {
+                          headers: {
+                            Authorization: localStorage.getItem('AccessToken'),
+                            Refresh: localStorage.getItem('RefreshToken'),
+                          },
+                        },
+                      )
+                      .then((res) => {
+                        console.log(res.data.data);
+                        setData(res.data.data);
+                      })
+                      .catch((err) => console.log(err));
+                  }}
                 />
               </ApplyBox>
             </>
