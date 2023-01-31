@@ -43,7 +43,7 @@ interface CreatorCardProps {
 
 const CreatorCard = ({ memberId, nickname, heart }: CreatorCardProps) => (
   <ListCreator>
-    <Link to={`/members/mypage/${memberId}`}>
+    <Link to={`/members/${memberId}`}>
       <img
         src={`https://picsum.photos/seed/${memberId}/50/50.webp`}
         alt={`avator of ${nickname}}`}

@@ -249,11 +249,7 @@ const RecruitApplyBeforeMeeting = ({
                   value="신청"
                   disabled={isValidForApply() !== true}
                   onClick={() => {
-                    console.log(
-                      `PATCH /recruits/${recruitId}/application 신청!`,
-                    );
                     if (LOGIN_INFO.memberId && LOGIN_INFO.memberId !== -1) {
-                      console.log(Number(LOGIN_INFO.memberId));
                       axios
                         .patch(
                           `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/application`,
@@ -267,7 +263,6 @@ const RecruitApplyBeforeMeeting = ({
                           },
                         )
                         .then((res) => {
-                          console.log(res.data.data);
                           setData(res.data.data);
                         })
                         .catch((err) => console.log(err));
@@ -288,9 +283,6 @@ const RecruitApplyBeforeMeeting = ({
                   value="취소"
                   disabled={recruitStatus === '모집완료'}
                   onClick={() => {
-                    console.log(
-                      `PATCH /recruits/${recruitId}/application 취소!`,
-                    );
                     axios
                       .patch(
                         `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/application`,
@@ -303,7 +295,6 @@ const RecruitApplyBeforeMeeting = ({
                         },
                       )
                       .then((res) => {
-                        console.log(res.data.data);
                         setData(res.data.data);
                       })
                       .catch((err) => console.log(err));
