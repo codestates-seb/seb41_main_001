@@ -31,17 +31,15 @@ public class FreeController {
     }
     @ApiOperation(value = "자유 게시글 작성", notes = "작성자 id, 제목, 본문, 태그, 위치정보를 입력하여 자유 게시글을 작성한다.")
     @PostMapping
-    public ResponseEntity createFreeBoard(@RequestHeader(name = "Refresh") String refreshToken,
-                                          @RequestBody FreeDto.PostFreeBoard postFreeBoardDto){
-        Free free = freeService.createFreeBoard(refreshToken, freeMapper.freeBoardPostToFree(postFreeBoardDto));
+    public ResponseEntity createFreeBoard(@RequestBody FreeDto.PostFreeBoard postFreeBoardDto){
+        Free free = freeService.createFreeBoard(freeMapper.freeBoardPostToFree(postFreeBoardDto));
         return new ResponseEntity<>(freeMapper.freeToFreeResponseDto(free), HttpStatus.CREATED);
     }
     @ApiOperation(value = "자유 게시글에 대한 댓글 작성", notes = "자유 게시글에 댓글을 작성한다.")
     @PostMapping("/{free-id}")
     public ResponseEntity createComment(@PathVariable("free-id") @Positive long freeId,
-                                        @RequestHeader(name = "Refresh") String refreshToken,
                                         @RequestBody FreeCommentDto.Default postCommentDto){
-        Free createFreeComment = freeService.createFreeComment(freeId, refreshToken, freeMapper.commentPostToFreeComment(postCommentDto));
+        Free createFreeComment = freeService.createFreeComment(freeId, freeMapper.commentPostToFreeComment(postCommentDto));
         return new ResponseEntity<>(
                 new SingleResponseDto<>(freeMapper.freeToFreeResponseDto(createFreeComment)),
                 HttpStatus.CREATED);
