@@ -11,6 +11,7 @@ const BoxContainer = styled.div`
   padding: 0px 20px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 10px;
+  width: 100%;
   h3 {
     font-size: 120%;
   }
@@ -59,7 +60,6 @@ const FilterBox = ({
       .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=50`)
       .then((res) => {
         setTagData(res.data.data);
-        console.log(res.data.data);
       })
       .catch((err) => console.log(err));
   }, []);

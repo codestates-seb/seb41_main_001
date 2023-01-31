@@ -23,11 +23,15 @@ const TagContainer = styled(Link)`
 
 interface TagProps {
   value: string;
+  emoji?: string;
   to: string;
+  setFilterTag?: any;
 }
 
-const TagLink = ({ value, to }: TagProps) => (
-  <TagContainer to={to}>{value}</TagContainer>
+const TagLink = ({ value, emoji, to, setFilterTag }: TagProps) => (
+  <TagContainer to={to} onClick={() => setFilterTag(value)}>
+    {emoji ? `${emoji} ${value}` : `${value}`}
+  </TagContainer>
 );
 
 export default TagLink;

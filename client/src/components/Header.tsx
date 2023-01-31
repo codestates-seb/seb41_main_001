@@ -123,8 +123,19 @@ const Header = () => {
           Authorization: localStorage.getItem('AccessToken'),
           Refresh: localStorage.getItem('RefreshToken'),
         },
+        headers: {
+          Authorization: localStorage.getItem('AccessToken'),
+          Refresh: localStorage.getItem('RefreshToken'),
+        },
       })
-      .then((res) => console.log(res))
+      .then((res) => {
+        localStorage.setItem('AccessToken', res.headers.authorization!);
+        localStorage.setItem('RefreshToken', res.headers.refresh!);
+        localStorage.setItem('memberId', res.headers['member-id']!);
+        localStorage.setItem('birth', res.headers.birth!);
+        localStorage.setItem('heart', res.headers.heart!);
+        localStorage.setItem('sex', res.headers.sex!);
+      })
       .catch((err) => console.log(err));
   }, []);
 
