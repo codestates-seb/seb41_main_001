@@ -4,16 +4,10 @@ import styled from 'styled-components';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import FreeDataProps from '../interfaces/FreeDataProps';
-
-enum CategoryEnum {
-  question = '질문',
-  info = '정보',
-  exercise = '운동',
-  giveaway = '나눔',
-}
+import Loading from './Loading';
 
 interface FormInputFree {
-  category: CategoryEnum;
+  category: '질문' | '정보' | '나눔' | '운동';
   title: string;
   content: string;
   image: string;
@@ -199,8 +193,7 @@ const EditFreeboard = () => {
       axios
         .get(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`)
         .then((res: any) => {
-          console.log(res);
-          setPosting(res.data);
+          setPosting(res.data.data);
           setIsLoading(false);
         })
         .catch((err: any) => console.log(err));
@@ -210,19 +203,27 @@ const EditFreeboard = () => {
 
   const onSubmit = (data: FormInputFree) => {
     // data.content = content;
-    console.log(data);
     axios
-      .post('/freeboards', {
-        freeTitle: data.title,
-        freeBody: data.content,
-        category: data.category,
-        memberId: 1,
-        // tagList: tags.reduce((r, e) => {
-        //   r.push({ tagId: e.tagId });
-        //   return r;
-        // }, []),
-        // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
-      })
+      .post(
+        '/freeboards',
+        {
+          freeTitle: data.title,
+          freeBody: data.content,
+          category: data.category,
+          memberId: `${localStorage.getItem('memberId')}`,
+          // tagList: tags.reduce((r, e) => {
+          //   r.push({ tagId: e.tagId });
+          //   return r;
+          // }, []),
+          // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem('AccessToken')}`,
+            Refresh: `${localStorage.getItem('RefreshToken')}`,
+          },
+        },
+      )
       .then((res) => {
         console.log(res);
         navigate('/freeboards');
@@ -254,63 +255,60 @@ const EditFreeboard = () => {
   // };
   return (
     <Background>
-      <CRForm onSubmit={handleSubmit(onSubmit)}>
-        <div>자유 게시글 수정</div>
-        <div>
-          <label htmlFor="category">말머리</label>
-          <div id="select-contanier">
-            <select id="category" {...register('category', { required: true })}>
-              <option value="question" selected={posting.category === '질문'}>
-                질문
-              </option>
-              <option value="info" selected={posting.category === '정보'}>
-                정보
-              </option>
-              <option value="exercise" selected={posting.category === '운동'}>
-                운동
-              </option>
-              <option value="giveaway" selected={posting.category === '나눔'}>
-                나눔
-              </option>
-            </select>
+      {!isLoading ? (
+        <CRForm onSubmit={handleSubmit(onSubmit)}>
+          <div>자유 게시글 수정</div>
+          <div>
+            <label htmlFor="category">말머리</label>
+            <div id="select-contanier">
+              <select
+                id="category"
+                defaultValue={posting.category}
+                {...register('category', { required: true })}
+              >
+                <option value="질문">질문</option>
+                <option value="정보">정보</option>
+                <option value="운동">운동</option>
+                <option value="나눔">나눔</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div>
-          <label htmlFor="title">제목</label>
-          <WarnSet>
-            <input
-              id="title"
-              type="text"
-              defaultValue={isLoading ? '' : posting.freeTitle}
-              {...register('title', { required: true })}
-            />
-            {errors.title && (
-              <span>
-                <i className="fa-solid fa-circle-exclamation" />
-                제목을 입력해주세요
-              </span>
-            )}
-          </WarnSet>
-        </div>
-        <div>
-          <label htmlFor="content">내용</label>
-          <WarnSet>
-            <textarea
-              id="content"
-              rows={15}
-              // ref={textAreaRef}
-              defaultValue={isLoading ? '' : posting.freeBody}
-              {...register('content', { required: true })}
-            />
-            {errors.content && (
-              <span>
-                <i className="fa-solid fa-circle-exclamation" />
-                본문을 입력해주세요
-              </span>
-            )}
-          </WarnSet>
-        </div>
-        {/* <div>
+          <div>
+            <label htmlFor="title">제목</label>
+            <WarnSet>
+              <input
+                id="title"
+                type="text"
+                defaultValue={posting.freeTitle}
+                {...register('title', { required: true })}
+              />
+              {errors.title && (
+                <span>
+                  <i className="fa-solid fa-circle-exclamation" />
+                  제목을 입력해주세요
+                </span>
+              )}
+            </WarnSet>
+          </div>
+          <div>
+            <label htmlFor="content">내용</label>
+            <WarnSet>
+              <textarea
+                id="content"
+                rows={15}
+                // ref={textAreaRef}
+                defaultValue={posting.freeBody}
+                {...register('content', { required: true })}
+              />
+              {errors.content && (
+                <span>
+                  <i className="fa-solid fa-circle-exclamation" />
+                  본문을 입력해주세요
+                </span>
+              )}
+            </WarnSet>
+          </div>
+          {/* <div>
           <label htmlFor="tag">태그</label>
           <input id="tag" {...register('tag')} />
         </div>
@@ -327,13 +325,16 @@ const EditFreeboard = () => {
             {...register('image')}
           />
         </div> */}
-        <ButtonContainer>
-          <button type="submit">저장하기</button>
-          <Link to="/freeboards">
-            <button type="button">취소하기</button>
-          </Link>
-        </ButtonContainer>
-      </CRForm>
+          <ButtonContainer>
+            <button type="submit">저장하기</button>
+            <Link to="/freeboards">
+              <button type="button">취소하기</button>
+            </Link>
+          </ButtonContainer>
+        </CRForm>
+      ) : (
+        <Loading />
+      )}
     </Background>
   );
 };

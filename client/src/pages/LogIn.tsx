@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 // import { useDispatch, useSelector } from 'react-redux';
@@ -92,7 +92,6 @@ const LogIn = () => {
   // const loginStore = useSelector((state: any) => state.bucket.list);
   // const dispatch = useDispatch();
   // console.log(loginStore);
-  const navigate = useNavigate();
 
   const {
     register,
@@ -109,13 +108,12 @@ const LogIn = () => {
       .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
       .then((res) => {
         console.log(res.headers);
-        console.log(res.headers.authorization);
-        console.log(res.headers.refresh);
-        // const AccessToken = res.headers.get('Authorization');
-        // const RefreshToken = res.headers.get('Refresh');
-        // localStorage.setItem('AccessToken', AccessToken);
-        // localStorage.setItem('RefreshToken', RefreshToken);
-        navigate('/');
+        localStorage.setItem('AccessToken', res.headers.authorization!);
+        localStorage.setItem('RefreshToken', res.headers.refresh!);
+        localStorage.setItem('memberId', res.headers['member-id']!);
+        localStorage.setItem('birth', res.headers.birth!);
+        localStorage.setItem('heart', res.headers.heart!);
+        localStorage.setItem('sex', res.headers.sex!);
       })
       .catch((err) => {
         const errMsg = err.response.data.message;

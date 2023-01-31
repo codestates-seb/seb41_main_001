@@ -5,15 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 // import UseAutosizeTextArea from '../components/UseAutosaveTextArea';
 
-enum CategoryEnum {
-  question = '질문',
-  info = '정보',
-  exercise = '운동',
-  giveaway = '나눔',
-}
-
 interface FormInputFree {
-  category: CategoryEnum;
+  category: '질문' | '정보' | '나눔' | '운동';
   title: string;
   content: string;
   // image: string;
@@ -277,10 +270,10 @@ const CreateFreeboard = () => {
           <label htmlFor="category">말머리</label>
           <div id="select-contanier">
             <select id="category" {...register('category', { required: true })}>
-              <option value="question">질문</option>
-              <option value="info">정보</option>
-              <option value="exercise">운동</option>
-              <option value="giveaway">나눔</option>
+              <option value="질문">질문</option>
+              <option value="정보">정보</option>
+              <option value="운동">운동</option>
+              <option value="나눔">나눔</option>
             </select>
           </div>
         </div>
