@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-// import axios from 'axios';
+import axios from 'axios';
 // import { useDispatch, useSelector } from 'react-redux';
 // import loginDb from '../modules/loginDb';
 import ButtonLink from '../components/ButtonLink';
@@ -92,41 +92,47 @@ const LogIn = () => {
   // const loginStore = useSelector((state: any) => state.bucket.list);
   // const dispatch = useDispatch();
   // console.log(loginStore);
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    // setError,
+    setError,
   } = useForm<LoginProps>();
 
   const onSubmit = (data: LoginProps) => {
-    console.log(data);
+    // console.log(data);
     // dispatch(loginDb(data));
 
-    // axios
-    //   .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
-    //   .then((res) => {
-    //     console.log(res.headers);
-    //     console.log(res.headers.authorization);
-    //     console.log(res.headers.refresh);
-    //   })
-    //   .catch((err) => {
-    //     const errMsg = err.response.data.message;
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
+      .then((res) => {
+        console.log(res.headers);
+        console.log(res.headers.authorization);
+        console.log(res.headers.refresh);
+        // const AccessToken = res.headers.get('Authorization');
+        // const RefreshToken = res.headers.get('Refresh');
+        // localStorage.setItem('AccessToken', AccessToken);
+        // localStorage.setItem('RefreshToken', RefreshToken);
+        navigate('/');
+      })
+      .catch((err) => {
+        const errMsg = err.response.data.message;
 
-    //     if (errMsg === '존재하지 않는 회원') {
-    //       setError('email', {
-    //         type: 'server',
-    //         message: '가입된 이메일이 아닙니다',
-    //       });
-    //     }
-    //     if (errMsg === '잘못된 패스워드 입력') {
-    //       setError('password', {
-    //         type: 'server',
-    //         message: '비밀번호가 일치하지 않습니다',
-    //       });
-    //     }
-    //   });
+        if (errMsg === '존재하지 않는 회원') {
+          setError('email', {
+            type: 'server',
+            message: '가입된 이메일이 아닙니다',
+          });
+        }
+        if (errMsg === '잘못된 패스워드 입력') {
+          setError('password', {
+            type: 'server',
+            message: '비밀번호가 일치하지 않습니다',
+          });
+        }
+      });
   };
 
   return (
