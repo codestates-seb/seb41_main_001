@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-lone-blocks */
+/* eslint-disable no-alert */
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
@@ -19,18 +23,22 @@ const FreeCreatorSelectBox = () => {
   const LOGIN_ID = Number(localStorage.getItem('memberId'));
 
   const handleDeleteFree = () => {
-    axios
-      .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
-        data: {
-          memberId: LOGIN_ID,
-        },
-        // headers: {
-        //   Authorization: `${localStorage.getItem('AccessToken')}`,
-        //   Refresh: `${localStorage.getItem('RefreshToken')}`,
-        // },
-      })
-      .then(() => navigate(`/freeboards`))
-      .catch((err) => console.log(err));
+    {
+      confirm('삭제하시겠습니까?') === true
+        ? axios
+            .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
+              data: {
+                memberId: LOGIN_ID,
+              },
+              // headers: {
+              //   Authorization: `${localStorage.getItem('AccessToken')}`,
+              //   Refresh: `${localStorage.getItem('RefreshToken')}`,
+              // },
+            })
+            .then(() => navigate(`/freeboards`))
+            .catch((err) => console.log(err))
+        : '';
+    }
   };
 
   return (

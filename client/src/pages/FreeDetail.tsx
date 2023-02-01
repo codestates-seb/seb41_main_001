@@ -230,78 +230,57 @@ const FreeDetail = () => {
       });
   }, []);
 
-  // const handleDeleteFree = () => {
-  //   {
-  //     confirm('삭제하시겠습니까?') === true
-  //       ? axios
-  //           .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
-  //             headers: {
-  //               Authorization: `${localStorage.getItem('AccessToken')}`,
-  //               Refresh: `${localStorage.getItem('RefreshToken')}`,
-  //             },
-  //           })
-  //           .then((res) => {
-  //             console.log(res);
-  //             navigate(`/freeboards`);
-  //           })
-  //           .catch((err) => {
-  //             console.log(err);
-  //           })
-  //       : '';
-  //   }
-  // };
-
   return (
     <FDContainer>
-      {!isLoading ? (
+      {!isLoading && post ? (
         <BoardContainer>
           <div>
-            <Link to={`/freeboards?category=${post?.category}`}>
-              <Category color={post!.category}>
-                {post?.category === '운동' ? (
+            <Link to={`/freeboards?type=category&keyword=${post.category}`}>
+              <Category color={post.category}>
+                {post.category === '운동' ? (
                   <i className="fa-solid fa-dumbbell" />
-                ) : post?.category === '정보' ? (
+                ) : post.category === '정보' ? (
                   <i className="fa-solid fa-bullhorn" />
-                ) : post?.category === '질문' ? (
+                ) : post.category === '질문' ? (
                   <i className="fa-regular fa-comments" />
                 ) : (
                   <i className="fa-solid fa-hand-holding-heart" />
                 )}
-                {post?.category}
+                {post.category}
               </Category>
             </Link>
           </div>
-          <h1>{post?.freeTitle}</h1>
+          <h1>{post.freeTitle}</h1>
           <div>
             <div>
               <i className="fa-regular fa-clock" />
-              {timeDifference(`${post?.modifiedAt}`)}
+              {timeDifference(`${post.modifiedAt}`)}
             </div>
             <CountContainer>
               <div>
                 <i className="fa-solid fa-eye view" />
-                {post?.views}
+                {post.views}
               </div>
               <div>
                 <i className="fa-regular fa-thumbs-up like" />
-                {post?.freeLikes.length}
+                {post.freeLikes.length}
               </div>
               <div>
                 <i className="fa-regular fa-comment-dots comment" />
-                {post?.freeComments.length}
+                {post.freeComments.length}
               </div>
             </CountContainer>
           </div>
           <CreatorCard
-            memberId={post!.memberId}
-            nickname={post!.nickname}
-            heart={post!.authorHeart}
+            memberId={post.memberId}
+            nickname={post.nickname}
+            heart={post.authorHeart}
           />
           <ContentContainer>
             {/* <div>
               <img src={preview} alt="preview" />
             </div> */}
-            <div className="body">{post?.freeBody}</div>
+            <div className="body">{post.freeBody}</div>
             {/* {post?.location === undefined ? (
               ''
             ) : (
@@ -319,7 +298,7 @@ const FreeDetail = () => {
           <div className="btnCon">
             <LikeButton
               likes={likesMemberId!.includes(LOGIN_ID)}
-              value={`좋아요 ${post?.freeLikes.length}`}
+              value={`좋아요 ${post.freeLikes.length}`}
               onClick={() => {
                 axios
                   .patch(
@@ -350,26 +329,27 @@ const FreeDetail = () => {
               }}
               icon={<i className="fa-solid fa-heart" />}
             />
-            {post?.memberId === LOGIN_ID ? <FreeCreatorSelectBox /> : ''}
+            {post.memberId === LOGIN_ID ? <FreeCreatorSelectBox /> : ''}
           </div>
           <div className="commentCount">
-            {post?.freeComments.length}
+            {post.freeComments.length}
             개의 댓글이 있습니다
           </div>
-          {post?.freeComments &&
-            post?.freeComments.map((el) => (
-              <CommentBox
-                key={el.commentId}
-                commentId={el.commentId}
-                memberId={el.memberId}
-                data={el}
-                board="freeboards"
-                boardId={post.freeId}
-                setData={setPost}
-              />
-            ))}
+          {/* <ul> */}
+          {post.freeComments.map((el) => (
+            <CommentBox
+              key={el.freeCommentId}
+              commentId={el.freeCommentId}
+              memberId={el.memberId}
+              board="freeboards"
+              boardId={post.freeId}
+              data={el}
+              setData={setPost}
+            />
+          ))}
+          {/* </ul> */}
           <CommentSubmitBox
-            submitComment={`/freeboards/${post?.freeId}`}
+            submitComment={`/freeboards/${post.freeId}`}
             setData={setPost}
           />
         </BoardContainer>

@@ -108,13 +108,6 @@ const SignUpForm = styled.form`
         margin-right: 10px;
       }
     }
-    /* tr:last-child {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20rem;
-    }
-  } */
     > button:last-child {
       display: flex;
       justify-content: center;
@@ -442,24 +435,26 @@ const SignUp = () => {
                 <p>지역</p>
               </td>
               <td>
-                <div>
-                  {/* {currentLocation && (
+                {/* <div> */}
+                {/* {currentLocation && (
                     <KakaoMapAdd
                       latitude={currentLocation.latitude}
                       longitude={currentLocation.longitude}
                     />
                   )} */}
-                  {currentLocation && (
-                    <AddMap
-                      latitude={currentLocation.latitude}
-                      longitude={currentLocation.longitude}
-                      locationString={locationString}
-                      setLocationString={setLocationString}
-                      setLat={setLat}
-                      setLon={setLon}
-                    />
-                  )}
-                </div>
+                {currentLocation && (
+                  <AddMap
+                    latitude={currentLocation.latitude}
+                    longitude={currentLocation.longitude}
+                    locationString={locationString}
+                    setLocationString={setLocationString}
+                    setLat={setLat}
+                    setLon={setLon}
+                    width={33}
+                    height={25}
+                  />
+                )}
+                {/* </div> */}
               </td>
             </tr>
             <tr>

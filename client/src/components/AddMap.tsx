@@ -20,9 +20,9 @@ const AddedLocation = styled.div`
   }
 `;
 
-const MapContainer = styled.div`
-  width: 33rem;
-  height: 25rem;
+const MapContainer = styled.div<{ width: number; height: number }>`
+  width: ${(props) => props.width}rem;
+  height: ${(props) => props.height}rem;
   display: block;
   color: black;
   margin: 1rem 0;
@@ -46,6 +46,8 @@ interface KakaoMapProps {
   setLocationString: any;
   setLat: any;
   setLon: any;
+  width: number;
+  height: number;
 }
 
 const AddMap = ({
@@ -56,6 +58,8 @@ const AddMap = ({
   setLocationString,
   setLat,
   setLon,
+  width,
+  height,
 }: KakaoMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const locationRemove = () => setLocationString('');
@@ -123,14 +127,13 @@ const AddMap = ({
         mouseEvent.latLng,
         (result: any, status: any) => {
           if (status === kakao.maps.services.Status.OK) {
-            let detailAddr = result[0].road_address
-              ? `<div>도로명주소 : ${result[0].road_address.address_name}</div>`
-              : '';
-            detailAddr += `<div>지번 주소 : ${result[0].address.address_name}</div>`;
+            const detailAddr = `<div>${result[0].address.address_name}</div>`;
 
             const content =
               `<div class="bAddr">` +
-              `<span class="title">법정동 주소정보</span>${detailAddr}</div>`;
+              `
+              ${detailAddr}</div>`;
+            // <span class="title">법정동 주소정보</span>
 
             // 마커를 클릭한 위치에 표시합니다
             marker.setPosition(mouseEvent.latLng);
@@ -190,7 +193,12 @@ const AddMap = ({
           {locationString === '' ? '' : <i className="fa-solid fa-xmark" />}
         </div>
       </AddedLocation>
-      <MapContainer id="kakao-map" ref={mapContainer} />
+      <MapContainer
+        id="kakao-map"
+        ref={mapContainer}
+        width={width}
+        height={height}
+      />
     </div>
   );
 };

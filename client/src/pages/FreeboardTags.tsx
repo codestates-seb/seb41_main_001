@@ -34,8 +34,6 @@ interface FreeTagsProps {
 
 const FreeboardTags = () => {
   const [tagData, setTagData] = useState<FreeTagsProps[]>();
-  const [keywordValue, setKeywordValue] = useState<string>();
-  const [typeValue, setTypeValue] = useState<string>();
 
   useEffect(() => {
     axios
@@ -62,8 +60,6 @@ const FreeboardTags = () => {
               emoji={el.emoji}
               tagName={el.tagName}
               tagCount={el.freeCount}
-              setKeywordValue={setKeywordValue}
-              setTypeValue={setTypeValue}
             />
           ))}
       </TagsContainer>
