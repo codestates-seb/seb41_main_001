@@ -3,14 +3,20 @@ import { useWatch } from 'react-hook-form';
 
 const AutoCompleteContainer = styled.div`
   display: flex;
+  flex-direction: columns;
+  flex-wrap: wrap;
   > ul {
     margin: 0;
     padding: 0;
+    margin-bottom: 6px;
     list-style: none;
     display: flex;
+    flex-direction: columns;
+    flex-wrap: wrap;
     > li {
       white-space: nowrap;
       margin-right: 10px;
+      margin-bottom: 3px;
       border: 1px solid white;
       padding: 5px;
       border: none;
@@ -48,7 +54,7 @@ const AutoCompleteBox = styled.div`
   position: relative;
   width: 100%;
   > input {
-    width: 100%;
+    width: 8rem;
     // width 100%에서 변경, 8rem
     height: 35px;
     padding: 5px;
@@ -153,14 +159,7 @@ interface AutoCompleteForArrayProps {
   remove: any;
   // register: any;
   control: any;
-  data: {
-    tagId: number;
-    categoryExercise: boolean;
-    tagName: string;
-    emoji: any;
-    recruitCount: number;
-    freeCount: number;
-  }[];
+  data: { tagId: number; tagName: string; emoji: string }[];
   tagLength: number;
 }
 

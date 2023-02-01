@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import EditAuto from '../components/EditAuto';
+import EditFreeAuto from '../components/EditFreeAuto';
 // import UseAutosizeTextArea from '../components/UseAutosaveTextArea';
 
 interface FormInputFree {
@@ -67,21 +67,45 @@ const CRForm = styled.form`
   .tagContainer {
     display: flex;
     flex-direction: column;
+    width: 15rem;
+    margin-left: 20px;
     > span {
-      padding-left: 1.4rem;
       padding-top: 0.3rem;
       font-size: 12px;
       color: lightgrey;
     }
+    input {
+      width: 15rem;
+    }
   }
 
-  input,
+  .input,
   textarea,
   select {
     // margin-bottom: 15px;
     background-color: var(--gray);
     padding: 5px;
     margin-left: 20px;
+    font-size: 14px;
+    border: none;
+    border: 1px solid gray;
+    width: 15rem;
+    outline: none;
+    color: white;
+    &:focus-within {
+      border: 2px solid white;
+      transition: 0.2s ease-in-out;
+    }
+    &:-webkit-autofill {
+      box-shadow: 0 0 0 20px var(--gray) inset;
+      -webkit-text-fill-color: white;
+      color: white;
+    }
+  }
+
+  input {
+    background-color: var(--gray);
+    padding: 5px;
     font-size: 14px;
     border: none;
     border: 1px solid gray;
@@ -213,12 +237,16 @@ const CreateFreeboard = () => {
   }, []);
 
   const onSubmit = (data: FormInputFree) => {
+    const sendingTag = data.memberTags.map(({ tagId, tagName }) => ({
+      tagId,
+      tagName,
+    }));
     console.log({
       freeTitle: data.title,
       freeBody: data.content,
       category: data.category,
       location: data.location,
-      freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+      freeTagDtos: sendingTag,
       memberId: 1,
     });
     axios
@@ -229,7 +257,7 @@ const CreateFreeboard = () => {
           freeBody: data.content,
           category: data.category,
           location: data.location,
-          freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+          freeTagDtos: sendingTag,
           memberId: `${localStorage.getItem('memberId')}`,
           // 태그와 멤버아이디가 고정되어있음
           // tagList: tags.reduce((r, e) => {
@@ -355,6 +383,7 @@ const CreateFreeboard = () => {
             <input
               id="title"
               type="text"
+              className="input"
               {...register('title', { required: true })}
             />
             {errors.title && (
@@ -393,7 +422,7 @@ const CreateFreeboard = () => {
           <div className="tagContainer">
             {/* <input id="tag" name="tag" onKeyUp={addTag} />
             <span>엔터키로 태그를 입력하세요</span> */}
-            <EditAuto
+            <EditFreeAuto
               fields={fields}
               append={append}
               remove={remove}

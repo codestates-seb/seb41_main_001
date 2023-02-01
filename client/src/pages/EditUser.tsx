@@ -11,6 +11,7 @@ import NewPassword from '../components/NewPassword';
 import EditAuto from '../components/EditAuto';
 // import KakaoMapAdd from '../components/KakaoMapAdd';
 import AddMap from '../components/AddMap';
+import Loading from './Loading';
 // declare global {
 //   interface Window {
 //     kakao: any;
@@ -70,10 +71,6 @@ const PersonalInfo = styled.div`
   margin: 10px 0 10px 10px;
   border-radius: 20px;
   padding: 40px 50px 40px 20px;
-  input {
-    /* width: 7.5rem; */
-    width: 7.5rem;
-  }
   .input {
     background-color: var(--gray);
     padding: 5px;
@@ -308,7 +305,7 @@ const NoLinkButton = styled.button`
 //   }
 // `;
 const TagList = styled.div`
-  width: 10rem;
+  width: 18.5rem;
   display: flex;
   flex-wrap: wrap;
   margin: 0.5rem;
@@ -368,6 +365,7 @@ const EditUser = () => {
   const [locationString, setLocationString] = useState('');
   const [lat, setLat] = useState(0);
   const [lon, setLon] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [oneUser, setOneUsers] = useState({
     memberId: 1,
@@ -402,6 +400,7 @@ const EditUser = () => {
         .catch((err: any) => console.log(err));
     };
     getOneUser();
+    setIsLoading(false);
   }, []);
   // const [img, setImg] = useState<string>(
   //   'https://cdn.discordapp.com/attachments/1030817860047618119/1030866099694211203/BackgroundEraser_20221016_002309876.png',
@@ -416,48 +415,61 @@ const EditUser = () => {
     register,
     control,
     handleSubmit,
+    // reset,
     formState: { errors },
   } = useForm<UserFormInput>();
+  // useEffect(() => {
+  //   const defaultValues = {
+  //     nickname: oneUser.nickname,
+  //     phone: oneUser.phone,
+  //   };
+  //   reset({ ...defaultValues });
+  // }, []);
   const onSubmitHandler: SubmitHandler<UserFormInput> = (data) => {
-    const check = {
-      ...data,
-      newPassword,
-      location: locationString,
-      lat,
-      lon,
-      // 멤버 태그가 객체가 아니라 string이라 오류남
-    };
-    console.log(check);
+    data.nickname = data.nickname === '' ? oneUser.nickname : data.nickname;
+    data.phone = data.phone === '' ? oneUser.phone : data.phone;
     axios
-      .patch(
-        `${process.env.REACT_APP_API_URL}/members/my-page`,
-        {
-          ...data,
-          newPassword,
-          location: locationString,
-          lat,
-          lon,
-          // 멤버 태그가 객체가 아니라 string이라 오류남
-        },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem('AccessToken')}`,
-            Refresh: `${localStorage.getItem('RefreshToken')}`,
-          },
-        },
-      )
-      .then((res) => {
-        console.log(res);
-        // alert(res);
-        navigate(`/members/mypage`);
+      .post(`${process.env.REACT_APP_API_URL}/members/login`, {
+        email: oneUser.email,
+        password: data.curPassword,
       })
-      .catch((err) => {
-        console.log(err);
-        console.log(
-          JSON.stringify({
-            data,
-          }),
-        );
+      .then((r) => {
+        console.log(r);
+
+        axios
+          .patch(
+            `${process.env.REACT_APP_API_URL}/members/my-page`,
+            {
+              ...data,
+              newPassword,
+              location: locationString || oneUser.location,
+              lat,
+              lon,
+              // 멤버 태그가 객체가 아니라 string이라 오류남
+            },
+            {
+              headers: {
+                Authorization: `${localStorage.getItem('AccessToken')}`,
+                Refresh: `${localStorage.getItem('RefreshToken')}`,
+              },
+            },
+          )
+          .then((res) => {
+            console.log(res);
+            // alert(res);
+            navigate(`/members/mypage`);
+          })
+          .catch((err) => {
+            console.log(err);
+            console.log(
+              JSON.stringify({
+                data,
+              }),
+            );
+          });
+      })
+      .catch(() => {
+        alert('비밀번호가 잘못되었습니다');
       });
   };
 
@@ -610,12 +622,14 @@ const EditUser = () => {
       alert('010-0000-0000 형식에 맞춰주세요.');
     }
   };
+
   return (
     <EditContainer onSubmit={handleSubmit(onSubmitHandler)}>
       <Container>
         <div>회원정보 수정</div>
-        <PersonalInfo>
-          {/* <InfoBlock>
+        {!isLoading ? (
+          <PersonalInfo>
+            {/* <InfoBlock>
             <label htmlFor="pfp">프로필 사진</label>
             <div>
               <Pfp id="preview-image" src={img} />
@@ -637,82 +651,82 @@ const EditUser = () => {
               </NoLinkButton>
             </div>
           </InfoBlock> */}
-          <InfoBlock>
-            <label htmlFor="nickname">닉네임</label>
-            <WarnSet>
-              <input
-                id="nickname"
-                type="text"
-                defaultValue={oneUser.nickname}
-                className="input"
-                autoComplete="off"
+            <InfoBlock>
+              <label htmlFor="nickname">닉네임</label>
+              <WarnSet>
+                <input
+                  id="nickname"
+                  type="text"
+                  className="input"
+                  defaultValue={oneUser.nickname}
+                  placeholder={oneUser.nickname}
+                  autoComplete="off"
+                  disabled={nickCheck === 'done'}
+                  // onChange={setNickCheck(false)}
+                  {...register('nickname', {
+                    onChange: (e) => {
+                      if (e.target.value !== oneUser.nickname)
+                        setNickCheck('changed');
+                      else setNickCheck('default');
+                    },
+                  })}
+                />
+                {errors.nickname && (
+                  <span>
+                    <i className="fa-solid fa-circle-exclamation" />
+                    닉네임을 입력해주세요
+                  </span>
+                )}
+              </WarnSet>
+              <NoLinkButton
+                type="button"
+                onClick={nicknameCheck}
                 disabled={nickCheck === 'done'}
-                // onChange={setNickCheck(false)}
-                {...register('nickname', {
-                  required: true,
-                  onChange: (e) => {
-                    if (e.target.value !== oneUser.nickname)
-                      setNickCheck('changed');
-                    else setNickCheck('default');
-                  },
-                })}
-              />
-              {errors.nickname && (
-                <span>
-                  <i className="fa-solid fa-circle-exclamation" />
-                  닉네임을 입력해주세요
-                </span>
+              >
+                {nickCheck !== 'changed' ? '확인 완료' : '중복 확인'}
+              </NoLinkButton>
+            </InfoBlock>
+            <InfoBlock>
+              <label htmlFor="curPassword">기존 비밀번호</label>
+              <WarnSet>
+                <input
+                  id="curPassword"
+                  type="password"
+                  className="input"
+                  {...register('curPassword', { required: true })}
+                />
+                {errors.curPassword && (
+                  <span>
+                    <i className="fa-solid fa-circle-exclamation" />
+                    현재 비밀번호를 입력해주세요
+                  </span>
+                )}
+              </WarnSet>
+            </InfoBlock>
+            <InfoBlock>
+              <label htmlFor="askNewPass">비밀번호 변경</label>
+              {passwordChange ? (
+                <NoLinkButton type="button" onClick={changePassword}>
+                  변경 취소
+                </NoLinkButton>
+              ) : (
+                <NoLinkButton type="button" onClick={changePassword}>
+                  비밀번호 변경
+                </NoLinkButton>
               )}
-            </WarnSet>
-            <NoLinkButton
-              type="button"
-              onClick={nicknameCheck}
-              disabled={nickCheck === 'done'}
-            >
-              {nickCheck !== 'changed' ? '확인 완료' : '중복 확인'}
-            </NoLinkButton>
-          </InfoBlock>
-          <InfoBlock>
-            <label htmlFor="curPassword">기존 비밀번호</label>
-            <WarnSet>
-              <input
-                id="curPassword"
-                type="password"
-                className="input"
-                {...register('curPassword', { required: true })}
-              />
-              {errors.curPassword && (
-                <span>
-                  <i className="fa-solid fa-circle-exclamation" />
-                  현재 비밀번호를 입력해주세요
-                </span>
-              )}
-            </WarnSet>
-          </InfoBlock>
-          <InfoBlock>
-            <label htmlFor="askNewPass">비밀번호 변경</label>
+            </InfoBlock>
             {passwordChange ? (
-              <NoLinkButton type="button" onClick={changePassword}>
-                변경 취소
-              </NoLinkButton>
+              <NewPassword
+                passwordMatch={passwordMatch}
+                doesMatch={doesMatch}
+                doesNotMatch={doesNotMatch}
+                newPass={newPassword}
+                setNewPass={setNewPassword}
+              />
             ) : (
-              <NoLinkButton type="button" onClick={changePassword}>
-                비밀번호 변경
-              </NoLinkButton>
+              ''
             )}
-          </InfoBlock>
-          {passwordChange ? (
-            <NewPassword
-              passwordMatch={passwordMatch}
-              doesMatch={doesMatch}
-              doesNotMatch={doesNotMatch}
-              newPass={newPassword}
-              setNewPass={setNewPassword}
-            />
-          ) : (
-            ''
-          )}
-          {/* <InfoBlock>
+            {/* <InfoBlock>
             <label htmlFor="newPassword">새 비밀번호</label>
             <input
               id="newPassword"
@@ -728,63 +742,62 @@ const EditUser = () => {
               {...register('newPasswordCheck')}
             />
           </InfoBlock> */}
-          <InfoBlock>
-            <label htmlFor="phone">휴대폰 번호</label>
-            <WarnSet>
-              <input
-                id="phone"
-                type="tel"
-                placeholder="010-1234-5678"
-                className="input"
-                defaultValue={oneUser.phone}
-                disabled={phoneCheck === 'done'}
-                {...register('phone', {
-                  required: '휴대폰 번호를 입력해 주세요',
-                  pattern: {
-                    value: /^(010)-[0-9]{3,4}-[0-9]{4}$/,
-                    message: '010-0000-0000 형식에 맞춰주세요.',
-                  },
-                  onChange: (e) => {
-                    if (e.target.value !== oneUser.nickname)
-                      setPhoneCheck('changed');
-                    else setPhoneCheck('default');
-                  },
-                })}
-              />
-              {errors.phone && (
-                <span>
-                  <i className="fa-solid fa-circle-exclamation" />
-                  {errors.phone.message}
-                </span>
-              )}
-            </WarnSet>
-            <NoLinkButton
-              type="button"
-              onClick={phoneNumCheck}
-              disabled={phoneCheck === 'done'}
-            >
-              {phoneCheck !== 'changed' ? '확인 완료' : '중복 확인'}
-            </NoLinkButton>
-          </InfoBlock>
-          <InfoBlock>
-            <label htmlFor="location">등록 지역 변경</label>
-            <div>
-              <div id="map">
-                {currentLocation && (
-                  <AddMap
-                    latitude={currentLocation.latitude}
-                    longitude={currentLocation.longitude}
-                    locationString={locationString}
-                    setLocationString={setLocationString}
-                    setLat={setLat}
-                    setLon={setLon}
-                  />
+            <InfoBlock>
+              <label htmlFor="phone">휴대폰 번호</label>
+              <WarnSet>
+                <input
+                  id="phone"
+                  type="tel"
+                  placeholder={oneUser.phone}
+                  className="input"
+                  defaultValue={oneUser.phone}
+                  disabled={phoneCheck === 'done'}
+                  {...register('phone', {
+                    pattern: {
+                      value: /^(010)-[0-9]{3,4}-[0-9]{4}$/,
+                      message: '010-0000-0000 형식에 맞춰주세요.',
+                    },
+                    onChange: (e) => {
+                      if (e.target.value !== oneUser.phone)
+                        setPhoneCheck('changed');
+                      else setPhoneCheck('default');
+                    },
+                  })}
+                />
+                {errors.phone && (
+                  <span>
+                    <i className="fa-solid fa-circle-exclamation" />
+                    {errors.phone.message}
+                  </span>
                 )}
-                {/* <button type="button" id="locationButton" onClick={locationAdd}>
+              </WarnSet>
+              <NoLinkButton
+                type="button"
+                onClick={phoneNumCheck}
+                disabled={phoneCheck === 'done'}
+              >
+                {phoneCheck !== 'changed' ? '확인 완료' : '중복 확인'}
+              </NoLinkButton>
+            </InfoBlock>
+            <InfoBlock>
+              <label htmlFor="location">등록 지역 변경</label>
+              <div>
+                <div id="map">
+                  {currentLocation && (
+                    <AddMap
+                      latitude={currentLocation.latitude}
+                      longitude={currentLocation.longitude}
+                      locationString={locationString}
+                      setLocationString={setLocationString}
+                      setLat={setLat}
+                      setLon={setLon}
+                    />
+                  )}
+                  {/* <button type="button" id="locationButton" onClick={locationAdd}>
                   현재 위치 추가
                 </button> */}
-              </div>
-              {/* <div>
+                </div>
+                {/* <div>
                 {locationString === ''
                   ? '저장된 위치가 없습니다'
                   : locationString}
@@ -801,29 +814,32 @@ const EditUser = () => {
                   )}
                 </div>
               </div> */}
-              {/* <div>
+                {/* <div>
                 수원시
                 <i className="fa-solid fa-xmark" />
               </div> */}
-            </div>
-          </InfoBlock>
-          <InfoBlock>
-            <label htmlFor="memberTags">등록 태그 변경</label>
-            <div>
-              <TagList>
-                <EditAuto
-                  fields={fields}
-                  append={append}
-                  remove={remove}
-                  // register={register}
-                  control={control}
-                  data={TAG_DATA}
-                  tagLength={3}
-                />
-              </TagList>
-            </div>
-          </InfoBlock>
-        </PersonalInfo>
+              </div>
+            </InfoBlock>
+            <InfoBlock>
+              <label htmlFor="memberTags">등록 태그 변경</label>
+              <div>
+                <TagList>
+                  <EditAuto
+                    fields={fields}
+                    append={append}
+                    remove={remove}
+                    // register={register}
+                    control={control}
+                    data={TAG_DATA}
+                    tagLength={3}
+                  />
+                </TagList>
+              </div>
+            </InfoBlock>
+          </PersonalInfo>
+        ) : (
+          <Loading />
+        )}
         <span>
           <Button
             type="submit"
