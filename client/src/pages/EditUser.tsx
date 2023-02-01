@@ -447,8 +447,8 @@ const EditUser = () => {
         },
       )
       .then((res) => {
-        // console.log(res);
-        alert(res);
+        console.log(res);
+        // alert(res);
         navigate(`/members/mypage`);
       })
       .catch((err) => {
@@ -641,7 +641,7 @@ const EditUser = () => {
             <label htmlFor="nickname">닉네임</label>
             <WarnSet>
               <input
-                // id="nickname"
+                id="nickname"
                 type="text"
                 defaultValue={oneUser.nickname}
                 className="input"
@@ -744,7 +744,11 @@ const EditUser = () => {
                     value: /^(010)-[0-9]{3,4}-[0-9]{4}$/,
                     message: '010-0000-0000 형식에 맞춰주세요.',
                   },
-                  onChange: () => setPhoneCheck('changed'),
+                  onChange: (e) => {
+                    if (e.target.value !== oneUser.nickname)
+                      setPhoneCheck('changed');
+                    else setPhoneCheck('default');
+                  },
                 })}
               />
               {errors.phone && (
