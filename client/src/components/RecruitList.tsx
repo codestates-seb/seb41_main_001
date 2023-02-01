@@ -231,8 +231,9 @@ const ProfileImg = styled.img<ProfileImgProps>`
   }
 `;
 
-const RecruitList = (props: { data: RecruitDataProps }) => {
+const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
   const {
+    setFilterTag,
     data: {
       recruitTags,
       recruitId,
@@ -286,9 +287,10 @@ const RecruitList = (props: { data: RecruitDataProps }) => {
     <ListContainer>
       <div>
         <TagLink
-          onClick={() => {}}
-          value={`${emoji} ${tagName}`}
+          value={tagName}
+          emoji={emoji}
           to={`/recruits?tag="${tagName}"`}
+          onClick={() => setFilterTag(tagName)}
         />
         <ListTitle to={`/recruit/${recruitId}`}>{title}</ListTitle>
       </div>

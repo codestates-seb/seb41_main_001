@@ -5,7 +5,6 @@ const AutoCompleteContainer = styled.div`
   display: flex;
   flex-direction: columns;
   flex-wrap: wrap;
-  width: 100%;
   > ul {
     margin: 0;
     padding: 0;
@@ -16,6 +15,7 @@ const AutoCompleteContainer = styled.div`
     flex-wrap: wrap;
     > li {
       white-space: nowrap;
+      margin-right: 10px;
       margin-bottom: 3px;
       border: 1px solid white;
       padding: 5px;
@@ -54,7 +54,7 @@ const AutoCompleteBox = styled.div`
   position: relative;
   width: 100%;
   > input {
-    width: 18.5rem;
+    width: 8rem;
     // width 100%에서 변경, 8rem
     height: 35px;
     padding: 5px;
@@ -163,7 +163,7 @@ interface AutoCompleteForArrayProps {
   tagLength: number;
 }
 
-const EditAuto = ({
+const EditFreeAuto = ({
   fields,
   append,
   remove,
@@ -201,4 +201,4 @@ const EditAuto = ({
   </AutoCompleteContainer>
 );
 
-export default EditAuto;
+export default EditFreeAuto;

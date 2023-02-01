@@ -40,7 +40,7 @@ const Pfp = styled.img`
   margin: 10px;
   border: 2px solid white;
   border-radius: 100px;
-  background-color: pink;
+  /* background-color: pink; */
   width: 130px;
   height: 130px;
 `;

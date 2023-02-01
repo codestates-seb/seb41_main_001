@@ -175,6 +175,27 @@ const RecruitDetail = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  useEffect(() => {
+    if (data) {
+      setLikesMemberId(
+        data.recruitLikes.reduce((r: number[], e: any) => {
+          if (e.memberId) {
+            r.push(e.memberId);
+          }
+          return r;
+        }, []),
+      );
+      setApplicantsId(
+        data.applies.reduce((r: number[], e: any) => {
+          if (e.memberId) {
+            r.push(e.memberId);
+          }
+          return r;
+        }, []),
+      );
+    }
+  }, [data]);
+
   const LOGIN_ID = Number(localStorage.getItem('memberId'));
 
   const checkIfMeetingEnded = (d: string) => {
@@ -269,32 +290,34 @@ const RecruitDetail = () => {
               likes={likesMemberId!.includes(LOGIN_ID)}
               value={`좋아요 ${data.likes}`}
               onClick={() => {
-                axios
-                  .patch(
-                    `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/likes`,
-                    { memberId: LOGIN_ID },
-                    {
-                      headers: {
-                        Authorization: localStorage.getItem('AccessToken'),
-                        Refresh: localStorage.getItem('RefreshToken'),
-                      },
-                    },
-                  )
-                  .then((res) => {
-                    setData(res.data.data);
-                    setLikesMemberId(
-                      res.data.data.recruitLikes.reduce(
-                        (r: number[], e: any) => {
-                          if (e.memberId) {
-                            r.push(e.memberId);
-                          }
-                          return r;
+                if (LOGIN_ID) {
+                  axios
+                    .patch(
+                      `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/likes`,
+                      { memberId: LOGIN_ID },
+                      {
+                        headers: {
+                          Authorization: localStorage.getItem('AccessToken'),
+                          Refresh: localStorage.getItem('RefreshToken'),
                         },
-                        [],
-                      ),
-                    );
-                  })
-                  .catch((err) => console.log(err));
+                      },
+                    )
+                    .then((res) => {
+                      setData(res.data.data);
+                      setLikesMemberId(
+                        res.data.data.recruitLikes.reduce(
+                          (r: number[], e: any) => {
+                            if (e.memberId) {
+                              r.push(e.memberId);
+                            }
+                            return r;
+                          },
+                          [],
+                        ),
+                      );
+                    })
+                    .catch((err) => console.log(err));
+                }
               }}
               icon={<i className="fa-solid fa-heart" />}
             />
