@@ -197,7 +197,7 @@ const EditRecruit = () => {
     axios
       .patch(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`, {
         ...data,
-        memberId: 1,
+        memberId: Number(localStorage.getItem('memberId')),
         headers: {
           Authorization: `${localStorage.getItem('AccessToken')}`,
           Refresh: `${localStorage.getItem('RefreshToken')}`,

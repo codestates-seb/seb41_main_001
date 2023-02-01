@@ -83,36 +83,40 @@ const Recruits = () => {
   const [distanceLimit, setDistanceLimit] = useState(10);
 
   useEffect(() => {
-    console.log(filterTag, filterStatus);
-    const params = {
-      page,
-      size: listNum,
-      distanceLimit,
-      lat: location?.latitude,
-      lon: location?.longitude,
-    };
-    axios
-      .get(
-        `${process.env.REACT_APP_API_URL}/recruits?${
-          filterTag ? `tagName=${filterTag}` : ''
-        }&${filterStatus ? `status=${filterStatus}` : ''}`,
-        { params },
-      )
-      .then((res) => {
-        setData(res.data.data);
-        setPageCount(res.data.pageInfo.totalPages);
-        setLoading(false);
-        console.log(res.data.pageInfo);
-      })
-      .catch((err) => console.log(err));
+    console.log(filterTag);
+    if (location) {
+      const params = {
+        page,
+        size: listNum,
+        distanceLimit,
+        lat: location.latitude,
+        lon: location.longitude,
+      };
+      axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/recruits?${
+            filterTag ? `tagName=${filterTag}` : ''
+          }&${filterStatus ? `status=${filterStatus}` : ''}`,
+          { params },
+        )
+        .then((res) => {
+          setData(res.data.data);
+          setPageCount(res.data.pageInfo.totalPages);
+          setLoading(false);
+          console.log(res.data.pageInfo);
+        })
+        .catch((err) => console.log(err));
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }, [page, listNum, filterTag, filterStatus, location, distanceLimit]);
 
   const handleChangeListNum = (e: any) => {
     setListNum(e.target.value);
     setPage(1);
   };
+
+  const LOGIN_ID = localStorage.getItem('memberId');
 
   return (
     <MainContainer>
@@ -130,7 +134,13 @@ const Recruits = () => {
             </select>
           </div>
           {location && data && !isLoading ? (
-            data.map((item) => <RecruitList key={item.recruitId} data={item} />)
+            data.map((item) => (
+              <RecruitList
+                key={item.recruitId}
+                data={item}
+                setFilterTag={setFilterTag}
+              />
+            ))
           ) : (
             <Loading />
           )}
@@ -155,9 +165,15 @@ const Recruits = () => {
           />
         </div>
         <div>
-          <span>찾으시는 운동이 없으신가요?</span>
-          <span>직접 이웃을 모아보세요!</span>
-          <ButtonLink value="모집글 작성하기" to="/recruit/new" />
+          {LOGIN_ID ? (
+            <>
+              <span>찾으시는 운동이 없으신가요?</span>
+              <span>직접 이웃을 모아보세요!</span>
+              <ButtonLink value="모집글 작성하기" to="/recruit/new" />
+            </>
+          ) : (
+            ''
+          )}
         </div>
       </aside>
     </MainContainer>

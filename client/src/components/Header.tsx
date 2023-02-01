@@ -115,17 +115,40 @@ const BoardLink = styled(Link)<{ path: string; to: string }>`
 const Header = () => {
   const [token, setToken] = useState(localStorage.getItem('AccessToken'));
   const { pathname: path } = useLocation();
+  const Authorization = localStorage.getItem('AccessToken');
+  const Refresh = localStorage.getItem('RefreshToken');
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
-        params: {
-          Authorization: localStorage.getItem('AccessToken'),
-          Refresh: localStorage.getItem('RefreshToken'),
-        },
-      })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+    if (Authorization) {
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
+          params: {
+            Authorization,
+            Refresh,
+          },
+          headers: {
+            Authorization,
+            Refresh,
+          },
+        })
+        .then((res) => {
+          localStorage.setItem('AccessToken', res.headers.authorization!);
+          localStorage.setItem('RefreshToken', res.headers.refresh!);
+          localStorage.setItem('memberId', res.headers['member-id']!);
+          localStorage.setItem('birth', res.headers.birth!);
+          localStorage.setItem('heart', res.headers.heart!);
+          localStorage.setItem('sex', res.headers.sex!);
+        })
+        .catch(() => {
+          localStorage.removeItem('AccessToken');
+          localStorage.removeItem('RefreshToken');
+          localStorage.removeItem('memberId');
+          localStorage.removeItem('birth');
+          localStorage.removeItem('heart');
+          localStorage.removeItem('sex');
+          setToken(null);
+        });
+    }
   }, []);
 
   const logOut = () => {

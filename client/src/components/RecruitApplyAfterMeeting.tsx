@@ -376,7 +376,7 @@ const RecruitApplyAfterMeeting = ({
             <ul>
               {reviews.map((el) => (
                 <li key={el.reviewId}>
-                  <Link to={`/users/${el.memberId}/${el.nickname}`}>
+                  <Link to={`/members/${el.memberId}`}>
                     <img
                       src={`https://picsum.photos/seed/${el.memberId}/50/50.webp`}
                       alt={`avatar of ${el.nickname}`}

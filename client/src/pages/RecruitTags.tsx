@@ -34,7 +34,6 @@ interface RecruitTagsProps {
 
 const RecruitTags = () => {
   const [tagData, setTagData] = useState<RecruitTagsProps[]>();
-  
 
   useEffect(() => {
     axios

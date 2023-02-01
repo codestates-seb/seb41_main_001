@@ -23,13 +23,14 @@ const TagContainer = styled(Link)`
 
 interface TagProps {
   value: string;
+  emoji?: string;
   to: string;
-  onClick: (e: React.SyntheticEvent) => void;
+  onClick?: any;
 }
 
-const TagLink = ({ value, to, onClick }: TagProps) => (
-  <TagContainer to={to} onClick={(e: any) => onClick(e)}>
-    {value}
+const TagLink = ({ value, emoji, to, onClick }: TagProps) => (
+  <TagContainer to={to} onClick={onClick}>
+    {emoji ? `${emoji} ${value}` : `${value}`}
   </TagContainer>
 );
 
