@@ -20,16 +20,18 @@ import RecruitTags from './pages/RecruitTags';
 import FreeboardTags from './pages/FreeboardTags';
 import SearchPassword from './pages/SearchPassword';
 import Loading from './pages/Loading';
+import MemberPage from './pages/MemberPage';
 
 const App = () => (
   <div className="App">
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Recruits />} />
-        <Route path="/members/mypage/:memberId" element={<MyPage />} />
-        <Route path="/members/withdraw/:memberId" element={<Withdraw />} />
-        <Route path="/members/edit/:memberId" element={<EditUser />} />
+        {/* <Route path="/" element={<Main />} /> */}
+        <Route path="/members/mypage" element={<MyPage />} />
+        <Route path="/members/:memberId" element={<MemberPage />} />
+        <Route path="/members/withdraw" element={<Withdraw />} />
+        <Route path="/members/edit" element={<EditUser />} />
         <Route path="/login" element={<LogIn />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/search-password" element={<SearchPassword />} />

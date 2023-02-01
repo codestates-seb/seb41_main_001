@@ -21,8 +21,8 @@ const AddedLocation = styled.div`
 `;
 
 const MapContainer = styled.div`
-  width: 18rem;
-  height: 18rem;
+  width: 33rem;
+  height: 25rem;
   display: block;
   color: black;
   margin: 1rem 0;

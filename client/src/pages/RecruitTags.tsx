@@ -40,7 +40,6 @@ const RecruitTags = () => {
       .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=50`)
       .then((res) => {
         setTagData(res.data.data);
-        console.log(res.data.data);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -60,6 +59,8 @@ const RecruitTags = () => {
               emoji={el.emoji}
               tagName={el.tagName}
               tagCount={el.recruitCount}
+              setKeywordValue={() => {}}
+              setTypeValue={() => {}}
             />
           ))}
       </TagsContainer>

@@ -34,10 +34,25 @@ interface TagProps {
   emoji?: string;
   tagCount: number;
   board: string;
+  setTypeValue: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setKeywordValue: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
-const TagCounter = ({ tagName, emoji, tagCount, board }: TagProps) => (
+const TagCounter = ({
+  tagName,
+  emoji,
+  tagCount,
+  board,
+  setTypeValue,
+  setKeywordValue,
+}: TagProps) => (
   <Tag>
-    <Link to={`/${board}?tag="${tagName}"`}>
+    <Link
+      to={`/${board}?tag="${tagName}"`}
+      onClick={() => {
+        setTypeValue(tagName);
+        setKeywordValue('tag');
+      }}
+    >
       {emoji ? `${emoji} ${tagName}` : `${tagName}`}
     </Link>
     <div>{`${tagCount}개의 게시물`}</div>

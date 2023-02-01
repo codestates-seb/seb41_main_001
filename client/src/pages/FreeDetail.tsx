@@ -230,6 +230,27 @@ const FreeDetail = () => {
       });
   }, []);
 
+  // const handleDeleteFree = () => {
+  //   {
+  //     confirm('삭제하시겠습니까?') === true
+  //       ? axios
+  //           .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
+  //             headers: {
+  //               Authorization: `${localStorage.getItem('AccessToken')}`,
+  //               Refresh: `${localStorage.getItem('RefreshToken')}`,
+  //             },
+  //           })
+  //           .then((res) => {
+  //             console.log(res);
+  //             navigate(`/freeboards`);
+  //           })
+  //           .catch((err) => {
+  //             console.log(err);
+  //           })
+  //       : '';
+  //   }
+  // };
+
   return (
     <FDContainer>
       {!isLoading ? (

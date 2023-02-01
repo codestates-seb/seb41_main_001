@@ -126,6 +126,13 @@ const CommentBox = (props: {
     axios
       .delete(
         `${process.env.REACT_APP_API_URL}/${board}/${boardId}/${commentId}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem('AccessToken'),
+            Refresh: localStorage.getItem('RefreshToken'),
+          },
+          data: { memberId: LOGIN_ID },
+        },
       )
       .then((res) => {
         console.log(res);

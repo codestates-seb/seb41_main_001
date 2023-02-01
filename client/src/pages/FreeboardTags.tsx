@@ -34,13 +34,15 @@ interface FreeTagsProps {
 
 const FreeboardTags = () => {
   const [tagData, setTagData] = useState<FreeTagsProps[]>();
+  const [keywordValue, setKeywordValue] = useState<string>();
+  const [typeValue, setTypeValue] = useState<string>();
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/tags/freeboards?page=1&size=50`)
+      .get(`${process.env.REACT_APP_API_URL}/tags/freeboards?page=1&size=10`)
       .then((res) => {
         setTagData(res.data.data);
-        console.log(res.data.data);
+        console.log(tagData);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -60,6 +62,8 @@ const FreeboardTags = () => {
               emoji={el.emoji}
               tagName={el.tagName}
               tagCount={el.freeCount}
+              setKeywordValue={setKeywordValue}
+              setTypeValue={setTypeValue}
             />
           ))}
       </TagsContainer>
