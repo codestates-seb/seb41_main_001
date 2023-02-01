@@ -83,8 +83,8 @@ public class FreeDto {
 
     @Getter
     public static class Tag{
-        @ApiModelProperty(example = "Tag ID")
-        private long tagId;
+//        @ApiModelProperty(example = "Tag ID")
+//        private long tagId;
 
         @ApiModelProperty(example = "태그 이름")
         private String tagName;

@@ -57,9 +57,10 @@ public class RecruitService {
         for (RecruitTag recruitTag : recruit.getRecruitTags()) {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
             tag.setRecruitCount(tag.getRecruitCount() + 1);
+            tagRepository.save(tag);
         }
         Member findMember = memberRepository.findById(recruit.getMember().getMemberId()).orElseThrow();
-        findMember.setHeart(findMember.getHeart()+5);
+        findMember.setHeart(findMember.getHeart() + 5);
         memberRepository.save(findMember);
         return saveRecruit(recruit);
     }
@@ -90,7 +91,7 @@ public class RecruitService {
         recruitComment.setCreatedAt(LocalDateTime.now());
         recruitComment.setRecruit(findRecruit);
         Member findMember = memberRepository.findById(recruitComment.getMember().getMemberId()).orElseThrow();
-        findMember.setHeart(findMember.getHeart()+1);
+        findMember.setHeart(findMember.getHeart() + 1);
         memberRepository.save(findMember);
         return saveRecruit(findRecruit);
     }
@@ -125,13 +126,13 @@ public class RecruitService {
                                 .anyMatch(tagName -> tagName.equals(recruitGetDto.getTagName())))
                         .collect(Collectors.toList());
             }
-            if(recruitGetDto.getStatus()!=null){
+            if (recruitGetDto.getStatus() != null) {
                 if (recruitGetDto.getStatus().equals("모집중")) {
                     recruits = recruits.stream()
                             .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
                             .sorted(Comparator.comparing(Recruit::getDistance))
                             .collect(Collectors.toList());
-                }else {
+                } else {
                     recruits = recruits.stream()
                             .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
                             .collect(Collectors.toList());
@@ -149,13 +150,13 @@ public class RecruitService {
                     .filter(recruit -> recruit.getDistance() < recruitGetDto.getDistanceLimit())
                     .collect(Collectors.toList());
 
-            if(recruitGetDto.getStatus()!=null){
+            if (recruitGetDto.getStatus() != null) {
                 if (recruitGetDto.getStatus().equals("모집중")) {
                     recruits = recruits.stream()
                             .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
                             .sorted(Comparator.comparing(Recruit::getDistance))
                             .collect(Collectors.toList());
-                }else {
+                } else {
                     recruits = recruits.stream()
                             .filter(recruit -> recruit.getRecruitStatus().getStepDescription().equals(recruitGetDto.getStatus()))
                             .collect(Collectors.toList());
@@ -209,7 +210,23 @@ public class RecruitService {
         if (recruit.getLat() != 0) findRecruit.setLat(recruit.getLat());
         if (recruit.getLon() != 0) findRecruit.setLon(recruit.getLon());
         if (recruit.getAgeGroupString() != null) findRecruit.setAgeGroupString(recruit.getAgeGroupString());
-        if ((recruit.getRecruitTags() != null)) findRecruit.setRecruitTags(recruit.getRecruitTags());
+        if ((recruit.getRecruitTags() != null)) {
+            List<RecruitTag> recruitTags = findRecruit.getRecruitTags();
+            List<Tag> updatedTags = recruitTags.stream()
+                    .map(RecruitTag::getTag)
+                    .peek(tag -> tag.setRecruitCount(tag.getRecruitCount() - 1))
+                    .collect(Collectors.toList());
+            tagRepository.saveAll(updatedTags);
+
+            findRecruit.setRecruitTags(recruit.getRecruitTags());
+
+            recruitTags = findRecruit.getRecruitTags();
+            updatedTags = recruitTags.stream()
+                    .map(RecruitTag::getTag)
+                    .peek(tag -> tag.setRecruitCount(tag.getRecruitCount() + 1))
+                    .collect(Collectors.toList());
+            tagRepository.saveAll(updatedTags);
+        }
         return saveRecruit(findRecruit);
     }
 
@@ -221,9 +238,10 @@ public class RecruitService {
         for (RecruitTag recruitTag : findRecruit.getRecruitTags()) {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
             tag.setRecruitCount(tag.getRecruitCount() - 1);
+            tagRepository.save(tag);
         }
         Member findMember = findRecruit.getMember();
-        findMember.setHeart(findMember.getHeart()-5);
+        findMember.setHeart(findMember.getHeart() - 5);
         memberRepository.save(findMember);
 
         recruitRepository.deleteById(recruitId);
@@ -240,7 +258,7 @@ public class RecruitService {
         if (!members.contains(findMember)) throw new BusinessLogicException(ExceptionCode.RECRUIT_MODIFY_DENIED);
         findRecruit.setRecruitStatus(Recruit.RecruitStatus.RECRUIT_END);
         List<Member> updatedMembers = members.stream()
-                .peek(member -> member.setHeart(member.getHeart()+3))
+                .peek(member -> member.setHeart(member.getHeart() + 3))
                 .collect(Collectors.toList());
         memberRepository.saveAll(updatedMembers);
         return saveRecruit(findRecruit);
@@ -258,7 +276,7 @@ public class RecruitService {
             recruitLikeRepository.deleteRecruitLikeByMember_MemberIdAndRecruit_RecruitId(recruitLikeMemberId, recruitId);
         }
         Member findMember = findRecruit.getMember();
-        findMember.setHeart(findMember.getHeart()+1);
+        findMember.setHeart(findMember.getHeart() + 1);
         memberRepository.save(findMember);
         return saveRecruit(findRecruit);
     }
@@ -284,7 +302,7 @@ public class RecruitService {
         recruitCommentRepository.deleteById(commentId);
 
         Member findMember = targetComment.getMember();
-        findMember.setHeart(findMember.getHeart()-1);
+        findMember.setHeart(findMember.getHeart() - 1);
         memberRepository.save(findMember);
 
         return saveRecruit(findRecruit);
@@ -333,8 +351,8 @@ public class RecruitService {
         else throw new BusinessLogicException(ExceptionCode.ONLY_ONE_REVIEW);
 
         Member worstMember = memberRepository.findByNickname(review.getWorstMemberNickname())
-                .orElseThrow(()->new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        worstMember.setHeart(worstMember.getHeart()-10);
+                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+        worstMember.setHeart(worstMember.getHeart() - 10);
         memberRepository.save(worstMember);
 
         findRecruit.setStar(findRecruit.getReviews()
@@ -342,7 +360,7 @@ public class RecruitService {
                 .mapToDouble(Review::getStar)
                 .average().orElse(0));
 
-        findMember.setHeart(findMember.getHeart()+2);
+        findMember.setHeart(findMember.getHeart() + 2);
         memberRepository.save(findMember);
 
         return saveRecruit(findRecruit);

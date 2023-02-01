@@ -59,8 +59,16 @@ public class FreeService {
         free.setModifiedAt(LocalDateTime.now());
         free.setMember(memberRepository.findById(memberId).orElseThrow());
         for (FreeTag freeTag : free.getFreeTags()) {
-            Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
+            Optional<Tag> optionalTag = tagRepository.findByTagName(freeTag.getTag().getTagName());
+            Tag tag;
+            if(optionalTag.isEmpty()) {
+                tag = tagRepository.save(Tag.builder().tagName(freeTag.getTag().getTagName()).emoji(freeTag.getTag().getEmoji()).build());
+            } else {
+                tag = optionalTag.orElseThrow();
+            }
+            freeTag.setTag(tag);
             tag.setFreeCount(tag.getFreeCount() + 1);
+            tagRepository.save(tag);
         }
         Member findMember = memberRepository.findById(memberId).orElseThrow();
         findMember.setHeart(findMember.getHeart()+5);
@@ -86,6 +94,7 @@ public class FreeService {
         for (FreeTag freeTag : findFree.getFreeTags()) {
             Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
             tag.setFreeCount(tag.getFreeCount() - 1);
+            tagRepository.save(tag);
         }
         Member findMember = memberRepository.findById(memberId).orElseThrow();
         findMember.setHeart(findMember.getHeart()-5);

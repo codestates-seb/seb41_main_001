@@ -24,7 +24,7 @@ public interface FreeMapper {
                 .map(freeTagDto -> {
                     FreeTag freeTag = new FreeTag();
                     Tag tag = new Tag();
-                    tag.setTagId(freeTagDto.getTagId());
+//                    tag.setTagId(freeTagDto.getTagId());
                     tag.setTagName(freeTagDto.getTagName());
                     tag.setEmoji(freeTagDto.getEmoji());
                     freeTag.setFree(free);
