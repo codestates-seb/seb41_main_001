@@ -37,9 +37,10 @@ const FreeboardTags = () => {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/tags/freeboards?page=1&size=50`)
+      .get(`${process.env.REACT_APP_API_URL}/tags/freeboards?page=1&size=10`)
       .then((res) => {
         setTagData(res.data.data);
+        console.log(tagData);
       })
       .catch((err) => console.log(err));
   }, []);

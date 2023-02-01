@@ -59,6 +59,8 @@ const RecruitTags = () => {
               emoji={el.emoji}
               tagName={el.tagName}
               tagCount={el.recruitCount}
+              // setKeywordValue={() => {}}
+              // setTypeValue={() => {}}
             />
           ))}
       </TagsContainer>
