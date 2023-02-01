@@ -182,6 +182,7 @@ const Header = () => {
           <i className="fa-solid fa-heart-pulse" />
           HEART
         </Logo>
+
         <Board>
           <BoardLink path={path} to="/recruits">
             모집게시판

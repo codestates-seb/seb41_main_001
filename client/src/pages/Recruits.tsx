@@ -83,7 +83,6 @@ const Recruits = () => {
   const [distanceLimit, setDistanceLimit] = useState(10);
 
   useEffect(() => {
-    console.log(filterTag);
     if (location) {
       const params = {
         page,
@@ -103,7 +102,6 @@ const Recruits = () => {
           setData(res.data.data);
           setPageCount(res.data.pageInfo.totalPages);
           setLoading(false);
-          console.log(res.data.pageInfo);
         })
         .catch((err) => console.log(err));
 
