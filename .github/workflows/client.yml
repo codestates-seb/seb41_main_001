@@ -33,6 +33,6 @@ jobs:
         run: |
           aws s3 sync \
             --region ap-northeast-2 \
-            build s3://heart-main \
+            build s3://heart-no1 \
             --delete
         working-directory: ./client
