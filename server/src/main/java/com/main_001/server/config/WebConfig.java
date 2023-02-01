@@ -11,7 +11,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedHeaders("*")
-                .allowedOrigins("http://localhost:8080", "http://localhost:3000", "http://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080/") // 허용할 출처
+                .allowedOrigins("http://localhost:8080",
+                        "http://localhost:3000",
+                        "http://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080/",
+                        "http://heart-main.s3-website.ap-northeast-2.amazonaws.com/") // 허용할 출처
                 .allowedMethods(HttpMethod.GET.name(),
                         HttpMethod.HEAD.name(),
                         HttpMethod.POST.name(),
