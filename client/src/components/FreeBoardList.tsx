@@ -36,11 +36,15 @@ interface FreeBoardListProps {
     // tagName,
     nickname: string;
     authorHeart: number;
+    authorLocation: string;
+    filePath: string;
+    location: string;
   };
 }
 
 const Board = styled.li`
   width: 35rem;
+  /* height: auto; */
   padding: 1rem;
   margin: 1rem;
   border: 0.05rem solid white;
@@ -74,13 +78,15 @@ const ContentSec = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 10rem;
+  height: 12rem;
   font-size: 16px;
   > div:first-child {
     display: flex;
     > a {
-      width: 4.5rem;
-      height: 2rem;
+      /* width: 4.5rem; */
+      /* width: 6rem; */
+      /* height: 2rem; */
+      /* padding: 1rem; */
       /* border: 0.05rem solid white; */
       border-radius: 1rem;
       display: flex;
@@ -91,6 +97,11 @@ const ContentSec = styled.section`
       /* i {
         color: var(--neon-blue);
       } */
+      div {
+        width: 5.5rem;
+        height: 2rem;
+        /* padding: 1rem; */
+      }
     }
     > div:nth-child(2) {
       width: 17rem;
@@ -120,11 +131,22 @@ const ContentSec = styled.section`
     /* border: 0.05rem solid white; */
   }
 
-  div:last-child {
-    width: 21rem;
+  > div:last-child {
+    /* width: 11em; */
+    width: auto;
     height: 1.5rem;
-    padding: 0.2rem;
+    /* padding: 0.2rem; */
     /* border: 0.05rem solid white; */
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    .location {
+      margin-right: 0.5rem;
+      display: flex;
+      > i {
+        margin-right: 0.3rem;
+      }
+    }
   }
 `;
 
@@ -151,6 +173,11 @@ const AuthorSec = styled.section`
   .counts {
     display: flex;
     flex-direction: column;
+    div {
+      i {
+        margin-right: 0.3rem;
+      }
+    }
   }
 `;
 
@@ -213,13 +240,21 @@ const FreeBoardList = ({
               }}
               key={el.tagId}
               value={`${el.tagName}`}
-              to={`?tag=${el.tagName}`}
+              to={`?type=tag&keyword=${el.tagName}`}
             />
           ))}
         </div>
         <div>
           {/* {`${convertToDate(createdAt)}`} */}
-          {`${timeDifference(data.modifiedAt)}`}
+          {data.location ? (
+            <div className="location">
+              <i className="fa-solid fa-location-dot" />
+              <div>{data.location}</div>
+            </div>
+          ) : (
+            ''
+          )}
+          <div>{`${timeDifference(data.modifiedAt)}`}</div>
         </div>
       </ContentSec>
       <AuthorSec>
@@ -240,6 +275,8 @@ const FreeBoardList = ({
             memberId={data.memberId}
             nickname={data.nickname}
             heart={data.authorHeart}
+            authorLocation={data.authorLocation}
+            image={data.filePath}
           />
         </div>
       </AuthorSec>

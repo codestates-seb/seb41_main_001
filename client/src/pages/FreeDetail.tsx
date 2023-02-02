@@ -6,7 +6,7 @@
 import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
 import CreatorCard from '../components/CreatorCard';
@@ -16,6 +16,7 @@ import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
 import Button from '../components/Button';
 import FreeCreatorSelectBox from '../components/FreeCreatorSelectBox';
+// import TagLink from '../components/TagLink';
 // import preview from '../img/preview.jpeg';
 
 const FDContainer = styled.main`
@@ -111,6 +112,20 @@ const BoardContainer = styled.div`
       } */
     }
   }
+
+  .location {
+    width: 35rem;
+    margin-bottom: 1rem;
+    > i {
+      margin-right: 0.3rem;
+    }
+  }
+
+  /* .tag {
+    display: flex;
+    width: 35rem;
+    margin-bottom: 0.2rem;
+  } */
 `;
 
 const ContentContainer = styled.div`
@@ -121,7 +136,7 @@ const ContentContainer = styled.div`
 
   .body {
     height: auto;
-    min-height: 3rem;
+    min-height: 2rem;
     line-height: 150%;
     margin-bottom: 1rem;
   }
@@ -208,6 +223,7 @@ const FreeDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [likesMemberId, setLikesMemberId] = useState<number[]>();
   const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -228,6 +244,8 @@ const FreeDetail = () => {
       .catch((err) => {
         console.log(err);
       });
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   return (
@@ -275,6 +293,8 @@ const FreeDetail = () => {
             memberId={post.memberId}
             nickname={post.nickname}
             heart={post.authorHeart}
+            authorLocation={post.authorLocation}
+            image={post.filePath}
           />
           <ContentContainer>
             {/* <div>
@@ -295,6 +315,24 @@ const FreeDetail = () => {
               </div>
             )} */}
           </ContentContainer>
+          {post.location ? (
+            <div className="location">
+              <i className="fa-solid fa-location-dot" />
+              {post.location}
+            </div>
+          ) : (
+            ''
+          )}
+          {/* <div className="tags">
+            {post.freeTags.map((el) => (
+              <TagLink
+                onClick={() => {}}
+                key={el.tagId}
+                value={`${el.tagName}`}
+                to={`/freeboards?type=tag&keyword=${el.tagName}`}
+              />
+            ))}
+          </div> */}
           <div className="btnCon">
             <LikeButton
               likes={likesMemberId!.includes(LOGIN_ID)}
@@ -325,6 +363,7 @@ const FreeDetail = () => {
                   })
                   .catch((err) => {
                     console.log(err);
+                    navigate('/login');
                   });
               }}
               icon={<i className="fa-solid fa-heart" />}

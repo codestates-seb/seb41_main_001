@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Button from './Button';
 
@@ -39,7 +40,8 @@ const CommentSubmitBox = ({
   setData,
 }: CommentSubmitProps) => {
   const [comment, setComment] = useState(value);
-  const LOGIN_ID = localStorage.getItem('memberId');
+  const LOGIN_ID = localStorage.getItem('memberId') || -1;
+  const navigate = useNavigate();
   const handleCommentSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (comment.trim() !== '' && setModifying) {
@@ -71,26 +73,30 @@ const CommentSubmitBox = ({
     } else if (comment.trim() !== '') {
       // 댓글을 등록하는 경우
       console.log(`POST ${submitComment}`, comment);
-      axios
-        .post(
-          `${process.env.REACT_APP_API_URL}${submitComment}`,
-          {
-            body: comment,
-            memberId: LOGIN_ID,
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem('AccessToken'),
-              Refresh: localStorage.getItem('RefreshToken'),
+      if (LOGIN_ID && LOGIN_ID !== -1) {
+        axios
+          .post(
+            `${process.env.REACT_APP_API_URL}${submitComment}`,
+            {
+              body: comment,
+              memberId: LOGIN_ID,
             },
-          },
-        )
-        .then((res) => {
-          console.log(res);
-          setData(res.data.data);
-        })
-        .catch((err) => console.log(err));
-      setComment('');
+            {
+              headers: {
+                Authorization: localStorage.getItem('AccessToken'),
+                Refresh: localStorage.getItem('RefreshToken'),
+              },
+            },
+          )
+          .then((res) => {
+            console.log(res);
+            setData(res.data.data);
+          })
+          .catch((err) => console.log(err));
+        setComment('');
+      } else {
+        navigate('/login');
+      }
     }
   };
 

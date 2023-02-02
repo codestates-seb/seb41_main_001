@@ -57,7 +57,7 @@ const FilterBox = ({
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=50`)
+      .get(`${process.env.REACT_APP_API_URL}/tags/recruits`)
       .then((res) => {
         setTagData(res.data.data);
       })
@@ -92,12 +92,10 @@ const FilterBox = ({
       <SelectBox>
         <select
           onChange={(e) => setDistanceLimit(Number(e.target.value))}
-          value={distanceLimit}
+          defaultValue={distanceLimit}
         >
           <option value={5}>5km</option>
-          <option value={10} selected>
-            10km
-          </option>
+          <option value={10}>10km</option>
           <option value={20}>20km</option>
           <option value={30}>30km</option>
         </select>

@@ -22,7 +22,7 @@ const timeDifference = (value: string) => {
     // years ago
     timeleft = `${Math.floor(TIME_DIFF / (1000 * 60 * 60 * 24 * 365))}년`;
   }
-  return TIME_INPUT - TIME_NOW < 0 ? `${timeleft} 전` : `${timeleft} 후`;
+  return TIME_INPUT - TIME_NOW <= 0 ? `${timeleft} 전` : `${timeleft} 후`;
 };
 
 // 남은 시간을 알려주는 함수.
