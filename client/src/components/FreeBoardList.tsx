@@ -140,8 +140,12 @@ const ContentSec = styled.section`
     display: flex;
     /* justify-content: center; */
     align-items: center;
-    > div {
+    .location {
       margin-right: 0.5rem;
+      display: flex;
+      > i {
+        margin-right: 0.3rem;
+      }
     }
   }
 `;
@@ -169,6 +173,11 @@ const AuthorSec = styled.section`
   .counts {
     display: flex;
     flex-direction: column;
+    div {
+      i {
+        margin-right: 0.3rem;
+      }
+    }
   }
 `;
 
@@ -237,7 +246,14 @@ const FreeBoardList = ({
         </div>
         <div>
           {/* {`${convertToDate(createdAt)}`} */}
-          {data.location ? <div>{data.location}</div> : ''}
+          {data.location ? (
+            <div className="location">
+              <i className="fa-solid fa-location-dot" />
+              <div>{data.location}</div>
+            </div>
+          ) : (
+            ''
+          )}
           <div>{`${timeDifference(data.modifiedAt)}`}</div>
         </div>
       </ContentSec>
