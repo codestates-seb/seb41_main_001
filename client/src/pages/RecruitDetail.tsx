@@ -161,6 +161,7 @@ const RecruitDetail = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`)
       .then((res) => {
+        console.log(res.data.data);
         setData(res.data.data);
         setLikesMemberId(
           res.data.data.recruitLikes.reduce((r: number[], e: any) => {

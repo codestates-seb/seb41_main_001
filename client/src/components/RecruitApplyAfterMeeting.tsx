@@ -76,6 +76,8 @@ const ProfileImg = styled.div`
   position: relative;
   img {
     border-radius: 50%;
+    width: 20px;
+    height: 20px;
     &:hover {
       + div {
         display: block;
@@ -199,7 +201,12 @@ const ReviewBox = styled.div`
 
 interface ReviewConditionProps {
   recruitStatus: '모집중' | '최소인원충족' | '모집완료' | '활동종료';
-  applies: { memberId: number; nickname: string; heart: number }[];
+  applies: {
+    memberId: number;
+    nickname: string;
+    heart: number;
+    filePath?: string;
+  }[];
   minRequire: number;
   require: number;
   applicantsId: number[];
@@ -275,7 +282,11 @@ const RecruitApplyAfterMeeting = ({
             {applies.map((el) => (
               <ProfileImg key={el.memberId}>
                 <img
-                  src={`https://picsum.photos/seed/${el.memberId}/20/20.webp`}
+                  src={
+                    el.filePath
+                      ? `${el.filePath}`
+                      : `https://picsum.photos/seed/${el.memberId}/20/20.webp`
+                  }
                   alt={`avatar of ${maskingNickname(el.nickname)}`}
                 />
                 <Bubble>
