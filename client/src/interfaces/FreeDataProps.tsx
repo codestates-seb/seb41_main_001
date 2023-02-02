@@ -11,6 +11,8 @@ export default interface FreeDataProps {
   memberId: number;
   nickname: string;
   authorHeart: number;
+  authorLocation: string;
+  filePath: string;
   // freeLikes: {
   //   memberId: number;
   // }[];

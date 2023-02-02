@@ -111,6 +111,7 @@ const LogIn = () => {
       })
       .catch((err) => {
         const errMsg = err.response.data.message;
+        console.log(err);
 
         if (errMsg === '존재하지 않는 회원') {
           setError('email', {
@@ -155,7 +156,7 @@ const LogIn = () => {
                   type="password"
                   {...register('password', {
                     required: '비밀번호를 입력하세요',
-                    maxLength: 10,
+                    maxLength: 16,
                   })}
                 />
                 <ErrorMessage>{errors?.password?.message}</ErrorMessage>
