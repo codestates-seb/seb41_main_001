@@ -255,6 +255,14 @@ const MyPage = () => {
         tagName: 'Loading...',
       },
     ],
+    memberImage: {
+      filePath: '',
+      fileSize: 96278,
+      memberId: 1,
+      memberImageId: 1,
+      originalFileName: '318759696_669870538120227_4292548530702692515_n.jpg',
+      storedFileName: 'e815b433-3176-478d-99f1-8f52b2598043.jpg',
+    },
     applies: [],
     recruits: [],
     recruitComments: [],
@@ -294,7 +302,11 @@ const MyPage = () => {
             <MyPageHeader>
               <HeadInfo>
                 <Pfp
-                  src={`https://picsum.photos/seed/${oneUser.memberId}/20/20.webp`}
+                  src={
+                    oneUser.memberImage
+                      ? oneUser.memberImage.filePath
+                      : `https://picsum.photos/seed/${oneUser.memberId}/20/20.webp`
+                  }
                 />
                 <Info>
                   <div>{oneUser.nickname}</div>
