@@ -115,7 +115,7 @@ interface RecruitFormInput {
   sex: 'Both' | 'Male' | 'Female';
   ages: number[];
   heartLimit: number;
-  // image: string;
+  image: string;
   tagSearch: string;
 }
 
@@ -422,14 +422,20 @@ const CreateRecruit = () => {
                 />
               </td>
             </tr>
-            {/* <tr>
+            <tr>
               <td>
                 <label htmlFor="image">이미지</label>
               </td>
               <td>
-                <input id="image" type="file" {...register('image')} />
+                <input
+                  id="image"
+                  type="file"
+                  accept="image/jpeg,image/jpg, image/png, image/svg"
+                  multiple
+                  {...register('image')}
+                />
               </td>
-            </tr> */}
+            </tr>
           </tbody>
         </table>
         <Button
