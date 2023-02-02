@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLink from './ButtonLink';
@@ -112,10 +112,14 @@ const BoardLink = styled(Link)<{ path: string; to: string }>`
   }
 `;
 
-const Header = () => {
-  const [token, setToken] = useState(localStorage.getItem('AccessToken'));
+interface HeaderProps {
+  token: string | null;
+  setToken: any;
+}
+
+const Header = ({ token, setToken }: HeaderProps) => {
   const { pathname: path } = useLocation();
-  const Authorization = localStorage.getItem('AccessToken');
+  const Authorization = token;
   const Refresh = localStorage.getItem('RefreshToken');
   const navigate = useNavigate();
 
