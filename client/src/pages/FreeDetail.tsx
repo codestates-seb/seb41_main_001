@@ -384,6 +384,7 @@ const FreeDetail = () => {
               boardId={post.freeId}
               data={el}
               setData={setPost}
+              image={el.filePath}
             />
           ))}
           {/* </ul> */}

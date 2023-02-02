@@ -29,5 +29,6 @@ export default interface FreeDataProps {
     nickname: string;
     heart: number;
     body: string;
+    filePath: string;
   }[];
 }
