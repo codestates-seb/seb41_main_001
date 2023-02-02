@@ -6,7 +6,7 @@
 import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
 import CreatorCard from '../components/CreatorCard';
@@ -208,6 +208,7 @@ const FreeDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [likesMemberId, setLikesMemberId] = useState<number[]>();
   const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -295,6 +296,8 @@ const FreeDetail = () => {
               </div>
             )} */}
           </ContentContainer>
+          {location !== null ? <div>{post.location}</div> : ''}
+          {/* {freeTags !==} */}
           <div className="btnCon">
             <LikeButton
               likes={likesMemberId!.includes(LOGIN_ID)}
@@ -325,6 +328,7 @@ const FreeDetail = () => {
                   })
                   .catch((err) => {
                     console.log(err);
+                    navigate('/login');
                   });
               }}
               icon={<i className="fa-solid fa-heart" />}
