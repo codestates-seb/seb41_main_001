@@ -147,6 +147,15 @@ const ListCondition = styled.div`
         padding: 30px 10px 10px 10px;
         > div {
           font-size: 20px;
+          display: flex;
+          justify-content: center;
+          align-content: center;
+          word-break: break-word;
+          display: -webkit-box;
+          text-overflow: ellipsis;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
         }
       }
       /* transition: 0.2s ease-in-out;
