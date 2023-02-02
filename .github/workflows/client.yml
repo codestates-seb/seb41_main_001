@@ -37,4 +37,4 @@ jobs:
             --delete
         working-directory: ./client
       - name: Invalidate CloudFront Cache
-        run: aws cloudfront create-invalidation --profile=heart-s3-user --distribution-id ${{ secrets.CDN_DISTRIBUTION_ID }} --paths "/*"
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CDN_DISTRIBUTION_ID }} --paths "/*"
