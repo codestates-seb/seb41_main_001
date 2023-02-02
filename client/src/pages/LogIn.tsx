@@ -106,7 +106,7 @@ const LogIn = () => {
         localStorage.setItem('birth', res.headers.birth!);
         localStorage.setItem('heart', res.headers.heart!);
         localStorage.setItem('sex', res.headers.sex!);
-        navigate('/recruits');
+        navigate('/');
         window.location.reload();
       })
       .catch((err) => {
