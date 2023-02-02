@@ -115,7 +115,7 @@ interface RecruitFormInput {
   sex: 'Both' | 'Male' | 'Female';
   ages: number[];
   heartLimit: number;
-  image: string;
+  // image: string;
   tagSearch: string;
 }
 
@@ -422,7 +422,7 @@ const CreateRecruit = () => {
                 />
               </td>
             </tr>
-            <tr>
+            {/* <tr>
               <td>
                 <label htmlFor="image">이미지</label>
               </td>
@@ -435,7 +435,7 @@ const CreateRecruit = () => {
                   {...register('image')}
                 />
               </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
         <Button
