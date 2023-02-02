@@ -147,13 +147,13 @@ const SignUp = () => {
   const [checkedNickname, setCheckedNickname] = useState(true);
   const [checkedPhone, setCheckedPhone] = useState(true);
   const [checkedEmail, setCheckedEmail] = useState(true);
+  const totalCheck = checkedNickname && checkedEmail && checkedPhone;
   const [locationString, setLocationString] = useState('');
   const [lat, setLat] = useState(0);
   const [lon, setLon] = useState(0);
 
   const onSubmit = (data: IFormInput) => {
     delete data.passwordRetype;
-    // console.log(data);
     axios
       .post(`${process.env.REACT_APP_API_URL}/members/signup`, {
         ...data,
@@ -163,12 +163,10 @@ const SignUp = () => {
       })
       .then((res) => {
         console.log(res);
-        // alert(res);
+        navigate('/login');
       })
       .catch((err) => {
-        navigate('/login');
         console.log(err);
-        alert(err);
         console.log(
           JSON.stringify({
             ...data,
@@ -486,7 +484,7 @@ const SignUp = () => {
         <Button
           onClick={() => {}}
           value="건강한 삶 시작하기"
-          disabled={!checkedNickname && !checkedEmail && !checkedPhone}
+          disabled={totalCheck} // !locationString
           type="submit"
         />
       </SignUpForm>

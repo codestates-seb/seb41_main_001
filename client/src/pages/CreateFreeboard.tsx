@@ -435,7 +435,7 @@ const CreateFreeboard = () => {
               // register={register}
               control={control}
               data={TAG_DATA}
-              tagLength={3}
+              tagLength={5}
             />
             <span>스페이스바/버튼 선택으로 태그를 입력하세요</span>
           </div>
