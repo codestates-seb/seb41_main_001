@@ -350,10 +350,12 @@ public class RecruitService {
         if (count == 0) review.setRecruit(findRecruit);
         else throw new BusinessLogicException(ExceptionCode.ONLY_ONE_REVIEW);
 
-        Member worstMember = memberRepository.findByNickname(review.getWorstMemberNickname())
-                .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
-        worstMember.setHeart(worstMember.getHeart() - 10);
-        memberRepository.save(worstMember);
+        if(review.getWorstMemberNickname()!=null) {
+            Member worstMember = memberRepository.findByNickname(review.getWorstMemberNickname())
+                    .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+            worstMember.setHeart(worstMember.getHeart() - 10);
+            memberRepository.save(worstMember);
+        }
 
         findRecruit.setStar(findRecruit.getReviews()
                 .stream()
