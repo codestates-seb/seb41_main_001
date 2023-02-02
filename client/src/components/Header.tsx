@@ -175,7 +175,7 @@ const Header = () => {
         localStorage.removeItem('sex');
         setToken(null);
 
-        window.location.reload();
+        // window.location.reload();
       });
   };
 
