@@ -137,7 +137,7 @@ public interface RecruitMapper {
     }
 
     default ResponseDto.Review reviewToReviewResponseDto(Review review){
-        return ResponseDto.Review
+        ResponseDto.Review response = ResponseDto.Review
                 .builder()
                 .reviewId(review.getId())
                 .memberId(review.getMember().getMemberId())
@@ -147,6 +147,8 @@ public interface RecruitMapper {
                 .star(review.getStar())
                 .worstMemberNickname(review.getWorstMemberNickname())
                 .build();
+        if(review.getMember().getMemberImage()!=null) response.setFilePath(review.getMember().getMemberImage().getFilePath());
+        return response;
     }
     List<ResponseDto.Review> reviewsToReviewResponseDtos(List<Review> reviews);
 
