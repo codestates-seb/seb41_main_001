@@ -49,7 +49,6 @@ const CRForm = styled.form`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   input,
   textarea,
   select {
@@ -72,7 +71,6 @@ const CRForm = styled.form`
       color: white;
     }
   }
-
   > div {
     width: 100%;
     display: flex;
@@ -119,7 +117,6 @@ const CRForm = styled.form`
       cursor: pointer;
     }
   }
-
   > div:first-child {
     text-shadow: white 0 0 5px;
     font-size: 20px;

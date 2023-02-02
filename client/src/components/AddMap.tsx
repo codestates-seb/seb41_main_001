@@ -20,9 +20,9 @@ const AddedLocation = styled.div`
   }
 `;
 
-const MapContainer = styled.div`
-  width: 18rem;
-  height: 18rem;
+const MapContainer = styled.div<{ width: number; height: number }>`
+  width: ${(props) => props.width}rem;
+  height: ${(props) => props.height}rem;
   display: block;
   color: black;
   margin: 1rem 0;
@@ -46,6 +46,8 @@ interface KakaoMapProps {
   setLocationString: any;
   setLat: any;
   setLon: any;
+  width: number;
+  height: number;
 }
 
 const AddMap = ({
@@ -56,6 +58,8 @@ const AddMap = ({
   setLocationString,
   setLat,
   setLon,
+  width,
+  height,
 }: KakaoMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const locationRemove = () => setLocationString('');
@@ -66,7 +70,6 @@ const AddMap = ({
     level: 4, // 지도의 확대 레벨
   };
   const geocoder = new kakao.maps.services.Geocoder();
-
   function searchAddrFromCoords(coords: any, callback: any) {
     // 좌표로 행정동 주소 정보를 요청합니다
     geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), callback);
@@ -98,7 +101,6 @@ const AddMap = ({
     const imageSrc = markerImg;
     const imageSize = new kakao.maps.Size(53, 60);
     const imageOption = { offset: new kakao.maps.Point(27, 69) };
-
     const markerImage = new kakao.maps.MarkerImage(
       imageSrc,
       imageSize,
@@ -113,7 +115,6 @@ const AddMap = ({
     }); // 마커 생성
 
     const infowindow = new kakao.maps.InfoWindow({ zIndex: 1 }); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
-
     // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
     searchAddrFromCoords(map.getCenter(), displayCenterInfo);
 
@@ -190,7 +191,12 @@ const AddMap = ({
           {locationString === '' ? '' : <i className="fa-solid fa-xmark" />}
         </div>
       </AddedLocation>
-      <MapContainer id="kakao-map" ref={mapContainer} />
+      <MapContainer
+        id="kakao-map"
+        ref={mapContainer}
+        width={width}
+        height={height}
+      />
     </div>
   );
 };

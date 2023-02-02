@@ -5,7 +5,6 @@ const AutoCompleteContainer = styled.div`
   display: flex;
   flex-direction: columns;
   flex-wrap: wrap;
-  width: 100%;
   > ul {
     margin: 0;
     padding: 0;
@@ -16,6 +15,7 @@ const AutoCompleteContainer = styled.div`
     flex-wrap: wrap;
     > li {
       white-space: nowrap;
+      margin-right: 10px;
       margin-bottom: 3px;
       border: 1px solid white;
       padding: 5px;
@@ -54,7 +54,7 @@ const AutoCompleteBox = styled.div`
   position: relative;
   width: 100%;
   > input {
-    width: 18.5rem;
+    width: 8rem;
     // width 100%에서 변경, 8rem
     height: 35px;
     padding: 5px;
@@ -163,7 +163,7 @@ interface AutoCompleteForArrayProps {
   tagLength: number;
 }
 
-const EditAuto = ({
+const EditFreeAuto = ({
   fields,
   append,
   remove,
@@ -171,34 +171,50 @@ const EditAuto = ({
   control,
   data,
   tagLength,
-}: AutoCompleteForArrayProps) => (
-  <AutoCompleteContainer>
-    <ul>
-      {fields.map((item, index) => (
-        <li key={item.id}>
-          {`${item.emoji} ${item.tagName}`}
-          <button type="button" onClick={() => remove(index)}>
-            <i className="fa-solid fa-xmark" />
-          </button>
-        </li>
-      ))}
-    </ul>
-    <AutoCompleteBox>
-      <input
-        type="text"
-        defaultValue=""
-        autoComplete="off"
-        // {...register('tagSearch')}
-      />
-      <TagSearchDropBox
-        control={control}
-        data={data}
-        append={append}
-        fields={fields}
-        tagLength={tagLength}
-      />
-    </AutoCompleteBox>
-  </AutoCompleteContainer>
-);
+}: AutoCompleteForArrayProps) => {
+  let i = 10;
+  function addNewTag(e: any) {
+    if (e.key === ' ' || e.code === 'Space' || e.keyCode === 32) {
+      console.log(e.target.value);
+      append({
+        tagId: i,
+        tagName: e.target.value,
+        emoji: '',
+      });
+      i += 1;
+      e.target.value = '';
+    }
+  }
+  return (
+    <AutoCompleteContainer>
+      <ul>
+        {fields.map((item, index) => (
+          <li key={item.id}>
+            {`${item.emoji || ''} ${item.tagName}`}
+            <button type="button" onClick={() => remove(index)}>
+              <i className="fa-solid fa-xmark" />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <AutoCompleteBox>
+        <input
+          type="text"
+          defaultValue=""
+          autoComplete="off"
+          onKeyUp={addNewTag}
+          // {...register('tagSearch')}
+        />
+        <TagSearchDropBox
+          control={control}
+          data={data}
+          append={append}
+          fields={fields}
+          tagLength={tagLength}
+        />
+      </AutoCompleteBox>
+    </AutoCompleteContainer>
+  );
+};
 
-export default EditAuto;
+export default EditFreeAuto;

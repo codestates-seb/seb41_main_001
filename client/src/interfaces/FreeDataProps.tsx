@@ -18,7 +18,7 @@ export default interface FreeDataProps {
   tagId: number;
   tagName: string;
   freeComments: {
-    commentId: number;
+    freeCommentId: number;
     freeId: number;
     commentBody: string;
     createdAt: string;

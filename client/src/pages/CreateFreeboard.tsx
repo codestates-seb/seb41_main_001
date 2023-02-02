@@ -1,8 +1,10 @@
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 // import { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useEffect, useState } from 'react';
+import EditFreeAuto from '../components/EditFreeAuto';
 // import UseAutosizeTextArea from '../components/UseAutosaveTextArea';
 
 interface FormInputFree {
@@ -12,7 +14,21 @@ interface FormInputFree {
   // image: string;
   location: string;
   tag: { tagId: number; tagName: string }[];
+  memberTags: {
+    tagId: number;
+    tagName: string;
+    emoji: string;
+  }[];
 }
+
+// interface TagForm {
+//   tagId: number;
+//   categoryExercise: boolean;
+//   tagName: string;
+//   // "emoji":
+//   recruitCount: number;
+//   freeCount: number;
+// }
 
 const Background = styled.div`
   background-color: var(--gray);
@@ -38,7 +54,7 @@ const WarnSet = styled.div`
 `;
 
 const CRForm = styled.form`
-  width: auto;
+  width: 27rem;
   height: auto;
   border: 1px solid white;
   border-radius: 5px;
@@ -51,21 +67,45 @@ const CRForm = styled.form`
   .tagContainer {
     display: flex;
     flex-direction: column;
+    width: 15rem;
+    margin-left: 20px;
     > span {
-      padding-left: 1.4rem;
       padding-top: 0.3rem;
       font-size: 12px;
       color: lightgrey;
     }
+    input {
+      width: 15rem;
+    }
   }
 
-  input,
+  .input,
   textarea,
   select {
     // margin-bottom: 15px;
     background-color: var(--gray);
     padding: 5px;
     margin-left: 20px;
+    font-size: 14px;
+    border: none;
+    border: 1px solid gray;
+    width: 15rem;
+    outline: none;
+    color: white;
+    &:focus-within {
+      border: 2px solid white;
+      transition: 0.2s ease-in-out;
+    }
+    &:-webkit-autofill {
+      box-shadow: 0 0 0 20px var(--gray) inset;
+      -webkit-text-fill-color: white;
+      color: white;
+    }
+  }
+
+  input {
+    background-color: var(--gray);
+    padding: 5px;
     font-size: 14px;
     border: none;
     border: 1px solid gray;
@@ -176,19 +216,37 @@ const CreateFreeboard = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<FormInputFree>();
   const navigate = useNavigate();
   // const [warning, setWarning] = useState('');
   // const [content, setContent] = useState('');
+  const [addedTags, setAddedTags] = useState([]);
+  useEffect(() => {
+    const getOriginalPost = () => {
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/tags/freeboards?page=1&size=100`)
+        .then((res: any) => {
+          setAddedTags(res.data.data);
+          console.log(addedTags);
+        })
+        .catch((err: any) => console.log(err));
+    };
+    getOriginalPost();
+  }, []);
 
   const onSubmit = (data: FormInputFree) => {
+    const sendingTag = data.memberTags.map(({ tagName, emoji }) => ({
+      tagName,
+      emoji,
+    }));
     console.log({
       freeTitle: data.title,
       freeBody: data.content,
       category: data.category,
       location: data.location,
-      freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+      freeTagDtos: sendingTag,
       memberId: 1,
     });
     axios
@@ -199,7 +257,7 @@ const CreateFreeboard = () => {
           freeBody: data.content,
           category: data.category,
           location: data.location,
-          freeTagDtos: [{ tagId: 1, tagName: '축구' }],
+          freeTagDtos: sendingTag,
           memberId: `${localStorage.getItem('memberId')}`,
           // 태그와 멤버아이디가 고정되어있음
           // tagList: tags.reduce((r, e) => {
@@ -246,22 +304,70 @@ const CreateFreeboard = () => {
   //   }
   // };
 
-  const addTag = (e: any) => {
-    // e.target.value
-    if (e.keyCode === 13) {
-      axios
-        .post(`${process.env.REACT_APP_API_URL}/tags`, {
-          tagName: e.target.value,
-        })
-        .then((res) => {
-          // console.log(res);
-          alert(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  };
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'memberTags',
+    rules: {
+      validate: {
+        moreThanOneTag: (values) =>
+          values.length > 0 ? true : '태그는 1개 이상 선택해야 합니다',
+      },
+    },
+  });
+  const TAG_DATA = addedTags.map(({ tagId, tagName, emoji }) => ({
+    tagId,
+    tagName,
+    emoji,
+  }));
+  // [
+  //   { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
+  //   { tagId: 2, tagName: '농구', emoji: '🏀' },
+  //   { tagId: 3, tagName: '야구', emoji: '⚾️' },
+  //   { tagId: 4, tagName: '배구', emoji: '🏐' },
+  //   { tagId: 5, tagName: '복싱', emoji: '🥊' },
+  //   { tagId: 6, tagName: '탁구', emoji: '🏓' },
+  //   { tagId: 7, tagName: '배드민턴', emoji: '🏸' },
+  //   { tagId: 8, tagName: '테니스/스쿼시', emoji: '🎾' },
+  //   { tagId: 9, tagName: '태권도/유도', emoji: '🥋' },
+  //   { tagId: 10, tagName: '검도', emoji: '⚔️' },
+  //   { tagId: 11, tagName: '무술/주짓수', emoji: '🥋' },
+  //   { tagId: 12, tagName: '족구', emoji: '⚽️' },
+  //   { tagId: 13, tagName: '러닝', emoji: '🏃' },
+  //   { tagId: 14, tagName: '자전거', emoji: '🚴' },
+  //   { tagId: 15, tagName: '등산', emoji: '🏔️' },
+  //   { tagId: 16, tagName: '클라이밍', emoji: '🧗‍♀️' },
+  //   { tagId: 17, tagName: '수영', emoji: '🏊‍♀️' },
+  //   { tagId: 18, tagName: '골프', emoji: '⛳️' },
+  //   { tagId: 19, tagName: '요가/필라테스', emoji: '🧘' },
+  //   { tagId: 20, tagName: '헬스/크로스핏', emoji: '🏋️' },
+  //   { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
+  // ];
+
+  // const addTag = (e: any) => {
+  //   // e.target.value
+  //   if (e.keyCode === 13) {
+  //     for (let i = 0; i < addedTags.length; i += 1) {
+  //       if (addedTags[i].tagName === e.target.value) {
+  //         // 이미 존재하는 태그일 경우
+  //         console.log('tag exist');
+  //         return false;
+  //       }
+  //     }
+
+  //     axios
+  //       .post(`${process.env.REACT_APP_API_URL}/tags`, {
+  //         tagName: e.target.value,
+  //       })
+  //       .then((res) => {
+  //         // console.log(res);
+  //         alert(res);
+  //       })
+  //       .catch((err) => {
+  //         console.log('key error ', err);
+  //       });
+  //   }
+  //   return false;
+  // };
   return (
     <Background>
       <CRForm onSubmit={handleSubmit(onSubmit)}>
@@ -283,6 +389,7 @@ const CreateFreeboard = () => {
             <input
               id="title"
               type="text"
+              className="input"
               {...register('title', { required: true })}
             />
             {errors.title && (
@@ -319,8 +426,18 @@ const CreateFreeboard = () => {
         <div>
           <label htmlFor="tag">태그</label>
           <div className="tagContainer">
-            <input id="tag" name="tag" onKeyUp={addTag} />
-            <span>엔터키로 태그를 입력하세요</span>
+            {/* <input id="tag" name="tag" onKeyUp={addTag} />
+            <span>엔터키로 태그를 입력하세요</span> */}
+            <EditFreeAuto
+              fields={fields}
+              append={append}
+              remove={remove}
+              // register={register}
+              control={control}
+              data={TAG_DATA}
+              tagLength={3}
+            />
+            <span>스페이스바/버튼 선택으로 태그를 입력하세요</span>
           </div>
         </div>
         {/* <div>

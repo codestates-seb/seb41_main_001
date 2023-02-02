@@ -37,9 +37,15 @@ interface TagProps {
 }
 const TagCounter = ({ tagName, emoji, tagCount, board }: TagProps) => (
   <Tag>
-    <Link to={`/${board}?tag="${tagName}"`}>
-      {emoji ? `${emoji} ${tagName}` : `${tagName}`}
-    </Link>
+    {board === 'recruits' ? (
+      <Link to={`/${board}?tag="${tagName}"`} onClick={() => {}}>
+        {emoji ? `${emoji} ${tagName}` : `${tagName}`}
+      </Link>
+    ) : (
+      <Link to={`/${board}?type=tag&keyword=${tagName}`} onClick={() => {}}>
+        {emoji ? `${emoji} ${tagName}` : `${tagName}`}
+      </Link>
+    )}
     <div>{`${tagCount}개의 게시물`}</div>
   </Tag>
 );
