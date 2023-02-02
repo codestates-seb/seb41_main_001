@@ -171,34 +171,50 @@ const EditFreeAuto = ({
   control,
   data,
   tagLength,
-}: AutoCompleteForArrayProps) => (
-  <AutoCompleteContainer>
-    <ul>
-      {fields.map((item, index) => (
-        <li key={item.id}>
-          {`${item.emoji} ${item.tagName}`}
-          <button type="button" onClick={() => remove(index)}>
-            <i className="fa-solid fa-xmark" />
-          </button>
-        </li>
-      ))}
-    </ul>
-    <AutoCompleteBox>
-      <input
-        type="text"
-        defaultValue=""
-        autoComplete="off"
-        // {...register('tagSearch')}
-      />
-      <TagSearchDropBox
-        control={control}
-        data={data}
-        append={append}
-        fields={fields}
-        tagLength={tagLength}
-      />
-    </AutoCompleteBox>
-  </AutoCompleteContainer>
-);
+}: AutoCompleteForArrayProps) => {
+  let i = 10;
+  function addNewTag(e: any) {
+    if (e.key === ' ' || e.code === 'Space' || e.keyCode === 32) {
+      console.log(e.target.value);
+      append({
+        tagId: i,
+        tagName: e.target.value,
+        emoji: '',
+      });
+      i += 1;
+      e.target.value = '';
+    }
+  }
+  return (
+    <AutoCompleteContainer>
+      <ul>
+        {fields.map((item, index) => (
+          <li key={item.id}>
+            {`${item.emoji || ''} ${item.tagName}`}
+            <button type="button" onClick={() => remove(index)}>
+              <i className="fa-solid fa-xmark" />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <AutoCompleteBox>
+        <input
+          type="text"
+          defaultValue=""
+          autoComplete="off"
+          onKeyUp={addNewTag}
+          // {...register('tagSearch')}
+        />
+        <TagSearchDropBox
+          control={control}
+          data={data}
+          append={append}
+          fields={fields}
+          tagLength={tagLength}
+        />
+      </AutoCompleteBox>
+    </AutoCompleteContainer>
+  );
+};
 
 export default EditFreeAuto;
