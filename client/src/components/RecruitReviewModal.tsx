@@ -127,7 +127,7 @@ const RecruitReviewModal = ({
   const [filterTag, setFilterTag] = useState<string>('');
   const [star, setStar] = useState<number>(5);
   const reviewBody = useRef('');
-  const LOGIN_ID = localStorage.getItem('memberId');
+  const LOGIN_ID = Number(localStorage.getItem('memberId'));
   const APPLICANTS = applies.reduce(
     (r: { tagId: number; tagName: string }[], e) => [
       ...r,
@@ -143,7 +143,7 @@ const RecruitReviewModal = ({
             "body": ${reviewBody.current},
             "memberId": ${LOGIN_ID},
             "star": ${star},
-            "worstMemberNickname": ${filterTag}
+            "worstMemberNickname": ${filterTag || ''}
           }`);
       axios
         .post(
@@ -164,9 +164,9 @@ const RecruitReviewModal = ({
         .then((res) => {
           console.log(res.data.data);
           setData(res.data.data);
+          setReviewModal(false);
         })
         .catch((err) => console.log(err));
-      setReviewModal(false);
     }
   };
 
@@ -236,7 +236,7 @@ const RecruitReviewModal = ({
                       emoji: '👑',
                     },
                     ...APPLICANTS,
-                  ]}
+                  ].filter((el) => el.tagId !== LOGIN_ID)}
                 />
                 <div>* 옵션항목입니다</div>
               </td>

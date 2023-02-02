@@ -20,7 +20,7 @@ const MainContainer = styled.main`
     list-style: none;
     padding: 0;
     margin-top: 40px;
-    width: 100%;
+    width: 700px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -84,6 +84,33 @@ const Recruits = () => {
 
   useEffect(() => {
     if (location) {
+      setPage(1);
+      const params = {
+        page: 1,
+        size: listNum,
+        distanceLimit,
+        lat: location.latitude,
+        lon: location.longitude,
+      };
+      axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/recruits?${
+            filterTag ? `tagName=${filterTag}` : ''
+          }&${filterStatus ? `status=${filterStatus}` : ''}`,
+          { params },
+        )
+        .then((res) => {
+          setData(res.data.data);
+          console.log(res.data.data);
+          setPageCount(res.data.pageInfo.totalPages);
+          setLoading(false);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [listNum, filterTag, filterStatus, location, distanceLimit]);
+
+  useEffect(() => {
+    if (location) {
       const params = {
         page,
         size: listNum,
@@ -104,10 +131,12 @@ const Recruits = () => {
           setLoading(false);
         })
         .catch((err) => console.log(err));
-
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [page, listNum, filterTag, filterStatus, location, distanceLimit]);
+  }, [page]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [data]);
 
   const handleChangeListNum = (e: any) => {
     setListNum(e.target.value);
@@ -123,10 +152,8 @@ const Recruits = () => {
         <span>동네 이웃과 함께 운동을 즐겨보세요!</span>
         <ul>
           <div>
-            <select onChange={handleChangeListNum}>
-              <option value={5} selected>
-                5개
-              </option>
+            <select onChange={handleChangeListNum} defaultValue={5}>
+              <option value={5}>5개</option>
               <option value={10}>10개</option>
               <option value={15}>15개</option>
             </select>

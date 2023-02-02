@@ -92,12 +92,10 @@ const FilterBox = ({
       <SelectBox>
         <select
           onChange={(e) => setDistanceLimit(Number(e.target.value))}
-          value={distanceLimit}
+          defaultValue={distanceLimit}
         >
           <option value={5}>5km</option>
-          <option value={10} selected>
-            10km
-          </option>
+          <option value={10}>10km</option>
           <option value={20}>20km</option>
           <option value={30}>30km</option>
         </select>

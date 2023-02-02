@@ -60,6 +60,10 @@ const RecruitTags = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [page]);
+
   return (
     <MainContainer>
       <div>

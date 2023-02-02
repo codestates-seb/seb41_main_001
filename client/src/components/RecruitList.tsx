@@ -5,7 +5,6 @@ import TagLink from './TagLink';
 import timeDifference from '../utils/timeDifference';
 import CreatorCard from './CreatorMiniCard';
 import classifyingGender from '../utils/classifyingGender';
-import classifyingStatus from '../utils/classifyingStatus';
 import classifyingAge from '../utils/classifyingAge';
 
 const ListContainer = styled.li`
@@ -60,19 +59,19 @@ const ListInfo = styled.div`
       &:nth-child(1) {
         font-size: 80%;
         i {
-          color: var(--neon-yellow);
+          color: var(--neon-red);
         }
       }
       &:nth-child(2) {
         font-size: 80%;
         i {
-          color: var(--neon-red);
+          color: var(--neon-blue);
         }
       }
       &:nth-child(3) {
         font-size: 80%;
         i {
-          color: var(--neon-blue);
+          color: var(--neon-yellow);
         }
       }
     }
@@ -144,6 +143,12 @@ const ListCondition = styled.div`
           white-space: nowrap;
         }
       }
+      &:nth-child(4) {
+        padding: 30px 10px 10px 10px;
+        > div {
+          font-size: 20px;
+        }
+      }
       /* transition: 0.2s ease-in-out;
 
       &:hover {
@@ -203,33 +208,33 @@ const ListCondition = styled.div`
   }
 `;
 
-const ProfileImgContainer = styled.div`
-  width: 100%;
-  position: absolute;
-  top: -50%;
-  left: 0;
-  white-space: nowrap;
-  display: flex;
-  justify-content: center;
-`;
+// const ProfileImgContainer = styled.div`
+//   width: 100%;
+//   position: absolute;
+//   top: -50%;
+//   left: 0;
+//   white-space: nowrap;
+//   display: flex;
+//   justify-content: center;
+// `;
 
-interface ProfileImgProps {
-  key: number;
-  'img-id': number;
-  src: string;
-  alt: string;
-}
+// interface ProfileImgProps {
+//   key: number;
+//   'img-id': number;
+//   src: string;
+//   alt: string;
+// }
 
-const ProfileImg = styled.img<ProfileImgProps>`
-  margin-left: -12px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  &:nth-child(${(props) => props['img-id']}) {
-    z-index: ${(props) => props['img-id']};
-    // left: calc(-100% + ${(props) => props['img-id']} * 10px);
-  }
-`;
+// const ProfileImg = styled.img<ProfileImgProps>`
+//   margin-left: -12px;
+//   width: 20px;
+//   height: 20px;
+//   border-radius: 50%;
+//   &:nth-child(${(props) => props['img-id']}) {
+//     z-index: ${(props) => props['img-id']};
+//     // left: calc(-100% + ${(props) => props['img-id']} * 10px);
+//   }
+// `;
 
 const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
   const {
@@ -244,7 +249,7 @@ const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
       sex,
       heartLimit,
       ageGroup,
-      recruitStatus,
+      // recruitStatus,
       applies,
       minRequire,
       require,
@@ -252,6 +257,9 @@ const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
       memberId,
       nickname,
       authorHeart,
+      authorLocation,
+      location,
+      filePath,
     },
   } = props;
   const { tagName, emoji } = recruitTags[0];
@@ -290,17 +298,15 @@ const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
           value={tagName}
           emoji={emoji}
           to={`/recruits?tag="${tagName}"`}
-          onClick={() => setFilterTag(tagName)}
+          onClick={() => {
+            setFilterTag(tagName);
+          }}
         />
         <ListTitle to={`/recruit/${recruitId}`}>{title}</ListTitle>
       </div>
       <div>
         <ListInfo>
           <div>
-            <div>
-              <i className="fa-solid fa-star" />
-              {star}
-            </div>
             <div>
               <i className="fa-solid fa-heart" />
               {likes}
@@ -309,11 +315,21 @@ const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
               <i className="fa-solid fa-eye" />
               {views}
             </div>
+            {star ? (
+              <div>
+                <i className="fa-solid fa-star" />
+                {star}
+              </div>
+            ) : (
+              ''
+            )}
           </div>
           <CreatorCard
             memberId={memberId}
             nickname={nickname}
             heart={authorHeart}
+            image={filePath}
+            authorLocation={authorLocation}
           />
         </ListInfo>
         <ListCondition>
@@ -335,9 +351,8 @@ const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
               ))}
             </div>
             <div>
-              <span>현재 상태</span>
-              <i className={`${classifyingStatus(recruitStatus).icon}`} />
-              <span>{recruitStatus}</span>
+              <span>위치</span>
+              <div>{location}</div>
             </div>
           </div>
           <div>
@@ -345,7 +360,7 @@ const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
               <div>인원</div>
               <div>
                 <h4>
-                  <ProfileImgContainer>
+                  {/* <ProfileImgContainer>
                     {applies.map((el, i) => (
                       <ProfileImg
                         key={el.memberId}
@@ -354,7 +369,7 @@ const RecruitList = (props: { data: RecruitDataProps; setFilterTag: any }) => {
                         alt={`avatar of ${el.nickname}`}
                       />
                     ))}
-                  </ProfileImgContainer>
+                  </ProfileImgContainer> */}
                   {`${applies.length} / ${require}명`}
                   <span>{`(최소 ${minRequire}명 이상)`}</span>
                 </h4>

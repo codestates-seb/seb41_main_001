@@ -41,4 +41,6 @@ export default interface RecruitDataProps {
     modifiedAt: string;
   }[];
   likes: number; // 좋아요 개수
+  authorLocation: string;
+  filePath: string;
 }
