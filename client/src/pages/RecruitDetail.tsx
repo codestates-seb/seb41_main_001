@@ -59,6 +59,13 @@ const LocationBox = styled.div`
       font-size: 110%;
       > span {
         margin-bottom: 20px;
+        width: 100%;
+        &:nth-child(2) {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          width: 400px;
+        }
       }
     }
     &:last-child {
@@ -226,6 +233,8 @@ const RecruitDetail = () => {
               memberId={data.memberId}
               nickname={data.nickname}
               heart={data.authorHeart}
+              authorLocation={data.authorLocation}
+              image={data.filePath}
             />
           </div>
           <ContentBox>{data.body}</ContentBox>
@@ -345,6 +354,7 @@ const RecruitDetail = () => {
                   applicantsId={applicantsId!}
                   data={el}
                   setData={setData}
+                  image={el.filePath}
                 />
               ))}
             </ul>

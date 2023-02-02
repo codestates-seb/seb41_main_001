@@ -39,8 +39,9 @@ export default interface RecruitDataProps {
     body: string;
     createdAt: string;
     modifiedAt: string;
+    filePath?: string;
   }[];
   likes: number; // 좋아요 개수
   authorLocation: string;
-  filePath: string;
+  filePath?: string;
 }

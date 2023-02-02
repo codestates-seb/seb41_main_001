@@ -35,6 +35,8 @@ const CreatorBox = styled.div`
       object-fit: cover;
       object-position: center;
       margin-right: 15px;
+      width: 50px;
+      height: 50px;
     }
     display: flex;
     flex-direction: row;
@@ -106,6 +108,7 @@ const CommentBox = (props: {
   applicantsId?: number[];
   data: CommentProps;
   setData: any;
+  image?: string;
 }) => {
   const {
     commentId,
@@ -115,6 +118,7 @@ const CommentBox = (props: {
     applicantsId,
     data: { memberId, nickname, heart, body, createdAt, modifiedAt },
     setData,
+    image,
   } = props;
 
   const LOGIN_ID = Number(localStorage.getItem('memberId'));
@@ -145,7 +149,11 @@ const CommentBox = (props: {
       <CreatorBox>
         <Link to={`/members/mypage/${memberId}`}>
           <img
-            src={`https://picsum.photos/seed/${memberId}/50/50.webp`}
+            src={
+              image
+                ? `${image}`
+                : `https://picsum.photos/seed/${memberId}/50/50.webp`
+            }
             alt={`avator of ${nickname}}`}
           />
           <div>
