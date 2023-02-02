@@ -28,7 +28,7 @@ jobs:
       - name: Setup Python for AWS CLI
         uses: actions/setup-python@v1
         with:
-          python-version: '3.x'
+          python-version: "3.x"
       - name: Install AWS CLI
         run: pip3 install awscli --upgrade --user
       - name: Configure AWS Credentials
@@ -46,7 +46,7 @@ jobs:
         run: |
           aws s3 sync \
             --region ap-northeast-2 \
-            build s3://heart-no1 \
+            build s3://heartone.site \
             --delete
         working-directory: ./client
       - name: Invalidate CloudFront Cache
