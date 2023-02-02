@@ -53,7 +53,7 @@ jwt:
   refresh-token-expiration-minutes: ${JWT_REFRESH_TOKEN_EXP_MIN}
 email:
   address:
-    admin: admin@gmail.com
+    admin: ggamman94@naver.com
 #  h2:
 #    console:
 #      enabled: true

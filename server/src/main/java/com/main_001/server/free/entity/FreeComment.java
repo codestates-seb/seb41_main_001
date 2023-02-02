@@ -21,8 +21,8 @@ public class FreeComment {
     @Column(name = "comment_id")
     private Long commentId;
 
-    @NotNull
-    private String commentBody;
+    @Column
+    private String body;
 
     @CreatedDate
     @Column(name = "CREATED_AT", updatable = false)

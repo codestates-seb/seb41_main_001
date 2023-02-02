@@ -141,7 +141,7 @@ public class FreeService {
         if (!Objects.equals(targetComment.getMember().getMemberId(), freeComment.getMember().getMemberId()))
             throw new BusinessLogicException(ExceptionCode.COMMENT_MODIFY_DENIED);
         targetComment.setModifiedAt(freeComment.getModifiedAt());
-        targetComment.setCommentBody(freeComment.getCommentBody());
+        targetComment.setBody(freeComment.getBody());
 
         return freeRepository.save(findFree);
     }
