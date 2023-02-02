@@ -115,6 +115,7 @@ const FreeBoards = () => {
   const [keywordState, setKeywordState] = useState<string>(
     searchParams.get('keyword')?.replaceAll('"', '') ?? '',
   );
+  const LOGIN_ID = localStorage.getItem('memberId');
 
   // 클릭하면 맨 위로
   const handleClick = () => {
@@ -224,9 +225,13 @@ const FreeBoards = () => {
             </div>
           </CategoryLink>
         </FiltContainer>
-        <div className="btn">
-          <ButtonLink value="작성하기" to="/freeboard/new" />
-        </div>
+        {LOGIN_ID ? (
+          <div className="btn">
+            <ButtonLink value="작성하기" to="/freeboard/new" />
+          </div>
+        ) : (
+          ''
+        )}
         <ul>
           {location && data && !isLoading ? (
             data.map((el) => (

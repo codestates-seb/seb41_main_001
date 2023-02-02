@@ -379,7 +379,7 @@ const FreeDetail = () => {
             <CommentBox
               key={el.freeCommentId}
               commentId={el.freeCommentId}
-              memberId={el.memberId}
+              memberId={post.memberId}
               board="freeboards"
               boardId={post.freeId}
               data={el}
