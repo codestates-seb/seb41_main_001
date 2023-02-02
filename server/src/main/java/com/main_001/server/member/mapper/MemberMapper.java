@@ -403,7 +403,7 @@ public interface MemberMapper {
                         .memberId(freeComment.getMember().getMemberId())
                         .nickname(freeComment.getMember().getNickname())
                         .heart(freeComment.getMember().getHeart())
-                        .body(freeComment.getCommentBody())
+                        .body(freeComment.getBody())
                         .createdAt(freeComment.getCreatedAt())
                         .modifiedAt(freeComment.getModifiedAt())
                         .build())

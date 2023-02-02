@@ -12,6 +12,7 @@ import com.main_001.server.tag.entity.Tag;
 import org.mapstruct.Mapper;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,7 +95,7 @@ public interface FreeMapper {
         Member member = new Member();
         member.setMemberId(postComment.getMemberId());
         return FreeComment.builder()
-                .commentBody(postComment.getCommentBody())
+                .body(postComment.getBody())
                 .modifiedAt(LocalDateTime.now())
                 .member(member)
                 .build();
@@ -104,7 +105,7 @@ public interface FreeMapper {
         Member member = new Member();
         member.setMemberId(patchComment.getMemberId());
         return FreeComment.builder()
-                .commentBody(patchComment.getCommentBody())
+                .body(patchComment.getBody())
                 .modifiedAt(LocalDateTime.now())
                 .member(member)
                 .build();
@@ -118,7 +119,7 @@ public interface FreeMapper {
                 .memberId(freeComment.getMember().getMemberId())
                 .nickname(freeComment.getMember().getNickname())
                 .heart(freeComment.getMember().getHeart())
-                .body(freeComment.getCommentBody())
+                .body(freeComment.getBody())
                 .createdAt(freeComment.getCreatedAt())
                 .modifiedAt(freeComment.getModifiedAt())
                 .build();

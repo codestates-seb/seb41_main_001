@@ -13,16 +13,23 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowedOrigins("http://localhost:8080",
                         "http://localhost:3000",
-                        "http://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080/",
-                        "http://heart-no1.s3-website.ap-northeast-2.amazonaws.com",
-                        "https://d3a2ee3zxpyl7w.cloudfront.net",
-                        "https://heartone.site/") // 허용할 출처
+
+                        "http://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080",
+                        "https://ec2-15-164-87-251.ap-northeast-2.compute.amazonaws.com:8080",
+
+                        "http://heart1.site",
+                        "https://heart1.site",
+
+                        "http://heartone.site",
+                        "https://heartone.site") // 허용할 출처
+//                .allowedOriginPatterns("*")
                 .allowedMethods(HttpMethod.GET.name(),
                         HttpMethod.HEAD.name(),
                         HttpMethod.POST.name(),
                         HttpMethod.PUT.name(),
                         HttpMethod.PATCH.name(),
-                        HttpMethod.DELETE.name()) // 허용할 HTTP method
+                        HttpMethod.DELETE.name(),
+                        HttpMethod.OPTIONS.name()) // 허용할 HTTP method
                 .allowCredentials(true) // 쿠키 인증 요청 허용
                 .exposedHeaders("*")
                 .maxAge(3600L); // 원하는 시간만큼 pre-flight 리퀘스트를 캐싱

@@ -13,7 +13,7 @@ public class FreeCommentDto {
 
         @ApiModelProperty(example = "내용 작성")
         @NotBlank(message = "댓글 작성을 하지 않을 경우 등록이 불가합니다.")
-        private String commentBody;
+        private String body;
     }
 
     @Getter
