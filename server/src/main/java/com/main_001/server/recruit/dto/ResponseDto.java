@@ -99,6 +99,10 @@ public class ResponseDto {
         @ApiModelProperty(example = "심박수")
         private int heart;
 
+        @Setter
+        @ApiModelProperty(example = "리뷰 작성자 프사 경로")
+        private String filePath;
+
         @ApiModelProperty(example = "리뷰 내용")
         private String body;
 
