@@ -94,8 +94,7 @@ const Recruits = () => {
       };
       axios
         .get(
-          // `${process.env.REACT_APP_API_URL}/recruits?${
-          `https://alb.heartone.site/recruits?${
+          `${process.env.REACT_APP_API_URL}/recruits?${
             filterTag ? `tagName=${filterTag}` : ''
           }&${filterStatus ? `status=${filterStatus}` : ''}`,
           { params },
