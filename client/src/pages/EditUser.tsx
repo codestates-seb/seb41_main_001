@@ -791,6 +791,8 @@ const EditUser = () => {
                       setLocationString={setLocationString}
                       setLat={setLat}
                       setLon={setLon}
+                      width={18}
+                      height={18}
                     />
                   )}
                   {/* <button type="button" id="locationButton" onClick={locationAdd}>

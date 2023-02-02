@@ -8,6 +8,8 @@ import { useLocation, Link } from 'react-router-dom';
 import FreeBoardList from '../components/FreeBoardList';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import ButtonLink from '../components/ButtonLink';
+import PaginationLink from '../components/PaginationLink';
+import Loading from './Loading';
 
 const FBLContainer = styled.main`
   background-color: var(--gray);
@@ -101,12 +103,18 @@ const CategoryLink = styled(Link)<{ color: string; currentcolor: string }>`
 
 const FreeBoards = () => {
   const [data, setData] = useState<FreeDataProps[]>([]);
-  const [filterCategory, setFilterCategory] = useState('');
-  const [keywordValue, setKeywordValue] = useState<string>();
-  const [typeValue, setTypeValue] = useState<string>();
+  const [pageCount, setPageCount] = useState<number>(0);
+  const [page, setPage] = useState(1);
+  const [isLoading, setLoading] = useState(true);
   const location = useLocation();
   console.log(location);
-  // const params = new URLSearchParams(location.search);
+  const searchParams = new URLSearchParams(useLocation().search);
+  const [typeState, setTypeState] = useState<string>(
+    searchParams.get('type')?.replaceAll('"', '') ?? '',
+  );
+  const [keywordState, setKeywordState] = useState<string>(
+    searchParams.get('keyword')?.replaceAll('"', '') ?? '',
+  );
 
   // 클릭하면 맨 위로
   const handleClick = () => {
@@ -114,16 +122,27 @@ const FreeBoards = () => {
   };
 
   useEffect(() => {
+    console.log(typeState, keywordState);
     axios
       .get(
-        `${process.env.REACT_APP_API_URL}/freeboards?page=1&size=10&type=${keywordValue}&keyword=${typeValue}`,
+        `${process.env.REACT_APP_API_URL}/freeboards?type=${typeState}&keyword=${keywordState}`,
+        {
+          params: {
+            page,
+            size: 10,
+          },
+        },
       )
       .then((res) => {
         setData(res.data.data);
+        setPageCount(res.data.pageInfo.totalPages);
+        setLoading(false);
         console.log(data);
       })
       .catch((err) => console.log(err));
-  }, [keywordValue, typeValue]);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [typeState, keywordState, page]);
 
   return (
     <FBLContainer>
@@ -134,13 +153,16 @@ const FreeBoards = () => {
           <i className="fa-solid fa-bars" />
           <CategoryLink
             color="#5aa1f1"
-            to="/freeboards?category=운동"
+            to="/freeboards?type=category&keyword=운동"
             onClick={() => {
-              setFilterCategory('운동');
-              setKeywordValue('category');
-              setTypeValue('운동');
+              setKeywordState('운동');
+              setTypeState('category');
             }}
-            currentcolor={filterCategory === '운동' ? '#5aa1f1' : '#484848'}
+            currentcolor={
+              typeState === 'category' && keywordState === '운동'
+                ? '#5aa1f1'
+                : '#484848'
+            }
           >
             <div>
               <i className="fa-solid fa-dumbbell" />
@@ -149,13 +171,16 @@ const FreeBoards = () => {
           </CategoryLink>
           <CategoryLink
             color="#ee8834"
-            to="/freeboards?category=정보"
+            to="/freeboards?type=category&keyword=정보"
             onClick={() => {
-              setFilterCategory('정보');
-              setKeywordValue('category');
-              setTypeValue('정보');
+              setKeywordState('정보');
+              setTypeState('category');
             }}
-            currentcolor={filterCategory === '정보' ? '#ee8834' : '#484848'}
+            currentcolor={
+              typeState === 'category' && keywordState === '정보'
+                ? '#ee8834'
+                : '#484848'
+            }
           >
             <div>
               <i className="fa-solid fa-bullhorn" />
@@ -164,13 +189,16 @@ const FreeBoards = () => {
           </CategoryLink>
           <CategoryLink
             color="#3fb950"
-            to="/freeboards?category=질문"
+            to="/freeboards?type=category&keyword=질문"
             onClick={() => {
-              setFilterCategory('질문');
-              setKeywordValue('category');
-              setTypeValue('질문');
+              setKeywordState('질문');
+              setTypeState('category');
             }}
-            currentcolor={filterCategory === '질문' ? '#3fb950' : '#484848'}
+            currentcolor={
+              typeState === 'category' && keywordState === '질문'
+                ? '#3fb950'
+                : '#484848'
+            }
           >
             <div>
               <i className="fa-regular fa-comments" />
@@ -179,13 +207,16 @@ const FreeBoards = () => {
           </CategoryLink>
           <CategoryLink
             color="#7dede1"
-            to="/freeboards?category=나눔"
+            to="/freeboards?type=category&keyword=나눔"
             onClick={() => {
-              setFilterCategory('나눔');
-              setKeywordValue('category');
-              setTypeValue('나눔');
+              setKeywordState('나눔');
+              setTypeState('category');
             }}
-            currentcolor={filterCategory === '나눔' ? '#7dede1' : '#484848'}
+            currentcolor={
+              typeState === 'category' && keywordState === '나눔'
+                ? '#7dede1'
+                : '#484848'
+            }
           >
             <div>
               <i className="fa-solid fa-hand-holding-heart" />
@@ -197,17 +228,26 @@ const FreeBoards = () => {
           <ButtonLink value="작성하기" to="/freeboard/new" />
         </div>
         <ul>
-          {data &&
+          {location && data && !isLoading ? (
             data.map((el) => (
               <FreeBoardList
                 data={el}
                 key={el.freeId}
-                setFilterCategory={setFilterCategory}
-                setKeywordValue={setKeywordValue}
-                setTypeValue={setTypeValue}
+                setTypeState={setTypeState}
+                setKeywordState={setKeywordState}
               />
-            ))}
+            ))
+          ) : (
+            <Loading />
+          )}
         </ul>
+        {location && pageCount && (
+          <PaginationLink
+            pageCount={pageCount}
+            active_page={page}
+            setPage={setPage}
+          />
+        )}
       </div>
       <button className="scrollBtn" type="button" onClick={handleClick}>
         <i className="fa-solid fa-arrow-up-long" />

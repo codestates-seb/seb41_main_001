@@ -8,9 +8,8 @@ import TagLink from './TagLink';
 import timeDifference from '../utils/timeDifference';
 
 interface FreeBoardListProps {
-  setTypeValue: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setKeywordValue: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setFilterCategory: React.Dispatch<React.SetStateAction<string>>;
+  setTypeState: React.Dispatch<React.SetStateAction<string>>;
+  setKeywordState: React.Dispatch<React.SetStateAction<string>>;
   data: {
     freeId: number;
     category: string;
@@ -23,7 +22,7 @@ interface FreeBoardListProps {
     memberId: number;
     freeTags: { tagId: number; tagName: string }[];
     freeComments: {
-      commentId: number;
+      freeCommentId: number;
       freeId: number;
       commentBody: string;
       createdAt: string;
@@ -156,9 +155,8 @@ const AuthorSec = styled.section`
 `;
 
 const FreeBoardList = ({
-  setTypeValue,
-  setKeywordValue,
-  setFilterCategory,
+  setTypeState,
+  setKeywordState,
   data,
 }: FreeBoardListProps) => (
   // const {
@@ -184,11 +182,10 @@ const FreeBoardList = ({
       <ContentSec>
         <div>
           <Link
-            to={`/freeboards?category=${data.category}`}
+            to={`/freeboards?type=category&keyword=${data.category}`}
             onClick={() => {
-              setTypeValue(data.category);
-              setKeywordValue('category');
-              setFilterCategory(data.category);
+              setTypeState('category');
+              setKeywordState(data.category);
             }}
           >
             <Category color={data.category}>
@@ -211,9 +208,8 @@ const FreeBoardList = ({
           {data.freeTags.map((el) => (
             <TagLink
               onClick={() => {
-                setTypeValue(el.tagName);
-                setKeywordValue('tag');
-                setFilterCategory('');
+                setTypeState('tag');
+                setKeywordState(el.tagName);
               }}
               key={el.tagId}
               value={`${el.tagName}`}

@@ -20,9 +20,9 @@ const AddedLocation = styled.div`
   }
 `;
 
-const MapContainer = styled.div`
-  width: 18rem;
-  height: 18rem;
+const MapContainer = styled.div<{ width: number; height: number }>`
+  width: ${(props) => props.width}rem;
+  height: ${(props) => props.height}rem;
   display: block;
   color: black;
   margin: 1rem 0;
@@ -46,6 +46,8 @@ interface KakaoMapProps {
   setLocationString: any;
   setLat: any;
   setLon: any;
+  width: number;
+  height: number;
 }
 
 const AddMap = ({
@@ -56,6 +58,8 @@ const AddMap = ({
   setLocationString,
   setLat,
   setLon,
+  width,
+  height,
 }: KakaoMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const locationRemove = () => setLocationString('');
@@ -187,7 +191,12 @@ const AddMap = ({
           {locationString === '' ? '' : <i className="fa-solid fa-xmark" />}
         </div>
       </AddedLocation>
-      <MapContainer id="kakao-map" ref={mapContainer} />
+      <MapContainer
+        id="kakao-map"
+        ref={mapContainer}
+        width={width}
+        height={height}
+      />
     </div>
   );
 };

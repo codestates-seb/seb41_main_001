@@ -75,7 +75,8 @@ const SignUpForm = styled.form`
     tr:nth-child(5),
     tr:nth-child(6),
     tr:nth-child(7),
-    tr:nth-child(8) {
+    tr:nth-child(8),
+    tr:nth-child(9) {
       input,
       select {
         padding: 5px;
@@ -103,15 +104,15 @@ const SignUpForm = styled.form`
     tr:nth-child(5),
     tr:nth-child(6) {
       input {
-        width: 370px;
+        width: 430px;
         margin-right: 10px;
       }
     }
-  }
-  > button:last-child {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    > button:last-child {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 `;
 
@@ -434,24 +435,26 @@ const SignUp = () => {
                 <p>지역</p>
               </td>
               <td>
-                <div>
-                  {/* {currentLocation && (
+                {/* <div> */}
+                {/* {currentLocation && (
                     <KakaoMapAdd
                       latitude={currentLocation.latitude}
                       longitude={currentLocation.longitude}
                     />
                   )} */}
-                  {currentLocation && (
-                    <AddMap
-                      latitude={currentLocation.latitude}
-                      longitude={currentLocation.longitude}
-                      locationString={locationString}
-                      setLocationString={setLocationString}
-                      setLat={setLat}
-                      setLon={setLon}
-                    />
-                  )}
-                </div>
+                {currentLocation && (
+                  <AddMap
+                    latitude={currentLocation.latitude}
+                    longitude={currentLocation.longitude}
+                    locationString={locationString}
+                    setLocationString={setLocationString}
+                    setLat={setLat}
+                    setLon={setLon}
+                    width={33}
+                    height={25}
+                  />
+                )}
+                {/* </div> */}
               </td>
             </tr>
             <tr>
@@ -478,14 +481,14 @@ const SignUp = () => {
           <input id="profile" type="file" {...register('profile')} />
           </td>
         </tr> */}
-            <Button
-              onClick={() => {}}
-              value="건강한 삶 시작하기"
-              disabled={!checkedNickname && !checkedEmail && !checkedPhone}
-              type="submit"
-            />
           </tbody>
         </table>
+        <Button
+          onClick={() => {}}
+          value="건강한 삶 시작하기"
+          disabled={!checkedNickname && !checkedEmail && !checkedPhone}
+          type="submit"
+        />
       </SignUpForm>
     </SignUpContainer>
   );

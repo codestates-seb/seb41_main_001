@@ -30,14 +30,14 @@ const FDContainer = styled.main`
 const BoardContainer = styled.div`
   width: 35rem;
   height: auto;
-  margin: 1rem;
+  margin: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
   h1 {
-    width: 33rem;
+    width: 35rem;
   }
 
   > div:first-child {
@@ -50,7 +50,7 @@ const BoardContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 28rem;
+    margin-right: 30rem;
     /* margin-top: 0.5rem;
     margin-bottom: 0.5rem; */
     i {
@@ -64,7 +64,7 @@ const BoardContainer = styled.div`
 
   > div:nth-child(3) {
     display: flex;
-    width: 33rem;
+    width: 35rem;
     justify-content: space-between;
     > div:first-child {
       width: 6rem;
@@ -80,13 +80,13 @@ const BoardContainer = styled.div`
   }
 
   > div:nth-child(4) {
-    width: 33rem;
+    width: 35rem;
     margin: 1rem 0;
   }
 
   .commentCount {
     border-bottom: 1px solid white;
-    width: 33rem;
+    width: 35rem;
     margin-bottom: 1rem;
     padding: 1rem 0;
   }
@@ -98,7 +98,7 @@ const BoardContainer = styled.div`
   }
 
   .btnCon {
-    width: 33rem;
+    width: 35rem;
     display: flex;
     justify-content: space-between;
     > div:nth-child(2) {
@@ -128,12 +128,12 @@ const ContentContainer = styled.div`
 
   > div {
     /* border: 0.1rem solid white; */
-    width: 33rem;
+    width: 35rem;
     height: auto;
     min-height: 3rem;
 
     img {
-      width: 33rem;
+      width: 35rem;
       height: 20rem;
       display: flex;
       align-items: center;
@@ -197,11 +197,17 @@ const Category = styled('div')<{ color: string }>`
       : 'var(--neon-sky-blue)'};
 `;
 
+const LikeButton = styled(Button)<{ likes: boolean }>`
+  color: ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
+  border: 1px solid ${(props) => (props.likes ? 'var(--neon-red)' : 'white')};
+`;
+
 const FreeDetail = () => {
   const { freeId } = useParams();
   const [post, setPost] = useState<FreeDataProps | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const memberId = localStorage.getItem('memberId');
+  const [likesMemberId, setLikesMemberId] = useState<number[]>();
+  const LOGIN_ID = Number(localStorage.getItem('memberId'));
 
   useEffect(() => {
     axios
@@ -210,84 +216,71 @@ const FreeDetail = () => {
         setPost(res.data.data);
         console.log(post);
         setIsLoading(false);
+        setLikesMemberId(
+          res.data.data.freeLikes.reduce((r: number[], e: any) => {
+            if (e.memberId) {
+              r.push(e.memberId);
+            }
+            return r;
+          }, []),
+        );
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  // const handleDeleteFree = () => {
-  //   {
-  //     confirm('삭제하시겠습니까?') === true
-  //       ? axios
-  //           .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
-  //             headers: {
-  //               Authorization: `${localStorage.getItem('AccessToken')}`,
-  //               Refresh: `${localStorage.getItem('RefreshToken')}`,
-  //             },
-  //           })
-  //           .then((res) => {
-  //             console.log(res);
-  //             navigate(`/freeboards`);
-  //           })
-  //           .catch((err) => {
-  //             console.log(err);
-  //           })
-  //       : '';
-  //   }
-  // };
-
   return (
     <FDContainer>
-      {!isLoading ? (
+      {!isLoading && post ? (
         <BoardContainer>
           <div>
-            <Link to={`/freeboards?category=${post?.category}`}>
-              <Category color={post!.category}>
-                {post?.category === '운동' ? (
+            <Link to={`/freeboards?type=category&keyword=${post.category}`}>
+              <Category color={post.category}>
+                {post.category === '운동' ? (
                   <i className="fa-solid fa-dumbbell" />
-                ) : post?.category === '정보' ? (
+                ) : post.category === '정보' ? (
                   <i className="fa-solid fa-bullhorn" />
-                ) : post?.category === '질문' ? (
+                ) : post.category === '질문' ? (
                   <i className="fa-regular fa-comments" />
                 ) : (
                   <i className="fa-solid fa-hand-holding-heart" />
                 )}
-                {post?.category}
+                {post.category}
               </Category>
             </Link>
           </div>
-          <h1>{post?.freeTitle}</h1>
+          <h1>{post.freeTitle}</h1>
           <div>
             <div>
               <i className="fa-regular fa-clock" />
-              {timeDifference(`${post?.modifiedAt}`)}
+              {timeDifference(`${post.modifiedAt}`)}
             </div>
             <CountContainer>
               <div>
                 <i className="fa-solid fa-eye view" />
-                {post?.views}
+                {post.views}
               </div>
               <div>
                 <i className="fa-regular fa-thumbs-up like" />
-                {post?.freeLikes.length}
+                {post.freeLikes.length}
               </div>
               <div>
                 <i className="fa-regular fa-comment-dots comment" />
-                {post?.freeComments.length}
+                {post.freeComments.length}
               </div>
             </CountContainer>
           </div>
           <CreatorCard
-            memberId={post!.memberId}
-            nickname={post!.nickname}
-            heart={post!.authorHeart}
+            memberId={post.memberId}
+            nickname={post.nickname}
+            heart={post.authorHeart}
           />
           <ContentContainer>
             {/* <div>
               <img src={preview} alt="preview" />
             </div> */}
-            <div className="body">{post?.freeBody}</div>
+            <div className="body">{post.freeBody}</div>
             {/* {post?.location === undefined ? (
               ''
             ) : (
@@ -303,15 +296,32 @@ const FreeDetail = () => {
             )} */}
           </ContentContainer>
           <div className="btnCon">
-            <Button
-              value="좋아요"
+            <LikeButton
+              likes={likesMemberId!.includes(LOGIN_ID)}
+              value={`좋아요 ${post.freeLikes.length}`}
               onClick={() => {
                 axios
                   .patch(
                     `${process.env.REACT_APP_API_URL}/freeboards/${freeId}/likes`,
+                    { memberId: LOGIN_ID },
+                    {
+                      headers: {
+                        Authorization: localStorage.getItem('AccessToken'),
+                        Refresh: localStorage.getItem('RefreshToken'),
+                      },
+                    },
                   )
                   .then((res) => {
                     console.log(res);
+                    setPost(res.data.data);
+                    setLikesMemberId(
+                      res.data.data.freeLikes.reduce((r: number[], e: any) => {
+                        if (e.memberId) {
+                          r.push(e.memberId);
+                        }
+                        return r;
+                      }, []),
+                    );
                   })
                   .catch((err) => {
                     console.log(err);
@@ -319,30 +329,27 @@ const FreeDetail = () => {
               }}
               icon={<i className="fa-solid fa-heart" />}
             />
-            {post?.memberId === Number(memberId) ? (
-              <FreeCreatorSelectBox />
-            ) : (
-              ''
-            )}
+            {post.memberId === LOGIN_ID ? <FreeCreatorSelectBox /> : ''}
           </div>
           <div className="commentCount">
-            {post?.freeComments.length}
+            {post.freeComments.length}
             개의 댓글이 있습니다
           </div>
-          {post?.freeComments &&
-            post?.freeComments.map((el) => (
-              <CommentBox
-                key={el.commentId}
-                commentId={el.commentId}
-                memberId={el.memberId}
-                data={el}
-                board="freeboards"
-                boardId={post.freeId}
-                setData={setPost}
-              />
-            ))}
+          {/* <ul> */}
+          {post.freeComments.map((el) => (
+            <CommentBox
+              key={el.freeCommentId}
+              commentId={el.freeCommentId}
+              memberId={el.memberId}
+              board="freeboards"
+              boardId={post.freeId}
+              data={el}
+              setData={setPost}
+            />
+          ))}
+          {/* </ul> */}
           <CommentSubmitBox
-            submitComment={`/freeboards/${post?.freeId}`}
+            submitComment={`/freeboards/${post.freeId}`}
             setData={setPost}
           />
         </BoardContainer>
