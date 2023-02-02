@@ -321,14 +321,13 @@ public class MemberService {
                 .ifPresent(findMember::setPhone);
         Optional.ofNullable(member.getLocation())
                 .ifPresent(findMember::setLocation);
-//        Optional.of(member.getLat())
-//                .ifPresent(findMember::setLat);
-//        Optional.of(member.getLon())
-//                .ifPresent(findMember::setLon);
-        if (member.getLat() != 0)
+
+        if (!ObjectUtils.isEmpty(member.getLat()))
             findMember.setLat(member.getLat());
-        if (member.getLon() != 0)
+
+        if (!ObjectUtils.isEmpty(member.getLon()))
             findMember.setLon(member.getLon());
+
         if (!member.getMemberTags().isEmpty()) {
             memberTagRepository.deleteAllByMember_MemberId(memberId);
             findMember.setMemberTags(member.getMemberTags());

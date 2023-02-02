@@ -5,8 +5,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import marvin.image.MarvinImage;
-import org.marvinproject.image.transform.scale.Scale;
+//import marvin.image.MarvinImage;
+//import org.marvinproject.image.transform.scale.Scale;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -53,25 +53,25 @@ public class S3Service {
     }
 
     // 이미지 리사이징
-    private BufferedImage resizeImage(MultipartFile multipartFile, int targetWidth) throws IOException {
-        BufferedImage bufferedImage = convertBufferedImage(multipartFile);
-
-        int originalWidth = bufferedImage.getWidth();
-        int originalHeight = bufferedImage.getHeight();
-
-        if (originalWidth < targetWidth) {
-            return bufferedImage;
-        }
-
-        MarvinImage image = new MarvinImage(bufferedImage);
-
-        Scale scale = new Scale();
-        scale.load();
-        scale.setAttribute("newWidth", targetWidth);
-        scale.setAttribute("newHeight", (targetWidth * originalHeight) / originalWidth); // 세로 높이에 맞는 원본 사진의 비율 사이즈
-        scale.process(image.clone(), image, null, null, false);
-        return image.getBufferedImageNoAlpha();
-    }
+//    private BufferedImage resizeImage(MultipartFile multipartFile, int targetWidth) throws IOException {
+//        BufferedImage bufferedImage = convertBufferedImage(multipartFile);
+//
+//        int originalWidth = bufferedImage.getWidth();
+//        int originalHeight = bufferedImage.getHeight();
+//
+//        if (originalWidth < targetWidth) {
+//            return bufferedImage;
+//        }
+//
+//        MarvinImage image = new MarvinImage(bufferedImage);
+//
+//        Scale scale = new Scale();
+//        scale.load();
+//        scale.setAttribute("newWidth", targetWidth);
+//        scale.setAttribute("newHeight", (targetWidth * originalHeight) / originalWidth); // 세로 높이에 맞는 원본 사진의 비율 사이즈
+//        scale.process(image.clone(), image, null, null, false);
+//        return image.getBufferedImageNoAlpha();
+//    }
 
     // MultiparFile to BufferedImage
     private BufferedImage convertBufferedImage(MultipartFile multipartFile) throws IOException {
