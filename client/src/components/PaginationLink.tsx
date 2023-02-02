@@ -4,7 +4,7 @@ const PageContainer = styled.nav`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 50px 0px 30px 0px;
+  margin: 30px 0px;
   width: 100%;
 
   #pagination-numbers {

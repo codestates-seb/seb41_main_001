@@ -300,11 +300,10 @@ const RecruitApplyAfterMeeting = ({
                 <Button
                   value="활동 종료"
                   onClick={() => {
-                    console.log(`PATCH /recruits/${recruitId}/status`);
                     axios
                       .patch(
                         `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/status`,
-                        {},
+                        { memberId: LOGIN_ID },
                         {
                           headers: {
                             Authorization: localStorage.getItem('AccessToken'),
@@ -313,7 +312,6 @@ const RecruitApplyAfterMeeting = ({
                         },
                       )
                       .then((res) => {
-                        console.log(res.data.data);
                         setData(res.data.data);
                       })
                       .catch((err) => console.log(err));

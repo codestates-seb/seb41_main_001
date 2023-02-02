@@ -16,12 +16,18 @@ const ListCreator = styled.div`
     font-size: 80%;
     font-weight: 600;
     img {
+      width: 40px;
+      height: 40px;
       margin-bottom: 5px;
       border-radius: 50%;
     }
-    div {
+    > div:nth-child(2) {
+      font-weight: 400;
+      margin: 5px 0px;
+      font-size: 60%;
+    }
+    > div:nth-child(3) {
       color: var(--neon-red);
-      margin-top: 5px;
       font-size: 60%;
       i {
         margin-right: 3px;
@@ -38,6 +44,8 @@ interface CreatorMiniCardProps {
   memberId: number;
   nickname: string;
   heart: number;
+  image?: string;
+  authorLocation?: string;
 }
 
 const CreatorMiniCard = ({
@@ -45,14 +53,21 @@ const CreatorMiniCard = ({
   memberId,
   nickname,
   heart,
+  image,
+  authorLocation,
 }: CreatorMiniCardProps) => (
   <ListCreator className={className}>
     <Link to={`/members/${memberId}`}>
       <img
-        src={`https://picsum.photos/seed/${memberId}/30/30.webp`}
+        src={
+          image
+            ? `${image}`
+            : `https://picsum.photos/seed/${memberId}/30/30.webp`
+        }
         alt={`avator of ${nickname}}`}
       />
       {nickname}
+      <div>{authorLocation}</div>
       <div>
         <i className="fa-solid fa-heart" />
         {heart}
