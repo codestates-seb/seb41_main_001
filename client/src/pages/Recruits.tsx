@@ -94,7 +94,8 @@ const Recruits = () => {
       };
       axios
         .get(
-          `${process.env.REACT_APP_API_URL}/recruits?${
+          // `${process.env.REACT_APP_API_URL}/recruits?${
+          `https://heart1.site/recruits?${
             filterTag ? `tagName=${filterTag}` : ''
           }&${filterStatus ? `status=${filterStatus}` : ''}`,
           { params },
@@ -120,7 +121,8 @@ const Recruits = () => {
       };
       axios
         .get(
-          `${process.env.REACT_APP_API_URL}/recruits?${
+          // `${process.env.REACT_APP_API_URL}/recruits?${
+          `https://heart1.site/recruits?${
             filterTag ? `tagName=${filterTag}` : ''
           }&${filterStatus ? `status=${filterStatus}` : ''}`,
           { params },
