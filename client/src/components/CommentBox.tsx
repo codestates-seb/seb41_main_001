@@ -144,10 +144,12 @@ const CommentBox = (props: {
       });
   };
 
+  console.log(creatorId, memberId);
+
   return (
     <CommentContainer>
       <CreatorBox>
-        <Link to={`/members/mypage/${memberId}`}>
+        <Link to={`/members/${memberId}`}>
           <img
             src={
               image

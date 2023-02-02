@@ -218,6 +218,7 @@ interface ReviewConditionProps {
     heart: number;
     body: string;
     star: number;
+    filePath?: string;
   }[];
   creatorNickname: string;
   setData: any;
@@ -387,7 +388,11 @@ const RecruitApplyAfterMeeting = ({
                 <li key={el.reviewId}>
                   <Link to={`/members/${el.memberId}`}>
                     <img
-                      src={`https://picsum.photos/seed/${el.memberId}/50/50.webp`}
+                      src={
+                        el.filePath
+                          ? `${el.filePath}`
+                          : `https://picsum.photos/seed/${el.memberId}/50/50.webp`
+                      }
                       alt={`avatar of ${el.nickname}`}
                     />
                     <div>
