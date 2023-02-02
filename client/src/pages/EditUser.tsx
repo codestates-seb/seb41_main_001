@@ -52,10 +52,15 @@ const WarnSet = styled.div`
     color: var(--neon-red);
     font-size: 10px;
     padding: 0.5rem 0;
-    margin-left: 1.2rem;
     > i {
       margin-right: 0.3rem;
     }
+  }
+  #icon {
+    color: var(--neon-red);
+    font-size: 10px;
+    margin: 0;
+    margin-right: 0.3rem;
   }
 
   input[type='number']::-webkit-outer-spin-button,
@@ -67,7 +72,7 @@ const WarnSet = styled.div`
 `;
 
 const PersonalInfo = styled.div`
-  /* border: 2px solid white; */
+  border: 2px solid white;
   margin: 10px 0 10px 10px;
   border-radius: 20px;
   padding: 40px 50px 40px 20px;
@@ -836,6 +841,14 @@ const EditUser = () => {
                     tagLength={3}
                   />
                 </TagList>
+                <WarnSet>
+                  {errors.memberTags && (
+                    <span>
+                      <i className="fa-solid fa-circle-exclamation" id="icon" />
+                      태그는 하나 이상 선택해야 합니다
+                    </span>
+                  )}
+                </WarnSet>
               </div>
             </InfoBlock>
           </PersonalInfo>
