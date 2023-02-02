@@ -186,6 +186,8 @@ const EditFreeboard = () => {
     tagId: 1,
     tagName: '축구',
     freeComments: [],
+    authorLocation: '',
+    filePath: '',
   });
   const { freeId } = useParams();
   useEffect(() => {
