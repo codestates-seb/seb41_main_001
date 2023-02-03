@@ -11,7 +11,7 @@ const WroteRecruit = ({ data }: any) => (
           <MyRecruitItem
             key={e.recruitId}
             title={e.title}
-            quota={`/${e.require}`}
+            quota={`${e.applyCount}/${e.require}`}
             // quota={`${e.applies.length}/${e.require}`}
             tags={e.recruitTags}
             dueDate={e.date}
@@ -23,5 +23,6 @@ const WroteRecruit = ({ data }: any) => (
     }
   </div>
 );
+
 // quota={`${e.applies.length}/${e.require}`}
 export default WroteRecruit;

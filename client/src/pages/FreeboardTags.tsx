@@ -88,7 +88,7 @@ const FreeboardTags = () => {
                 if (a.tagName === b.tagName) return 0;
                 return 1;
               }
-              return b.recruitCount - a.recruitCount;
+              return b.freeCount - a.freeCount;
             })
             .map((el) => (
               <TagCounter

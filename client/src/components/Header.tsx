@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLink from './ButtonLink';
 import Button from './Button';
@@ -121,7 +121,6 @@ const Header = ({ token, setToken }: HeaderProps) => {
   const { pathname: path } = useLocation();
   const Authorization = token;
   const Refresh = localStorage.getItem('RefreshToken');
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (Authorization) {
@@ -143,7 +142,6 @@ const Header = ({ token, setToken }: HeaderProps) => {
           localStorage.setItem('birth', res.headers.birth!);
           localStorage.setItem('heart', res.headers.heart!);
           localStorage.setItem('sex', res.headers.sex!);
-          navigate('/');
         })
         .catch(() => {
           localStorage.removeItem('AccessToken');

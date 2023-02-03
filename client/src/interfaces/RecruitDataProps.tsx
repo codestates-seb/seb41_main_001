@@ -50,4 +50,5 @@ export default interface RecruitDataProps {
   likes: number; // 좋아요 개수
   authorLocation: string;
   filePath?: string;
+  applyCount?: number;
 }
