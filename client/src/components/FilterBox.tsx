@@ -98,6 +98,7 @@ const FilterBox = ({
           <option value={10}>10km</option>
           <option value={20}>20km</option>
           <option value={30}>30km</option>
+          <option value={1000}>1000km (전체)</option>
         </select>
       </SelectBox>
     </BoxContainer>

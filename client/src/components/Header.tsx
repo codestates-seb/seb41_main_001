@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-// import { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLink from './ButtonLink';
 import Button from './Button';
@@ -119,43 +119,43 @@ interface HeaderProps {
 
 const Header = ({ token, setToken }: HeaderProps) => {
   const { pathname: path } = useLocation();
-  // const Authorization = token;
-  // const Refresh = localStorage.getItem('RefreshToken');
-  // const navigate = useNavigate();
+  const Authorization = token;
+  const Refresh = localStorage.getItem('RefreshToken');
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (Authorization) {
-  //     axios
-  //       .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
-  //         params: {
-  //           Authorization,
-  //           Refresh,
-  //         },
-  //         headers: {
-  //           Authorization,
-  //           Refresh,
-  //         },
-  //       })
-  //       .then((res) => {
-  //         localStorage.setItem('AccessToken', res.headers.authorization!);
-  //         localStorage.setItem('RefreshToken', res.headers.refresh!);
-  //         localStorage.setItem('memberId', res.headers['member-id']!);
-  //         localStorage.setItem('birth', res.headers.birth!);
-  //         localStorage.setItem('heart', res.headers.heart!);
-  //         localStorage.setItem('sex', res.headers.sex!);
-  //         navigate('/');
-  //       })
-  //       .catch(() => {
-  //         localStorage.removeItem('AccessToken');
-  //         localStorage.removeItem('RefreshToken');
-  //         localStorage.removeItem('memberId');
-  //         localStorage.removeItem('birth');
-  //         localStorage.removeItem('heart');
-  //         localStorage.removeItem('sex');
-  //         setToken(null);
-  //       });
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (Authorization) {
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
+          params: {
+            Authorization,
+            Refresh,
+          },
+          headers: {
+            Authorization,
+            Refresh,
+          },
+        })
+        .then((res) => {
+          localStorage.setItem('AccessToken', res.headers.authorization!);
+          localStorage.setItem('RefreshToken', res.headers.refresh!);
+          localStorage.setItem('memberId', res.headers['member-id']!);
+          localStorage.setItem('birth', res.headers.birth!);
+          localStorage.setItem('heart', res.headers.heart!);
+          localStorage.setItem('sex', res.headers.sex!);
+          navigate('/');
+        })
+        .catch(() => {
+          localStorage.removeItem('AccessToken');
+          localStorage.removeItem('RefreshToken');
+          localStorage.removeItem('memberId');
+          localStorage.removeItem('birth');
+          localStorage.removeItem('heart');
+          localStorage.removeItem('sex');
+          setToken(null);
+        });
+    }
+  }, []);
 
   const logOut = () => {
     axios
