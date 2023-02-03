@@ -8,6 +8,7 @@ import timeDifference from '../utils/timeDifference';
 import MiniTag from '../components/MiniTag';
 import WroteRecruit from '../components/WroteRecruit';
 import WroteFree from '../components/WroteFree';
+import LikeRecruit from '../components/LikeRecruit';
 
 const Background = styled.div`
   padding-top: 7rem;
@@ -264,7 +265,13 @@ const MyPage = () => {
       storedFileName: 'e815b433-3176-478d-99f1-8f52b2598043.jpg',
     },
     applies: [],
-    recruits: [],
+    recruits: [
+      {
+        applies: [
+          { recruitId: 1, memberId: 1, nickname: '', heart: 1, filePath: null },
+        ],
+      },
+    ],
     recruitComments: [],
     recruitLikes: [],
     frees: [],
@@ -460,7 +467,7 @@ const MyPage = () => {
                       </button>
                     </span>
                     {likedTab === '좋아요모집' ? (
-                      <WroteRecruit data={oneUser.recruitLikes} />
+                      <LikeRecruit data={oneUser.recruitLikes} />
                     ) : (
                       <WroteFree data={oneUser.freeLikes} />
                     )}

@@ -13,7 +13,7 @@ const WroteFree = ({ data }: any) => (
             title={e.freeTitle}
             quota=""
             tags={e.freeTags}
-            dueDate={e.createdAt}
+            // dueDate={e.createdAt}
             id={e.freeId}
           />
         ))

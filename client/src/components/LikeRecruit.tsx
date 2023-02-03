@@ -1,7 +1,7 @@
 import MyRecruitItem from './MyRecruitItem';
-import RecruitDataProps from '../interfaces/RecruitDataProps';
+import RecruitLikeProps from '../interfaces/RecruitLikeProps';
 
-const WroteRecruit = ({ data }: any) => {
+const LikeRecruit = ({ data }: any) => {
   console.log('data is ', data);
   return (
     <div>
@@ -9,11 +9,11 @@ const WroteRecruit = ({ data }: any) => {
         data.length === 0 ? (
           <div>글이 아직 없습니다</div>
         ) : (
-          data.map((e: RecruitDataProps) => (
+          data.map((e: RecruitLikeProps) => (
             <MyRecruitItem
               key={e.recruitId}
               title={e.title}
-              quota={`${e.applies.length}/${e.require}`}
+              quota={` ${e.applyCount}/${e.require}`}
               tags={e.recruitTags}
               dueDate={e.date}
               id={e.recruitId}
@@ -26,4 +26,4 @@ const WroteRecruit = ({ data }: any) => {
   );
 };
 // quota={`${e.applies.length}/${e.require}`}
-export default WroteRecruit;
+export default LikeRecruit;
