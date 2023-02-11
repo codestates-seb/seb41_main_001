@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import ButtonLink from './ButtonLink';
 import Button from './Button';
@@ -112,12 +112,15 @@ const BoardLink = styled(Link)<{ path: string; to: string }>`
   }
 `;
 
-const Header = () => {
-  const [token, setToken] = useState(localStorage.getItem('AccessToken'));
+interface HeaderProps {
+  token: string | null;
+  setToken: any;
+}
+
+const Header = ({ token, setToken }: HeaderProps) => {
   const { pathname: path } = useLocation();
-  const Authorization = localStorage.getItem('AccessToken');
+  const Authorization = token;
   const Refresh = localStorage.getItem('RefreshToken');
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (Authorization) {
@@ -139,7 +142,6 @@ const Header = () => {
           localStorage.setItem('birth', res.headers.birth!);
           localStorage.setItem('heart', res.headers.heart!);
           localStorage.setItem('sex', res.headers.sex!);
-          navigate('/');
         })
         .catch(() => {
           localStorage.removeItem('AccessToken');
@@ -175,7 +177,7 @@ const Header = () => {
         localStorage.removeItem('sex');
         setToken(null);
 
-        window.location.reload();
+        // window.location.reload();
       });
   };
 

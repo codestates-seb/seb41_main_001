@@ -1,5 +1,6 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 // import Main from './pages/Main';
 import MyPage from './pages/MyPage';
 import Header from './components/Header';
@@ -22,36 +23,40 @@ import SearchPassword from './pages/SearchPassword';
 import Loading from './pages/Loading';
 import MemberPage from './pages/MemberPage';
 
-const App = () => (
-  <div className="App">
-    <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Recruits />} />
-        <Route path="/members/mypage" element={<MyPage />} />
-        <Route path="/members/:memberId" element={<MemberPage />} />
-        <Route path="/members/withdraw" element={<Withdraw />} />
-        <Route path="/members/edit" element={<EditUser />} />
-        <Route path="/login" element={<LogIn />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/search-password" element={<SearchPassword />} />
-        <Route path="/recruits" element={<Recruits />} />
-        <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
-        <Route path="/recruit/new" element={<CreateRecruit />} />
-        <Route path="/recruit/:recruitId/edit" element={<EditRecruit />} />
-        <Route path="/recruits/tags" element={<RecruitTags />} />
-        <Route path="/freeboards" element={<FreeBoards />} />
-        <Route path="/freeboard/new" element={<CreateFreeboard />} />
-        <Route path="/freeboard/:freeId" element={<FreeDetail />} />
-        <Route path="/recruit/:recruitId/edit" element={<EditRecruit />} />
-        <Route path="/freeboard/:freeId/edit" element={<EditFreeboard />} />
-        <Route path="/recruits/tags" element={<RecruitTags />} />
-        <Route path="/freeboards/tags" element={<FreeboardTags />} />
-        <Route path="/loading" element={<Loading />} />
-      </Routes>
-      <Footer />
-    </Router>
-  </div>
-);
+const App = () => {
+  const [token, setToken] = useState(localStorage.getItem('AccessToken'));
+
+  return (
+    <div className="App">
+      <Router>
+        <Header token={token} setToken={setToken} />
+        <Routes>
+          <Route path="/" element={<Recruits />} />
+          <Route path="/members/mypage" element={<MyPage />} />
+          <Route path="/members/:memberId" element={<MemberPage />} />
+          <Route path="/members/withdraw" element={<Withdraw />} />
+          <Route path="/members/edit" element={<EditUser />} />
+          <Route path="/login" element={<LogIn setToken={setToken} />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/search-password" element={<SearchPassword />} />
+          <Route path="/recruits" element={<Recruits />} />
+          <Route path="/recruit/:recruitId" element={<RecruitDetail />} />
+          <Route path="/recruit/new" element={<CreateRecruit />} />
+          <Route path="/recruit/:recruitId/edit" element={<EditRecruit />} />
+          <Route path="/recruits/tags" element={<RecruitTags />} />
+          <Route path="/freeboards" element={<FreeBoards />} />
+          <Route path="/freeboard/new" element={<CreateFreeboard />} />
+          <Route path="/freeboard/:freeId" element={<FreeDetail />} />
+          <Route path="/recruit/:recruitId/edit" element={<EditRecruit />} />
+          <Route path="/freeboard/:freeId/edit" element={<EditFreeboard />} />
+          <Route path="/recruits/tags" element={<RecruitTags />} />
+          <Route path="/freeboards/tags" element={<FreeboardTags />} />
+          <Route path="/loading" element={<Loading />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </div>
+  );
+};
 
 export default App;

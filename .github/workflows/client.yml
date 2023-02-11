@@ -25,6 +25,19 @@ jobs:
       - name: SHOW AWS CLI VERSION
         run: |
           aws --version
+      - name: Setup Python for AWS CLI
+        uses: actions/setup-python@v1
+        with:
+          python-version: "3.x"
+      - name: Install AWS CLI
+        run: pip3 install awscli --upgrade --user
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+          mask-aws-account-id: true
       - name: Sync Bucket
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -33,6 +46,16 @@ jobs:
         run: |
           aws s3 sync \
             --region ap-northeast-2 \
-            build s3://alb-heart-109100494 \
+            build s3://heartone.site \
             --delete
         working-directory: ./client
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CDN_DISTRIBUTION_ID }} --paths "/*"
+      # - name: 캐시 무효화
+      #   env:
+      #     AWS_S3_BUCKET: heartone.site
+      #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     AWS_REGION: ap-northeast-2
+      #   run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CDN_DISTRIBUTION_ID }} --paths "/*"
+      # aws cloudfront create-invalidation --distribution-id distribution_ID --paths "/*"

@@ -67,12 +67,18 @@ const ItemContainer = styled(Link)`
 interface Item {
   title: string;
   quota: string;
-  dueDate: string;
+  // dueDate: string;
   tags: { tagId: number; tagName: string }[];
   id: number;
 }
 
-const MyFreeItem = ({ title, quota, dueDate, tags, id }: Item) => (
+const MyFreeItem = ({
+  title,
+  quota,
+  // dueDate,
+  tags,
+  id,
+}: Item) => (
   <div>
     <ItemContainer to={`/freeboard/${id}`}>
       <ItemWrapper>
@@ -82,7 +88,7 @@ const MyFreeItem = ({ title, quota, dueDate, tags, id }: Item) => (
         </div>
         <div>
           <div>
-            <span>{dueDate.slice(0, 10)}</span>
+            {/* <span>{dueDate.slice(0, 10)}</span> */}
             <span id="quota">{quota}</span>
           </div>
           <div id="tagContainer">

@@ -33,7 +33,7 @@ const ItemWrapper = styled.div`
       font-size: 0.8rem;
     }
     #quota {
-      margin-right: 0.6rem;
+      margin-left: 0.6rem;
     }
     #tagContainer {
       width: 15rem;

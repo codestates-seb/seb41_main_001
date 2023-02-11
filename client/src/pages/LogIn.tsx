@@ -86,7 +86,7 @@ interface LoginProps {
   password: string;
 }
 
-const LogIn = () => {
+const LogIn = ({ setToken }: any) => {
   const navigate = useNavigate();
   const {
     register,
@@ -106,8 +106,9 @@ const LogIn = () => {
         localStorage.setItem('birth', res.headers.birth!);
         localStorage.setItem('heart', res.headers.heart!);
         localStorage.setItem('sex', res.headers.sex!);
-        navigate('/recruits');
-        window.location.reload();
+        navigate('/');
+        setToken(res.headers.authorization);
+        // window.location.reload();
       })
       .catch((err) => {
         const errMsg = err.response.data.message;
