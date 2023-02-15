@@ -4,6 +4,7 @@
 /* eslint-disable no-alert */
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Button from './Button';
 import ButtonLink from './ButtonLink';
@@ -20,7 +21,8 @@ const FreeCreatorSelectBox = () => {
   const navigate = useNavigate();
   const { freeId } = useParams();
 
-  const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  // const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  const memberId = useSelector((state: any) => state.memberId);
 
   const handleDeleteFree = () => {
     {
@@ -28,7 +30,7 @@ const FreeCreatorSelectBox = () => {
         ? axios
             .delete(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
               data: {
-                memberId: LOGIN_ID,
+                memberId,
               },
               // headers: {
               //   Authorization: `${localStorage.getItem('AccessToken')}`,

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 // import Badge from '../components/Badge';
 import Loading from './Loading';
@@ -282,13 +283,16 @@ const MyPage = () => {
   const recruitLTab = () => setLikedTab('좋아요모집');
   const freeWTab = () => setWroteTab('작성자유');
   const freeLTab = () => setLikedTab('좋아요자유');
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+
   useEffect(() => {
     const getOneUser = () => {
       axios
         .get(`${process.env.REACT_APP_API_URL}/members/my-page`, {
           headers: {
-            Authorization: `${localStorage.getItem('AccessToken')}`,
-            Refresh: `${localStorage.getItem('RefreshToken')}`,
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
         })
         .then((res: any) => {

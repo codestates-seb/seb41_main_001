@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import classifyingStatus from '../utils/classifyingStatus';
 import maskingNickname from '../utils/maskingNickname';
@@ -237,7 +238,10 @@ const RecruitApplyAfterMeeting = ({
 }: ReviewConditionProps) => {
   const { recruitId } = useParams();
   const [reviewModal, setReviewModal] = useState<boolean>(false);
-  const LOGIN_ID = Number(localStorage.getItem('memberId')) || -1;
+  // const LOGIN_ID = Number(localStorage.getItem('memberId')) || -1;
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = Number(useSelector((state: any) => state.memberId));
   const REVIEW_STAR_NUM = reviews.reduce((res: number[], ele) => {
     res.push(ele.star);
     return res;
@@ -299,7 +303,7 @@ const RecruitApplyAfterMeeting = ({
         </ApplicantsBox>
         <div />
       </SelectBox>
-      {[...applicantsId, creatorId].includes(LOGIN_ID) &&
+      {[...applicantsId, creatorId].includes(memberId) &&
       recruitStatus !== '모집중' ? (
         <SelectBox>
           {['최소인원충족', '모집완료'].includes(recruitStatus) ? (
@@ -315,11 +319,11 @@ const RecruitApplyAfterMeeting = ({
                     axios
                       .patch(
                         `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/status`,
-                        { memberId: LOGIN_ID },
+                        { memberId },
                         {
                           headers: {
-                            Authorization: localStorage.getItem('AccessToken'),
-                            Refresh: localStorage.getItem('RefreshToken'),
+                            Authorization: accessToken,
+                            Refresh: refreshToken,
                           },
                         },
                       )
@@ -337,7 +341,7 @@ const RecruitApplyAfterMeeting = ({
                 <span>리뷰작성</span>
               </h3>
               <ApplyBox>
-                {!REVIEW_ID.includes(LOGIN_ID) ? (
+                {!REVIEW_ID.includes(memberId) ? (
                   <>
                     <div>리뷰를 작성하시겠습니까?</div>
                     <Button

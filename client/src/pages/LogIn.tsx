@@ -2,6 +2,18 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import {
+  // useSelector,
+  useDispatch,
+} from 'react-redux';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setMemberId,
+  setBirth,
+  setHeart,
+  setSex,
+} from '../redux/actions';
 import ButtonLink from '../components/ButtonLink';
 import Button from '../components/Button';
 
@@ -86,7 +98,14 @@ interface LoginProps {
   password: string;
 }
 
-const LogIn = ({ setToken }: any) => {
+const LogIn = () => {
+  const dispatch = useDispatch();
+  // const accessToken = useSelector((state: any) => state.accessToken);
+  // const refreshToken = useSelector((state: any) => state.refreshToken);
+  // const memberId = useSelector((state: any) => state.memberId);
+  // const birth = useSelector((state: any) => state.birth);
+  // const heart = useSelector((state: any) => state.heart);
+  // const sex = useSelector((state: any) => state.sex);
   const navigate = useNavigate();
   const {
     register,
@@ -100,14 +119,21 @@ const LogIn = ({ setToken }: any) => {
       .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
       .then((res) => {
         console.log(res);
-        localStorage.setItem('AccessToken', res.headers.authorization!);
-        localStorage.setItem('RefreshToken', res.headers.refresh!);
-        localStorage.setItem('memberId', res.headers['member-id']!);
-        localStorage.setItem('birth', res.headers.birth!);
-        localStorage.setItem('heart', res.headers.heart!);
-        localStorage.setItem('sex', res.headers.sex!);
+        dispatch(setAccessToken(res.headers.authorization!));
+        dispatch(setRefreshToken(res.headers.refresh!));
+        dispatch(setMemberId(res.headers['member-id']!));
+        dispatch(setHeart(res.headers.heart!));
+        dispatch(setBirth(res.headers.birth!));
+        dispatch(setSex(res.headers.sex!));
+        // localStorage.setItem('AccessToken', res.headers.authorization!);
+        // localStorage.setItem('RefreshToken', res.headers.refresh!);
+        // localStorage.setItem('memberId', res.headers['member-id']!);
+        // localStorage.setItem('birth', res.headers.birth!);
+        // localStorage.setItem('heart', res.headers.heart!);
+        // localStorage.setItem('sex', res.headers.sex!);
+        // 로컬스토리지 말고 스토어에 저장하기
         navigate('/');
-        setToken(res.headers.authorization);
+        // setToken(res.headers.authorization);
         // window.location.reload();
       })
       .catch((err) => {
