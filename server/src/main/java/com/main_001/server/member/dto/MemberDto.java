@@ -170,6 +170,10 @@ public class MemberDto {
 
         @ApiModelProperty(example = "좋아요 누른 자유글")
         private List<MemberFreeLikeResponseDto> freeLikes;
+
+        public void setMemberImage(MemberImageResponseDto memberImage) {
+            this.memberImage = memberImage;
+        }
     }
 
     @Getter
@@ -215,6 +219,10 @@ public class MemberDto {
         private List<MemberFreeResponseDto> frees;
 
         private List<String> roles;
+
+        public void setMemberImage(MemberImageResponseDto memberImage) {
+            this.memberImage = memberImage;
+        }
     }
 
 }

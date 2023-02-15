@@ -98,67 +98,38 @@ public interface MemberMapper {
         List<FreeLike> freeLikes = member.getFreeLikes();
         List<FreeComment> freeComments = member.getFreeComments();
 
-        // 이미지가 아직 등록되지 않은 경우
-        if (member.getMemberImage() != null) {
-            return MemberDto.MyResponse.builder()
-                    .memberId(member.getMemberId())
-                    .name(member.getName())
-                    .birth(member.getBirth())
-                    .nickname(member.getNickname())
-                    .email(member.getEmail())
-                    .phone(member.getPhone())
-                    .sex(member.getSex())
-                    .createdAt(member.getCreatedAt())
-                    .heart(member.getHeart())
-                    .location(member.getLocation())
-                    .lat(member.getLat())
-                    .lon(member.getLon())
+        MemberDto.MyResponse myResponse = MemberDto.MyResponse.builder()
+                .memberId(member.getMemberId())
+                .name(member.getName())
+                .birth(member.getBirth())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .phone(member.getPhone())
+                .sex(member.getSex())
+                .createdAt(member.getCreatedAt())
+                .heart(member.getHeart())
+                .location(member.getLocation())
+                .lat(member.getLat())
+                .lon(member.getLon())
 
-                    .memberTags(memberTagsToMemberTagResponseDtos(memberTags))
+                .memberTags(memberTagsToMemberTagResponseDtos(memberTags))
 
-                    .memberImage(memberImageToMemberImageResponseDto(memberImage))
+                .applies(appliesToApplyResponseDtos(applies))
+                .recruits(recruitsToRecruitResponseDtos(recruits))
+                .recruitComments(recruitCommentsToRecruitCommentResponseDtos(recruitComments))
+                .recruitLikes(recruitLikesToMemberRecruitLikeResponseDtos(recruitLikes))
+                .reviews(reviewsToReviewResponseDtos(reviews))
 
-                    .applies(appliesToApplyResponseDtos(applies))
-                    .recruits(recruitsToRecruitResponseDtos(recruits))
-                    .recruitComments(recruitCommentsToRecruitCommentResponseDtos(recruitComments))
-                    .recruitLikes(recruitLikesToMemberRecruitLikeResponseDtos(recruitLikes))
-                    .reviews(reviewsToReviewResponseDtos(reviews))
+                .frees(freesToFreeResponseDtos(frees))
+                .freeLikes(freeLikesToMemberFreeLikeResponseDtos(freeLikes))
+                .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
+                .build();
 
-                    .frees(freesToFreeResponseDtos(frees))
-                    .freeLikes(freeLikesToMemberFreeLikeResponseDtos(freeLikes))
-                    .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
-                    .build();
-        }
+        // 이미지가 존재하는 경우
+        if (member.getMemberImage() != null)
+            myResponse.setMemberImage(memberImageToMemberImageResponseDto(memberImage));
 
-        // 이미지가 등록된 경우
-        else {
-            return MemberDto.MyResponse.builder()
-                    .memberId(member.getMemberId())
-                    .name(member.getName())
-                    .birth(member.getBirth())
-                    .nickname(member.getNickname())
-                    .email(member.getEmail())
-                    .phone(member.getPhone())
-                    .sex(member.getSex())
-                    .createdAt(member.getCreatedAt())
-                    .heart(member.getHeart())
-                    .location(member.getLocation())
-                    .lat(member.getLat())
-                    .lon(member.getLon())
-
-                    .memberTags(memberTagsToMemberTagResponseDtos(memberTags))
-
-                    .applies(appliesToApplyResponseDtos(applies))
-                    .recruits(recruitsToRecruitResponseDtos(recruits))
-                    .recruitComments(recruitCommentsToRecruitCommentResponseDtos(recruitComments))
-                    .recruitLikes(recruitLikesToMemberRecruitLikeResponseDtos(recruitLikes))
-                    .reviews(reviewsToReviewResponseDtos(reviews))
-
-                    .frees(freesToFreeResponseDtos(frees))
-                    .freeLikes(freeLikesToMemberFreeLikeResponseDtos(freeLikes))
-                    .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
-                    .build();
-        }
+        return myResponse;
     }
 
     // member가 가지고 있는 tag 정보
@@ -436,39 +407,24 @@ public interface MemberMapper {
 
         List<String> roles = member.getRoles();
 
-        // 이미지가 등록된 경우
-        if (member.getMemberImage() != null) {
-            return MemberDto.OtherResponse.builder()
-                    .memberId(member.getMemberId())
-                    .nickname(member.getNickname())
-                    .sex(member.getSex())
-                    .heart(member.getHeart())
-                    .memberImage(memberImageToMemberImageResponseDto(memberImage))
-                    .location(member.getLocation())
-                    .lat(member.getLat())
-                    .lon(member.getLon())
-                    .memberTags(memberTagsToMemberTagResponseDtos(memberTags))
-                    .recruits(recruitsToRecruitResponseDtos(recruits))
-                    .frees(freesToFreeResponseDtos(frees))
-                    .build();
-        }
+        MemberDto.OtherResponse otherResponse = MemberDto.OtherResponse.builder()
+                .memberId(member.getMemberId())
+                .nickname(member.getNickname())
+                .sex(member.getSex())
+                .heart(member.getHeart())
+                .location(member.getLocation())
+                .lat(member.getLat())
+                .lon(member.getLon())
+                .memberTags(memberTagsToMemberTagResponseDtos(memberTags))
+                .recruits(recruitsToRecruitResponseDtos(recruits))
+                .frees(freesToFreeResponseDtos(frees))
+                .roles(roles)
+                .build();
 
-        // 이미지가 등록되지 않은 경우
-        else {
-            return MemberDto.OtherResponse.builder()
-                    .memberId(member.getMemberId())
-                    .nickname(member.getNickname())
-                    .sex(member.getSex())
-                    .heart(member.getHeart())
+        // 프로필 사진이 있는 경우
+        if (member.getMemberImage() != null)
+            otherResponse.setMemberImage(memberImageToMemberImageResponseDto(memberImage));
 
-                    .location(member.getLocation())
-                    .lat(member.getLat())
-                    .lon(member.getLon())
-                    .memberTags(memberTagsToMemberTagResponseDtos(memberTags))
-                    .recruits(recruitsToRecruitResponseDtos(recruits))
-                    .frees(freesToFreeResponseDtos(frees))
-                    .roles(roles)
-                    .build();
-        }
+        return otherResponse;
     }
 }

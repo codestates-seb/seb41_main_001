@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -31,8 +32,9 @@ public class FreeController {
     }
     @ApiOperation(value = "자유 게시글 작성", notes = "작성자 id, 제목, 본문, 태그, 위치정보를 입력하여 자유 게시글을 작성한다.")
     @PostMapping
-    public ResponseEntity createFreeBoard(@RequestBody FreeDto.PostFreeBoard postFreeBoardDto){
-        Free free = freeService.createFreeBoard(freeMapper.freeBoardPostToFree(postFreeBoardDto));
+    public ResponseEntity createFreeBoard(@RequestPart(value = "postFreeBoard") FreeDto.PostFreeBoard postFreeBoardDto,
+                                          @RequestPart(value = "files", required = false) List<MultipartFile> files){
+        Free free = freeService.createFreeBoard(freeMapper.freeBoardPostToFree(postFreeBoardDto), files);
         return new ResponseEntity<>(freeMapper.freeToFreeResponseDto(free), HttpStatus.CREATED);
     }
     @ApiOperation(value = "자유 게시글에 대한 댓글 작성", notes = "자유 게시글에 댓글을 작성한다.")

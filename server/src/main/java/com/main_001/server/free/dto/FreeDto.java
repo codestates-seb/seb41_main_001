@@ -137,6 +137,9 @@ public class FreeDto {
         @ApiModelProperty(example = "자유글 댓글")
         private List<ResponseDto.FreeComment> freeComments;
 
+        @ApiModelProperty(example = "자유글 이미지")
+        private List<ResponseDto.FreeImage> freeImages;
+
         @ApiModelProperty(example = "조회수")
         private int views;
 
