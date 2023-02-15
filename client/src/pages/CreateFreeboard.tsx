@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import EditFreeAuto from '../components/EditFreeAuto';
 // import UseAutosizeTextArea from '../components/UseAutosaveTextArea';
 
@@ -213,6 +214,10 @@ const ButtonContainer = styled.div`
 `;
 
 const CreateFreeboard = () => {
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = useSelector((state: any) => state.memberId);
+
   const {
     register,
     handleSubmit,
@@ -258,7 +263,7 @@ const CreateFreeboard = () => {
           category: data.category,
           location: data.location,
           freeTagDtos: sendingTag,
-          memberId: `${localStorage.getItem('memberId')}`,
+          memberId,
           // 태그와 멤버아이디가 고정되어있음
           // tagList: tags.reduce((r, e) => {
           //   r.push({ tagId: e.tagId });
@@ -268,8 +273,8 @@ const CreateFreeboard = () => {
         },
         {
           headers: {
-            Authorization: `${localStorage.getItem('AccessToken')}`,
-            Refresh: `${localStorage.getItem('RefreshToken')}`,
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
         },
       )

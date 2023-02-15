@@ -1,6 +1,9 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import reducer from './redux/reducer';
+
 // import Main from './pages/Main';
 import MyPage from './pages/MyPage';
 import Header from './components/Header';
@@ -23,20 +26,20 @@ import SearchPassword from './pages/SearchPassword';
 import Loading from './pages/Loading';
 import MemberPage from './pages/MemberPage';
 
-const App = () => {
-  const [token, setToken] = useState(localStorage.getItem('AccessToken'));
+const store = createStore(reducer);
 
-  return (
-    <div className="App">
+const App = () => (
+  <div className="App">
+    <Provider store={store}>
       <Router>
-        <Header token={token} setToken={setToken} />
+        <Header />
         <Routes>
           <Route path="/" element={<Recruits />} />
           <Route path="/members/mypage" element={<MyPage />} />
           <Route path="/members/:memberId" element={<MemberPage />} />
           <Route path="/members/withdraw" element={<Withdraw />} />
           <Route path="/members/edit" element={<EditUser />} />
-          <Route path="/login" element={<LogIn setToken={setToken} />} />
+          <Route path="/login" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/search-password" element={<SearchPassword />} />
           <Route path="/recruits" element={<Recruits />} />
@@ -55,8 +58,7 @@ const App = () => {
         </Routes>
         <Footer />
       </Router>
-    </div>
-  );
-};
-
+    </Provider>
+  </div>
+);
 export default App;

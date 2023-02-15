@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import axios from 'axios';
 
@@ -103,14 +104,16 @@ const Withdraw = () => {
   const navigate = useNavigate();
   const [agreement, setAgreement] = useState(false);
   const changeAgreement = () => setAgreement(!agreement);
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
 
   const withdrawal = () => {
     // 여기에 axios patch 넣어주면 됨.
     axios
       .patch(`${process.env.REACT_APP_API_URL}/members/my-page/withdraw`, {
         headers: {
-          Authorization: `${localStorage.getItem('AccessToken')}`,
-          Refresh: `${localStorage.getItem('RefreshToken')}`,
+          Authorization: accessToken,
+          Refresh: refreshToken,
         },
       })
       .then((res: any) => {

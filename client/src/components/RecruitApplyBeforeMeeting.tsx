@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
 import classifyingStatus from '../utils/classifyingStatus';
@@ -166,12 +167,22 @@ const RecruitApplyBeforeMeeting = ({
   setData,
 }: ApplyConditionProps) => {
   const navigate = useNavigate();
-  const LOGIN_INFO = {
-    memberId: Number(localStorage.getItem('memberId')),
-    heart: Number(localStorage.getItem('heart')),
-    birth: localStorage.getItem('birth'),
-    sex: localStorage.getItem('sex'),
-  };
+  // const LOGIN_INFO = {
+  //   memberId: useSelector((state: any) => state.memberId),
+  //   heart: useSelector((state: any) => state.heart),
+  //   birth: useSelector((state: any) => state.birth),
+  //   sex: useSelector((state: any) => state.sex),
+  //   // memberId: Number(localStorage.getItem('memberId')),
+  //   // heart: Number(localStorage.getItem('heart')),
+  //   // birth: localStorage.getItem('birth'),
+  //   // sex: localStorage.getItem('sex'),
+  // };
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = useSelector((state: any) => state.memberId);
+  const birth = useSelector((state: any) => state.birth);
+  const heart = useSelector((state: any) => state.heart);
+  const sex = useSelector((state: any) => state.sex);
 
   const { recruitId } = useParams();
 
@@ -190,13 +201,13 @@ const RecruitApplyBeforeMeeting = ({
     if (recruitStatus === '모집완료') {
       return '정원이 초과되었습니다';
     }
-    if (sexCon !== LOGIN_INFO.sex && sexCon !== 'Both') {
+    if (sexCon !== sex && sexCon !== 'Both') {
       return '성별조건에 부합하지 않습니다';
     }
-    if (heartCond > LOGIN_INFO.heart) {
+    if (heartCond > heart) {
       return '심박수조건에 부합하지 않습니다';
     }
-    if (!ageGroup.includes(calculateAge(LOGIN_INFO.birth!))) {
+    if (!ageGroup.includes(calculateAge(birth))) {
       return '연령조건에 부합하지 않습니다';
     }
     return true;
@@ -242,14 +253,14 @@ const RecruitApplyBeforeMeeting = ({
         <h3>
           <span>모집신청</span>
         </h3>
-        {creatorId === LOGIN_INFO.memberId ? (
+        {creatorId === memberId ? (
           <ApplyBox>
             <div>자기 자신이 쓴 글에는 신청하실 수 없습니다</div>
             <Button value="신청 불가" disabled onClick={() => {}} />
           </ApplyBox>
         ) : (
           <div>
-            {!applicantsId.includes(LOGIN_INFO.memberId) ? (
+            {!applicantsId.includes(memberId) ? (
               <ApplyBox>
                 <div>
                   {isValidForApply() === true
@@ -260,16 +271,15 @@ const RecruitApplyBeforeMeeting = ({
                   value="신청"
                   disabled={isValidForApply() !== true}
                   onClick={() => {
-                    if (LOGIN_INFO.memberId && LOGIN_INFO.memberId !== -1) {
+                    if (memberId && memberId !== -1) {
                       axios
                         .patch(
                           `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/application`,
-                          { memberId: LOGIN_INFO.memberId },
+                          { memberId },
                           {
                             headers: {
-                              Authorization:
-                                localStorage.getItem('AccessToken'),
-                              Refresh: localStorage.getItem('RefreshToken'),
+                              Authorization: accessToken,
+                              Refresh: refreshToken,
                             },
                           },
                         )
@@ -297,11 +307,11 @@ const RecruitApplyBeforeMeeting = ({
                     axios
                       .patch(
                         `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/application`,
-                        { memberId: LOGIN_INFO.memberId },
+                        { memberId },
                         {
                           headers: {
-                            Authorization: localStorage.getItem('AccessToken'),
-                            Refresh: localStorage.getItem('RefreshToken'),
+                            Authorization: accessToken,
+                            Refresh: refreshToken,
                           },
                         },
                       )

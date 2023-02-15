@@ -2,6 +2,7 @@
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 // import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
 import AutoCompleteForArray from '../components/AutoCompleteForArray';
@@ -140,6 +141,9 @@ const KakaoMapForClick = ({
 };
 
 const CreateRecruit = () => {
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = useSelector((state: any) => state.memberId);
   const navigate = useNavigate();
   const {
     register,
@@ -167,13 +171,13 @@ const CreateRecruit = () => {
       .post(
         `${process.env.REACT_APP_API_URL}/recruits`,
         {
-          memberId: localStorage.getItem('memberId'),
+          memberId,
           ...postBody,
         },
         {
           headers: {
-            Authorization: localStorage.getItem('AccessToken'),
-            Refresh: localStorage.getItem('RefreshToken'),
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
         },
       )

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, useWatch } from 'react-hook-form'; // Controller, useFieldArray
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 // import AutoCompleteForArray from '../components/AutoCompleteForArray';
 import useCurrentLocation from '../utils/useCurrentLocation';
@@ -149,6 +150,10 @@ const EditRecruit = () => {
   const navigate = useNavigate();
   // const token = localStorage.getItem('AccessToken');
   // const memberId = localStorage.getItem('memberId');
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = Number(useSelector((state: any) => state.memberId));
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`)
@@ -198,10 +203,10 @@ const EditRecruit = () => {
     axios
       .patch(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`, {
         ...data,
-        memberId: Number(localStorage.getItem('memberId')),
+        memberId,
         headers: {
-          Authorization: `${localStorage.getItem('AccessToken')}`,
-          Refresh: `${localStorage.getItem('RefreshToken')}`,
+          Authorization: `${accessToken}`,
+          Refresh: `${refreshToken}`,
         },
       })
       .then((res) => {

@@ -31,4 +31,9 @@ export default interface FreeDataProps {
     body: string;
     filePath: string;
   }[];
+  freeImages: {
+    freeImageId: number;
+    freeId: number;
+    filePath: string;
+  }[];
 }

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import FreeBoardList from '../components/FreeBoardList';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import ButtonLink from '../components/ButtonLink';
@@ -115,7 +116,7 @@ const FreeBoards = () => {
   const [keywordState, setKeywordState] = useState<string>(
     searchParams.get('keyword')?.replaceAll('"', '') ?? '',
   );
-  const LOGIN_ID = localStorage.getItem('memberId');
+  const memberId = useSelector((state: any) => state.memberId);
 
   // 클릭하면 맨 위로
   const handleClick = () => {
@@ -225,7 +226,7 @@ const FreeBoards = () => {
             </div>
           </CategoryLink>
         </FiltContainer>
-        {LOGIN_ID ? (
+        {memberId ? (
           <div className="btn">
             <ButtonLink value="작성하기" to="/freeboard/new" />
           </div>

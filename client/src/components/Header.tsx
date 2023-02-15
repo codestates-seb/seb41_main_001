@@ -1,7 +1,22 @@
 import styled from 'styled-components';
 import { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setMemberId,
+  setBirth,
+  setHeart,
+  setSex,
+  deleteAccessToken,
+  deleteRefreshToken,
+  deleteMemberId,
+  deleteBirth,
+  deleteHeart,
+  deleteSex,
+} from '../redux/actions';
 import ButtonLink from './ButtonLink';
 import Button from './Button';
 
@@ -112,45 +127,62 @@ const BoardLink = styled(Link)<{ path: string; to: string }>`
   }
 `;
 
-interface HeaderProps {
-  token: string | null;
-  setToken: any;
-}
+// interface HeaderProps {
+//   token: string | null;
+//   setToken: any;
+// }
 
-const Header = ({ token, setToken }: HeaderProps) => {
+const Header = () => {
+  const dispatch = useDispatch();
+  // { token, setToken }: HeaderProps
   const { pathname: path } = useLocation();
-  const Authorization = token;
-  const Refresh = localStorage.getItem('RefreshToken');
+  // const Authorization = token;
+  // const Refresh = localStorage.getItem('RefreshToken');
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
 
   useEffect(() => {
-    if (Authorization) {
+    if (accessToken) {
       axios
         .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
           params: {
-            Authorization,
-            Refresh,
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
           headers: {
-            Authorization,
-            Refresh,
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
         })
         .then((res) => {
-          localStorage.setItem('AccessToken', res.headers.authorization!);
-          localStorage.setItem('RefreshToken', res.headers.refresh!);
-          localStorage.setItem('memberId', res.headers['member-id']!);
-          localStorage.setItem('birth', res.headers.birth!);
-          localStorage.setItem('heart', res.headers.heart!);
-          localStorage.setItem('sex', res.headers.sex!);
+          console.log(res);
+          dispatch(setAccessToken(res.headers.authorization!));
+          dispatch(setRefreshToken(res.headers.refresh!));
+          dispatch(setMemberId(res.headers['member-id']!));
+          dispatch(setHeart(res.headers.heart!));
+          dispatch(setBirth(res.headers.birth!));
+          dispatch(setSex(res.headers.sex!));
+          // localStorage.setItem('AccessToken', res.headers.authorization!);
+          // localStorage.setItem('RefreshToken', res.headers.refresh!);
+          // localStorage.setItem('memberId', res.headers['member-id']!);
+          // localStorage.setItem('birth', res.headers.birth!);
+          // localStorage.setItem('heart', res.headers.heart!);
+          // localStorage.setItem('sex', res.headers.sex!);
         })
         .catch(() => {
-          localStorage.removeItem('AccessToken');
-          localStorage.removeItem('RefreshToken');
-          localStorage.removeItem('memberId');
-          localStorage.removeItem('birth');
-          localStorage.removeItem('heart');
-          localStorage.removeItem('sex');
-          setToken(null);
+          dispatch(deleteAccessToken());
+          dispatch(deleteRefreshToken());
+          dispatch(deleteMemberId());
+          dispatch(deleteHeart());
+          dispatch(deleteBirth());
+          dispatch(deleteSex());
+          // localStorage.removeItem('AccessToken');
+          // localStorage.removeItem('RefreshToken');
+          // localStorage.removeItem('memberId');
+          // localStorage.removeItem('birth');
+          // localStorage.removeItem('heart');
+          // localStorage.removeItem('sex');
+          // setToken(null);
         });
     }
   }, []);
@@ -159,23 +191,29 @@ const Header = ({ token, setToken }: HeaderProps) => {
     axios
       .delete(`${process.env.REACT_APP_API_URL}/members/logout`, {
         headers: {
-          Authorization: localStorage.getItem('AccessToken'),
-          Refresh: localStorage.getItem('RefreshToken'),
+          Authorization: accessToken,
+          Refresh: refreshToken,
         },
         params: {
-          Authorization: localStorage.getItem('AccessToken'),
-          Refresh: localStorage.getItem('RefreshToken'),
+          Authorization: accessToken,
+          Refresh: refreshToken,
         },
       })
       .then((res) => {
         console.log(res);
-        localStorage.removeItem('AccessToken');
-        localStorage.removeItem('RefreshToken');
-        localStorage.removeItem('memberId');
-        localStorage.removeItem('birth');
-        localStorage.removeItem('heart');
-        localStorage.removeItem('sex');
-        setToken(null);
+        dispatch(deleteAccessToken());
+        dispatch(deleteRefreshToken());
+        dispatch(deleteMemberId());
+        dispatch(deleteHeart());
+        dispatch(deleteBirth());
+        dispatch(deleteSex());
+        // localStorage.removeItem('AccessToken');
+        // localStorage.removeItem('RefreshToken');
+        // localStorage.removeItem('memberId');
+        // localStorage.removeItem('birth');
+        // localStorage.removeItem('heart');
+        // localStorage.removeItem('sex');
+        // setToken(null);
 
         // window.location.reload();
       });
@@ -209,7 +247,7 @@ const Header = ({ token, setToken }: HeaderProps) => {
           <i className="fa-solid fa-magnifying-glass" />
           <input placeholder="Search here..." />
         </form> */}
-        {token ? (
+        {accessToken ? (
           <>
             <Button value="로그아웃" onClick={logOut} />
             <ButtonLink value="마이페이지" to="/members/mypage" />

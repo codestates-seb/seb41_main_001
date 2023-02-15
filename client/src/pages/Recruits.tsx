@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import FilterBox from '../components/FilterBox';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
@@ -81,6 +82,7 @@ const Recruits = () => {
   );
   const { location } = useCurrentLocation();
   const [distanceLimit, setDistanceLimit] = useState(10);
+  const memberId = useSelector((state: any) => state.memberId);
 
   useEffect(() => {
     if (location) {
@@ -143,7 +145,7 @@ const Recruits = () => {
     setPage(1);
   };
 
-  const LOGIN_ID = localStorage.getItem('memberId');
+  // const LOGIN_ID = localStorage.getItem('memberId');
 
   return (
     <MainContainer>
@@ -190,7 +192,7 @@ const Recruits = () => {
           />
         </div>
         <div>
-          {LOGIN_ID ? (
+          {memberId ? (
             <>
               <span>찾으시는 운동이 없으신가요?</span>
               <span>직접 이웃을 모아보세요!</span>

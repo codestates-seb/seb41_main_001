@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
 import CreatorCard from '../components/CreatorCard';
@@ -203,7 +204,10 @@ const RecruitDetail = () => {
     }
   }, [data]);
 
-  const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  // const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = Number(useSelector((state: any) => state.memberId));
 
   const checkIfMeetingEnded = (d: string) => {
     const TIME_INPUT = new Date(d).getTime();
@@ -296,18 +300,18 @@ const RecruitDetail = () => {
           )}
           <ButtonArea>
             <LikeButton
-              likes={likesMemberId!.includes(LOGIN_ID)}
+              likes={likesMemberId!.includes(memberId)}
               value={`좋아요 ${data.likes}`}
               onClick={() => {
-                if (LOGIN_ID) {
+                if (memberId) {
                   axios
                     .patch(
                       `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/likes`,
-                      { memberId: LOGIN_ID },
+                      { memberId },
                       {
                         headers: {
-                          Authorization: localStorage.getItem('AccessToken'),
-                          Refresh: localStorage.getItem('RefreshToken'),
+                          Authorization: accessToken,
+                          Refresh: refreshToken,
                         },
                       },
                     )
@@ -331,7 +335,7 @@ const RecruitDetail = () => {
               icon={<i className="fa-solid fa-heart" />}
             />
 
-            {data.memberId === LOGIN_ID ? (
+            {data.memberId === memberId ? (
               <RecruitCreatorSelectBox
                 applies={data.applies}
                 modifiedAt={data.modifiedAt}

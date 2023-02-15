@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Button from './Button';
 
@@ -40,7 +41,10 @@ const CommentSubmitBox = ({
   setData,
 }: CommentSubmitProps) => {
   const [comment, setComment] = useState(value);
-  const LOGIN_ID = localStorage.getItem('memberId') || -1;
+  // const LOGIN_ID = localStorage.getItem('memberId') || -1;
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = useSelector((state: any) => state.memberId);
   const navigate = useNavigate();
   const handleCommentSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -55,12 +59,12 @@ const CommentSubmitBox = ({
           `${process.env.REACT_APP_API_URL}${submitComment}`,
           {
             body: comment,
-            memberId: LOGIN_ID,
+            memberId,
           },
           {
             headers: {
-              Authorization: localStorage.getItem('AccessToken'),
-              Refresh: localStorage.getItem('RefreshToken'),
+              Authorization: accessToken,
+              Refresh: refreshToken,
             },
           },
         )
@@ -73,18 +77,18 @@ const CommentSubmitBox = ({
     } else if (comment.trim() !== '') {
       // 댓글을 등록하는 경우
       console.log(`POST ${submitComment}`, comment);
-      if (LOGIN_ID && LOGIN_ID !== -1) {
+      if (memberId && Number(memberId) !== -1) {
         axios
           .post(
             `${process.env.REACT_APP_API_URL}${submitComment}`,
             {
               body: comment,
-              memberId: LOGIN_ID,
+              memberId,
             },
             {
               headers: {
-                Authorization: localStorage.getItem('AccessToken'),
-                Refresh: localStorage.getItem('RefreshToken'),
+                Authorization: accessToken,
+                Refresh: refreshToken,
               },
             },
           )

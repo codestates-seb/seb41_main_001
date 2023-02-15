@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Button from './Button';
 import ButtonLink from './ButtonLink';
@@ -27,7 +28,10 @@ const RecruitCreatorSelectBox = ({
   const navigate = useNavigate();
   const { recruitId } = useParams();
 
-  const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  // const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = useSelector((state: any) => state.memberId);
 
   const checkIfBringUpPossible = (d: string) => {
     const TIME_MODIFIED = new Date(d).getTime();
@@ -40,7 +44,7 @@ const RecruitCreatorSelectBox = ({
     axios
       .delete(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`, {
         data: {
-          memberId: LOGIN_ID,
+          memberId,
         },
       })
       .then(() => navigate(`/recruits`))
@@ -54,8 +58,8 @@ const RecruitCreatorSelectBox = ({
         {},
         {
           headers: {
-            Authorization: localStorage.getItem('AccessToken'),
-            Refresh: localStorage.getItem('RefreshToken'),
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
         },
       )
