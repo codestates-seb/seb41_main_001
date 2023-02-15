@@ -3,10 +3,7 @@ package com.main_001.server.free.mapper;
 import com.main_001.server.free.dto.FreeCommentDto;
 import com.main_001.server.free.dto.FreeDto;
 import com.main_001.server.free.dto.ResponseDto;
-import com.main_001.server.free.entity.Free;
-import com.main_001.server.free.entity.FreeComment;
-import com.main_001.server.free.entity.FreeLike;
-import com.main_001.server.free.entity.FreeTag;
+import com.main_001.server.free.entity.*;
 import com.main_001.server.member.entity.Member;
 import com.main_001.server.tag.entity.Tag;
 import org.mapstruct.Mapper;
@@ -58,6 +55,7 @@ public interface FreeMapper {
         List<FreeTag> freeTags = free.getFreeTags();
         List<FreeComment> freeComments = free.getFreeComments();
         List<FreeLike> freeLikes = free.getFreeLikes();
+        List<FreeImage> freeImages = free.getFreeImages();
 
         FreeDto.Response response = FreeDto.Response.builder()
                 .freeId(free.getFreeId())
@@ -69,6 +67,7 @@ public interface FreeMapper {
                 .freeTags(freeTagsToFreeTagResponseDtos(freeTags))
                 .freeLikes(freeLikesToFreeLikeResponseDtos(freeLikes))
                 .freeComments(freeCommentsToFreeCommentResponseDtos(freeComments))
+                .freeImages(freeImagesToFreeImageResponseDtos(freeImages))
                 .views(free.getViews())
                 .memberId(free.getMember().getMemberId())
                 .nickname(free.getMember().getNickname())
@@ -168,4 +167,14 @@ public interface FreeMapper {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    default ResponseDto.FreeImage freeImageToFreeImageResponseDto(FreeImage freeImage) {
+        return ResponseDto.FreeImage.builder()
+                .freeImageId(freeImage.getFreeImageId())
+                .freeId(freeImage.getFree().getFreeId())
+                .filePath(freeImage.getFilePath())
+                .build();
+    }
+
+    List<ResponseDto.FreeImage> freeImagesToFreeImageResponseDtos(List<FreeImage> freeImages);
 }

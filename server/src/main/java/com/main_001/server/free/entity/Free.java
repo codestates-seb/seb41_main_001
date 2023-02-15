@@ -56,6 +56,9 @@ public class Free {
     @OneToMany(mappedBy = "free", cascade = CascadeType.ALL)
     private List<FreeTag> freeTags = new ArrayList<>();
 
+    @OneToMany(mappedBy = "free", cascade = CascadeType.ALL)
+    private List<FreeImage> freeImages = new ArrayList<>();
+
     @Column
     private int views;
 

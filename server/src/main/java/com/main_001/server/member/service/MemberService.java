@@ -91,14 +91,6 @@ public class MemberService {
         List<String> roles = authorityUtils.createRoles(member.getEmail());
         member.setRoles(roles);
 
-        // 존재하는 Tag인지 확인
-//        findVerifiedTag(member.getMemberTags());
-
-//        MemberImage memberImageLocal = MemberImage.builder()
-//                .filePath(memberImagePath)
-//                .build();
-//        member.addMemberImage(memberImageLocal);
-
         return memberRepository.save(member);
     }
 
@@ -236,10 +228,10 @@ public class MemberService {
     public void logoutMember(String accessToken,
                              String refreshToken) {
         // accessToken 파싱
-        accessToken = jwtTokenizer.parseAccessToken(accessToken);
+        String parseAccessToken = jwtTokenizer.parseAccessToken(accessToken);
 
         // 토큰 유효성 확인
-        if (jwtTokenizer.validateToken(accessToken))
+        if (jwtTokenizer.validateToken(parseAccessToken))
             throw new AuthException(ExceptionCode.INVALID_AUTH_TOKEN);
 
         // refreshToken이 존재하면 삭제
@@ -254,10 +246,10 @@ public class MemberService {
     public TokenDto.Response reIssueToken(String accessToken,
                                           String refreshToken) {
         // accessToken 파싱
-        accessToken = jwtTokenizer.parseAccessToken(accessToken);
+        String parseAccessToken = jwtTokenizer.parseAccessToken(accessToken);
 
         // 복호화가 가능한지 확인
-        if (jwtTokenizer.validateToken(accessToken))
+        if (jwtTokenizer.validateToken(parseAccessToken))
             throw new AuthException(ExceptionCode.INVALID_AUTH_TOKEN);
 
 //        // refreshToken이 존재하지 않는 경우 예외를 던짐

@@ -3,10 +3,9 @@ package com.main_001.server.free.service;
 import com.main_001.server.auth.utils.RedisUtils;
 import com.main_001.server.exception.BusinessLogicException;
 import com.main_001.server.exception.ExceptionCode;
-import com.main_001.server.free.entity.Free;
-import com.main_001.server.free.entity.FreeComment;
-import com.main_001.server.free.entity.FreeLike;
-import com.main_001.server.free.entity.FreeTag;
+import com.main_001.server.file.S3Service;
+import com.main_001.server.file.UploadFile;
+import com.main_001.server.free.entity.*;
 import com.main_001.server.free.repositpry.FreeCommentRepository;
 import com.main_001.server.free.repositpry.FreeLikeRepository;
 import com.main_001.server.free.repositpry.FreeRepository;
@@ -20,9 +19,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,10 +40,12 @@ public class FreeService {
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
     private final RedisUtils redisUtils;
+    private final S3Service s3Service;
 
     public FreeService(FreeRepository freeRepository, FreeCommentRepository freeCommentRepository, FreeLikeRepository freeLikeRepository, MemberService memberService, MemberRepository memberRepository,
                        TagRepository tagRepository,
-                       RedisUtils redisUtils) {
+                       RedisUtils redisUtils,
+                       S3Service s3Service) {
         this.freeRepository = freeRepository;
         this.freeCommentRepository = freeCommentRepository;
         this.freeLikeRepository = freeLikeRepository;
@@ -50,9 +53,10 @@ public class FreeService {
         this.memberRepository = memberRepository;
         this.tagRepository = tagRepository;
         this.redisUtils = redisUtils;
+        this.s3Service = s3Service;
     }
 
-    public Free createFreeBoard(Free free) {
+    public Free createFreeBoard(Free free, List<MultipartFile> files) {
         Long memberId = free.getMember().getMemberId();
         verifyFree(free);
         free.setCreatedAt(LocalDateTime.now());
@@ -70,12 +74,29 @@ public class FreeService {
             tag.setFreeCount(tag.getFreeCount() + 1);
             tagRepository.save(tag);
         }
+
+        if (!files.isEmpty()) {
+            List<FreeImage> freeImages = new ArrayList<>(5);
+            List<UploadFile> uploadFiles = s3Service.uploadImages(files);
+
+            uploadFiles.forEach(uploadFile -> {
+                FreeImage freeImage = FreeImage.builder()
+                        .originalFileName(uploadFile.getOriginalFileName())
+                        .storedFileName(uploadFile.getStoredFileName())
+                        .filePath(uploadFile.getFilePath())
+                        .fileSize(uploadFile.getFileSize())
+                        .build();
+                freeImages.add(freeImage);
+                freeImage.setFree(free);
+            });
+            free.setFreeImages(freeImages);
+        }
+
         Member findMember = memberRepository.findById(memberId).orElseThrow();
         findMember.setHeart(findMember.getHeart()+5);
         memberRepository.save(findMember);
         return saveFree(free);
     }
-
 
     public Free updateFreeBoard(long freeId, Free free) {
         Free findFree = findVerifiedFreeBoard(freeId);

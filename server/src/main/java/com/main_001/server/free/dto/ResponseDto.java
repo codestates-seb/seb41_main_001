@@ -59,4 +59,17 @@ public class ResponseDto {
         @ApiModelProperty(example = "댓글 수정 일자")
         private LocalDateTime modifiedAt;
     }
+
+    @Builder
+    @Getter
+    public static class FreeImage {
+        @ApiModelProperty(example = "FreeImage id")
+        private long freeImageId;
+
+        @ApiModelProperty(example = "Free id")
+        private long freeId;
+
+        @ApiModelProperty(example = "파일 경로")
+        private String filePath;
+    }
 }
