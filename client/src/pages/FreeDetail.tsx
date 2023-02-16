@@ -16,6 +16,7 @@ import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
 import Button from '../components/Button';
 import FreeCreatorSelectBox from '../components/FreeCreatorSelectBox';
+import ImageContainer from '../components/ImageContainer';
 // import TagLink from '../components/TagLink';
 
 const FDContainer = styled.main`
@@ -317,6 +318,23 @@ const FreeDetail = () => {
               </div>
             )} */}
           </ContentContainer>
+          {/* <div className="tags">
+            {post.freeTags.map((el) => (
+              <TagLink
+              onClick={() => {}}
+              key={el.tagId}
+              value={`${el.tagName}`}
+              to={`/freeboards?type=tag&keyword=${el.tagName}`}
+              />
+              ))}
+            </div> */}
+          <div>
+            {post.freeImages ? (
+              post.freeImages.map((el) => <ImageContainer src={el.filePath} />)
+            ) : (
+              <p>이미지 없음!</p>
+            )}
+          </div>
           {post.location ? (
             <div className="location">
               <i className="fa-solid fa-location-dot" />
@@ -325,25 +343,6 @@ const FreeDetail = () => {
           ) : (
             ''
           )}
-          {/* <div className="tags">
-            {post.freeTags.map((el) => (
-              <TagLink
-                onClick={() => {}}
-                key={el.tagId}
-                value={`${el.tagName}`}
-                to={`/freeboards?type=tag&keyword=${el.tagName}`}
-              />
-            ))}
-          </div> */}
-          <div>
-            {post.freeImages ? (
-              post.freeImages.map((el) => (
-                <img src={el.filePath} alt="" key={el.freeImageId} />
-              ))
-            ) : (
-              <p>이미지 없음!</p>
-            )}
-          </div>
           <div className="btnCon">
             <LikeButton
               likes={likesMemberId!.includes(memberId)}
