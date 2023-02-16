@@ -226,7 +226,7 @@ const FreeBoards = () => {
             </div>
           </CategoryLink>
         </FiltContainer>
-        {memberId ? (
+        {memberId !== -1 ? (
           <div className="btn">
             <ButtonLink value="작성하기" to="/freeboard/new" />
           </div>

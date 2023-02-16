@@ -13,6 +13,8 @@ import {
   setBirth,
   setHeart,
   setSex,
+  setAccessTokenExpiresAt,
+  setRefreshTokenExpiresAt,
 } from '../redux/actions';
 import ButtonLink from '../components/ButtonLink';
 import Button from '../components/Button';
@@ -100,12 +102,6 @@ interface LoginProps {
 
 const LogIn = () => {
   const dispatch = useDispatch();
-  // const accessToken = useSelector((state: any) => state.accessToken);
-  // const refreshToken = useSelector((state: any) => state.refreshToken);
-  // const memberId = useSelector((state: any) => state.memberId);
-  // const birth = useSelector((state: any) => state.birth);
-  // const heart = useSelector((state: any) => state.heart);
-  // const sex = useSelector((state: any) => state.sex);
   const navigate = useNavigate();
   const {
     register,
@@ -125,6 +121,8 @@ const LogIn = () => {
         dispatch(setHeart(res.headers.heart!));
         dispatch(setBirth(res.headers.birth!));
         dispatch(setSex(res.headers.sex!));
+        dispatch(setAccessTokenExpiresAt(Date.now() + 2400000)); // 40분
+        dispatch(setRefreshTokenExpiresAt(Date.now() + 252000000)); // 4200분
         // localStorage.setItem('AccessToken', res.headers.authorization!);
         // localStorage.setItem('RefreshToken', res.headers.refresh!);
         // localStorage.setItem('memberId', res.headers['member-id']!);
