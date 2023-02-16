@@ -75,7 +75,7 @@ public class FreeService {
             tagRepository.save(tag);
         }
 
-        if (!files.isEmpty()) {
+        if (files.get(0).getContentType() != null) {
             List<FreeImage> freeImages = new ArrayList<>(5);
             List<UploadFile> uploadFiles = s3Service.uploadImages(files);
 
@@ -167,17 +167,18 @@ public class FreeService {
         return freeRepository.save(findFree);
     }
 
-    public void deleteFreeComment(long freeId, long commentId, long memberId) {
+    public Free deleteFreeComment(long freeId, long commentId, long memberId) {
         Free findFree = findVerifiedFreeBoard(freeId);
         FreeComment targetComment = freeCommentRepository.findById(commentId).orElseThrow();
         if (targetComment.getMember().getMemberId() != memberId)
             throw new BusinessLogicException(ExceptionCode.COMMENT_DELETE_DENIED);
         freeCommentRepository.deleteById(commentId);
+
         Member findMember = targetComment.getMember();
-        findMember.setHeart(findMember.getHeart()-1);
+        findMember.setHeart(findMember.getHeart() - 1);
 
         memberRepository.save(findMember);
-        freeRepository.save(findFree);
+        return freeRepository.save(findFree);
     }
 
     public Free findFreeBoard(long freeId) {

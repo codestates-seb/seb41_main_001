@@ -81,9 +81,9 @@ public class S3Service {
     // 여러 이미지 업로드
     public List<UploadFile> uploadImages(List<MultipartFile> multipartFiles) {
         List<UploadFile> uploadFiles = new ArrayList<>();
-        if (multipartFiles.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지가 없습니다. 이미지 파일을 첨부해주세요.");
-        }
+//        if (multipartFiles.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지가 없습니다. 이미지 파일을 첨부해주세요.");
+//        }
 
         multipartFiles.forEach(multipartFile -> {
             String s3FileName = createFileName(multipartFile.getOriginalFilename());
