@@ -117,10 +117,6 @@ const FreeBoards = () => {
     searchParams.get('keyword')?.replaceAll('"', '') ?? '',
   );
   const memberId = useSelector((state: any) => state.memberId);
-  const accessToken = useSelector((state: any) => state.accessToken);
-  const accessTokenExpiresAt = useSelector(
-    (state: any) => state.accessTokenExpiresAt,
-  );
 
   // 클릭하면 맨 위로
   const handleClick = () => {
