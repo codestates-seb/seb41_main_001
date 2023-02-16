@@ -1,8 +1,28 @@
 import { Reducer } from 'redux';
+import {
+  SET_ACCESS_TOKEN,
+  SET_REFRESH_TOKEN,
+  SET_ACCESS_TOKEN_EXPIRES_AT,
+  SET_REFRESH_TOKEN_EXPIRES_AT,
+  SET_BIRTH,
+  SET_HEART,
+  SET_MEMBER_ID,
+  SET_SEX,
+  DELETE_ACCESS_TOKEN,
+  DELETE_BIRTH,
+  DELETE_HEART,
+  DELETE_MEMBER_ID,
+  DELETE_REFRESH_TOKEN,
+  DELETE_SEX,
+  DELETE_ACCESS_TOKEN_EXPIRES_AT,
+  DELETE_REFRESH_TOKEN_EXPIRES_AT,
+} from './types';
 
 type State = {
   accessToken: string;
   refreshToken: string;
+  accessTokenExpiresAt: number;
+  refreshTokenExpiresAt: number;
   memberId: number;
   sex: string;
   birth: string;
@@ -10,22 +30,28 @@ type State = {
 };
 
 type Action =
-  | { type: 'SET_ACCESS_TOKEN'; payload: string }
-  | { type: 'SET_REFRESH_TOKEN'; payload: string }
-  | { type: 'SET_MEMBER_ID'; payload: number }
-  | { type: 'SET_BIRTH'; payload: string }
-  | { type: 'SET_HEART'; payload: number }
-  | { type: 'SET_SEX'; payload: string }
-  | { type: 'DELETE_ACCESS_TOKEN' }
-  | { type: 'DELETE_REFRESH_TOKEN' }
-  | { type: 'DELETE_MEMBER_ID' }
-  | { type: 'DELETE_BIRTH' }
-  | { type: 'DELETE_HEART' }
-  | { type: 'DELETE_SEX' };
+  | { type: typeof SET_ACCESS_TOKEN; payload: string }
+  | { type: typeof SET_REFRESH_TOKEN; payload: string }
+  | { type: typeof SET_MEMBER_ID; payload: number }
+  | { type: typeof SET_BIRTH; payload: string }
+  | { type: typeof SET_HEART; payload: number }
+  | { type: typeof SET_SEX; payload: string }
+  | { type: typeof DELETE_ACCESS_TOKEN }
+  | { type: typeof DELETE_REFRESH_TOKEN }
+  | { type: typeof DELETE_MEMBER_ID }
+  | { type: typeof DELETE_BIRTH }
+  | { type: typeof DELETE_HEART }
+  | { type: typeof DELETE_SEX }
+  | { type: typeof SET_ACCESS_TOKEN_EXPIRES_AT; expiresAt: string }
+  | { type: typeof SET_REFRESH_TOKEN_EXPIRES_AT; expiresAt: string }
+  | { type: typeof DELETE_ACCESS_TOKEN_EXPIRES_AT }
+  | { type: typeof DELETE_REFRESH_TOKEN_EXPIRES_AT };
 
 const initialState: State = {
   accessToken: '',
   refreshToken: '',
+  accessTokenExpiresAt: 0,
+  refreshTokenExpiresAt: 0,
   memberId: -1,
   sex: '',
   birth: '',
@@ -37,66 +63,74 @@ const reducer: Reducer<State, Action> = (
   action: any = {},
 ) => {
   switch (action.type) {
-    case 'SET_ACCESS_TOKEN':
+    case SET_ACCESS_TOKEN:
       return {
         ...state,
         accessToken: action.payload,
       };
-    case 'SET_REFRESH_TOKEN':
+    case SET_REFRESH_TOKEN:
       return {
         ...state,
         refreshToken: action.payload,
       };
-    case 'SET_MEMBER_ID':
+    case SET_MEMBER_ID:
       return {
         ...state,
         memberId: action.payload,
       };
-    case 'SET_BIRTH':
+    case SET_BIRTH:
       return {
         ...state,
         birth: action.payload,
       };
-    case 'SET_HEART':
+    case SET_HEART:
       return {
         ...state,
         heart: action.payload,
       };
-    case 'SET_SEX':
+    case SET_SEX:
       return {
         ...state,
         sex: action.payload,
       };
-    case 'DELETE_ACCESS_TOKEN':
+    case DELETE_ACCESS_TOKEN:
       return {
         ...state,
-        accessToken: null,
+        accessToken: '',
       };
-    case 'DELETE_REFRESH_TOKEN':
+    case DELETE_REFRESH_TOKEN:
       return {
         ...state,
-        refreshToken: null,
+        refreshToken: '',
       };
-    case 'DELETE_MEMBER_ID':
+    case DELETE_MEMBER_ID:
       return {
         ...state,
-        memberId: null,
+        memberId: -1,
       };
-    case 'DELETE_BIRTH':
+    case DELETE_BIRTH:
       return {
         ...state,
-        birth: null,
+        birth: '',
       };
-    case 'DELETE_HEART':
+    case DELETE_HEART:
       return {
         ...state,
-        heart: null,
+        heart: 0,
       };
-    case 'DELETE_SEX':
+    case DELETE_SEX:
       return {
         ...state,
-        sex: null,
+        sex: '',
       };
+    case SET_ACCESS_TOKEN_EXPIRES_AT:
+      return { ...state, accessTokenExpiresAt: action.expiresAt };
+    case SET_REFRESH_TOKEN_EXPIRES_AT:
+      return { ...state, refreshTokenExpiresAt: action.expiresAt };
+    case DELETE_ACCESS_TOKEN_EXPIRES_AT:
+      return { ...state, accessTokenExpiresAt: 0 };
+    case DELETE_REFRESH_TOKEN_EXPIRES_AT:
+      return { ...state, refreshTokenExpiresAt: 0 };
     default:
       return state;
   }

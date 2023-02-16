@@ -192,7 +192,7 @@ const Recruits = () => {
           />
         </div>
         <div>
-          {memberId ? (
+          {memberId !== -1 ? (
             <>
               <span>찾으시는 운동이 없으신가요?</span>
               <span>직접 이웃을 모아보세요!</span>
