@@ -16,7 +16,8 @@ import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
 import Button from '../components/Button';
 import FreeCreatorSelectBox from '../components/FreeCreatorSelectBox';
-import ImageContainer from '../components/ImageContainer';
+// import ImageContainer from '../components/ImageContainer';
+import Carousel from '../components/Carousel';
 // import TagLink from '../components/TagLink';
 
 const FDContainer = styled.main`
@@ -111,6 +112,10 @@ const BoardContainer = styled.div`
         margin-right: 0.5rem;
       } */
     }
+  }
+
+  .carousel {
+    margin-bottom: 1rem;
   }
 
   .location {
@@ -300,9 +305,6 @@ const FreeDetail = () => {
             image={post.filePath}
           />
           <ContentContainer>
-            {/* <div>
-              <img src={preview} alt="preview" />
-            </div> */}
             <div className="body">{post.freeBody}</div>
             {/* {post?.location === undefined ? (
               ''
@@ -328,11 +330,11 @@ const FreeDetail = () => {
               />
               ))}
             </div> */}
-          <div>
-            {post.freeImages ? (
-              post.freeImages.map((el) => <ImageContainer src={el.filePath} />)
+          <div className="carousel">
+            {post.freeImages.length > 0 ? (
+              <Carousel images={post.freeImages.map((el) => el.filePath)} />
             ) : (
-              <p>이미지 없음!</p>
+              ''
             )}
           </div>
           {post.location ? (
