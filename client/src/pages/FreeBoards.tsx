@@ -67,7 +67,7 @@ const FiltContainer = styled.div`
   align-items: center;
   width: 21rem;
   height: 3rem;
-  border: 0.05rem solid white;
+  border: 0.01rem solid white;
   border-radius: 1rem;
   margin-left: 8rem;
   margin-top: 1rem;
