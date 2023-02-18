@@ -238,8 +238,8 @@ public class MemberService {
         redisUtils.deleteData(refreshToken);
 
         // 엑세스 토큰 만료 전까지 블랙리스트 처리
-        Long expiration = jwtTokenizer.getExpiration(accessToken);
-        redisUtils.setBlackList(accessToken, "Logout", expiration);
+        Long expiration = jwtTokenizer.getExpiration(parseAccessToken);
+        redisUtils.setBlackList(parseAccessToken, "Logout", expiration);
     }
 
     // 토큰 재발행
