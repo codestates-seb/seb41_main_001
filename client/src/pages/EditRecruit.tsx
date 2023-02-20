@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useForm, useWatch, Controller, useFieldArray } from 'react-hook-form';
+import { useForm, useWatch, Controller } from 'react-hook-form'; // Controller, useFieldArray
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import AutoCompleteForArray from '../components/AutoCompleteForArray';
-import useCurrentLocation from '../utils/useCurrentLocation';
+// import AutoCompleteForArray from '../components/AutoCompleteForArray';
 import KakaoMapClick from '../components/KakaoMapClick';
 import Button from '../components/Button';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
@@ -123,9 +122,9 @@ interface RecruitFormInput {
   lon: number;
   sex: 'Both' | 'Male' | 'Female';
   ages: number[];
-  heart: number;
-  image: string;
-  tagSearch: string;
+  heartLimit: number;
+  // image: string;
+  // tagSearch: string;
 }
 
 const KakaoMapForClick = ({
@@ -160,8 +159,8 @@ const EditRecruit = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`)
       .then((res) => {
+        console.log(res);
         setRecruitData(res.data.data);
-        console.log(recruitData);
         axios
           .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=100`)
           .then((response) => {
@@ -176,7 +175,6 @@ const EditRecruit = () => {
         console.log(err);
       });
   }, []);
-
   const {
     register,
     control,
@@ -184,49 +182,29 @@ const EditRecruit = () => {
     getValues,
     setValue,
     formState: { errors },
-  } = useForm<RecruitFormInput>({
-    // defaultValues: {
-    //   recruitTagDtos: recruitData?.recruitTags,
-    //   title: recruitData?.title,
-    //   body: recruitData?.body,
-    //   date: recruitData?.date,
-    //   require: recruitData?.require,
-    //   minRequire: recruitData?.minRequire,
-    //   ages: recruitData?.ageGroup,
-    //   sex: recruitData?.sex,
-    //   heart: recruitData?.heartLimit,
-    //   lat: recruitData?.lat,
-    //   lon: recruitData?.lon,
-    // },
-  });
+  } = useForm<RecruitFormInput>({});
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'recruitTagDtos',
-    rules: {
-      validate: {
-        moreThanOneTag: (values) =>
-          values.length > 0 ? true : '태그는 1개 이상 선택해야 합니다',
-      },
-    },
-  });
+  // const { fields, append, remove } = useFieldArray({
+  //   control,
+  //   name: 'recruitTagDtos',
+  //   rules: {
+  //     validate: {
+  //       moreThanOneTag: (values) =>
+  //         values.length > 0 ? true : '태그를 선택하세요',
+  //     },
+  //   },
+  // });
 
   const onSubmit = (data: RecruitFormInput) => {
-    const { tagSearch, ...postBody } = data;
     axios
-      .patch(
-        `${process.env.REACT_APP_API_URL}/recruits/${recruitId}`,
-        {
-          memberId,
-          ...postBody,
+      .patch(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`, {
+        ...data,
+        memberId,
+        headers: {
+          Authorization: `${accessToken}`,
+          Refresh: `${refreshToken}`,
         },
-        {
-          headers: {
-            Authorization: accessToken,
-            Refresh: refreshToken,
-          },
-        },
-      )
+      })
       .then((res) => {
         console.log(res);
         navigate('/recruits');
@@ -236,13 +214,6 @@ const EditRecruit = () => {
       });
   };
 
-  const { location } = useCurrentLocation();
-
-  // useCurrentLocation().then((res) => {
-  //   if (res === undefined) return;
-  //   setLatLon(res);
-  // });
-
   return (
     <RecruitFormContainer>
       <h1>모집 게시글 수정하기</h1>
@@ -251,25 +222,23 @@ const EditRecruit = () => {
         <RecruitForm onSubmit={handleSubmit(onSubmit)}>
           <table>
             <tbody>
-              {recruitData.applies.length === 0 && (
-                <tr className="default">
-                  <td>태그</td>
-                  <td>
-                    <AutoCompleteForArray
-                      fields={fields}
-                      append={append}
-                      remove={remove}
-                      register={register}
-                      control={control}
-                      data={tagData}
-                      tagLength={1}
-                    />
-                    <ErrorMessage>
-                      {errors?.recruitTagDtos?.root?.message}
-                    </ErrorMessage>
-                  </td>
-                </tr>
-              )}
+              {/* <tr className="default">
+                <td>태그</td>
+                <td>
+                  <AutoCompleteForArray
+                    fields={fields}
+                    append={append}
+                    remove={remove}
+                    register={register}
+                    control={control}
+                    data={tagData}
+                    tagLength={1}
+                  />
+                  <ErrorMessage>
+                    {errors?.recruitTagDtos?.root?.message}
+                  </ErrorMessage>
+                </td>
+              </tr> */}
               <tr className="default">
                 <td>
                   <label htmlFor="title">제목</label>
@@ -309,9 +278,7 @@ const EditRecruit = () => {
                     type="datetime-local"
                     defaultValue={recruitData.date}
                     disabled={recruitData.applies.length > 0}
-                    {...register('date', {
-                      required: '모임 일시는 필수항목입니다',
-                    })}
+                    {...register('date', {})}
                   />
                   <ErrorMessage>{errors?.date?.message}</ErrorMessage>
                 </td>
@@ -327,7 +294,6 @@ const EditRecruit = () => {
                     defaultValue={recruitData.require}
                     disabled={recruitData.applies.length > 0}
                     {...register('require', {
-                      required: '총 모집 인원은 필수항목입니다',
                       valueAsNumber: true,
                     })}
                   />
@@ -345,7 +311,6 @@ const EditRecruit = () => {
                     defaultValue={recruitData.minRequire}
                     disabled={recruitData.applies.length > 0}
                     {...register('minRequire', {
-                      required: '최소충족인원은 필수항목입니다',
                       valueAsNumber: true,
                       validate: {
                         smallerThanRequire: (value) =>
@@ -368,9 +333,7 @@ const EditRecruit = () => {
                     type="text"
                     defaultValue={recruitData.location}
                     disabled={recruitData.applies.length > 0}
-                    {...register('location', {
-                      required: '모임 장소는 필수항목입니다',
-                    })}
+                    {...register('location', {})}
                   />
                   <ErrorMessage>{errors?.location?.message}</ErrorMessage>
                 </td>
@@ -381,12 +344,12 @@ const EditRecruit = () => {
                     <label htmlFor="latlon">위치 정보</label>
                   </td>
                   <td>
-                    {location && (
+                    {recruitData && (
                       <KakaoMapForClick
                         control={control}
                         setValue={setValue}
-                        currentLat={recruitData?.lat}
-                        currentLon={recruitData?.lon}
+                        currentLat={recruitData.lat}
+                        currentLon={recruitData.lon}
                       />
                     )}
                   </td>
@@ -400,9 +363,7 @@ const EditRecruit = () => {
                       <input
                         defaultChecked={recruitData.sex === item}
                         disabled={recruitData.applies.length > 0}
-                        {...register('sex', {
-                          required: '성별 조건은 필수항목입니다',
-                        })}
+                        {...register('sex')}
                         type="radio"
                         value={item}
                         id={`field-${item}`}
@@ -427,9 +388,7 @@ const EditRecruit = () => {
                         key={el}
                         type="checkbox"
                         value={el}
-                        {...register('ages', {
-                          required: '나이대 조건은 필수항목입니다',
-                        })}
+                        {...register('ages')}
                       />
                       {`${el}대`}
                     </label>
@@ -444,20 +403,19 @@ const EditRecruit = () => {
                 <td>
                   <Controller
                     control={control}
-                    name="heart"
+                    name="heartLimit"
                     defaultValue={recruitData?.heartLimit}
                     render={({ field: { value, onChange } }) => (
                       <>
                         <input
-                          id="heart"
+                          id="heartLimit"
                           type="range"
                           min={0}
                           max={200}
                           step={10}
                           value={value}
                           disabled={recruitData.applies.length > 0}
-                          {...register('heart', {
-                            required: true,
+                          {...register('heartLimit', {
                             valueAsNumber: true,
                           })}
                           onChange={onChange}
@@ -479,7 +437,7 @@ const EditRecruit = () => {
             </tbody>
           </table>
           <Button
-            value="글 수정하기"
+            value="글 작성하기"
             onClick={handleSubmit(onSubmit)}
             type="submit"
           />

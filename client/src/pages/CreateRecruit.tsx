@@ -159,7 +159,7 @@ const CreateRecruit = () => {
     rules: {
       validate: {
         moreThanOneTag: (values) =>
-          values.length > 0 ? true : '태그는 1개 이상 선택해야 합니다',
+          values.length > 0 ? true : '태그를 선택하세요',
       },
     },
   });
