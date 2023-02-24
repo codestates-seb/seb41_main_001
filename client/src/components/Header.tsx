@@ -1,6 +1,7 @@
+/* eslint-disable no-nested-ternary */
 import styled from 'styled-components';
 import { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import {
@@ -16,8 +17,6 @@ import {
   deleteBirth,
   deleteHeart,
   deleteSex,
-  // setAccessTokenExpiresAt,
-  // setRefreshTokenExpiresAt
 } from '../redux/actions';
 import ButtonLink from './ButtonLink';
 import Button from './Button';
@@ -114,6 +113,7 @@ const BoardLink = styled(Link)<{ path: string; to: string }>`
 const Header = () => {
   const dispatch = useDispatch();
   const { pathname: path } = useLocation();
+  const navigate = useNavigate();
   const accessToken = useSelector((state: any) => state.accessToken);
   const refreshToken = useSelector((state: any) => state.refreshToken);
   const accessTokenExpiresAt = useSelector(
@@ -164,30 +164,61 @@ const Header = () => {
           dispatch(deleteHeart());
           dispatch(deleteBirth());
           dispatch(deleteSex());
+          navigate('/login');
         });
     }
   }, [accessToken, refreshToken, accessTokenExpiresAt, refreshTokenExpiresAt]);
 
   const logOut = () => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/members/logout`, {
-        headers: {
+      .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
+        params: {
           Authorization: accessToken,
           Refresh: refreshToken,
         },
-        params: {
+        headers: {
           Authorization: accessToken,
           Refresh: refreshToken,
         },
       })
       .then((res) => {
         console.log(res);
+        dispatch(setAccessToken(res.headers.authorization!));
+        dispatch(setRefreshToken(res.headers.refresh!));
+        dispatch(setMemberId(res.headers['member-id']!));
+        dispatch(setHeart(res.headers.heart!));
+        dispatch(setBirth(res.headers.birth!));
+        dispatch(setSex(res.headers.sex!));
+        axios
+          .delete(`${process.env.REACT_APP_API_URL}/members/logout`, {
+            headers: {
+              Authorization: accessToken,
+              Refresh: refreshToken,
+            },
+            params: {
+              Authorization: accessToken,
+              Refresh: refreshToken,
+            },
+          })
+          .then((response) => {
+            console.log(response);
+            dispatch(deleteAccessToken());
+            dispatch(deleteRefreshToken());
+            dispatch(deleteMemberId());
+            dispatch(deleteHeart());
+            dispatch(deleteBirth());
+            dispatch(deleteSex());
+            navigate('/login');
+          });
+      })
+      .catch(() => {
         dispatch(deleteAccessToken());
         dispatch(deleteRefreshToken());
         dispatch(deleteMemberId());
         dispatch(deleteHeart());
         dispatch(deleteBirth());
         dispatch(deleteSex());
+        navigate('/login');
       });
   };
 
