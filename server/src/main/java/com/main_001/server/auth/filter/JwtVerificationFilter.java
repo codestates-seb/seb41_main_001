@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+// request header에 포함된 JWT에 대해 검증 작업을 수행
 public class JwtVerificationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils authorityUtils;

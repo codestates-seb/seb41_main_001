@@ -252,7 +252,7 @@ public class MemberService {
         if (jwtTokenizer.validateToken(parseAccessToken))
             throw new AuthException(ExceptionCode.INVALID_AUTH_TOKEN);
 
-//        // refreshToken이 존재하지 않는 경우 예외를 던짐
+        // refreshToken이 존재하지 않는 경우 예외를 던짐
         if (redisUtils.getData(refreshToken) == null)
             throw new AuthException(ExceptionCode.INVALID_AUTH_TOKEN);
 

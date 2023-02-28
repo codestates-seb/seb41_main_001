@@ -19,7 +19,7 @@ public class FreeDto {
         private String freeTitle;
 
         @ApiModelProperty(example = "내용 작성")
-        @NotBlank(message = "질문내용 작성을 하지 않을 경우 등록이 불가합니다.")
+        @NotBlank(message = "내용 작성을 하지 않을 경우 등록이 불가합니다.")
         private String freeBody;
 
         @ApiModelProperty(example = "카테고리")

@@ -98,7 +98,7 @@ public class FreeService {
         return saveFree(free);
     }
 
-    public Free updateFreeBoard(long freeId, Free free) {
+    public Free updateFreeBoard(long freeId, Free free, List<MultipartFile> files) {
         Free findFree = findVerifiedFreeBoard(freeId);
         if (!Objects.equals(findFree.getMember().getMemberId(), free.getMember().getMemberId()))
             throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);

@@ -1,6 +1,8 @@
 package com.main_001.server.auth.userdetails;
 
 import com.main_001.server.auth.utils.CustomAuthorityUtils;
+import com.main_001.server.exception.BusinessLogicException;
+import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.member.entity.Member;
 import com.main_001.server.member.repository.MemberRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,10 +24,11 @@ public class MemberDetailsService implements UserDetailsService {
         this.authorityUtils = authorityUtils;
     }
 
+    // 회원을 찾아주는 역할
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Member> optionalMember = memberRepository.findByEmail(username);
-        Member findMember = optionalMember.orElseThrow(() -> new RuntimeException("Member not found"));
+        Member findMember = optionalMember.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
         return new MemberDetails(findMember);
     }

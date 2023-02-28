@@ -4,6 +4,7 @@ import com.main_001.server.free.entity.Free;
 import com.main_001.server.free.entity.FreeComment;
 import com.main_001.server.free.entity.FreeLike;
 import com.main_001.server.recruit.entity.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -42,7 +43,7 @@ public class Member {
     @Column(nullable = false, updatable = false, unique = true)
     private String email;
 
-    @Column(length = 13, nullable = false, unique = true)
+    @Column(length = 13, nullable = false)
     private String phone;
 
     @Column
@@ -65,6 +66,10 @@ public class Member {
     private LocalDateTime createdAt;
 
     private int heart;
+
+    private String provider; // OAuth2 회원인지 판별
+
+    private String picture; // OAuth2 회원의 이미지 경로
 
     // member의 권한 정보 테이블과 매핑
     // TODO 개발 완료 후 봉인 해제
@@ -102,6 +107,43 @@ public class Member {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<FreeComment> freeComments = new ArrayList<>();
+
+    @Builder
+    public Member(Long memberId,
+                  String name,
+                  String nickname,
+                  String birth,
+                  String password,
+                  String email,
+                  String phone,
+                  String sex,
+                  String location,
+                  double lat,
+                  double lon,
+                  int heart,
+                  String provider,
+                  String picture,
+                  List<String> roles) {
+        this.memberId = memberId;
+        this.name = name;
+        this.nickname = nickname;
+        this.birth = birth;
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.sex = sex;
+        this.location = location;
+        this.lat = lat;
+        this.lon = lon;
+        this.heart = heart;
+        this.provider = provider;
+        this.picture = picture;
+        this.roles = roles;
+    }
+
+    public Member() {
+
+    }
 
     public void addMemberImage(MemberImage memberImage) {
         if (memberImage.getMember() != this) {
