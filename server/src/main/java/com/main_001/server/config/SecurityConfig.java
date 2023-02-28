@@ -1,23 +1,26 @@
 package com.main_001.server.config;
 
+import com.main_001.server.auth.oauth2.OAuth2MemberService;
+import com.main_001.server.auth.oauth2.OAuth2SuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity(debug = false) // debug 필요하면 true
 public class SecurityConfig {
+    private final OAuth2MemberService oAuth2MemberService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
+    public SecurityConfig(OAuth2MemberService oAuth2MemberService, OAuth2SuccessHandler oAuth2SuccessHandler) {
+        this.oAuth2MemberService = oAuth2MemberService;
+        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+    }
 //    private final JwtTokenizer jwtTokenizer;
 //    private final CustomAuthorityUtils authorityUtils; // 추가
 //
@@ -33,10 +36,16 @@ public class SecurityConfig {
         http
                 .headers().frameOptions().disable()
                 .and()
+
                 .csrf().disable()
                 .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+
+                .logout()
+                .logoutSuccessUrl("/")
+                .and()
+
                 .formLogin().disable()
                 .httpBasic().disable()
 //                .apply(new CustomFilterConfigurer())
@@ -62,7 +71,12 @@ public class SecurityConfig {
                                 "/v3/api-docs",
                                 "/swagger*/**").permitAll()
                         .anyRequest().permitAll() // 권한 설정 필요!
-                );
+                )
+                .oauth2Login(oAuth2 -> {
+                    oAuth2.userInfoEndpoint().userService(oAuth2MemberService); // 로그인 성공시 해당 유저의 정보를 가지고 커스텀한 OAuth2MemberService에서 확인
+                    oAuth2.successHandler(oAuth2SuccessHandler); // 인증 프로세스에 따라서 사용자 정의 로직 실행
+                });
+
         return http.build();
     }
 

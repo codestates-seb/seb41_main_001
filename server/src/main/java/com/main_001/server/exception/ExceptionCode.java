@@ -25,6 +25,7 @@ public enum ExceptionCode {
     // Member
     WRONG_PASSWORD(400, "잘못된 패스워드 입력"),
     MEMBER_NOT_FOUND(404, "존재하지 않는 회원"),
+    MEMBER_ALREADY_EXISTS(500, "기존에 존재하는 회원입니다."),
     NO_PROFILE_IMAGE(400, "프로필 이미지가 존재하지 않습니다."),
     NO_CUR_PASSWORD(400, "현재 비밀번호가 공백입니다."),
     NO_NEW_PASSWORD(400, "새 비밀번호가 공백입니다."),

@@ -111,8 +111,16 @@ public class S3Service {
         return uploadFiles;
     }
 
+    // 이미지 개별 삭제
     public void deleteImage(String fileName) {
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+    }
+
+    // 모든 이미지 삭제
+    public void deleteImages(List<String> fileNames) {
+        fileNames.forEach(fileName -> {
+            amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+        });
     }
 
     private String createFileName(String fileName) {

@@ -203,6 +203,12 @@ public class MemberDto {
         @ApiModelProperty(example = "longitude")
         private double lon;
 
+        @ApiModelProperty(example = "OAuth2 Client")
+        private String provider;
+
+        @ApiModelProperty(example = "OAuth2 Profile Image")
+        private String picture;
+
         @ApiModelProperty(example = "[\n" +
                 "    {\n" +
                 "      \"tagId\": 1,\n" +
