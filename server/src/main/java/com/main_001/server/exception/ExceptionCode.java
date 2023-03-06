@@ -35,8 +35,10 @@ public enum ExceptionCode {
     INVALID_REFRESH_TOKEN(504, "리프레시 토큰이 유효하지 않습니다."),
     MISMATCH_ACCESS_TOKEN(504, "엑세스 토큰의 유저 정보가 일치하지 않습니다."),
     BLACK_LIST(504, "로그아웃 처리된 토큰입니다."),
-    MISSING_HEADER_ACCESS_TOKEN(504,"헤더에 엑세스 토큰을 넣어주세요.");
+    MISSING_HEADER_ACCESS_TOKEN(504,"헤더에 엑세스 토큰을 넣어주세요."),
 
+    // OAuth2
+    OAUTH2_NOT_FOUND(400, "잘못된 OAuth2 접근입니다.");
 
     @Getter
     private final int status;
