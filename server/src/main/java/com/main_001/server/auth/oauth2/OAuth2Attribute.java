@@ -1,8 +1,11 @@
 package com.main_001.server.auth.oauth2;
 
+import com.main_001.server.exception.BusinessLogicException;
+import com.main_001.server.exception.ExceptionCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +15,7 @@ import java.util.Map;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
+@ToString
 public class OAuth2Attribute {
     private Map<String, Object> attributes;
 
@@ -27,30 +31,23 @@ public class OAuth2Attribute {
 
     private String gender;
 
-    @Builder
-    public OAuth2Attribute(Map<String, Object> attributes, String nameAttributeKey, String name, String email, String picture, String provider, String gender) {
-        this.attributes = attributes;
-        this.nameAttributeKey = nameAttributeKey;
-        this.name = name;
-        this.email = email;
-        this.picture = picture;
-        this.provider = provider;
-        this.gender = gender;
-    }
-
-    public static OAuth2Attribute of(String registrationId, String userNameAttributeName, Map<String, Object> attributes){
-        if("google".equals(registrationId)){
-            return ofGoogle(userNameAttributeName, attributes);
+    public static OAuth2Attribute of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
+        switch (registrationId) {
+            case "google" :
+                return ofGoogle(userNameAttributeName, attributes);
+            case "kakao" :
+                return ofKakao(userNameAttributeName, attributes);
+            default :
+                throw new BusinessLogicException(ExceptionCode.OAUTH2_NOT_FOUND);
         }
-
-        return ofKakao("id", attributes);
     }
 
-    private static OAuth2Attribute ofGoogle(String userNameAttributeName, Map<String, Object> attributes){
+    private static OAuth2Attribute ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuth2Attribute.builder()
                 .name((String) attributes.get("name"))
                 .email((String) attributes.get("email"))
                 .picture((String) attributes.get("picture"))
+//                .gender((String) attributes.get("gender"))
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .provider("google")
@@ -65,10 +62,10 @@ public class OAuth2Attribute {
                 .name((String) kakaoProfile.get("nickname"))
                 .email((String) kakaoAccount.get("email"))
                 .picture((String) kakaoProfile.get("profile_image_url"))
-                .nameAttributeKey(userNameAttributeName)
-                .attributes(attributes)
-                .provider("kakao")
                 .gender((String) kakaoAccount.get("gender"))
+                .attributes(attributes)
+                .nameAttributeKey(userNameAttributeName)
+                .provider("kakao")
                 .build();
     }
 

@@ -50,6 +50,7 @@ public class JwtTokenizer {
         Date expiration = getTokenExpiration(getAccessTokenExpirationMinutes());
         String base64EncodedSecretKey = encodeBase64SecretKey(secretKey); // JwtTokenizer의 secret-key
 
+        // 기존 access token 생성
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
         return Jwts.builder()
@@ -67,6 +68,7 @@ public class JwtTokenizer {
         Date expiration = getTokenExpiration(getRefreshTokenExpirationMinutes());
         String base64EncodedSecretKey = encodeBase64SecretKey(secretKey);
 
+        // 기존 refresh token 생성
         Key key = getKeyFromBase64EncodedKey(base64EncodedSecretKey);
 
         return Jwts.builder()
