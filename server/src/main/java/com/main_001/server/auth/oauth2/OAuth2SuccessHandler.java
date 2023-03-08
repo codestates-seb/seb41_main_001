@@ -81,6 +81,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String uri = createURI(accessToken, refreshToken, member.getProvider()).toString();
         getRedirectStrategy().sendRedirect(request, response, uri);
+
+        log.info("Login Success !");
     }
 
 //    private void redirect(HttpServletRequest request, HttpServletResponse response, String username, String registrationId) throws IOException {
@@ -121,8 +123,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .scheme("http")
                 .host("localhost")
                 .port(3000)
-                .path("/my-page")
-                .queryParams(queryParams)
+                .path("/members/mypage")
                 .build()
                 .toUri();
     }
