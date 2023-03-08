@@ -1,5 +1,6 @@
 package com.main_001.server.auth.oauth2;
 
+import com.google.api.services.people.v1.model.Birthday;
 import com.main_001.server.exception.BusinessLogicException;
 import com.main_001.server.exception.ExceptionCode;
 import lombok.AccessLevel;
@@ -7,10 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
 import java.util.Map;
 
 @Getter
@@ -30,6 +27,8 @@ public class OAuth2Attribute {
     private String provider;
 
     private String gender;
+
+    private String birth;
 
     public static OAuth2Attribute of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         switch (registrationId) {

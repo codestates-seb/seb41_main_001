@@ -2,13 +2,10 @@ package com.main_001.server.auth.oauth2;
 
 
 import com.main_001.server.auth.utils.CustomAuthorityUtils;
-import com.main_001.server.exception.BusinessLogicException;
-import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.member.entity.Member;
 import com.main_001.server.member.repository.MemberRepository;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -18,10 +15,8 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
