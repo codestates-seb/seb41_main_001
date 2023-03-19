@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 // import Tag from '../components/Tag';
 // import KakaoMap from '../components/KakaoMap';
 import useCurrentLocation from '../utils/useCurrentLocation';
@@ -371,6 +372,8 @@ const EditUser = () => {
   const [lat, setLat] = useState(0);
   const [lon, setLon] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
 
   const [oneUser, setOneUsers] = useState({
     memberId: 1,
@@ -392,8 +395,8 @@ const EditUser = () => {
       axios
         .get(`${process.env.REACT_APP_API_URL}/members/my-page`, {
           headers: {
-            Authorization: `${localStorage.getItem('AccessToken')}`,
-            Refresh: `${localStorage.getItem('RefreshToken')}`,
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
         })
         .then((res: any) => {
@@ -454,8 +457,8 @@ const EditUser = () => {
             },
             {
               headers: {
-                Authorization: `${localStorage.getItem('AccessToken')}`,
-                Refresh: `${localStorage.getItem('RefreshToken')}`,
+                Authorization: accessToken,
+                Refresh: refreshToken,
               },
             },
           )

@@ -1,11 +1,10 @@
-// import { useState } from 'react';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useForm, useWatch } from 'react-hook-form'; // Controller, useFieldArray
+import { useForm, useWatch, Controller } from 'react-hook-form'; // Controller, useFieldArray
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 // import AutoCompleteForArray from '../components/AutoCompleteForArray';
-import useCurrentLocation from '../utils/useCurrentLocation';
 import KakaoMapClick from '../components/KakaoMapClick';
 import Button from '../components/Button';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
@@ -46,13 +45,8 @@ const RecruitForm = styled.form`
         position: relative;
       }
     }
-    tr:nth-child(1),
-    tr:nth-child(2),
-    tr:nth-child(3),
-    tr:nth-child(4),
-    tr:nth-child(5),
-    tr:nth-child(6),
-    tr:nth-child(7) {
+
+    .default {
       input,
       textarea {
         padding: 5px;
@@ -77,23 +71,32 @@ const RecruitForm = styled.form`
         height: 200px;
       }
     }
-    tr:nth-child(4),
-    tr:nth-child(5) {
+
+    .require {
       input {
         width: 100px;
         margin-right: 10px;
       }
     }
-    tr:nth-child(8),
-    tr:nth-child(9) {
+
+    .check {
       label {
         margin-right: 10px;
       }
+      input {
+        /* &:disabled {
+          color: rgba(0, 0, 0, 0.3);
+        } */
+      }
     }
-    tr:nth-child(11) {
+
+    .heartCon {
       input {
         width: 300px;
         margin-right: 10px;
+        /* &:disabled {
+          background-color: rgba(0, 0, 0, 0.3);
+        } */
       }
     }
   }
@@ -119,9 +122,9 @@ interface RecruitFormInput {
   lon: number;
   sex: 'Both' | 'Male' | 'Female';
   ages: number[];
-  heart: number;
-  image: string;
-  tagSearch: string;
+  heartLimit: number;
+  // image: string;
+  // tagSearch: string;
 }
 
 const KakaoMapForClick = ({
@@ -145,16 +148,28 @@ const KakaoMapForClick = ({
 
 const EditRecruit = () => {
   const [recruitData, setRecruitData] = useState<RecruitDataProps | null>();
+  const [tagData, setTagData] = useState([]);
   const { recruitId } = useParams();
   const navigate = useNavigate();
-  // const token = localStorage.getItem('AccessToken');
-  // const memberId = localStorage.getItem('memberId');
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = Number(useSelector((state: any) => state.memberId));
+
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`)
       .then((res) => {
         console.log(res);
         setRecruitData(res.data.data);
+        axios
+          .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=100`)
+          .then((response) => {
+            setTagData(response.data.data);
+            console.log(tagData);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.log(err);
@@ -167,41 +182,27 @@ const EditRecruit = () => {
     getValues,
     setValue,
     formState: { errors },
-  } = useForm<RecruitFormInput>({
-    // defaultValues: {
-    //   recruitTagDtos: recruitData?.recruitTags,
-    //   title: recruitData?.title,
-    //   body: recruitData?.body,
-    //   date: recruitData?.date,
-    //   require: recruitData?.require,
-    //   minRequire: recruitData?.minRequire,
-    //   ages: recruitData?.ageGroup,
-    //   sex: recruitData?.sex,
-    //   heart: recruitData?.heartLimit,
-    //   lat: recruitData?.lat,
-    //   lon: recruitData?.lon,
-    // },
-  });
+  } = useForm<RecruitFormInput>({});
+
   // const { fields, append, remove } = useFieldArray({
   //   control,
   //   name: 'recruitTagDtos',
   //   rules: {
   //     validate: {
   //       moreThanOneTag: (values) =>
-  //         values.length > 0 ? true : '태그는 1개 이상 선택해야 합니다',
+  //         values.length > 0 ? true : '태그를 선택하세요',
   //     },
   //   },
   // });
 
   const onSubmit = (data: RecruitFormInput) => {
-    // console.log(data);
     axios
       .patch(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`, {
         ...data,
-        memberId: Number(localStorage.getItem('memberId')),
+        memberId,
         headers: {
-          Authorization: `${localStorage.getItem('AccessToken')}`,
-          Refresh: `${localStorage.getItem('RefreshToken')}`,
+          Authorization: `${accessToken}`,
+          Refresh: `${refreshToken}`,
         },
       })
       .then((res) => {
@@ -213,38 +214,6 @@ const EditRecruit = () => {
       });
   };
 
-  const { location } = useCurrentLocation();
-
-  // const TAG_DATA = [
-  //   { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
-  //   { tagId: 2, tagName: '농구', emoji: '🏀' },
-  //   { tagId: 3, tagName: '야구', emoji: '⚾️' },
-  //   { tagId: 4, tagName: '배구', emoji: '🏐' },
-  //   { tagId: 5, tagName: '복싱', emoji: '🥊' },
-  //   { tagId: 6, tagName: '탁구', emoji: '🏓' },
-  //   { tagId: 7, tagName: '배드민턴', emoji: '🏸' },
-  //   { tagId: 8, tagName: '테니스/스쿼시', emoji: '🎾' },
-  //   { tagId: 9, tagName: '태권도/유도', emoji: '🥋' },
-  //   { tagId: 10, tagName: '검도', emoji: '⚔️' },
-  //   { tagId: 11, tagName: '무술/주짓수', emoji: '🥋' },
-  //   { tagId: 12, tagName: '족구', emoji: '⚽️' },
-  //   { tagId: 13, tagName: '러닝', emoji: '🏃' },
-  //   { tagId: 14, tagName: '자전거', emoji: '🚴' },
-  //   { tagId: 15, tagName: '등산', emoji: '🏔️' },
-  //   { tagId: 16, tagName: '클라이밍', emoji: '🧗‍♀️' },
-  //   { tagId: 17, tagName: '수영', emoji: '🏊‍♀️' },
-  //   { tagId: 18, tagName: '골프', emoji: '⛳️' },
-  //   { tagId: 19, tagName: '요가/필라테스', emoji: '🧘' },
-  //   { tagId: 20, tagName: '헬스/크로스핏', emoji: '🏋️' },
-  //   { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
-  // ];
-
-  // useCurrentLocation().then((res) => {
-  //   if (res === undefined) return;
-  //   setLatLon(res);
-  // });
-  console.log('render');
-
   return (
     <RecruitFormContainer>
       <h1>모집 게시글 수정하기</h1>
@@ -253,7 +222,7 @@ const EditRecruit = () => {
         <RecruitForm onSubmit={handleSubmit(onSubmit)}>
           <table>
             <tbody>
-              {/* <tr>
+              {/* <tr className="default">
                 <td>태그</td>
                 <td>
                   <AutoCompleteForArray
@@ -262,7 +231,7 @@ const EditRecruit = () => {
                     remove={remove}
                     register={register}
                     control={control}
-                    data={TAG_DATA}
+                    data={tagData}
                     tagLength={1}
                   />
                   <ErrorMessage>
@@ -270,7 +239,7 @@ const EditRecruit = () => {
                   </ErrorMessage>
                 </td>
               </tr> */}
-              <tr>
+              <tr className="default">
                 <td>
                   <label htmlFor="title">제목</label>
                 </td>
@@ -286,7 +255,7 @@ const EditRecruit = () => {
                   <ErrorMessage>{errors?.title?.message}</ErrorMessage>
                 </td>
               </tr>
-              <tr>
+              <tr className="default">
                 <td>
                   <label htmlFor="body">내용</label>
                 </td>
@@ -299,7 +268,7 @@ const EditRecruit = () => {
                   <ErrorMessage>{errors?.body?.message}</ErrorMessage>
                 </td>
               </tr>
-              <tr>
+              <tr className="default">
                 <td>
                   <label htmlFor="date">모임 일시</label>
                 </td>
@@ -309,14 +278,12 @@ const EditRecruit = () => {
                     type="datetime-local"
                     defaultValue={recruitData.date}
                     disabled={recruitData.applies.length > 0}
-                    {...register('date', {
-                      required: '모임 일시는 필수항목입니다',
-                    })}
+                    {...register('date', {})}
                   />
                   <ErrorMessage>{errors?.date?.message}</ErrorMessage>
                 </td>
               </tr>
-              <tr>
+              <tr className="default require">
                 <td>
                   <label htmlFor="require">총 모집 인원</label>
                 </td>
@@ -327,14 +294,13 @@ const EditRecruit = () => {
                     defaultValue={recruitData.require}
                     disabled={recruitData.applies.length > 0}
                     {...register('require', {
-                      required: '총 모집 인원은 필수항목입니다',
                       valueAsNumber: true,
                     })}
                   />
                   명<ErrorMessage>{errors?.require?.message}</ErrorMessage>
                 </td>
               </tr>
-              <tr>
+              <tr className="default require">
                 <td>
                   <label htmlFor="minRequire">모임의 최소충족인원</label>
                 </td>
@@ -345,7 +311,6 @@ const EditRecruit = () => {
                     defaultValue={recruitData.minRequire}
                     disabled={recruitData.applies.length > 0}
                     {...register('minRequire', {
-                      required: '최소충족인원은 필수항목입니다',
                       valueAsNumber: true,
                       validate: {
                         smallerThanRequire: (value) =>
@@ -358,7 +323,7 @@ const EditRecruit = () => {
                   명<ErrorMessage>{errors?.minRequire?.message}</ErrorMessage>
                 </td>
               </tr>
-              <tr>
+              <tr className="default">
                 <td>
                   <label htmlFor="location">모임 장소</label>
                 </td>
@@ -368,10 +333,7 @@ const EditRecruit = () => {
                     type="text"
                     defaultValue={recruitData.location}
                     disabled={recruitData.applies.length > 0}
-                    // placeholder="예) 000카페, 00교 다리 위 중간 엘리베이터 앞"
-                    {...register('location', {
-                      required: '모임 장소는 필수항목입니다',
-                    })}
+                    {...register('location', {})}
                   />
                   <ErrorMessage>{errors?.location?.message}</ErrorMessage>
                 </td>
@@ -382,34 +344,26 @@ const EditRecruit = () => {
                     <label htmlFor="latlon">위치 정보</label>
                   </td>
                   <td>
-                    {/* <div className="mapClick">
-                    <KakaoMapClick
-                    latitude={recruitData?.lat}
-                    longitude={recruitData?.lon}
-                    />
-                  </div> */}
-                    {location && (
+                    {recruitData && (
                       <KakaoMapForClick
                         control={control}
                         setValue={setValue}
-                        currentLat={location.latitude}
-                        currentLon={location.longitude}
-                        // disabled={recruitData.applies.length > 0}
+                        currentLat={recruitData.lat}
+                        currentLon={recruitData.lon}
                       />
                     )}
                   </td>
                 </tr>
               )}
-              {/* <tr>
-              <td>성별 조건</td>
+              <tr className="check">
+                <td>성별 조건</td>
                 <td>
                   {['Both', 'Male', 'Female'].map((item) => (
                     <label key={item} htmlFor={`field-${item}`}>
                       <input
-                        defaultValue={recruitData.sex}
-                        {...register('sex', {
-                          required: '성별 조건은 필수항목입니다',
-                        })}
+                        defaultChecked={recruitData.sex === item}
+                        disabled={recruitData.applies.length > 0}
+                        {...register('sex')}
                         type="radio"
                         value={item}
                         id={`field-${item}`}
@@ -423,19 +377,18 @@ const EditRecruit = () => {
                   <ErrorMessage>{errors?.sex?.message}</ErrorMessage>
                 </td>
               </tr>
-              <tr>
+              <tr className="check">
                 <td>나이대 조건</td>
                 <td>
                   {[10, 20, 30, 40, 50, 60, 70].map((el) => (
                     <label>
                       <input
-                        defaultValue={recruitData.ageGroup[el]}
+                        defaultChecked={recruitData.ageGroup.includes(`${el}`)}
+                        disabled={recruitData.applies.length > 0}
                         key={el}
                         type="checkbox"
                         value={el}
-                        {...register('ages', {
-                          required: '나이대 조건은 필수항목입니다',
-                        })}
+                        {...register('ages')}
                       />
                       {`${el}대`}
                     </label>
@@ -443,27 +396,26 @@ const EditRecruit = () => {
                   <ErrorMessage>{errors?.ages?.message}</ErrorMessage>
                 </td>
               </tr>
-              <tr>
+              <tr className="heartCon">
                 <td>
                   <label htmlFor="heart">심박수 조건</label>
                 </td>
                 <td>
                   <Controller
                     control={control}
-                    name="heart"
-                    // defaultValue={50}
+                    name="heartLimit"
                     defaultValue={recruitData?.heartLimit}
                     render={({ field: { value, onChange } }) => (
                       <>
                         <input
-                          id="heart"
+                          id="heartLimit"
                           type="range"
                           min={0}
                           max={200}
                           step={10}
                           value={value}
-                          {...register('heart', {
-                            required: true,
+                          disabled={recruitData.applies.length > 0}
+                          {...register('heartLimit', {
                             valueAsNumber: true,
                           })}
                           onChange={onChange}
@@ -473,7 +425,7 @@ const EditRecruit = () => {
                     )}
                   />
                 </td>
-              </tr> */}
+              </tr>
               {/* <tr>
                 <td>
                   <label htmlFor="image">이미지</label>

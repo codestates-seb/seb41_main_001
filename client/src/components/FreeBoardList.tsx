@@ -47,7 +47,7 @@ const Board = styled.li`
   /* height: auto; */
   padding: 1rem;
   margin: 1rem;
-  border: 0.05rem solid white;
+  border: 0.01rem solid white;
   border-radius: 1rem;
   display: flex;
   align-items: center;

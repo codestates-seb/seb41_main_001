@@ -7,17 +7,18 @@ import styled from 'styled-components';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import timeDifference from '../utils/timeDifference';
 import CreatorCard from '../components/CreatorCard';
 import Loading from './Loading';
-// import KakaoMap from '../components/KakaoMap';
 import CommentBox from '../components/CommentBox';
 import CommentSubmitBox from '../components/CommentSubmitBox';
 import Button from '../components/Button';
 import FreeCreatorSelectBox from '../components/FreeCreatorSelectBox';
+// import ImageContainer from '../components/ImageContainer';
+import Carousel from '../components/Carousel';
 // import TagLink from '../components/TagLink';
-// import preview from '../img/preview.jpeg';
 
 const FDContainer = styled.main`
   background-color: var(--gray);
@@ -111,6 +112,10 @@ const BoardContainer = styled.div`
         margin-right: 0.5rem;
       } */
     }
+  }
+
+  .carousel {
+    margin-bottom: 1rem;
   }
 
   .location {
@@ -222,7 +227,10 @@ const FreeDetail = () => {
   const [post, setPost] = useState<FreeDataProps | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [likesMemberId, setLikesMemberId] = useState<number[]>();
-  const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  // const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = Number(useSelector((state: any) => state.memberId));
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -297,9 +305,6 @@ const FreeDetail = () => {
             image={post.filePath}
           />
           <ContentContainer>
-            {/* <div>
-              <img src={preview} alt="preview" />
-            </div> */}
             <div className="body">{post.freeBody}</div>
             {/* {post?.location === undefined ? (
               ''
@@ -315,6 +320,23 @@ const FreeDetail = () => {
               </div>
             )} */}
           </ContentContainer>
+          {/* <div className="tags">
+            {post.freeTags.map((el) => (
+              <TagLink
+              onClick={() => {}}
+              key={el.tagId}
+              value={`${el.tagName}`}
+              to={`/freeboards?type=tag&keyword=${el.tagName}`}
+              />
+              ))}
+            </div> */}
+          <div className="carousel">
+            {post.freeImages.length > 0 ? (
+              <Carousel images={post.freeImages.map((el) => el.filePath)} />
+            ) : (
+              ''
+            )}
+          </div>
           {post.location ? (
             <div className="location">
               <i className="fa-solid fa-location-dot" />
@@ -323,29 +345,19 @@ const FreeDetail = () => {
           ) : (
             ''
           )}
-          {/* <div className="tags">
-            {post.freeTags.map((el) => (
-              <TagLink
-                onClick={() => {}}
-                key={el.tagId}
-                value={`${el.tagName}`}
-                to={`/freeboards?type=tag&keyword=${el.tagName}`}
-              />
-            ))}
-          </div> */}
           <div className="btnCon">
             <LikeButton
-              likes={likesMemberId!.includes(LOGIN_ID)}
+              likes={likesMemberId!.includes(memberId)}
               value={`좋아요 ${post.freeLikes.length}`}
               onClick={() => {
                 axios
                   .patch(
                     `${process.env.REACT_APP_API_URL}/freeboards/${freeId}/likes`,
-                    { memberId: LOGIN_ID },
+                    { memberId },
                     {
                       headers: {
-                        Authorization: localStorage.getItem('AccessToken'),
-                        Refresh: localStorage.getItem('RefreshToken'),
+                        Authorization: accessToken,
+                        Refresh: refreshToken,
                       },
                     },
                   )
@@ -368,7 +380,7 @@ const FreeDetail = () => {
               }}
               icon={<i className="fa-solid fa-heart" />}
             />
-            {post.memberId === LOGIN_ID ? <FreeCreatorSelectBox /> : ''}
+            {post.memberId === memberId ? <FreeCreatorSelectBox /> : ''}
           </div>
           <div className="commentCount">
             {post.freeComments.length}

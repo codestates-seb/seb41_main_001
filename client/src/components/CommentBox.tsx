@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import timeDifference from '../utils/timeDifference';
 import Button from './Button';
@@ -121,7 +122,10 @@ const CommentBox = (props: {
     image,
   } = props;
 
-  const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  // const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const storedMemberId = Number(useSelector((state: any) => state.memberId));
 
   const [modifying, setModifying] = useState<boolean>(false);
 
@@ -132,10 +136,10 @@ const CommentBox = (props: {
         `${process.env.REACT_APP_API_URL}/${board}/${boardId}/${commentId}`,
         {
           headers: {
-            Authorization: localStorage.getItem('AccessToken'),
-            Refresh: localStorage.getItem('RefreshToken'),
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
-          data: { memberId: LOGIN_ID },
+          data: { memberId: storedMemberId },
         },
       )
       .then((res) => {
@@ -182,7 +186,7 @@ const CommentBox = (props: {
           </div>
         </Link>
         <div>
-          {memberId === LOGIN_ID ? (
+          {memberId === storedMemberId ? (
             <>
               {modifying === false ? (
                 <Button value="수정" onClick={() => setModifying(true)} />

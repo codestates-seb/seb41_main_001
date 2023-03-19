@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import FreeDataProps from '../interfaces/FreeDataProps';
 import Loading from './Loading';
@@ -160,6 +161,10 @@ const ButtonContainer = styled.div`
 `;
 
 const EditFreeboard = () => {
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = useSelector((state: any) => state.memberId);
+
   const {
     register,
     handleSubmit,
@@ -188,16 +193,17 @@ const EditFreeboard = () => {
     freeComments: [],
     authorLocation: '',
     filePath: '',
+    freeImages: [],
   });
   const { freeId } = useParams();
   useEffect(() => {
     const getOriginalPost = () => {
       axios
         .get(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
-          headers: {
-            Authorization: `${localStorage.getItem('AccessToken')}`,
-            Refresh: `${localStorage.getItem('RefreshToken')}`,
-          },
+          // headers: {
+          //   Authorization: `${localStorage.getItem('AccessToken')}`,
+          //   Refresh: `${localStorage.getItem('RefreshToken')}`,
+          // },
         })
         .then((res: any) => {
           setPosting(res.data.data);
@@ -212,21 +218,21 @@ const EditFreeboard = () => {
     // data.content = content;
     console.log('here is ', {
       ...data,
-      memberId: `${localStorage.getItem('memberId')}`,
+      memberId,
       // freeId: posting.freeId,
     });
     axios
       .patch(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
         ...data,
-        memberId: `${localStorage.getItem('memberId')}`,
+        memberId,
         // tagList: tags.reduce((r, e) => {
         //   r.push({ tagId: e.tagId });
         //   return r;
         // }, []),
         // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
         headers: {
-          Authorization: `${localStorage.getItem('AccessToken')}`,
-          Refresh: `${localStorage.getItem('RefreshToken')}`,
+          Authorization: accessToken,
+          Refresh: refreshToken,
         },
       })
       .then((res) => {

@@ -2,6 +2,17 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setMemberId,
+  setBirth,
+  setHeart,
+  setSex,
+  setAccessTokenExpiresAt,
+  setRefreshTokenExpiresAt,
+} from '../redux/actions';
 import ButtonLink from '../components/ButtonLink';
 import Button from '../components/Button';
 
@@ -19,8 +30,32 @@ const LogInContainer = styled.main`
   }
 `;
 
+const KakaoOauth = styled.a`
+  text-decoration: none;
+  font-size: 18px;
+  color: black;
+  border: 1px solid white;
+  border-radius: 0.3rem;
+  background-color: yellow;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  width: 10rem;
+  display: flex;
+  text-align: center;
+  > i {
+    margin-right: 0.3rem;
+  }
+  span {
+    width: 8rem;
+  }
+`;
+
+const GoogleOauth = styled(KakaoOauth)`
+  background-color: white;
+`;
+
 const LogInForm = styled.form`
-  margin: 40px 0px 20px 0px;
+  margin: 1rem 0;
   width: 500px;
   padding: 20px;
   display: flex;
@@ -86,7 +121,8 @@ interface LoginProps {
   password: string;
 }
 
-const LogIn = ({ setToken }: any) => {
+const LogIn = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     register,
@@ -100,14 +136,15 @@ const LogIn = ({ setToken }: any) => {
       .post(`${process.env.REACT_APP_API_URL}/members/login`, data)
       .then((res) => {
         console.log(res);
-        localStorage.setItem('AccessToken', res.headers.authorization!);
-        localStorage.setItem('RefreshToken', res.headers.refresh!);
-        localStorage.setItem('memberId', res.headers['member-id']!);
-        localStorage.setItem('birth', res.headers.birth!);
-        localStorage.setItem('heart', res.headers.heart!);
-        localStorage.setItem('sex', res.headers.sex!);
+        dispatch(setAccessToken(res.headers.authorization!));
+        dispatch(setRefreshToken(res.headers.refresh!));
+        dispatch(setMemberId(res.headers['member-id']!));
+        dispatch(setHeart(res.headers.heart!));
+        dispatch(setBirth(res.headers.birth!));
+        dispatch(setSex(res.headers.sex!));
+        dispatch(setAccessTokenExpiresAt(Date.now() + 2400000)); // 40분
+        dispatch(setRefreshTokenExpiresAt(Date.now() + 252000000)); // 4200분
         navigate('/');
-        setToken(res.headers.authorization);
         // window.location.reload();
       })
       .catch((err) => {
@@ -132,6 +169,14 @@ const LogIn = ({ setToken }: any) => {
   return (
     <LogInContainer>
       <h1>로그인</h1>
+      <KakaoOauth href="https://heart1.site/oauth2/authorization/kakao">
+        <i className="fa-solid fa-comment" />
+        <span>카카오 로그인</span>
+      </KakaoOauth>
+      <GoogleOauth href="https://heart1.site/oauth2/authorization/google">
+        <i className="fa-brands fa-google" />
+        <span>구글 로그인</span>
+      </GoogleOauth>
       <LogInForm onSubmit={handleSubmit(onSubmit)}>
         <table>
           <tbody>

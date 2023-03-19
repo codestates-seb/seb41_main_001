@@ -1,7 +1,8 @@
-// import { useState } from 'react';
 import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 // import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import axios from 'axios';
 import AutoCompleteForArray from '../components/AutoCompleteForArray';
@@ -140,6 +141,9 @@ const KakaoMapForClick = ({
 };
 
 const CreateRecruit = () => {
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = useSelector((state: any) => state.memberId);
   const navigate = useNavigate();
   const {
     register,
@@ -155,10 +159,22 @@ const CreateRecruit = () => {
     rules: {
       validate: {
         moreThanOneTag: (values) =>
-          values.length > 0 ? true : '태그는 1개 이상 선택해야 합니다',
+          values.length > 0 ? true : '태그를 선택하세요',
       },
     },
   });
+  const [tagData, setTagData] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=100`)
+      .then((res) => {
+        setTagData(res.data.data);
+        console.log(tagData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const onSubmit = (data: RecruitFormInput) => {
     // tagSearch는 postBody에서 제외함.
@@ -167,13 +183,13 @@ const CreateRecruit = () => {
       .post(
         `${process.env.REACT_APP_API_URL}/recruits`,
         {
-          memberId: localStorage.getItem('memberId'),
+          memberId,
           ...postBody,
         },
         {
           headers: {
-            Authorization: localStorage.getItem('AccessToken'),
-            Refresh: localStorage.getItem('RefreshToken'),
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
         },
       )
@@ -185,29 +201,6 @@ const CreateRecruit = () => {
   };
   const { location } = useCurrentLocation();
   console.log(location);
-  const TAG_DATA = [
-    { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
-    { tagId: 2, tagName: '농구', emoji: '🏀' },
-    { tagId: 3, tagName: '야구', emoji: '⚾️' },
-    { tagId: 4, tagName: '배구', emoji: '🏐' },
-    { tagId: 5, tagName: '복싱', emoji: '🥊' },
-    { tagId: 6, tagName: '탁구', emoji: '🏓' },
-    { tagId: 7, tagName: '배드민턴', emoji: '🏸' },
-    { tagId: 8, tagName: '테니스/스쿼시', emoji: '🎾' },
-    { tagId: 9, tagName: '태권도/유도', emoji: '🥋' },
-    { tagId: 10, tagName: '검도', emoji: '⚔️' },
-    { tagId: 11, tagName: '무술/주짓수', emoji: '🥋' },
-    { tagId: 12, tagName: '족구', emoji: '⚽️' },
-    { tagId: 13, tagName: '러닝', emoji: '🏃' },
-    { tagId: 14, tagName: '자전거', emoji: '🚴' },
-    { tagId: 15, tagName: '등산', emoji: '🏔️' },
-    { tagId: 16, tagName: '클라이밍', emoji: '🧗‍♀️' },
-    { tagId: 17, tagName: '수영', emoji: '🏊‍♀️' },
-    { tagId: 18, tagName: '골프', emoji: '⛳️' },
-    { tagId: 19, tagName: '요가/필라테스', emoji: '🧘' },
-    { tagId: 20, tagName: '헬스/크로스핏', emoji: '🏋️' },
-    { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
-  ];
 
   return (
     <RecruitFormContainer>
@@ -226,7 +219,7 @@ const CreateRecruit = () => {
                   remove={remove}
                   register={register}
                   control={control}
-                  data={TAG_DATA}
+                  data={tagData}
                   tagLength={1}
                 />
                 <ErrorMessage>
@@ -332,7 +325,7 @@ const CreateRecruit = () => {
             </tr>
             <tr className="mapCon">
               <td>
-                <label htmlFor="latlon">카카오맵</label>
+                <label htmlFor="latlon">위치 정보</label>
               </td>
               <td>
                 {/* <div className="mapClick">

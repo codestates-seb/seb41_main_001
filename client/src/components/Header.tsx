@@ -1,7 +1,25 @@
+/* eslint-disable no-nested-ternary */
 import styled from 'styled-components';
 import { useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setMemberId,
+  setBirth,
+  setHeart,
+  setSex,
+  deleteAccessToken,
+  deleteRefreshToken,
+  deleteMemberId,
+  deleteBirth,
+  deleteHeart,
+  deleteSex,
+  // setAccessTokenExpiresAt,
+  // setRefreshTokenExpiresAt
+} from '../redux/actions';
 import ButtonLink from './ButtonLink';
 import Button from './Button';
 
@@ -67,24 +85,6 @@ const ButtonsContainer = styled.div`
   }
 `;
 
-// const Button = styled(Link)`
-//   text-decoration: none;
-//   background-color: var(--gray);
-//   color: white;
-//   border-radius: 5px;
-//   margin-left: 10px;
-//   padding: 8px 14px;
-//   transition: 0.2s ease-in-out;
-//   font-size: 16px;
-//   white-space: nowrap;
-//   &:hover {
-//     cursor: pointer;
-//     background-color: var(--neon-yellow);
-//     color: black;
-//     transition: 0.2s ease-in-out;
-//   }
-// `;
-
 const Board = styled.nav`
   display: flex;
   align-items: center;
@@ -112,72 +112,115 @@ const BoardLink = styled(Link)<{ path: string; to: string }>`
   }
 `;
 
-interface HeaderProps {
-  token: string | null;
-  setToken: any;
-}
-
-const Header = ({ token, setToken }: HeaderProps) => {
+const Header = () => {
+  const dispatch = useDispatch();
   const { pathname: path } = useLocation();
-  const Authorization = token;
-  const Refresh = localStorage.getItem('RefreshToken');
+  const navigate = useNavigate();
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const accessTokenExpiresAt = useSelector(
+    (state: any) => state.accessTokenExpiresAt,
+  );
+  const refreshTokenExpiresAt = useSelector(
+    (state: any) => state.refreshTokenExpiresAt,
+  );
 
   useEffect(() => {
-    if (Authorization) {
+    if (!accessToken || !refreshToken) {
+      return;
+    }
+
+    const now = Date.now();
+
+    if (now >= accessTokenExpiresAt) {
+      dispatch(deleteAccessToken());
+      dispatch(deleteRefreshToken());
+      return;
+    }
+
+    if (now >= refreshTokenExpiresAt - 10 * 60 * 1000) {
       axios
         .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
           params: {
-            Authorization,
-            Refresh,
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
           headers: {
-            Authorization,
-            Refresh,
+            Authorization: accessToken,
+            Refresh: refreshToken,
           },
         })
         .then((res) => {
-          localStorage.setItem('AccessToken', res.headers.authorization!);
-          localStorage.setItem('RefreshToken', res.headers.refresh!);
-          localStorage.setItem('memberId', res.headers['member-id']!);
-          localStorage.setItem('birth', res.headers.birth!);
-          localStorage.setItem('heart', res.headers.heart!);
-          localStorage.setItem('sex', res.headers.sex!);
+          console.log(res);
+          dispatch(setAccessToken(res.headers.authorization!));
+          dispatch(setRefreshToken(res.headers.refresh!));
+          dispatch(setMemberId(res.headers['member-id']!));
+          dispatch(setHeart(res.headers.heart!));
+          dispatch(setBirth(res.headers.birth!));
+          dispatch(setSex(res.headers.sex!));
         })
         .catch(() => {
-          localStorage.removeItem('AccessToken');
-          localStorage.removeItem('RefreshToken');
-          localStorage.removeItem('memberId');
-          localStorage.removeItem('birth');
-          localStorage.removeItem('heart');
-          localStorage.removeItem('sex');
-          setToken(null);
+          dispatch(deleteAccessToken());
+          dispatch(deleteRefreshToken());
+          dispatch(deleteMemberId());
+          dispatch(deleteHeart());
+          dispatch(deleteBirth());
+          dispatch(deleteSex());
+          navigate('/login');
         });
     }
-  }, []);
+  }, [accessToken, refreshToken, accessTokenExpiresAt, refreshTokenExpiresAt]);
 
   const logOut = () => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/members/logout`, {
-        headers: {
-          Authorization: localStorage.getItem('AccessToken'),
-          Refresh: localStorage.getItem('RefreshToken'),
-        },
+      .get(`${process.env.REACT_APP_API_URL}/members/re-issue`, {
         params: {
-          Authorization: localStorage.getItem('AccessToken'),
-          Refresh: localStorage.getItem('RefreshToken'),
+          Authorization: accessToken,
+          Refresh: refreshToken,
+        },
+        headers: {
+          Authorization: accessToken,
+          Refresh: refreshToken,
         },
       })
       .then((res) => {
         console.log(res);
-        localStorage.removeItem('AccessToken');
-        localStorage.removeItem('RefreshToken');
-        localStorage.removeItem('memberId');
-        localStorage.removeItem('birth');
-        localStorage.removeItem('heart');
-        localStorage.removeItem('sex');
-        setToken(null);
-
-        // window.location.reload();
+        dispatch(setAccessToken(res.headers.authorization!));
+        dispatch(setRefreshToken(res.headers.refresh!));
+        dispatch(setMemberId(res.headers['member-id']!));
+        dispatch(setHeart(res.headers.heart!));
+        dispatch(setBirth(res.headers.birth!));
+        dispatch(setSex(res.headers.sex!));
+        axios
+          .delete(`${process.env.REACT_APP_API_URL}/members/logout`, {
+            headers: {
+              Authorization: accessToken,
+              Refresh: refreshToken,
+            },
+            params: {
+              Authorization: accessToken,
+              Refresh: refreshToken,
+            },
+          })
+          .then((response) => {
+            console.log(response);
+            dispatch(deleteAccessToken());
+            dispatch(deleteRefreshToken());
+            dispatch(deleteMemberId());
+            dispatch(deleteHeart());
+            dispatch(deleteBirth());
+            dispatch(deleteSex());
+            navigate('/login');
+          });
+      })
+      .catch(() => {
+        dispatch(deleteAccessToken());
+        dispatch(deleteRefreshToken());
+        dispatch(deleteMemberId());
+        dispatch(deleteHeart());
+        dispatch(deleteBirth());
+        dispatch(deleteSex());
+        navigate('/login');
       });
   };
 
@@ -209,7 +252,7 @@ const Header = ({ token, setToken }: HeaderProps) => {
           <i className="fa-solid fa-magnifying-glass" />
           <input placeholder="Search here..." />
         </form> */}
-        {token ? (
+        {accessToken ? (
           <>
             <Button value="로그아웃" onClick={logOut} />
             <ButtonLink value="마이페이지" to="/members/mypage" />

@@ -2,6 +2,7 @@
 import axios from 'axios';
 import React, { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import AutoCompleteForString from './AutoCompleteForString';
 import Button from './Button';
@@ -127,7 +128,10 @@ const RecruitReviewModal = ({
   const [filterTag, setFilterTag] = useState<string>('');
   const [star, setStar] = useState<number>(5);
   const reviewBody = useRef('');
-  const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  // const LOGIN_ID = Number(localStorage.getItem('memberId'));
+  const accessToken = useSelector((state: any) => state.accessToken);
+  const refreshToken = useSelector((state: any) => state.refreshToken);
+  const memberId = Number(useSelector((state: any) => state.memberId));
   const APPLICANTS = applies.reduce(
     (r: { tagId: number; tagName: string }[], e) => [
       ...r,
@@ -141,7 +145,7 @@ const RecruitReviewModal = ({
     if (reviewBody.current.trim()) {
       console.log(`POST /recruits/${recruitId}/reviews, {
             "body": ${reviewBody.current},
-            "memberId": ${LOGIN_ID},
+            "memberId": ${memberId},
             "star": ${star},
             "worstMemberNickname": ${filterTag || ''}
           }`);
@@ -150,14 +154,14 @@ const RecruitReviewModal = ({
           `${process.env.REACT_APP_API_URL}/recruits/${recruitId}/reviews`,
           {
             body: reviewBody.current,
-            memberId: LOGIN_ID,
+            memberId,
             star,
             worstMemberNickname: filterTag,
           },
           {
             headers: {
-              Authorization: localStorage.getItem('AccessToken'),
-              Refresh: localStorage.getItem('RefreshToken'),
+              Authorization: accessToken,
+              Refresh: refreshToken,
             },
           },
         )
@@ -236,7 +240,7 @@ const RecruitReviewModal = ({
                       emoji: '👑',
                     },
                     ...APPLICANTS,
-                  ].filter((el) => el.tagId !== LOGIN_ID)}
+                  ].filter((el) => el.tagId !== memberId)}
                 />
                 <div>* 옵션항목입니다</div>
               </td>
