@@ -1,8 +1,18 @@
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
+import {
+  setAccessToken,
+  setRefreshToken,
+  setMemberId,
+  setBirth,
+  setHeart,
+  setSex,
+  setAccessTokenExpiresAt,
+  setRefreshTokenExpiresAt,
+} from '../redux/actions';
 // import Badge from '../components/Badge';
 import Loading from './Loading';
 import timeDifference from '../utils/timeDifference';
@@ -206,6 +216,7 @@ const RegisteredBoard = styled.div`
 //     padding: 3px 0;
 //   }
 // `;
+
 const PersonalInfo = styled.div`
   border: 2px solid white;
   padding: 10px;
@@ -237,6 +248,7 @@ const InfoBlock = styled.div`
 
 const MyPage = () => {
   // const { memberId } = useParams();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const [wroteTab, setWroteTab] = useState('작성모집');
   const [likedTab, setLikedTab] = useState('좋아요모집');
@@ -286,22 +298,41 @@ const MyPage = () => {
   const accessToken = useSelector((state: any) => state.accessToken);
   const refreshToken = useSelector((state: any) => state.refreshToken);
 
+  const getOneUser = () => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/members/my-page`, {
+        headers: {
+          Authorization: accessToken,
+          Refresh: refreshToken,
+        },
+      })
+      .then((res: any) => {
+        console.log(res.data);
+        setOneUsers(res.data);
+        setIsLoading(false);
+      })
+      .catch((err: any) => console.log(err));
+  };
+
   useEffect(() => {
-    const getOneUser = () => {
+    if (!accessToken) {
       axios
-        .get(`${process.env.REACT_APP_API_URL}/members/my-page`, {
-          headers: {
-            Authorization: accessToken,
-            Refresh: refreshToken,
-          },
+        .head(window.location.href)
+        .then((res) => {
+          console.log(res);
+          dispatch(setAccessToken(res.headers.authorization!));
+          dispatch(setRefreshToken(res.headers.refresh!));
+          dispatch(setMemberId(res.headers['member-id']!));
+          dispatch(setHeart(res.headers.heart!));
+          dispatch(setBirth(res.headers.birth!));
+          dispatch(setSex(res.headers.sex!));
+          dispatch(setAccessTokenExpiresAt(Date.now() + 2400000)); // 40분
+          dispatch(setRefreshTokenExpiresAt(Date.now() + 252000000)); // 4200분
         })
-        .then((res: any) => {
-          console.log(res.data);
-          setOneUsers(res.data);
-          setIsLoading(false);
-        })
-        .catch((err: any) => console.log(err));
-    };
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     getOneUser();
   }, []);
 

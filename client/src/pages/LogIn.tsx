@@ -2,10 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
-import {
-  // useSelector,
-  useDispatch,
-} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   setAccessToken,
   setRefreshToken,
@@ -33,8 +30,32 @@ const LogInContainer = styled.main`
   }
 `;
 
+const KakaoOauth = styled.a`
+  text-decoration: none;
+  font-size: 18px;
+  color: black;
+  border: 1px solid white;
+  border-radius: 0.3rem;
+  background-color: yellow;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  width: 10rem;
+  display: flex;
+  text-align: center;
+  > i {
+    margin-right: 0.3rem;
+  }
+  span {
+    width: 8rem;
+  }
+`;
+
+const GoogleOauth = styled(KakaoOauth)`
+  background-color: white;
+`;
+
 const LogInForm = styled.form`
-  margin: 40px 0px 20px 0px;
+  margin: 1rem 0;
   width: 500px;
   padding: 20px;
   display: flex;
@@ -123,15 +144,7 @@ const LogIn = () => {
         dispatch(setSex(res.headers.sex!));
         dispatch(setAccessTokenExpiresAt(Date.now() + 2400000)); // 40분
         dispatch(setRefreshTokenExpiresAt(Date.now() + 252000000)); // 4200분
-        // localStorage.setItem('AccessToken', res.headers.authorization!);
-        // localStorage.setItem('RefreshToken', res.headers.refresh!);
-        // localStorage.setItem('memberId', res.headers['member-id']!);
-        // localStorage.setItem('birth', res.headers.birth!);
-        // localStorage.setItem('heart', res.headers.heart!);
-        // localStorage.setItem('sex', res.headers.sex!);
-        // 로컬스토리지 말고 스토어에 저장하기
         navigate('/');
-        // setToken(res.headers.authorization);
         // window.location.reload();
       })
       .catch((err) => {
@@ -156,6 +169,14 @@ const LogIn = () => {
   return (
     <LogInContainer>
       <h1>로그인</h1>
+      <KakaoOauth href="https://heart1.site/oauth2/authorization/kakao">
+        <i className="fa-solid fa-comment" />
+        <span>카카오 로그인</span>
+      </KakaoOauth>
+      <GoogleOauth href="https://heart1.site/oauth2/authorization/google">
+        <i className="fa-brands fa-google" />
+        <span>구글 로그인</span>
+      </GoogleOauth>
       <LogInForm onSubmit={handleSubmit(onSubmit)}>
         <table>
           <tbody>
