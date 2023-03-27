@@ -75,11 +75,15 @@ public class OAuth2MemberService implements OAuth2UserService<OAuth2UserRequest,
                 .phone(phone)
                 .roles(roles)
                 .picture(attributes.getPicture())
-                .provider(attributes.getProvider())
+                .provider(attributes.getProvider() != null ? makeFirstStringUpperCase(attributes.getProvider()) : null)
                 .sex(attributes.getGender())
                 .heart(50)
                 .build();
 
         memberRepository.save(member);
+    }
+
+    private String makeFirstStringUpperCase(String gender) {
+        return gender.substring(0, 1).toUpperCase() + gender.substring(1);
     }
 }
