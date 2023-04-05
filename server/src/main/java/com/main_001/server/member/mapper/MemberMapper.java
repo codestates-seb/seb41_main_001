@@ -81,6 +81,7 @@ public interface MemberMapper {
     }
 
     default MemberDto.MyResponse memberToMemberMyResponse(Member member) {
+        // profile image
         MemberImage memberImage = member.getMemberImage();
 
         // Tag

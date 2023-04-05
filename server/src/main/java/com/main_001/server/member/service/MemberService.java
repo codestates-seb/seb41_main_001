@@ -80,16 +80,21 @@ public class MemberService {
 
     // 이메일, 닉네임, 전화번호를 따로 검사하는 로직이 있기 때문에 회원가입은 바로 저장소에 저장될 수 있다.
     // TODO 탈퇴한 회원의 이메일, 닉네임, 전화번호까지 고려해서 체크해주어야 한다. entity에서 unique? or 다른 조건문
-    public Member createMember(Member member) {
+    @SneakyThrows
+    @Transactional
+    public Member createMember(Member member, MultipartFile file) {
         // 비밀번호 암호화
-        // TODO 개발 완료 후 봉인 해제
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);
 
         // DB에 Member Role 저장
-        // TODO 개발 완료 후 봉인 해제
         List<String> roles = authorityUtils.createRoles(member.getEmail());
         member.setRoles(roles);
+
+        // 이미지 파일이 존재하면 프로필 이미지 생성
+        if (file.getContentType() != null) {
+            return createProfileImage(member, file);
+        }
 
         return memberRepository.save(member);
     }
@@ -103,12 +108,8 @@ public class MemberService {
 
     // 프로필 이미지 생성
     @SneakyThrows
-    @Transactional
-    public void createProfile(String refreshToken, MultipartFile multipartFile) {
-        Long memberId = redisUtils.getId(refreshToken);
-        Member findMember = findVerifiedMember(memberId);
-
-        UploadFile uploadFile = s3Service.uploadImage(multipartFile);
+    public Member createProfileImage(Member member, MultipartFile file) {
+        UploadFile uploadFile = s3Service.uploadImage(file);
 
         MemberImage memberImage = MemberImage.builder()
                 .originalFileName(uploadFile.getOriginalFileName())
@@ -117,8 +118,10 @@ public class MemberService {
                 .fileSize(uploadFile.getFileSize())
                 .build();
 
-        findMember.addMemberImage(memberImage);
-        memberRepository.save(findMember);
+        memberImage.setMember(member);
+        member.addMemberImage(memberImage);
+
+        return memberRepository.save(member);
     }
 
     // 이미지 여러개 업로드(리팩토링 필요)
@@ -166,18 +169,6 @@ public class MemberService {
 //                break;
 //            }
 //        }
-//    }
-
-    // 프로필 이미지 제거(리팩토링 필요)
-//    public void deleteProfileImage(String refreshToken) {
-//        Long memberId = redisUtils.getId(refreshToken);
-//        Member findMember = findVerifiedMember(memberId);
-//
-//        if (ObjectUtils.isEmpty(findMember.getMemberImage())) {
-//            throw new BusinessLogicException(ExceptionCode.NO_PROFILE_IMAGE);
-//        }
-//
-//        memberImageRepository.deleteByMemberImageId(findMember.getMemberImage().getMemberImageId());
 //    }
 
     // 이메일 중복여부 중복이면 true, 중복이 아니면 false
@@ -303,10 +294,11 @@ public class MemberService {
     }
 
     // 마이페이지 수정 로직, tag는 하나씩만 존재하도록 체크 필요함
-    public Member updateMember(String refreshToken, Member member, String curPassword, String newPassword) {
+    public Member updateMember(String refreshToken, Member member, String curPassword, String newPassword, MultipartFile file) {
         Long memberId = redisUtils.getId(refreshToken);
         Member findMember = findVerifiedMember(memberId);
 
+        // 닉네임, 전화번호, 지역에 대한 변경이 있는 경우 반영한다.
         Optional.ofNullable(member.getNickname())
                 .ifPresent(findMember::setNickname);
         Optional.ofNullable(member.getPhone())
@@ -314,12 +306,13 @@ public class MemberService {
         Optional.ofNullable(member.getLocation())
                 .ifPresent(findMember::setLocation);
 
+        // 좌표가 존재하면 해당 좌표를 저장한다.
         if (!ObjectUtils.isEmpty(member.getLat()))
             findMember.setLat(member.getLat());
-
         if (!ObjectUtils.isEmpty(member.getLon()))
             findMember.setLon(member.getLon());
 
+        // 태그를 변경하면 해당 회원이 선택한 태그를 샂게한 후 다시 입력한다.
         if (!member.getMemberTags().isEmpty()) {
             memberTagRepository.deleteAllByMember_MemberId(memberId);
             findMember.setMemberTags(member.getMemberTags());
@@ -328,11 +321,18 @@ public class MemberService {
 //        Optional.ofNullable(member.getMemberTags())
 //                .ifPresent(findMember::setMemberTags);
 
+        // 비밀번호 변경이 일어나는 경우 수행한다.
         if (!ObjectUtils.isEmpty(curPassword) && !ObjectUtils.isEmpty(newPassword)) {
             isValid(findMember, curPassword);
 
             String encryptedPassword = passwordEncoder.encode(newPassword);
             findMember.setPassword(encryptedPassword);
+        }
+
+        if (file.getContentType() != null) {
+            // 프로필 이미지가 존재하는 경우 삭제해준 후에 이미지 등록
+            deleteProfileImage(memberId);
+            return createProfileImage(findMember, file);
         }
 
         return memberRepository.save(findMember);
@@ -366,7 +366,6 @@ public class MemberService {
 //        if (!findMember.getPassword().equals(password))
 //            throw new RuntimeException("Different Password!");
 
-//        TODO 개발 완료 후 봉인 해제
         if (!passwordEncoder.matches(password, findMember.getPassword()))
             throw new BusinessLogicException(ExceptionCode.WRONG_PASSWORD);
     }
@@ -383,6 +382,21 @@ public class MemberService {
         Optional<Member> optionalUser = memberRepository.findByEmail(email);
         return optionalUser.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    }
+
+    // 프로필 이미지 제거
+    @Transactional
+    public void deleteProfileImage(long memberId) {
+        Member findMember = findVerifiedMember(memberId);
+
+        try {
+            s3Service.deleteImage(findMember.getMemberImage().getStoredFileName());
+            Long memberImageId = findMember.getMemberImage().getMemberImageId();
+            findMember.setMemberImage(null);
+            memberImageRepository.deleteByMemberImageId(memberImageId);
+        } catch (NullPointerException e) {
+            throw new BusinessLogicException(ExceptionCode.NO_PROFILE_IMAGE);
+        }
     }
 
     // 임시 비밀번호 생성

@@ -79,7 +79,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.addHeader("birth", member.getBirth());
         response.addHeader("sex", member.getSex());
 
-        String uri = createURI(accessToken, refreshToken, member.getProvider()).toString();
+        String uri = createURI(accessToken, refreshToken, member).toString();
         getRedirectStrategy().sendRedirect(request, response, uri);
 
         log.info("Login Success !");
@@ -103,10 +103,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 //    }
 
     // OAuth2 인증 업체를 추가하면 파라미터(provider)를 추가해서 경우에 따라 uri를 연결해주어야 한다.(프론트 url로 주소를 잡아주어야 한다.)
-    private URI createURI(String accessToken, String refreshToken, String provider) {
+    private URI createURI(String accessToken, String refreshToken, Member member) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("Authorization", "Bearer " + accessToken);
         queryParams.add("Refresh", refreshToken);
+        queryParams.add("memberId", member.getMemberId().toString());
+        queryParams.add("sex", member.getSex());
+        queryParams.add("birth", member.getBirth());
+
 
 //        return UriComponentsBuilder // 일단 메인 페이지로 넘어갈 수 있도록 만들기
 //                .newInstance()

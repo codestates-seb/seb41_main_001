@@ -72,7 +72,6 @@ public class Member {
     private String picture; // OAuth2 회원의 이미지 경로
 
     // member의 권한 정보 테이블과 매핑
-    // TODO 개발 완료 후 봉인 해제
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
@@ -109,21 +108,7 @@ public class Member {
     private List<FreeComment> freeComments = new ArrayList<>();
 
     @Builder
-    public Member(Long memberId,
-                  String name,
-                  String nickname,
-                  String birth,
-                  String password,
-                  String email,
-                  String phone,
-                  String sex,
-                  String location,
-                  double lat,
-                  double lon,
-                  int heart,
-                  String provider,
-                  String picture,
-                  List<String> roles) {
+    public Member(Long memberId, String name, String nickname, String birth, String email, String phone, String sex, String location, double lat, double lon, int heart, String provider, String picture, List<String> roles) {
         this.memberId = memberId;
         this.name = name;
         this.nickname = nickname;
