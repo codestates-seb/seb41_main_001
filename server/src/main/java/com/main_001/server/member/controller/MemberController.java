@@ -35,12 +35,13 @@ public class MemberController {
     // 회원가입
     @ApiOperation(value = "회원가입", notes = "닉네임, 이메일, 비밀번호를 입력하여 회원 정보를 등록한다.")
     @PostMapping( "/signup")
-    public ResponseEntity signUp(@RequestBody MemberDto.MemberPostDto memberPost) {
-        Member member = memberMapper.memberPostToMember(memberPost);
+    public ResponseEntity signUp(@RequestPart(value ="member") MemberDto.MemberPostDto memberPost,
+                                 @RequestPart(value = "file", required = false)MultipartFile file) {
+        Member member = memberService.createMember(memberMapper.memberPostToMember(memberPost), file);
 
-        Member createMember = memberService.createMember(member);
-
-        return new ResponseEntity<>(memberMapper.memberToMemberMyResponse(createMember), HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                memberMapper.memberToMemberMyResponse(member),
+                HttpStatus.CREATED);
     }
 
     // 프로필 이미지 등록(Edit 화면), 추후 token으로 인증받아서 memberId에 접근한다.
@@ -48,25 +49,9 @@ public class MemberController {
     @PostMapping("/profileImage")
     public void createProfileImage(@RequestHeader(name = "Refresh") String refreshToken,
                                   @RequestPart(value = "file", required = false) MultipartFile files) {
-        memberService.createProfile(refreshToken, files);
+        Member member = memberService.findMyPage(refreshToken);
+        memberService.createProfileImage(member, files);
     }
-    // 추후 리팩토링 필요한 코드
-//    @PostMapping(path = "/profileImage/{member-id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public void createProfileImage(@PathVariable(value = "member-id") long memberId,
-//                                   @RequestPart(value = "file", required = false) MultipartFile files) {
-//        memberService.createProfile(memberId, files);
-//    }
-
-    // 토큰 버전 프로필 사진 제거
-//    @DeleteMapping(path = "/profileImage")
-//    public void deleteProfileImage(@RequestHeader(name = "Refresh") String refreshToken) {
-//        memberService.deleteProfileImage(refreshToken);
-//    }
-    // pathvariable 버전 프로필 사진 제거
-//    @DeleteMapping(path = "/profileImage/{member-id}")
-//    public void deleteProfileImage(@PathVariable(value = "member-id") long memberId) {
-//        memberService.deleteProfileImage(memberId);
-//    }
 
     // email 중복체크
     @ApiOperation(value = "email 중복 체크", notes = "사용자가 입력한 email이 이미 가입된 정보인지 체크한다.")
@@ -144,8 +129,9 @@ public class MemberController {
     // 회원 정보 수정
     @ApiOperation(value = "회원 정보 수정", notes = "닉네임, 비밀번호, 전화번호, 지역, 태그 중 변경하고 싶은 정보를 수정할 수 있다. 비밀번호의 경우, 현재 비밀번호와 새 비밀번호를 입력해야 한다.")
     @PatchMapping("/my-page")
-    public ResponseEntity patchMyPage(@RequestHeader(name = "Refresh") String refreshToken,
-                                      @RequestBody MemberDto.MemberPatchDto memberPatch) {
+    public ResponseEntity patchMyPage(@RequestHeader("Refresh") String refreshToken,
+                                      @RequestPart(value = "member") MemberDto.MemberPatchDto memberPatch,
+                                      @RequestPart(value = "file", required = false) MultipartFile file) {
         Long memberId = memberService.findMyPage(refreshToken).getMemberId();
         memberPatch.setMemberId(memberId);
 
@@ -153,9 +139,18 @@ public class MemberController {
                 refreshToken,
                 memberMapper.memberPatchToMember(memberPatch),
                 memberPatch.getCurPassword(),
-                memberPatch.getNewPassword());
+                memberPatch.getNewPassword(),
+                file);
 
         return new ResponseEntity<>(memberMapper.memberToMemberMyResponse(member), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "프로필 이미지 삭제", notes = "등록된 프로필 이미지를 제거한다.")
+    @DeleteMapping("/profileImage")
+    public ResponseEntity removeProfileImage(@RequestHeader("Refresh") String refreshToken) {
+        long memberId = memberService.findMyPage(refreshToken).getMemberId();
+        memberService.deleteProfileImage(memberId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 마이페이지 접속
