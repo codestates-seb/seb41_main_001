@@ -75,7 +75,7 @@ public class FreeService {
             tagRepository.save(tag);
         }
 
-        if (files.get(0).getContentType() != null) {
+        if (files != null && files.get(0).getContentType() != null) {
             List<FreeImage> freeImages = new ArrayList<>(5);
             List<UploadFile> uploadFiles = s3Service.uploadImages(files);
 
