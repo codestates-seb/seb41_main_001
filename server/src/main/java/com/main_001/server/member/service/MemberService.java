@@ -92,7 +92,7 @@ public class MemberService {
         member.setRoles(roles);
 
         // 이미지 파일이 존재하면 프로필 이미지 생성
-        if (file.getContentType() != null) {
+        if (file != null && file.getContentType() != null) {
             return createProfileImage(member, file);
         }
 
@@ -329,7 +329,7 @@ public class MemberService {
             findMember.setPassword(encryptedPassword);
         }
 
-        if (file.getContentType() != null) {
+        if (file != null && file.getContentType() != null) {
             // 프로필 이미지가 존재하는 경우 삭제해준 후에 이미지 등록
             deleteProfileImage(memberId);
             return createProfileImage(findMember, file);
