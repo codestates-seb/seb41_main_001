@@ -114,7 +114,8 @@ public class FreeService {
             throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);
         for (FreeTag freeTag : findFree.getFreeTags()) {
             Tag tag = tagRepository.findById(freeTag.getTag().getTagId()).orElseThrow();
-            tag.setFreeCount(tag.getFreeCount() - 1);
+            int tagCnt = tag.getFreeCount();
+            tag.setFreeCount(tagCnt > 1 ? tagCnt - 1 : 0);
             tagRepository.save(tag);
         }
         Member findMember = memberRepository.findById(memberId).orElseThrow();

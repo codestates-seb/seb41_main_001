@@ -237,7 +237,8 @@ public class RecruitService {
         if (findRecruit.getApplies().size() != 0) throw new BusinessLogicException(ExceptionCode.RECRUIT_DELETE_DENIED);
         for (RecruitTag recruitTag : findRecruit.getRecruitTags()) {
             Tag tag = tagRepository.findById(recruitTag.getTag().getTagId()).orElseThrow();
-            tag.setRecruitCount(tag.getRecruitCount() - 1);
+            int tagCnt = tag.getRecruitCount();
+            tag.setRecruitCount(tagCnt > 0 ? tagCnt - 1 : 0); // 태그의 개수가 0보다 큰 경우에만 개수 차감(-1)
             tagRepository.save(tag);
         }
         Member findMember = findRecruit.getMember();
