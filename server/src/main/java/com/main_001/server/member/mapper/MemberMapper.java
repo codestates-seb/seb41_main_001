@@ -76,6 +76,8 @@ public interface MemberMapper {
                     return memberTag;
                 }).collect(Collectors.toList());
         member.setMemberTags(memberTags);
+        member.setSex(memberPatch.getSex());
+        member.setBirth(memberPatch.getBirth());
 
         return member;
     }

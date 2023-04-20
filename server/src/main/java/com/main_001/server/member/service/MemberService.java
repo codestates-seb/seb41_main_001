@@ -92,7 +92,7 @@ public class MemberService {
         member.setRoles(roles);
 
         // 이미지 파일이 존재하면 프로필 이미지 생성
-        if (file != null && file.getContentType() != null) {
+        if (file != null) {
             return createProfileImage(member, file);
         }
 
@@ -298,13 +298,17 @@ public class MemberService {
         Long memberId = redisUtils.getId(refreshToken);
         Member findMember = findVerifiedMember(memberId);
 
-        // 닉네임, 전화번호, 지역에 대한 변경이 있는 경우 반영한다.
+        // 닉네임, 전화번호, 지역, 성별, 생년월일에 대한 변경이 있는 경우 반영한다.
         Optional.ofNullable(member.getNickname())
                 .ifPresent(findMember::setNickname);
         Optional.ofNullable(member.getPhone())
                 .ifPresent(findMember::setPhone);
         Optional.ofNullable(member.getLocation())
                 .ifPresent(findMember::setLocation);
+        Optional.ofNullable(member.getSex())
+                .ifPresent(findMember::setSex);
+        Optional.ofNullable(member.getBirth())
+                .ifPresent(findMember::setBirth);
 
         // 좌표가 존재하면 해당 좌표를 저장한다.
         if (!ObjectUtils.isEmpty(member.getLat()))
@@ -312,7 +316,7 @@ public class MemberService {
         if (!ObjectUtils.isEmpty(member.getLon()))
             findMember.setLon(member.getLon());
 
-        // 태그를 변경하면 해당 회원이 선택한 태그를 샂게한 후 다시 입력한다.
+        // 태그를 변경하면 해당 회원이 선택한 태그를 삭제한 후 다시 입력한다.
         if (!member.getMemberTags().isEmpty()) {
             memberTagRepository.deleteAllByMember_MemberId(memberId);
             findMember.setMemberTags(member.getMemberTags());
@@ -329,7 +333,7 @@ public class MemberService {
             findMember.setPassword(encryptedPassword);
         }
 
-        if (file != null && file.getContentType() != null) {
+        if (file != null) {
             // 프로필 이미지가 존재하는 경우 삭제해준 후에 이미지 등록
             deleteProfileImage(memberId);
             return createProfileImage(findMember, file);
