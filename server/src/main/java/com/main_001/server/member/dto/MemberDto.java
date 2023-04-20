@@ -90,6 +90,12 @@ public class MemberDto {
                 "  ]")
         private List<MemberTagDto> memberTags;
 
+        @ApiModelProperty(example = "Male / Female")
+        private String sex;
+
+        @ApiModelProperty(example = "yyyy.mm.dd")
+        private String birth;
+
         public void setMemberId(long memberId) {
             this.memberId = memberId;
         }
