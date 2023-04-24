@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class RecruitController {
 
     @ApiOperation(value = "모집글 작성", notes = "작성자 id, 제목, 본문, 모집인원, 최소인원, 심박수, 모집 연령대, 태그를 입력하여 모집글을 작성한다.")
     @PostMapping
-    public ResponseEntity postRecruit(@RequestBody RecruitDto.Post requestBody) {
-        Recruit recruit = recruitService.createRecruit(recruitMapper.recruitPostDtoToRecruit(requestBody));
+    public ResponseEntity postRecruit(@RequestPart(value = "recruit") RecruitDto.Post postRecruitDto,
+                                      @RequestPart(value = "files", required = false)List<MultipartFile> files) {
+        Recruit recruit = recruitService.createRecruit(recruitMapper.recruitPostDtoToRecruit(postRecruitDto), files);
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)), HttpStatus.CREATED);

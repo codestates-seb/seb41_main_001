@@ -94,6 +94,9 @@ public class Recruit {
     @OneToMany(mappedBy = "recruit",cascade = CascadeType.ALL)
     private List<Review> reviews  = new ArrayList<>();
 
+    @OneToMany(mappedBy = "recruit", cascade = CascadeType.ALL)
+    private List<RecruitImage> recruitImages = new ArrayList<>();
+
     //Todo : 거리계산 하기
     public void setDistance(double mLat, double mLon) {
         double p = 0.017453292519943295;

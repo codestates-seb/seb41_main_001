@@ -2,6 +2,9 @@ package com.main_001.server.recruit.service;
 
 import com.main_001.server.exception.BusinessLogicException;
 import com.main_001.server.exception.ExceptionCode;
+import com.main_001.server.file.S3Service;
+import com.main_001.server.file.UploadFile;
+import com.main_001.server.free.entity.FreeImage;
 import com.main_001.server.member.entity.Member;
 import com.main_001.server.member.repository.MemberRepository;
 import com.main_001.server.member.service.MemberService;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -34,12 +38,14 @@ public class RecruitService {
     private final RecruitCommentRepository recruitCommentRepository;
     private final MemberRepository memberRepository;
     private final ApplyRepository applyRepository;
+    private final S3Service s3Service;
 
     public RecruitService(TagRepository tagRepository, RecruitRepository recruitRepository, MemberService memberService,
                           RecruitLikeRepository recruitLikeRepository,
                           RecruitCommentRepository recruitCommentRepository,
                           MemberRepository memberRepository,
-                          ApplyRepository applyRepository) {
+                          ApplyRepository applyRepository,
+                          S3Service s3Service) {
         this.tagRepository = tagRepository;
         this.recruitRepository = recruitRepository;
         this.memberService = memberService;
@@ -47,9 +53,10 @@ public class RecruitService {
         this.recruitCommentRepository = recruitCommentRepository;
         this.memberRepository = memberRepository;
         this.applyRepository = applyRepository;
+        this.s3Service = s3Service;
     }
 
-    public Recruit createRecruit(Recruit recruit) {
+    public Recruit createRecruit(Recruit recruit, List<MultipartFile> files) {
         verifyRecruit(recruit);
         recruit.setCreatedAt(LocalDateTime.now());
         recruit.setModifiedAt(LocalDateTime.now());
@@ -59,6 +66,24 @@ public class RecruitService {
             tag.setRecruitCount(tag.getRecruitCount() + 1);
             tagRepository.save(tag);
         }
+
+        if (files != null) {
+            List<RecruitImage> recruitImages = new ArrayList<>(5);
+            List<UploadFile> uploadFiles = s3Service.uploadImages(files);
+
+            uploadFiles.forEach(uploadFile -> {
+                RecruitImage recruitImage = RecruitImage.builder()
+                        .originalFileName(uploadFile.getOriginalFileName())
+                        .storedFileName(uploadFile.getStoredFileName())
+                        .filePath(uploadFile.getFilePath())
+                        .fileSize(uploadFile.getFileSize())
+                        .build();
+                recruitImages.add(recruitImage);
+                recruitImage.setRecruit(recruit);
+            });
+            recruit.setRecruitImages(recruitImages);
+        }
+
         Member findMember = memberRepository.findById(recruit.getMember().getMemberId()).orElseThrow();
         findMember.setHeart(findMember.getHeart() + 5);
         memberRepository.save(findMember);

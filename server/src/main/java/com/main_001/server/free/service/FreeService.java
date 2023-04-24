@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class FreeService {
     private final FreeRepository freeRepository;
-
     private final FreeCommentRepository freeCommentRepository;
     private final FreeLikeRepository freeLikeRepository;
     private final MemberService memberService;
@@ -75,7 +74,7 @@ public class FreeService {
             tagRepository.save(tag);
         }
 
-        if (files != null && files.get(0).getContentType() != null) {
+        if (files != null) {
             List<FreeImage> freeImages = new ArrayList<>(5);
             List<UploadFile> uploadFiles = s3Service.uploadImages(files);
 
@@ -93,7 +92,7 @@ public class FreeService {
         }
 
         Member findMember = memberRepository.findById(memberId).orElseThrow();
-        findMember.setHeart(findMember.getHeart()+5);
+        findMember.setHeart(findMember.getHeart() + 5);
         memberRepository.save(findMember);
         return saveFree(free);
     }
