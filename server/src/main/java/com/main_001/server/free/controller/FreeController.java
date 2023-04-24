@@ -33,7 +33,7 @@ public class FreeController {
 
     @ApiOperation(value = "자유 게시글 작성", notes = "작성자 id, 제목, 본문, 태그, 위치정보를 입력하여 자유 게시글을 작성한다.")
     @PostMapping
-    public ResponseEntity createFreeBoard(@RequestPart(value = "free") FreeDto.PostFreeBoard postFreeBoardDto,
+    public ResponseEntity postFreeBoard(@RequestPart(value = "free") FreeDto.PostFreeBoard postFreeBoardDto,
                                           @RequestPart(value = "files", required = false) List<MultipartFile> files){
         Free free = freeService.createFreeBoard(freeMapper.freeBoardPostToFree(postFreeBoardDto), files);
         return new ResponseEntity<>(
@@ -43,7 +43,7 @@ public class FreeController {
 
     @ApiOperation(value = "자유 게시글에 대한 댓글 작성", notes = "자유 게시글에 댓글을 작성한다.")
     @PostMapping("/{free-id}")
-    public ResponseEntity createComment(@PathVariable("free-id") @Positive long freeId,
+    public ResponseEntity postComment(@PathVariable("free-id") @Positive long freeId,
                                         @RequestBody FreeCommentDto.Default postCommentDto){
         Free createFreeComment = freeService.createFreeComment(freeId, freeMapper.commentPostToFreeComment(postCommentDto));
         return new ResponseEntity<>(
