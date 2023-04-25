@@ -57,7 +57,8 @@ public interface FreeMapper {
         List<FreeLike> freeLikes = free.getFreeLikes();
         List<FreeImage> freeImages = free.getFreeImages();
 
-        FreeDto.Response response = FreeDto.Response.builder()
+        FreeDto.Response response = FreeDto.Response
+                .builder()
                 .freeId(free.getFreeId())
                 .freeTitle(free.getFreeTitle())
                 .freeBody(free.getFreeBody())
@@ -85,7 +86,8 @@ public interface FreeMapper {
     default FreeLike freeLikeDtoToFreeLike(FreeDto.Like freeLikeDto) {
         Member member = new Member();
         member.setMemberId(freeLikeDto.getMemberId());
-        return FreeLike.builder()
+        return FreeLike
+                .builder()
                 .member(member)
                 .build();
     }
@@ -93,7 +95,8 @@ public interface FreeMapper {
     default FreeComment commentPostToFreeComment(FreeCommentDto.Default postComment) {
         Member member = new Member();
         member.setMemberId(postComment.getMemberId());
-        return FreeComment.builder()
+        return FreeComment
+                .builder()
                 .body(postComment.getBody())
                 .modifiedAt(LocalDateTime.now())
                 .member(member)
@@ -169,7 +172,8 @@ public interface FreeMapper {
     }
 
     default ResponseDto.FreeImage freeImageToFreeImageResponseDto(FreeImage freeImage) {
-        return ResponseDto.FreeImage.builder()
+        return ResponseDto.FreeImage
+                .builder()
                 .freeImageId(freeImage.getFreeImageId())
                 .freeId(freeImage.getFree().getFreeId())
                 .filePath(freeImage.getFilePath())

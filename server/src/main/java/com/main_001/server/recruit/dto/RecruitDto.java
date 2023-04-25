@@ -245,6 +245,9 @@ public class RecruitDto {
 
         @ApiModelProperty(example = "모집글에 대한 댓글")
         private List<ResponseDto.RecruitComment> recruitComments;
+
+        @ApiModelProperty(example = "모집글 이미지")
+        private List<ResponseDto.RecruitImage> recruitImages;
     }
 
     // Todo : SimpleResponse 정의해서 Page 정보 넘길 땐 넘어가는 정보 최소화하기 -> 현재 전체글 조회 시 거의 대부분의 정보를 가져가고 있다..

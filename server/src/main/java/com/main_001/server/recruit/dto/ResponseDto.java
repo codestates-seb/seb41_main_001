@@ -112,4 +112,17 @@ public class ResponseDto {
         @ApiModelProperty(example = "worst member nickname")
         private String worstMemberNickname;
     }
+
+    @Builder
+    @Getter
+    public static class RecruitImage {
+        @ApiModelProperty(example = "RecruitImage Id")
+        private long recruitImageId;
+
+        @ApiModelProperty(example = "Recruit Id")
+        private long recruitId;
+
+        @ApiModelProperty(example = "파일 경로")
+        private String filePath;
+    }
 }
