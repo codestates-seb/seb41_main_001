@@ -53,6 +53,7 @@ public interface RecruitMapper {
         List<RecruitLike> recruitLikes = recruit.getRecruitLikes();
         List<RecruitTag> recruitTags = recruit.getRecruitTags();
         List<Review> reviews = recruit.getReviews();
+        List<RecruitImage> recruitImages = recruit.getRecruitImages();
 
         String newString = recruit.getAgeGroupString().replaceAll("[\\[\\]\\s]", "");
         StringTokenizer st = new StringTokenizer(newString, ",");
@@ -90,6 +91,7 @@ public interface RecruitMapper {
                 .Likes(recruitLikes.size())
                 .recruitTags(recruitTagsToRecruitTagResponseDtos(recruitTags))
                 .reviews(reviewsToReviewResponseDtos(reviews))
+                .recruitImages(recruitImagesToRecruitImageResponseDtos(recruitImages))
                 .build();
         if(recruit.getMember().getMemberImage()!=null){
             response.setFilePath(recruit.getMember().getMemberImage().getFilePath());
@@ -247,4 +249,15 @@ public interface RecruitMapper {
         }
         return response;
     }
+
+    default ResponseDto.RecruitImage recruitImagesToRecruitImageResponseDto(RecruitImage recruitImage) {
+        return ResponseDto.RecruitImage
+                .builder()
+                .recruitImageId(recruitImage.getId())
+                .recruitId(recruitImage.getRecruit().getRecruitId())
+                .filePath(recruitImage.getFilePath())
+                .build();
+    }
+
+    List<ResponseDto.RecruitImage> recruitImagesToRecruitImageResponseDtos(List<RecruitImage> recruitImage);
 }
