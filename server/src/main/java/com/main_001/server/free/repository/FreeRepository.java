@@ -1,4 +1,4 @@
-package com.main_001.server.free.repositpry;
+package com.main_001.server.free.repository;
 
 import com.main_001.server.free.entity.Free;
 import org.springframework.data.jpa.repository.JpaRepository;

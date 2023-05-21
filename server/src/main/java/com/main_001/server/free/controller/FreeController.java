@@ -34,7 +34,7 @@ public class FreeController {
     @ApiOperation(value = "자유 게시글 작성", notes = "작성자 id, 제목, 본문, 태그, 위치정보를 입력하여 자유 게시글을 작성한다.")
     @PostMapping
     public ResponseEntity postFreeBoard(@RequestPart(value = "free") FreeDto.PostFreeBoard postFreeBoardDto,
-                                          @RequestPart(value = "files", required = false) List<MultipartFile> files){
+                                        @RequestPart(value = "files", required = false) List<MultipartFile> files){
         Free free = freeService.createFreeBoard(freeMapper.freeBoardPostToFree(postFreeBoardDto), files);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(freeMapper.freeToFreeResponseDto(free)),
@@ -77,8 +77,9 @@ public class FreeController {
     @PatchMapping("/{free-id}")
     public ResponseEntity patchFreeBoard(@PathVariable("free-id") @Positive long freeId,
                                          @RequestPart(value = "free") FreeDto.PatchFreeBoard patchFreeBoardDto,
-                                         @RequestPart(value = "files", required = false) List<MultipartFile> files){
-        Free free = freeService.updateFreeBoard(freeId, freeMapper.freeBoardPatchToFree(patchFreeBoardDto), files);
+                                         @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                         @RequestParam(value = "removeImages", required = false, defaultValue = "") List<String> removeImages){
+        Free free = freeService.updateFreeBoard(freeId, freeMapper.freeBoardPatchToFree(patchFreeBoardDto), files, removeImages);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(freeMapper.freeToFreeResponseDto(free)),
                 HttpStatus.OK);

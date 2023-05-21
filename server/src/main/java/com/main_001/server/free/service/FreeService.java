@@ -6,9 +6,10 @@ import com.main_001.server.exception.ExceptionCode;
 import com.main_001.server.file.S3Service;
 import com.main_001.server.file.UploadFile;
 import com.main_001.server.free.entity.*;
-import com.main_001.server.free.repositpry.FreeCommentRepository;
-import com.main_001.server.free.repositpry.FreeLikeRepository;
-import com.main_001.server.free.repositpry.FreeRepository;
+import com.main_001.server.free.repository.FreeCommentRepository;
+import com.main_001.server.free.repository.FreeImageRepository;
+import com.main_001.server.free.repository.FreeLikeRepository;
+import com.main_001.server.free.repository.FreeRepository;
 import com.main_001.server.member.entity.Member;
 import com.main_001.server.member.repository.MemberRepository;
 import com.main_001.server.member.service.MemberService;
@@ -40,11 +41,13 @@ public class FreeService {
     private final TagRepository tagRepository;
     private final RedisUtils redisUtils;
     private final S3Service s3Service;
+    private final FreeImageRepository freeImageRepository;
 
     public FreeService(FreeRepository freeRepository, FreeCommentRepository freeCommentRepository, FreeLikeRepository freeLikeRepository, MemberService memberService, MemberRepository memberRepository,
                        TagRepository tagRepository,
                        RedisUtils redisUtils,
-                       S3Service s3Service) {
+                       S3Service s3Service,
+                       FreeImageRepository freeImageRepository) {
         this.freeRepository = freeRepository;
         this.freeCommentRepository = freeCommentRepository;
         this.freeLikeRepository = freeLikeRepository;
@@ -53,6 +56,7 @@ public class FreeService {
         this.tagRepository = tagRepository;
         this.redisUtils = redisUtils;
         this.s3Service = s3Service;
+        this.freeImageRepository = freeImageRepository;
     }
 
     public Free createFreeBoard(Free free, List<MultipartFile> files) {
@@ -75,20 +79,8 @@ public class FreeService {
         }
 
         if (files != null) {
-            List<FreeImage> freeImages = new ArrayList<>(5);
-            List<UploadFile> uploadFiles = s3Service.uploadImages(files);
-
-            uploadFiles.forEach(uploadFile -> {
-                FreeImage freeImage = FreeImage.builder()
-                        .originalFileName(uploadFile.getOriginalFileName())
-                        .storedFileName(uploadFile.getStoredFileName())
-                        .filePath(uploadFile.getFilePath())
-                        .fileSize(uploadFile.getFileSize())
-                        .build();
-                freeImages.add(freeImage);
-                freeImage.setFree(free);
-            });
-            free.setFreeImages(freeImages);
+            List<FreeImage> freeImages = new ArrayList<>();
+            addFreeImages(free, freeImages, files);
         }
 
         Member findMember = memberRepository.findById(memberId).orElseThrow();
@@ -97,13 +89,36 @@ public class FreeService {
         return saveFree(free);
     }
 
-    public Free updateFreeBoard(long freeId, Free free, List<MultipartFile> files) {
+    public Free updateFreeBoard(long freeId, Free free, List<MultipartFile> files, List<String> removeImages) {
         Free findFree = findVerifiedFreeBoard(freeId);
         if (!Objects.equals(findFree.getMember().getMemberId(), free.getMember().getMemberId()))
             throw new BusinessLogicException(ExceptionCode.FREEBOARD_MODIFY_DENIED);
         if (free.getFreeBody() != null) findFree.setFreeBody(free.getFreeBody());
         if (free.getFreeTitle() != null) findFree.setFreeTitle(free.getFreeTitle());
         if (free.getCategory() != null) findFree.setCategory(free.getCategory());
+
+        // TODO: removeImages
+        if (removeImages != null) {
+            List<FreeImage> tempFreeImages = new ArrayList<>();
+            for (FreeImage freeImage : findFree.getFreeImages()) {
+                if (!removeImages.contains(freeImage.getStoredFileName())) {
+                    tempFreeImages.add(freeImage);
+                }
+            }
+            s3Service.deleteImages(removeImages);
+            findFree.setFreeImages(null);
+            removeImages.forEach(freeImageRepository::deleteByStoredFileName);
+            if (!tempFreeImages.isEmpty())
+                findFree.setFreeImages(tempFreeImages);
+        }
+
+        // TODO: files
+        if (files != null) {
+            if (findFree.getFreeImages() == null)
+                findFree.setFreeImages(new ArrayList<>());
+            addFreeImages(findFree, findFree.getFreeImages(), files);
+        }
+
         return saveFree(findFree);
     }
 
@@ -228,6 +243,28 @@ public class FreeService {
         Optional<Free> optionalFreeBoard = freeRepository.findByFreeId(freeId);
         return optionalFreeBoard.orElseThrow(() ->
                 new BusinessLogicException(ExceptionCode.FREEBOARD_NOT_FOUND));
+    }
+
+    private void addFreeImages(Free free, List<FreeImage> freeImages, List<MultipartFile> files) {
+        List<UploadFile> uploadFiles = s3Service.uploadImages(files);
+
+        uploadFiles.forEach(uploadFile -> {
+            FreeImage freeImage = FreeImage.builder()
+                    .originalFileName(uploadFile.getOriginalFileName())
+                    .storedFileName(uploadFile.getStoredFileName())
+                    .filePath(uploadFile.getFilePath())
+                    .fileSize(uploadFile.getFileSize())
+                    .build();
+            freeImages.add(freeImage);
+            freeImage.setFree(free);
+        });
+        free.setFreeImages(freeImages);
+    }
+
+    private void deleteFreeImages(List<String> storedFileNames) {
+        for (String storedFileName : storedFileNames) {
+            freeImageRepository.deleteByStoredFileName(storedFileName);
+        }
     }
 
     private void verifyFree(Free free) {
