@@ -97,7 +97,6 @@ public class FreeService {
         if (free.getFreeTitle() != null) findFree.setFreeTitle(free.getFreeTitle());
         if (free.getCategory() != null) findFree.setCategory(free.getCategory());
 
-        // TODO: removeImages
         if (removeImages != null) {
             List<FreeImage> tempFreeImages = new ArrayList<>();
             for (FreeImage freeImage : findFree.getFreeImages()) {
@@ -112,7 +111,6 @@ public class FreeService {
                 findFree.setFreeImages(tempFreeImages);
         }
 
-        // TODO: files
         if (files != null) {
             if (findFree.getFreeImages() == null)
                 findFree.setFreeImages(new ArrayList<>());

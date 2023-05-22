@@ -32,11 +32,12 @@ public class RecruitController {
     @ApiOperation(value = "모집글 작성", notes = "작성자 id, 제목, 본문, 모집인원, 최소인원, 심박수, 모집 연령대, 태그를 입력하여 모집글을 작성한다.")
     @PostMapping
     public ResponseEntity postRecruit(@RequestPart(value = "recruit") RecruitDto.Post postRecruitDto,
-                                      @RequestPart(value = "files", required = false)List<MultipartFile> files) {
+                                      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
         Recruit recruit = recruitService.createRecruit(recruitMapper.recruitPostDtoToRecruit(postRecruitDto), files);
 
         return new ResponseEntity<>(
-                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)), HttpStatus.CREATED);
+                new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)),
+                HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "모집글 조회", notes = "모집글 id를 path에 붙여서 모집글을 조회한다.")
@@ -76,10 +77,11 @@ public class RecruitController {
     @ApiOperation(value = "모집글 수정", notes = "모집글 내용의 값을 변경하여 모집글 내용을 수정한다.")
     @PatchMapping("/{recruit-id}")
     public ResponseEntity patchRecruit(@PathVariable("recruit-id") long recruitId,
-                                       @RequestBody RecruitDto.Patch requestBody) {
+                                       @RequestPart(value = "recruit") RecruitDto.Patch patchRecruitBoardDto,
+                                       @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                       @RequestParam(value = "removeImages", required = false, defaultValue = "") List<String> removeImages) {
 
-        Recruit recruit = recruitService.updateRecruit(recruitId, recruitMapper.recruitPatchDtoToRecruit(requestBody));
-
+        Recruit recruit = recruitService.updateRecruit(recruitId, recruitMapper.recruitPatchDtoToRecruit(patchRecruitBoardDto), files, removeImages);
         return new ResponseEntity<>(
                 new SingleResponseDto<>(recruitMapper.recruitToRecruitResponseDto(recruit)), HttpStatus.OK);
     }
