@@ -1,0 +1,100 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update  # create, update, validate, none
+    show-sql: true      # (2) SQL 쿼리 출력
+    properties:
+      hibernate:
+        format_sql: true  # (3) SQL pretty print
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher #swagger 에러 해결
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  redis:
+    host: ${REDIS_HOST} # 로컬 환경에서는 localhost
+    port: ${REDIS_PORT}
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 10MB
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            redirect-uri: ${KAKAO_REDIRECT_URI}
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+            client-name: Kakao
+            scope:
+              - profile_nickname
+              - profile_image
+              - account_email
+              - gender
+          google:
+            clientId: ${GOOGLE_CLIENT_ID}
+            clientSecret: ${GOOGLE_CLIENT_SECRET}
+            redirect-uri: ${GOOGLE_REDIRECT_URI}
+            scope:
+              - email
+              - profile
+#              - https://www.googleapis.com/auth/user.birthday.read
+#              - https://www.googleapis.com/auth/user.gender.read
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+    s3:
+      bucket: ${AWS_BUCKET}
+    region:
+      static: ${AWS_REGION}
+    stack:
+      auto: false
+file:
+  path: ${FILE_PATH}
+jwt:
+  key: ${JWT_SECRET_KEY}
+  access-token-expiration-minutes: ${JWT_ACCESS_TOKEN_EXP_MIN}
+  refresh-token-expiration-minutes: ${JWT_REFRESH_TOKEN_EXP_MIN}
+email:
+  address:
+    admin: ggamman94@naver.com
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2
+#  datasource:
+#    url: jdbc:h2:mem:test
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
