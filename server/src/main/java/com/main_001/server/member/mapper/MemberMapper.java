@@ -114,6 +114,8 @@ public interface MemberMapper {
                 .location(member.getLocation())
                 .lat(member.getLat())
                 .lon(member.getLon())
+                .provider(member.getProvider())
+                .picture(member.getPicture())
 
                 .memberTags(memberTagsToMemberTagResponseDtos(memberTags))
 
@@ -418,6 +420,8 @@ public interface MemberMapper {
                 .location(member.getLocation())
                 .lat(member.getLat())
                 .lon(member.getLon())
+                .provider(member.getProvider())
+                .picture(member.getPicture())
                 .memberTags(memberTagsToMemberTagResponseDtos(memberTags))
                 .recruits(recruitsToRecruitResponseDtos(recruits))
                 .frees(freesToFreeResponseDtos(frees))
