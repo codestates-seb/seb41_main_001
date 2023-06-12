@@ -51,4 +51,10 @@ export default interface RecruitDataProps {
   authorLocation: string;
   filePath?: string;
   applyCount?: number;
+  recruitImages: {
+    recruitImageId: number;
+    recruitId: number;
+    filePath: string;
+  }[];
+  showImages: boolean;
 }

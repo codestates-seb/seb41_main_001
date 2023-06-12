@@ -12,7 +12,7 @@ interface FormInputFree {
   category: '질문' | '정보' | '나눔' | '운동';
   title: string;
   content: string;
-  // image: string;
+  image: any;
   location: string;
   tag: { tagId: number; tagName: string }[];
   memberTags: {
@@ -158,7 +158,6 @@ const CRForm = styled.form`
     margin-left: 25px;
     width: 180px;
     border-radius: 10px;
-    margin-bottom: 30px;
     margin-top: 5px;
     text-align: center;
     padding: 5px 10px;
@@ -180,11 +179,7 @@ const CRForm = styled.form`
     align-items: center;
     margin: 30px;
   }
-  > div:last-child {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+
   > label,
   .label {
     display: flex;
@@ -213,6 +208,16 @@ const ButtonContainer = styled.div`
   }
 `;
 
+const PreviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 8.5rem;
+  img {
+    width: 10rem;
+    height: 10rem;
+  }
+`;
+
 const CreateFreeboard = () => {
   const accessToken = useSelector((state: any) => state.accessToken);
   const refreshToken = useSelector((state: any) => state.refreshToken);
@@ -225,59 +230,74 @@ const CreateFreeboard = () => {
     formState: { errors },
   } = useForm<FormInputFree>();
   const navigate = useNavigate();
-  // const [warning, setWarning] = useState('');
-  // const [content, setContent] = useState('');
   const [addedTags, setAddedTags] = useState([]);
+
   useEffect(() => {
     const getOriginalPost = () => {
       axios
         .get(`${process.env.REACT_APP_API_URL}/tags/freeboards?page=1&size=100`)
         .then((res: any) => {
           setAddedTags(res.data.data);
-          console.log(addedTags);
         })
         .catch((err: any) => console.log(err));
     };
     getOriginalPost();
   }, []);
 
+  const [previewImages, setPreviewImages] = useState([]);
+
+  const handleImageChange = (event: any) => {
+    const { files } = event.target;
+    const images: any = [];
+
+    for (let i = 0; i < files.length; i += 1) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        images.push(e.target!.result);
+        if (images.length === files.length) {
+          setPreviewImages(images);
+        }
+      };
+
+      reader.readAsDataURL(files[i]);
+    }
+  };
+
   const onSubmit = (data: FormInputFree) => {
     const sendingTag = data.memberTags.map(({ tagName, emoji }) => ({
       tagName,
       emoji,
     }));
-    console.log({
+
+    const variables = {
       freeTitle: data.title,
       freeBody: data.content,
       category: data.category,
       location: data.location,
       freeTagDtos: sendingTag,
-      memberId: 1,
-    });
+      memberId,
+    };
+
+    const formData = new FormData();
+    if (data.image.length > 0) {
+      for (let i = 0; i < data.image.length; i += 1) {
+        formData.append('files', data.image[i]);
+      }
+    }
+    formData.append(
+      'free',
+      new Blob([JSON.stringify(variables)], { type: 'application/json' }),
+    );
+
     axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/freeboards`,
-        {
-          freeTitle: data.title,
-          freeBody: data.content,
-          category: data.category,
-          location: data.location,
-          freeTagDtos: sendingTag,
-          memberId,
-          // 태그와 멤버아이디가 고정되어있음
-          // tagList: tags.reduce((r, e) => {
-          //   r.push({ tagId: e.tagId });
-          //   return r;
-          // }, []),
-          // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+      .post(`${process.env.REACT_APP_API_URL}/freeboards`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: accessToken,
+          Refresh: refreshToken,
         },
-        {
-          headers: {
-            Authorization: accessToken,
-            Refresh: refreshToken,
-          },
-        },
-      )
+      })
       .then((res) => {
         console.log(res);
         navigate('/freeboards');
@@ -286,28 +306,7 @@ const CreateFreeboard = () => {
         console.log(err);
         navigate('/login');
       });
-    return false;
   };
-  // const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  // UseAutosizeTextArea(textAreaRef.current, content);
-
-  // const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
-  //   const val = evt.target?.value;
-  //   if (val.length === 0) {
-  //     setWarning('본문을 입력하세요');
-  //   } else {
-  //     setWarning('');
-  //   }
-  //   setContent(val);
-  // };
-  // const fileNums = (e:any) => {
-  //   if (e.files.length > 2) {
-  //     alert('file up to 2');
-  //   } else {
-  //     alert('alr we cool');
-  //   }
-  // };
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -324,55 +323,7 @@ const CreateFreeboard = () => {
     tagName,
     emoji,
   }));
-  // [
-  //   { tagId: 1, tagName: '축구/풋살', emoji: '⚽️' },
-  //   { tagId: 2, tagName: '농구', emoji: '🏀' },
-  //   { tagId: 3, tagName: '야구', emoji: '⚾️' },
-  //   { tagId: 4, tagName: '배구', emoji: '🏐' },
-  //   { tagId: 5, tagName: '복싱', emoji: '🥊' },
-  //   { tagId: 6, tagName: '탁구', emoji: '🏓' },
-  //   { tagId: 7, tagName: '배드민턴', emoji: '🏸' },
-  //   { tagId: 8, tagName: '테니스/스쿼시', emoji: '🎾' },
-  //   { tagId: 9, tagName: '태권도/유도', emoji: '🥋' },
-  //   { tagId: 10, tagName: '검도', emoji: '⚔️' },
-  //   { tagId: 11, tagName: '무술/주짓수', emoji: '🥋' },
-  //   { tagId: 12, tagName: '족구', emoji: '⚽️' },
-  //   { tagId: 13, tagName: '러닝', emoji: '🏃' },
-  //   { tagId: 14, tagName: '자전거', emoji: '🚴' },
-  //   { tagId: 15, tagName: '등산', emoji: '🏔️' },
-  //   { tagId: 16, tagName: '클라이밍', emoji: '🧗‍♀️' },
-  //   { tagId: 17, tagName: '수영', emoji: '🏊‍♀️' },
-  //   { tagId: 18, tagName: '골프', emoji: '⛳️' },
-  //   { tagId: 19, tagName: '요가/필라테스', emoji: '🧘' },
-  //   { tagId: 20, tagName: '헬스/크로스핏', emoji: '🏋️' },
-  //   { tagId: 21, tagName: '스케이트/인라인', emoji: '⛸️' },
-  // ];
 
-  // const addTag = (e: any) => {
-  //   // e.target.value
-  //   if (e.keyCode === 13) {
-  //     for (let i = 0; i < addedTags.length; i += 1) {
-  //       if (addedTags[i].tagName === e.target.value) {
-  //         // 이미 존재하는 태그일 경우
-  //         console.log('tag exist');
-  //         return false;
-  //       }
-  //     }
-
-  //     axios
-  //       .post(`${process.env.REACT_APP_API_URL}/tags`, {
-  //         tagName: e.target.value,
-  //       })
-  //       .then((res) => {
-  //         // console.log(res);
-  //         alert(res);
-  //       })
-  //       .catch((err) => {
-  //         console.log('key error ', err);
-  //       });
-  //   }
-  //   return false;
-  // };
   return (
     <Background>
       <CRForm onSubmit={handleSubmit(onSubmit)}>
@@ -445,7 +396,7 @@ const CreateFreeboard = () => {
             <span>스페이스바/버튼 선택으로 태그를 입력하세요</span>
           </div>
         </div>
-        {/* <div>
+        <div>
           <div className="label">이미지</div>
           <label htmlFor="image" className="imagebutton">
             + 이미지 파일 추가
@@ -456,8 +407,14 @@ const CreateFreeboard = () => {
             accept="image/jpeg,image/jpg, image/png, image/svg"
             multiple
             {...register('image')}
+            onChange={handleImageChange}
           />
-        </div> */}
+        </div>
+        <PreviewContainer>
+          {previewImages.map((image, index) => (
+            <img src={image} alt={`Preview ${index + 1}`} />
+          ))}
+        </PreviewContainer>
         <ButtonContainer>
           <button type="submit">작성하기</button>
           <Link to="/freeboards">
