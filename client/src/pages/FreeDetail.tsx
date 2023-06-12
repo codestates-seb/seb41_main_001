@@ -102,6 +102,10 @@ const BoardContainer = styled.div`
     }
   }
 
+  .carousel {
+    margin-bottom: 1rem;
+  }
+
   .location {
     width: 35rem;
     /* margin: 1rem 0; */
