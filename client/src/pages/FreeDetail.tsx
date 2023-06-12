@@ -45,19 +45,11 @@ const BoardContainer = styled.div`
   > div:first-child {
     width: 5rem;
     height: 2rem;
-    /* border: 0.05rem solid white; */
     border-radius: 0.3rem;
-    /* background-color: white; */
-    /* color: black; */
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 30rem;
-    /* margin-top: 0.5rem;
-    margin-bottom: 0.5rem; */
-    i {
-      margin-right: 0.3rem;
-    }
+    margin-right: 30.5rem;
     a {
       text-decoration: none;
       color: white;
@@ -70,11 +62,7 @@ const BoardContainer = styled.div`
     justify-content: space-between;
     > div:first-child {
       width: 6rem;
-      /* width: auto; */
       display: flex;
-      align-items: center;
-      justify-content: center;
-      /* border: 1px solid white; */
       i {
         margin-right: 0.3rem;
       }
@@ -89,7 +77,7 @@ const BoardContainer = styled.div`
   .commentCount {
     border-bottom: 1px solid white;
     width: 35rem;
-    margin-bottom: 1rem;
+    /* margin-bottom: 1rem; */
     padding: 1rem 0;
   }
 
@@ -114,16 +102,18 @@ const BoardContainer = styled.div`
     }
   }
 
-  .carousel {
-    margin-bottom: 1rem;
-  }
-
   .location {
     width: 35rem;
+    /* margin: 1rem 0; */
     margin-bottom: 1rem;
     > i {
       margin-right: 0.3rem;
     }
+  }
+
+  ul {
+    width: 100%;
+    padding: 0;
   }
 
   /* .tag {
@@ -141,8 +131,9 @@ const ContentContainer = styled.div`
 
   .body {
     height: auto;
-    min-height: 2rem;
+    min-height: 1rem;
     line-height: 150%;
+    /* margin: 0.5rem 0; */
     margin-bottom: 1rem;
   }
 
@@ -330,13 +321,11 @@ const FreeDetail = () => {
               />
               ))}
             </div> */}
-          <div className="carousel">
-            {post.freeImages.length > 0 ? (
-              <Carousel images={post.freeImages.map((el) => el.filePath)} />
-            ) : (
-              ''
-            )}
-          </div>
+          {post.freeImages.length > 0 ? (
+            <Carousel images={post.freeImages.map((el) => el.filePath)} />
+          ) : (
+            ''
+          )}
           {post.location ? (
             <div className="location">
               <i className="fa-solid fa-location-dot" />
@@ -386,20 +375,20 @@ const FreeDetail = () => {
             {post.freeComments.length}
             개의 댓글이 있습니다
           </div>
-          {/* <ul> */}
-          {post.freeComments.map((el) => (
-            <CommentBox
-              key={el.freeCommentId}
-              commentId={el.freeCommentId}
-              memberId={post.memberId}
-              board="freeboards"
-              boardId={post.freeId}
-              data={el}
-              setData={setPost}
-              image={el.filePath}
-            />
-          ))}
-          {/* </ul> */}
+          <ul>
+            {post.freeComments.map((el) => (
+              <CommentBox
+                key={el.freeCommentId}
+                commentId={el.freeCommentId}
+                memberId={post.memberId}
+                board="freeboards"
+                boardId={post.freeId}
+                data={el}
+                setData={setPost}
+                image={el.filePath}
+              />
+            ))}
+          </ul>
           <CommentSubmitBox
             submitComment={`/freeboards/${post.freeId}`}
             setData={setPost}
