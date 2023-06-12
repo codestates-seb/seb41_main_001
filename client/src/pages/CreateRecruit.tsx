@@ -171,6 +171,18 @@ const CreateRecruit = () => {
       },
     },
   });
+  const [tagData, setTagData] = useState([]);
+  useEffect(() => {
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=100`)
+      .then((res) => {
+        setTagData(res.data.data);
+        console.log(tagData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const [tagData, setTagData] = useState([]);
   useEffect(() => {
