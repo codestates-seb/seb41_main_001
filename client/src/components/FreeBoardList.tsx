@@ -124,13 +124,6 @@ const ContentSec = styled.section`
     /* border: 0.05rem solid white; */
   }
 
-  div:nth-child(3) {
-    display: flex;
-    width: 21rem;
-    margin-bottom: 0.2rem;
-    /* border: 0.05rem solid white; */
-  }
-
   > div:last-child {
     /* width: 11em; */
     width: auto;
@@ -147,6 +140,18 @@ const ContentSec = styled.section`
         margin-right: 0.3rem;
       }
     }
+  }
+`;
+
+const TagsDiv = styled.div`
+  display: flex;
+  width: 25rem;
+  height: auto;
+  margin-bottom: 0.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  > a {
+    margin-bottom: 0.5rem;
   }
 `;
 
@@ -231,7 +236,7 @@ const FreeBoardList = ({
           <div>{data.freeTitle}</div>
         </div>
         <div>{data.freeBody}</div>
-        <div>
+        <TagsDiv>
           {data.freeTags.map((el) => (
             <TagLink
               onClick={() => {
@@ -243,7 +248,7 @@ const FreeBoardList = ({
               to={`?type=tag&keyword=${el.tagName}`}
             />
           ))}
-        </div>
+        </TagsDiv>
         <div>
           {/* {`${convertToDate(createdAt)}`} */}
           {data.location ? (
@@ -277,6 +282,9 @@ const FreeBoardList = ({
             heart={data.authorHeart}
             authorLocation={data.authorLocation}
             image={data.filePath}
+            // image={
+            //   data.filePath && data.filePath.size > 0 ? data.filePath : null
+            // } // check image size
           />
         </div>
       </AuthorSec>

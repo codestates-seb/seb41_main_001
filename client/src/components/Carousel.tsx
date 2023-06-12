@@ -9,6 +9,7 @@ const Container = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
+  margin-bottom: 1rem;
 `;
 
 const Slide = styled.img`
