@@ -4,7 +4,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, useWatch, Controller } from 'react-hook-form'; // Controller, useFieldArray
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-// import AutoCompleteForArray from '../components/AutoCompleteForArray';
 import KakaoMapClick from '../components/KakaoMapClick';
 import Button from '../components/Button';
 import RecruitDataProps from '../interfaces/RecruitDataProps';
@@ -43,6 +42,20 @@ const RecruitForm = styled.form`
       > td:nth-child(2) {
         width: 100%;
         position: relative;
+      }
+      > td:last-child {
+        display: flex;
+        img {
+          width: 15rem;
+          height: 15rem;
+          /* margin-top: 1rem;
+          margin-right: 1rem; */
+        }
+        button {
+          /* margin-bottom: 10rem; */
+          width: 1.5rem;
+          height: 1.5rem;
+        }
       }
     }
 
@@ -83,20 +96,12 @@ const RecruitForm = styled.form`
       label {
         margin-right: 10px;
       }
-      input {
-        /* &:disabled {
-          color: rgba(0, 0, 0, 0.3);
-        } */
-      }
     }
 
     .heartCon {
       input {
         width: 300px;
         margin-right: 10px;
-        /* &:disabled {
-          background-color: rgba(0, 0, 0, 0.3);
-        } */
       }
     }
   }
@@ -123,7 +128,13 @@ interface RecruitFormInput {
   sex: 'Both' | 'Male' | 'Female';
   ages: number[];
   heartLimit: number;
-  // image: string;
+  image: string;
+  recruitImages: {
+    recruitIdImage: number;
+    recruitId: number;
+    filePath: string;
+  }[];
+  // showImages: boolean;
   // tagSearch: string;
 }
 
@@ -175,6 +186,7 @@ const EditRecruit = () => {
         console.log(err);
       });
   }, []);
+
   const {
     register,
     control,
@@ -195,11 +207,69 @@ const EditRecruit = () => {
   //   },
   // });
 
+  const [removeImages, setRemoveImages] = useState<string[]>([]);
+
+  const removeImage = (filePath: string) => {
+    setRecruitData((prevState: any) => ({
+      // error
+      ...(prevState || {}),
+      recruitImages: (prevState?.recruitImages || []).filter(
+        (el: any) => el.filePath !== filePath,
+      ),
+      showImages: false,
+    }));
+    setRemoveImages((prevImages) => [...prevImages, filePath]);
+  };
+
+  const [previewImages, setPreviewImages] = useState([]);
+
+  const handleImageChange = (event: any) => {
+    const { files } = event.target;
+    const images: any = [];
+
+    for (let i = 0; i < files.length; i += 1) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        images.push(e.target!.result);
+        if (images.length === files.length) {
+          setPreviewImages(images);
+        }
+      };
+
+      reader.readAsDataURL(files[i]);
+    }
+  };
+
   const onSubmit = (data: RecruitFormInput) => {
+    const formData = new FormData();
+    const variables = {
+      ...data,
+      memberId,
+    };
+
+    formData.append(
+      'recruit',
+      new Blob([JSON.stringify(variables)], { type: 'application/json' }),
+    );
+
+    let requestURL = `${process.env.REACT_APP_API_URL}/recruits/${recruitId}`;
+
+    if (removeImages.length > 0) {
+      const queryString = `?removeImages=${removeImages
+        .map((filePath) => filePath.split('/').pop())
+        .join(',')}`;
+      requestURL += queryString;
+    }
+
+    if (data.image) {
+      for (let i = 0; i < data.image.length; i += 1) {
+        formData.append('files', data.image[i]);
+      }
+    }
+
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/recruits/${recruitId}`, {
-        ...data,
-        memberId,
+      .patch(requestURL, formData, {
         headers: {
           Authorization: `${accessToken}`,
           Refresh: `${refreshToken}`,
@@ -426,14 +496,51 @@ const EditRecruit = () => {
                   />
                 </td>
               </tr>
-              {/* <tr>
+              <tr>
                 <td>
                   <label htmlFor="image">이미지</label>
                 </td>
                 <td>
-                  <input id="image" type="file" {...register('image')} />
+                  <input
+                    id="image"
+                    type="file"
+                    accept="image/jpeg,image/jpg, image/png, image/svg"
+                    multiple
+                    {...register('image')}
+                    onChange={handleImageChange}
+                  />
                 </td>
-              </tr> */}
+              </tr>
+              {previewImages ? (
+                <tr>
+                  <td />
+                  <td>
+                    {previewImages.map((image, index) => (
+                      <img src={image} alt={`Preview ${index + 1}`} />
+                    ))}
+                  </td>
+                </tr>
+              ) : (
+                ''
+              )}
+              {recruitData.recruitImages.length > 0
+                ? recruitData.recruitImages.map((el) => (
+                    <tr>
+                      <td />
+                      <td>
+                        <img src={el.filePath} alt="" />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            removeImage(el.filePath);
+                          }}
+                        >
+                          x
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                : ''}
             </tbody>
           </table>
           <Button
