@@ -11,9 +11,9 @@ interface FormInputFree {
   category: '질문' | '정보' | '나눔' | '운동';
   freeTitle: string;
   freeBody: string;
-  // memberId: number;
-  // image: string;
-  // tag: { tagId: number; tagName: string }[];
+  memberId: number;
+  image: any;
+  freeImages: { freeIdImage: number; freeId: number; filePath: string }[];
 }
 
 const Background = styled.div`
@@ -53,7 +53,6 @@ const CRForm = styled.form`
   input,
   textarea,
   select {
-    // margin-bottom: 15px;
     background-color: var(--gray);
     padding: 5px;
     margin-left: 20px;
@@ -106,7 +105,6 @@ const CRForm = styled.form`
     margin-left: 25px;
     width: 180px;
     border-radius: 10px;
-    margin-bottom: 30px;
     margin-top: 5px;
     text-align: center;
     padding: 5px 10px;
@@ -127,11 +125,7 @@ const CRForm = styled.form`
     align-items: center;
     margin: 30px;
   }
-  > div:last-child {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+
   > label,
   .label {
     display: flex;
@@ -157,6 +151,25 @@ const ButtonContainer = styled.div`
       transition: 0.2s ease-in-out;
       cursor: pointer;
     }
+  }
+`;
+
+const PreviewContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-left: 8.5rem;
+  img {
+    width: 10rem;
+    height: 10rem;
+    margin-top: 1rem;
+  }
+`;
+
+const NewImageContainer = styled.div`
+  margin-left: 8.5rem;
+  img {
+    height: 10rem;
+    width: 10rem;
   }
 `;
 
@@ -199,12 +212,7 @@ const EditFreeboard = () => {
   useEffect(() => {
     const getOriginalPost = () => {
       axios
-        .get(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
-          // headers: {
-          //   Authorization: `${localStorage.getItem('AccessToken')}`,
-          //   Refresh: `${localStorage.getItem('RefreshToken')}`,
-          // },
-        })
+        .get(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`)
         .then((res: any) => {
           setPosting(res.data.data);
           setIsLoading(false);
@@ -214,23 +222,76 @@ const EditFreeboard = () => {
     getOriginalPost();
   }, []);
 
+  const [removeImages, setRemoveImages] = useState<string[]>([]);
+
+  const removeImage = (filePath: string) => {
+    setPosting((prevState) => ({
+      ...prevState,
+      freeImages: prevState.freeImages.filter((el) => el.filePath !== filePath),
+      showImages: false,
+    }));
+    setRemoveImages((prevImages) => [...prevImages, filePath]);
+  };
+
+  const [previewImages, setPreviewImages] = useState([]);
+
+  const handleImageChange = (event: any) => {
+    const { files } = event.target;
+    const images: any = [];
+
+    for (let i = 0; i < files.length; i += 1) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        images.push(e.target!.result);
+        if (images.length === files.length) {
+          setPreviewImages(images);
+        }
+      };
+
+      reader.readAsDataURL(files[i]);
+    }
+  };
+
   const onSubmit = (data: FormInputFree) => {
-    // data.content = content;
-    console.log('here is ', {
-      ...data,
+    const formData = new FormData();
+    const variables = {
+      freeTitle: data.freeTitle,
+      freeBody: data.freeBody,
+      category: data.category,
       memberId,
-      // freeId: posting.freeId,
-    });
+    };
+    formData.append(
+      'free',
+      new Blob([JSON.stringify(variables)], { type: 'application/json' }),
+    );
+
+    // if (removeImages.length > 0) {
+    //   formData.append('removeImages', removeImages.join(','));
+    // }
+
+    let requestURL = `${process.env.REACT_APP_API_URL}/freeboards/${freeId}`;
+    // if (removeImages.length > 0) {
+    //   const queryString = `?removeImages=${removeImages.join(',')}`;
+    //   requestURL += queryString;
+    // }
+    if (removeImages.length > 0) {
+      const queryString = `?removeImages=${removeImages
+        .map((filePath) => filePath.split('/').pop())
+        .join(',')}`;
+      requestURL += queryString;
+    }
+
+    if (data.image) {
+      for (let i = 0; i < data.image.length; i += 1) {
+        formData.append('files', data.image[i]);
+      }
+    }
+
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/freeboards/${freeId}`, {
-        ...data,
-        memberId,
-        // tagList: tags.reduce((r, e) => {
-        //   r.push({ tagId: e.tagId });
-        //   return r;
-        // }, []),
-        // tag, image 서버에 추가되면 그냥 data로 넣으면 될듯
+      .patch(requestURL, formData, {
         headers: {
+          'Content-Type': 'multipart/form-data',
           Authorization: accessToken,
           Refresh: refreshToken,
         },
@@ -244,10 +305,9 @@ const EditFreeboard = () => {
         navigate('/login');
       });
   };
+
   // const textAreaRef = useRef<HTMLTextAreaElement>(null);
-
   // UseAutosizeTextArea(textAreaRef.current, content);
-
   // const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
   //   const val = evt.target?.value;
   //   if (val.length === 0) {
@@ -257,13 +317,7 @@ const EditFreeboard = () => {
   //   }
   //   setContent(val);
   // };
-  // const fileNums = (e:any) => {
-  //   if (e.files.length > 2) {
-  //     alert('file up to 2');
-  //   } else {
-  //     alert('alr we cool');
-  //   }
-  // };
+
   return (
     <Background>
       {!isLoading ? (
@@ -322,20 +376,41 @@ const EditFreeboard = () => {
           {/* <div>
           <label htmlFor="tag">태그</label>
           <input id="tag" {...register('tag')} />
-        </div>
-        <div>
-          <div className="label">이미지</div>
-          <label htmlFor="image" className="imagebutton">
-            + 이미지 파일 추가
-          </label>
-          <input
-            id="image"
-            type="file"
-            accept="image/jpeg,image/jpg, image/png, image/svg"
-            multiple
-            {...register('image')}
-          />
         </div> */}
+          <div>
+            <div className="label">이미지</div>
+            <label htmlFor="image" className="imagebutton">
+              + 이미지 파일 추가
+            </label>
+            <input
+              id="image"
+              type="file"
+              accept="image/jpeg,image/jpg, image/png, image/svg"
+              multiple
+              {...register('image')}
+              onChange={handleImageChange}
+            />
+          </div>
+          <PreviewContainer>
+            {previewImages.map((image, index) => (
+              <img src={image} alt={`Preview ${index + 1}`} />
+            ))}
+          </PreviewContainer>
+          {posting.freeImages.length > 0
+            ? posting.freeImages.map((el) => (
+                <NewImageContainer>
+                  <img src={el.filePath} alt="" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      removeImage(el.filePath);
+                    }}
+                  >
+                    x
+                  </button>
+                </NewImageContainer>
+              ))
+            : ''}
           <ButtonContainer>
             <button type="submit">저장하기</button>
             <Link to="/freeboards">

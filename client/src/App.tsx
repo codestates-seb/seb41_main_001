@@ -25,6 +25,7 @@ import FreeboardTags from './pages/FreeboardTags';
 import SearchPassword from './pages/SearchPassword';
 import Loading from './pages/Loading';
 import MemberPage from './pages/MemberPage';
+import Oauth from './pages/Oauth';
 
 const store = createStore(reducer);
 
@@ -55,6 +56,7 @@ const App = () => (
           <Route path="/recruits/tags" element={<RecruitTags />} />
           <Route path="/freeboards/tags" element={<FreeboardTags />} />
           <Route path="/loading" element={<Loading />} />
+          <Route path="/oauth" element={<Oauth />} />
         </Routes>
         <Footer />
       </Router>

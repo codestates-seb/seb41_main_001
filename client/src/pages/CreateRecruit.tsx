@@ -33,7 +33,7 @@ const RecruitForm = styled.form`
   }
 
   table {
-    margin: 20px 0px;
+    margin: 20px 0px 0px 0px;
     border-spacing: 20px 30px;
     tr {
       > td:nth-child(1) {
@@ -92,6 +92,14 @@ const RecruitForm = styled.form`
         margin-right: 10px;
       }
     }
+    tr:nth-child(13) {
+      img {
+        width: 10rem;
+        height: 10rem;
+        margin-top: 1rem;
+        margin-right: 1rem;
+      }
+    }
   }
 `;
 
@@ -116,7 +124,7 @@ interface RecruitFormInput {
   sex: 'Both' | 'Male' | 'Female';
   ages: number[];
   heartLimit: number;
-  // image: string;
+  image: any;
   tagSearch: string;
 }
 
@@ -176,23 +184,65 @@ const CreateRecruit = () => {
       });
   }, []);
 
-  const onSubmit = (data: RecruitFormInput) => {
-    // tagSearch는 postBody에서 제외함.
-    const { tagSearch, ...postBody } = data;
+  const [tagData, setTagData] = useState([]);
+  useEffect(() => {
     axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/recruits`,
-        {
-          memberId,
-          ...postBody,
+      .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=100`)
+      .then((res) => {
+        setTagData(res.data.data);
+        console.log(tagData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  const [previewImages, setPreviewImages] = useState([]);
+
+  const handleImageChange = (event: any) => {
+    const { files } = event.target;
+    const images: any = [];
+
+    for (let i = 0; i < files.length; i += 1) {
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        images.push(e.target!.result);
+        if (images.length === files.length) {
+          setPreviewImages(images);
+        }
+      };
+      reader.readAsDataURL(files[i]);
+    }
+  };
+
+  const onSubmit = (data: RecruitFormInput) => {
+    const formData = new FormData();
+    if (data.image.length > 0) {
+      for (let i = 0; i < data.image.length; i += 1) {
+        formData.append('files', data.image[i]);
+      }
+    }
+    // tagSearch,는 postBody에서 제외함.
+    const { tagSearch, image, ...postBody } = data;
+    const variables = {
+      ...postBody,
+      memberId,
+    };
+
+    formData.append(
+      'recruit',
+      new Blob([JSON.stringify(variables)], { type: 'application/json' }),
+    );
+
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/recruits`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: accessToken,
+          Refresh: refreshToken,
         },
-        {
-          headers: {
-            Authorization: accessToken,
-            Refresh: refreshToken,
-          },
-        },
-      )
+      })
       .then((res) => {
         console.log(res);
         navigate(`/recruits`);
@@ -328,12 +378,6 @@ const CreateRecruit = () => {
                 <label htmlFor="latlon">위치 정보</label>
               </td>
               <td>
-                {/* <div className="mapClick">
-                  <KakaoMapClick
-                    latitude={latlon.latitude}
-                    longitude={latlon.longitude}
-                  />
-                </div> */}
                 {location && (
                   <KakaoMapForClick
                     control={control}
@@ -415,7 +459,7 @@ const CreateRecruit = () => {
                 />
               </td>
             </tr>
-            {/* <tr>
+            <tr>
               <td>
                 <label htmlFor="image">이미지</label>
               </td>
@@ -426,9 +470,22 @@ const CreateRecruit = () => {
                   accept="image/jpeg,image/jpg, image/png, image/svg"
                   multiple
                   {...register('image')}
+                  onChange={handleImageChange}
                 />
               </td>
-            </tr> */}
+            </tr>
+            {previewImages ? (
+              <tr>
+                <td />
+                <td>
+                  {previewImages.map((image, index) => (
+                    <img src={image} alt={`Preview ${index + 1}`} />
+                  ))}
+                </td>
+              </tr>
+            ) : (
+              ''
+            )}
           </tbody>
         </table>
         <Button
