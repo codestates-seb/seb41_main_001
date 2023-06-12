@@ -102,6 +102,14 @@ const CategoryLink = styled(Link)<{ color: string; currentcolor: string }>`
   }
 `;
 
+const Nodata = styled.div`
+  text-align: center;
+  margin: 1rem;
+  padding: 1rem;
+  padding-top: 4rem;
+  height: 25.95vh;
+`;
+
 const FreeBoards = () => {
   const [data, setData] = useState<FreeDataProps[]>([]);
   const [pageCount, setPageCount] = useState<number>(0);
@@ -247,12 +255,17 @@ const FreeBoards = () => {
             <Loading />
           )}
         </ul>
-        {location && pageCount && (
+        {location && pageCount && data.length > 0 ? (
           <PaginationLink
             pageCount={pageCount}
             active_page={page}
             setPage={setPage}
           />
+        ) : (
+          <Nodata>
+            글이 없어요 <br />
+            글을 직접 작성해보세요!
+          </Nodata>
         )}
       </div>
       <button className="scrollBtn" type="button" onClick={handleClick}>
