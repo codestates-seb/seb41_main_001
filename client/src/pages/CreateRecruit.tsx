@@ -184,19 +184,6 @@ const CreateRecruit = () => {
       });
   }, []);
 
-  const [tagData, setTagData] = useState([]);
-  useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/tags/recruits?page=1&size=100`)
-      .then((res) => {
-        setTagData(res.data.data);
-        console.log(tagData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
-
   const [previewImages, setPreviewImages] = useState([]);
 
   const handleImageChange = (event: any) => {
@@ -223,7 +210,7 @@ const CreateRecruit = () => {
         formData.append('files', data.image[i]);
       }
     }
-    // tagSearch,는 postBody에서 제외함.
+    // tagSearch, image는 postBody에서 제외함.
     const { tagSearch, image, ...postBody } = data;
     const variables = {
       ...postBody,

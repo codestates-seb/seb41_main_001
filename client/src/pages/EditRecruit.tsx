@@ -142,6 +142,7 @@ interface RecruitFormInput {
     recruitId: number;
     filePath: string;
   }[];
+  // showImages: boolean;
   // tagSearch: string;
 }
 
