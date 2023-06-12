@@ -15,6 +15,7 @@ import CommentSubmitBox from '../components/CommentSubmitBox';
 import Button from '../components/Button';
 import RecruitApplyBeforeMeeting from '../components/RecruitApplyBeforeMeeting';
 import RecruitApplyAfterMeeting from '../components/RecruitApplyAfterMeeting';
+import Carousel from '../components/Carousel';
 
 const MainContainer = styled.main`
   width: 900px;
@@ -242,6 +243,11 @@ const RecruitDetail = () => {
             />
           </div>
           <ContentBox>{data.body}</ContentBox>
+          {data.recruitImages.length > 0 ? (
+            <Carousel images={data.recruitImages.map((el) => el.filePath)} />
+          ) : (
+            ''
+          )}
           <LocationBox>
             <div>
               <span>{`📌 언제? ${modifyingDate(data.date)}`}</span>
