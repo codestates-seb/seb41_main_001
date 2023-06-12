@@ -96,12 +96,20 @@ const RecruitForm = styled.form`
       label {
         margin-right: 10px;
       }
+      input {
+        /* &:disabled {
+          color: rgba(0, 0, 0, 0.3);
+        } */
+      }
     }
 
     .heartCon {
       input {
         width: 300px;
         margin-right: 10px;
+        /* &:disabled {
+          background-color: rgba(0, 0, 0, 0.3);
+        } */
       }
     }
   }

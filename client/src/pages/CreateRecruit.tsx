@@ -171,7 +171,6 @@ const CreateRecruit = () => {
       },
     },
   });
-
   const [tagData, setTagData] = useState([]);
   useEffect(() => {
     axios
@@ -204,6 +203,26 @@ const CreateRecruit = () => {
     }
   };
 
+  const onSubmit = (data: RecruitFormInput) => {
+    const formData = new FormData();
+    if (data.image.length > 0) {
+      for (let i = 0; i < data.image.length; i += 1) {
+        formData.append('files', data.image[i]);
+      }
+    }
+    // tagSearch,는 postBody에서 제외함.
+    const { tagSearch, image, ...postBody } = data;
+    const variables = {
+      ...postBody,
+      memberId,
+    };
+
+    formData.append(
+      'recruit',
+      new Blob([JSON.stringify(variables)], { type: 'application/json' }),
+    );
+
+    axios
   const onSubmit = (data: RecruitFormInput) => {
     const formData = new FormData();
     if (data.image.length > 0) {
